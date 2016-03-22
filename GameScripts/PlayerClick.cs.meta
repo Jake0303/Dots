@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 49fa52355b8935e4a9399c47de76e3fc
+timeCreated: 1454794749
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - hoverMat: {fileID: 2100000, guid: 6aa56caa329aa834c9c56ca7d0db1c67, type: 2}
+  - lineMat: {fileID: 2100000, guid: 653bf98ae7acfe446ba909810c59872b, type: 2}
+  - aLine: {fileID: 108542, guid: 6f8c3f85bd35e484a9b09abab442dff2, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
