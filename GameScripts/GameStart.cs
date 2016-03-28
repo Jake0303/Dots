@@ -47,7 +47,7 @@ public class GameStart : NetworkBehaviour {
 	}
     void Update()
     {
-			if(NetworkServer.connections.Count > 1 && buildGrid)
+			if(NetworkServer.connections.Count > 3 && buildGrid)
 			//if(buildGrid)//This if statement is for testing
         {
             //Hide temporary lines
