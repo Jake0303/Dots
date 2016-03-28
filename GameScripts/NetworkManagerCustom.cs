@@ -2,9 +2,15 @@
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System;
 
 public class NetworkManagerCustom : NetworkManager {
+	
 	private const int NETWORK_PORT = 7777;
+	private ConnectionTesterStatus connectionTestResult = ConnectionTesterStatus.Undetermined;
+	void OnPlayerConnected(NetworkPlayer player) {
+		Debug.Log("Player " + " connected from " + player.ipAddress + ":" + player.port);
+	}
 
 	public void ChangeLevel()
 	{
@@ -28,6 +34,20 @@ public class NetworkManagerCustom : NetworkManager {
 		NetworkManager.singleton.networkAddress = "";
 		NetworkManager.singleton.networkPort = 0;
 		NetworkManager.singleton.StopClient ();
+	}
+
+	public void HostOrJoinGame()
+	{
+		StartCoroutine(PingHost ());
+	}
+
+	IEnumerator PingHost()
+	{
+		Ping pingHost = new Ping ("192.168.0.1");
+		while (!pingHost.isDone) {
+			yield return new WaitForSeconds(2);
+		}
+		Debug.Log (pingHost.time);
 	}
 
 	public void JoinGame()
