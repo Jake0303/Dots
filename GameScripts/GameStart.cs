@@ -16,7 +16,8 @@ public class GameStart : NetworkBehaviour {
 	//The speed at which each dot in the grid spawns
 	[SyncVar]public float spawnSpeed = 0.1f;
     [SyncVar]
-    bool buildGrid = false;
+    public bool buildGrid = false;
+	bool startGame = false;
 	//Sync the rotation and scale,Network.Spawn only sync position
 	[SyncVar (hook = "OnRotChanged")]
 	public Quaternion lineRot;
@@ -27,6 +28,7 @@ public class GameStart : NetworkBehaviour {
 	public override void OnStartServer()
 	{
 		buildGrid = true;
+		startGame = true;
 	}
 
 	void OnVertScaleChanged(Vector3 scale)
@@ -47,15 +49,16 @@ public class GameStart : NetworkBehaviour {
 	}
     void Update()
     {
-			if(NetworkServer.connections.Count > 3 && buildGrid)
-			//if(buildGrid)//This if statement is for testing
-        {
-            //Hide temporary lines
+		if(NetworkServer.connections.Count > 3 && startGame)
+		//if(startGame)//This if statement is for testing
+		{
+
+			StartCoroutine(CreateGrid());
+			//Hide temporary lines
 			lineHor.GetComponent<Renderer>().enabled = false;
 			lineVert.GetComponent<Renderer>().enabled = false;
-			StartCoroutine(CreateGrid());
-			buildGrid = false;
-        }
+			startGame = false;
+		}
 
     }
 	//Tell the server that we spawned a line or dot
@@ -107,6 +110,7 @@ public class GameStart : NetworkBehaviour {
 				}
 			}
 		}
+
 		//Start the timer after the grid has been built
 		//gameObject.GetComponent<PlayerTurn>().enabled = true;
 		//Assign each player a random turn order
@@ -130,7 +134,7 @@ public class GameStart : NetworkBehaviour {
 		}
 		gameObject.GetComponent<TurnTimer>().enabled = true;
 		CmdEnableTimer ();
-
+		buildGrid = false;
 	}
 	//Tell the server that this player turn is disabled
 	[Command]

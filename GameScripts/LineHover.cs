@@ -13,7 +13,7 @@ public class LineHover : MonoBehaviour {
 	//When the mouse is between 2 dots show a temporary line
 	void OnMouseOver()
 	{
-		if (GetComponent<Renderer> ().enabled != true) {
+		if (GetComponent<Renderer> ().enabled != true && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid) {
 			GetComponent<Renderer> ().enabled = true;
 			GetComponent<Renderer> ().material = hoverMat;
 			GetComponent<Renderer> ().material.color = new Color (1.0f, 0f, 0f, 0.5f);

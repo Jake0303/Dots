@@ -23,10 +23,6 @@ public class PlayerClick:NetworkBehaviour{
 	[SerializeField]
 	private Collider[] hitCollidersBottom;
 
-	void Start () {}
-    //Check if a player placed a line and update on clients if so
-
-
 	[ClientRpc]
     void RpcPaint(GameObject obj, Color col)
     {

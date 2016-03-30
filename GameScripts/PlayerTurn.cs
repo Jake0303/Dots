@@ -17,32 +17,5 @@ public class PlayerTurn : NetworkBehaviour {
 		assortPlayerTurns.Add (randomNumbers.ElementAt (1));
 		assortPlayerTurns.Add (randomNumbers.ElementAt (2));
 		assortPlayerTurns.Add (randomNumbers.ElementAt (3));
-		//CmdAssortPlayerTurns (randomNumbers);
-	}
-
-	[Command]
-	void CmdAssortPlayerTurns(int[] randomNumbers)
-	{
-		assortPlayerTurns.Add (0);
-		assortPlayerTurns.Add (randomNumbers.ElementAt (0));
-		assortPlayerTurns.Add (randomNumbers.ElementAt (1));
-		assortPlayerTurns.Add (randomNumbers.ElementAt (2));
-		assortPlayerTurns.Add (randomNumbers.ElementAt (3));
-		RpcAssortPlayerTurns (randomNumbers);
-	}
-
-	[ClientRpc]
-	void RpcAssortPlayerTurns(int[] randomNumbers)
-	{
-		assortPlayerTurns.Add (0);
-		assortPlayerTurns.Add (randomNumbers.ElementAt (0));
-		assortPlayerTurns.Add (randomNumbers.ElementAt (1));
-		assortPlayerTurns.Add (randomNumbers.ElementAt (2));
-		assortPlayerTurns.Add (randomNumbers.ElementAt (3));
-	}
-
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

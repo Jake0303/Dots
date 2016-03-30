@@ -7,22 +7,17 @@ using UnityEngine.Networking.Match;
 using System.Collections.Generic;
 
 public class NetworkManagerCustom : NetworkManager {
-	private const int NETWORK_PORT = 7777;
-
 	// Matchmaker related
 	List<MatchDesc> m_MatchList = new List<MatchDesc>();
 	bool m_MatchCreated;
 	bool m_MatchJoined;
 	MatchInfo m_MatchInfo;
-	string m_MatchName = "NewRoom";
+	string m_MatchName = "";
 	NetworkMatch m_NetworkMatch;
 
-	// Connection/communication related
-	int m_HostId = -1;
 	// On the server there will be multiple connections, on the client this will only contain one ID
-	List<int> m_ConnectionIds = new List<int>();
 	byte[] m_ReceiveBuffer;
-	string m_NetworkMessage = "Hello world";
+	string m_NetworkMessage = "";
 	string m_LastReceivedMessage = "";
 	NetworkWriter m_Writer;
 	NetworkReader m_Reader;
@@ -49,8 +44,8 @@ public class NetworkManagerCustom : NetworkManager {
 		NetworkTransport.Shutdown();
 	}
 
-
-	public void ChangeLevel()
+	//Reset the game
+	public void ResetLevel()
 	{
 		NetworkManager.singleton.ServerChangeScene ("Game");
 	}
@@ -71,19 +66,6 @@ public class NetworkManagerCustom : NetworkManager {
 			m_NetworkMatch.CreateMatch(m_MatchName, 4, true, "", OnMatchCreate);
 		});
 
-
-	}
-
-
-	void OnLevelWasLoaded(int level)
-	{
-		if (level == 0) {
-			SetupMenuSceneButtons ();
-		}
-	}
-	//Remove listeners when switching between scenes or else buttons will keep adding listeners
-	void SetupMenuSceneButtons()
-	{
 
 	}
 }

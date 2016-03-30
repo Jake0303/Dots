@@ -8,11 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class GameOver : NetworkBehaviour {
 	[SyncVar] public bool gameOver = false;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (gameOver) {
@@ -44,6 +40,6 @@ public class GameOver : NetworkBehaviour {
 	//Reset the game
 	void ResetGame()
 	{
-		GameObject.Find ("NetworkManager").GetComponent<NetworkManagerCustom> ().ChangeLevel ();
+		GameObject.Find ("NetworkManager").GetComponent<NetworkManagerCustom> ().ResetLevel ();
 	}
 }
