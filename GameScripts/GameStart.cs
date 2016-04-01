@@ -3,72 +3,75 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
 
-public class GameStart : NetworkBehaviour {
+public class GameStart : NetworkBehaviour
+{
 
-	[SerializeField] public GameObject dots, lineHor,lineVert;
+    [SerializeField]
+    public GameObject dots, lineHor, lineVert;
 
-	//GridWidth
-	public static int gridWidth  = 6;
-	//GridHeight
-	public static int gridHeight  = 6;
-	//The distance between each dot
-	public static float dotDistance = 11.0f;
-	//The speed at which each dot in the grid spawns
-	[SyncVar]public float spawnSpeed = 0.1f;
+    //GridWidth
+    public static int gridWidth = 6;
+    //GridHeight
+    public static int gridHeight = 6;
+    //The distance between each dot
+    public static float dotDistance = 11.0f;
+    //The speed at which each dot in the grid spawns
+    [SyncVar]
+    public float spawnSpeed = 0.1f;
     [SyncVar]
     public bool buildGrid = false;
-	bool startGame = false;
-	//Sync the rotation and scale,Network.Spawn only sync position
-	[SyncVar (hook = "OnRotChanged")]
-	public Quaternion lineRot;
-	[SyncVar (hook = "OnVertScaleChanged")]
-	public Vector3 lineVertScale;
-	[SyncVar (hook = "OnHorScaleChanged")]
-	public Vector3 lineHorScale;
-	public override void OnStartServer()
-	{
-		buildGrid = true;
-		startGame = true;
-	}
+    bool startGame = false;
+    //Sync the rotation and scale,Network.Spawn only sync position
+    [SyncVar(hook = "OnRotChanged")]
+    public Quaternion lineRot;
+    [SyncVar(hook = "OnVertScaleChanged")]
+    public Vector3 lineVertScale;
+    [SyncVar(hook = "OnHorScaleChanged")]
+    public Vector3 lineHorScale;
+    public override void OnStartServer()
+    {
+        buildGrid = true;
+        startGame = true;
+    }
 
-	void OnVertScaleChanged(Vector3 scale)
-	{
-		lineVertScale = scale;
-		lineVert.transform.localScale = lineVertScale;
-	}
-	void OnHorScaleChanged(Vector3 scale)
-	{
-		lineHorScale = scale;
-		lineHor.transform.localScale = lineHorScale;
-	}
+    void OnVertScaleChanged(Vector3 scale)
+    {
+        lineVertScale = scale;
+        lineVert.transform.localScale = lineVertScale;
+    }
+    void OnHorScaleChanged(Vector3 scale)
+    {
+        lineHorScale = scale;
+        lineHor.transform.localScale = lineHorScale;
+    }
 
-	void OnRotChanged(Quaternion rot)
-	{
-		//lineRot = rot;
-		//lines.transform.localRotation = lineRot;
-	}
+    void OnRotChanged(Quaternion rot)
+    {
+        //lineRot = rot;
+        //lines.transform.localRotation = lineRot;
+    }
     void Update()
     {
-		if(NetworkServer.connections.Count > 3 && startGame)
-		//if(startGame)//This if statement is for testing
-		{
+        if (NetworkServer.connections.Count > 3 && startGame)
+        //if(startGame)//This if statement is for testing
+        {
 
-			StartCoroutine(CreateGrid());
-			//Hide temporary lines
-			lineHor.GetComponent<Renderer>().enabled = false;
-			lineVert.GetComponent<Renderer>().enabled = false;
-			startGame = false;
-		}
+            StartCoroutine(CreateGrid());
+            //Hide temporary lines
+            lineHor.GetComponent<Renderer>().enabled = false;
+            lineVert.GetComponent<Renderer>().enabled = false;
+            startGame = false;
+        }
 
     }
-	//Tell the server that we spawned a line or dot
-	[Command]
-	void CmdSpawnObj(GameObject obj)
-	{
-			NetworkServer.Spawn (obj);
-	}
-	//Build the grid
-	IEnumerator CreateGrid () {
+    //Tell the server that we spawned a line or dot
+    [Command]
+    void CmdSpawnObj(GameObject obj)
+    {
+        NetworkServer.Spawn(obj);
+    }
+    //Build the grid
+    IEnumerator CreateGrid() {
 		for(int x = 0; x < gridWidth; x++) {
 			yield return new WaitForSeconds(spawnSpeed);
 			
@@ -119,7 +122,9 @@ public class GameStart : NetworkBehaviour {
 		var randomNumbers = Enumerable.Range(1,4).OrderBy(x => rnd.Next()).Take(4).ToArray();
 		int i = 0;
 		foreach (var player in players) {
-				player.GetComponent<PlayerID> ().playerTurnOrder = GameObject.Find ("GameManager").GetComponent<PlayerTurn> ().assortPlayerTurns[randomNumbers.ElementAt(i)];
+			player.GetComponent<PlayerID> ().playerTurnOrder = GameObject.Find ("GameManager").GetComponent<PlayerTurn> ().assortPlayerTurns[randomNumbers.ElementAt(i)];
+            player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
+            player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
 			//Set the first players turn
 			if (player.GetComponent<PlayerID> ().playerTurnOrder == 1) {
 				player.GetComponent<PlayerID> ().isPlayersTurn = true;
@@ -136,45 +141,45 @@ public class GameStart : NetworkBehaviour {
 		CmdEnableTimer ();
 		buildGrid = false;
 	}
-	//Tell the server that this player turn is disabled
-	[Command]
-	void CmdDisableTurn(NetworkIdentity playerID)
-	{
-		playerID.GetComponent<PlayerID> ().isPlayersTurn = false;
-		RpcDisableTurn (playerID);
-	}
-	//Tell all clients who turn it is not
-	[ClientRpc]
-	void RpcDisableTurn(NetworkIdentity playerID)
-	{
-		playerID.GetComponent<PlayerID> ().isPlayersTurn = false;
-	}
-	//Tell the server that the first player turn is up
-	[Command]
-	void CmdSetFirstTurn(NetworkIdentity playerID)
-	{
-		playerID.GetComponent<PlayerID> ().isPlayersTurn = true;
-		RpcSetFirstTurn (playerID);
-	}
-	//Tell all clients who turn it is
-	[ClientRpc]
-	void RpcSetFirstTurn(NetworkIdentity playerID)
-	{
-		playerID.GetComponent<PlayerID> ().isPlayersTurn = true;
-	}
-	//Tell the server the timer has started
-	[Command]
-	void CmdEnableTimer()
-	{
-		gameObject.GetComponent<PlayerTurn>().enabled = true;
-		gameObject.GetComponent<TurnTimer>().enabled = true;
-		RpcEnableTimer ();
-	}
-	//Replicate to all clients
-	[ClientRpc]
-	void RpcEnableTimer()
-	{
-		gameObject.GetComponent<PlayerTurn>().enabled = true;
-		gameObject.GetComponent<TurnTimer>().enabled = true;
-	}
+    //Tell the server that this player turn is disabled
+    [Command]
+    void CmdDisableTurn(NetworkIdentity playerID)
+    {
+        playerID.GetComponent<PlayerID>().isPlayersTurn = false;
+        RpcDisableTurn(playerID);
+    }
+    //Tell all clients who turn it is not
+    [ClientRpc]
+    void RpcDisableTurn(NetworkIdentity playerID)
+    {
+        playerID.GetComponent<PlayerID>().isPlayersTurn = false;
+    }
+    //Tell the server that the first player turn is up
+    [Command]
+    void CmdSetFirstTurn(NetworkIdentity playerID)
+    {
+        playerID.GetComponent<PlayerID>().isPlayersTurn = true;
+        RpcSetFirstTurn(playerID);
+    }
+    //Tell all clients who turn it is
+    [ClientRpc]
+    void RpcSetFirstTurn(NetworkIdentity playerID)
+    {
+        playerID.GetComponent<PlayerID>().isPlayersTurn = true;
+    }
+    //Tell the server the timer has started
+    [Command]
+    void CmdEnableTimer()
+    {
+        gameObject.GetComponent<PlayerTurn>().enabled = true;
+        gameObject.GetComponent<TurnTimer>().enabled = true;
+        RpcEnableTimer();
+    }
+    //Replicate to all clients
+    [ClientRpc]
+    void RpcEnableTimer()
+    {
+        gameObject.GetComponent<PlayerTurn>().enabled = true;
+        gameObject.GetComponent<TurnTimer>().enabled = true;
+    }
 }

@@ -76,7 +76,7 @@ public class NetworkManagerCustom : NetworkManager {
 		GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
 		GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
 		GameObject.Find ("transitionText").GetComponent<Text> ().text = "Connecting...";
-		StartCoroutine(FadeTextToFullAlpha(1f,GameObject.Find("transitionText").GetComponent<Text>()));
+		StartCoroutine(FadeTextToFullAlpha(2f,GameObject.Find("transitionText").GetComponent<Text>()));
 		m_NetworkMatch.ListMatches(0, 1, "", (response) => {
 			m_MatchList = response.matches;
 			//Check to see if we should join a match or host one
