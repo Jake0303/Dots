@@ -99,7 +99,7 @@ public class PlayerClick : NetworkBehaviour
             {
                 GetComponent<PlayerID>().playerScore += 13;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<ScoreManager>().UpdateScore(gameObject);
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersRight);
 
@@ -124,7 +124,7 @@ public class PlayerClick : NetworkBehaviour
             {
                 GetComponent<PlayerID>().playerScore += 13;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<ScoreManager>().UpdateScore(gameObject);
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersLeft);
 
@@ -151,7 +151,7 @@ public class PlayerClick : NetworkBehaviour
             {
                 GetComponent<PlayerID>().playerScore += 13;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<ScoreManager>().UpdateScore(gameObject);
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersBottom);
             }
@@ -173,7 +173,7 @@ public class PlayerClick : NetworkBehaviour
             {
                 GetComponent<PlayerID>().playerScore += 13;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<ScoreManager>().UpdateScore(gameObject);
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersTop);
             }
