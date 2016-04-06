@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class PlayerID : NetworkBehaviour {
 	[SyncVar] public string playerID;
@@ -11,11 +12,25 @@ public class PlayerID : NetworkBehaviour {
 	private Transform myTransform;
 
 
-
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        GetNetIdentity();
+        SetIdentity();
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        foreach (var name in names)
+        {
+            if (name.GetComponent<Text>().text.Contains("Waiting"))
+            {
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(name.GetComponent<Text>(), 
+                    playerID, gameObject);
+                break;
+            }
+        }
+    }
 	public override void OnStartLocalPlayer()
 	{
-		GetNetIdentity ();
-		SetIdentity ();
+		
 	}
 
 	void OnScoreChanged(int score)

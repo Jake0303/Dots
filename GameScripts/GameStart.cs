@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
+using UnityEngine.UI;
 
 public class GameStart : NetworkBehaviour
 {
@@ -15,6 +16,7 @@ public class GameStart : NetworkBehaviour
     public static int gridHeight = 6;
     //The distance between each dot
     public static float dotDistance = 11.0f;
+    float connDelay = 0.5f;
     //The speed at which each dot in the grid spawns
     [SyncVar]
     public float spawnSpeed = 0.1f;
@@ -28,11 +30,14 @@ public class GameStart : NetworkBehaviour
     public Vector3 lineVertScale;
     [SyncVar(hook = "OnHorScaleChanged")]
     public Vector3 lineHorScale;
+
     public override void OnStartServer()
     {
+        base.OnStartServer();
         buildGrid = true;
         startGame = true;
     }
+    
 
     void OnVertScaleChanged(Vector3 scale)
     {
@@ -50,20 +55,61 @@ public class GameStart : NetworkBehaviour
         //lineRot = rot;
         //lines.transform.localRotation = lineRot;
     }
+    IEnumerator StartGame()
+    {
+        yield return new WaitForSeconds(connDelay);
+        AssignTurnsAndColors();
+        StartCoroutine(CreateGrid());
+
+    }
     void Update()
     {
-        if (NetworkServer.connections.Count > 3 && startGame)
-        //if(startGame)//This if statement is for testing
+        if(startGame)//This if statement is for testing
         {
-
-            StartCoroutine(CreateGrid());
-            //Hide temporary lines
-            lineHor.GetComponent<Renderer>().enabled = false;
-            lineVert.GetComponent<Renderer>().enabled = false;
-            startGame = false;
+            if (NetworkServer.connections.Count > 3 && startGame)
+            {
+                StartCoroutine(StartGame());
+                //Build the grid of dots
+                //Hide temporary lines
+                lineHor.GetComponent<Renderer>().enabled = false;
+                lineVert.GetComponent<Renderer>().enabled = false;
+                startGame = false;
+            }
         }
 
     }
+
+    void AssignTurnsAndColors()
+    {
+        //Assign each player a random turn order
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        var rnd = new System.Random();
+        var randomNumbers = Enumerable.Range(1, 4).OrderBy(x => rnd.Next()).Take(4).ToArray();
+        int i = 0;
+        
+        foreach (var player in players)
+        {
+            player.GetComponent<PlayerID>().playerTurnOrder = GameObject.Find("GameManager").GetComponent<PlayerTurn>().assortPlayerTurns[randomNumbers.ElementAt(i)];
+            player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
+            player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
+            //Set the first players turn
+            if (player.GetComponent<PlayerID>().playerTurnOrder == 1)
+            {
+                player.GetComponent<PlayerID>().isPlayersTurn = true;
+                CmdSetFirstTurn(player.GetComponent<NetworkIdentity>());
+            }
+            else
+            {
+                player.GetComponent<PlayerID>().isPlayersTurn = false;
+                CmdDisableTurn(player.GetComponent<NetworkIdentity>());
+            }
+            //Only 4 people per game
+            if (i != NetworkServer.connections.Count)
+                i++;
+        }
+    }
+    
     //Tell the server that we spawned a line or dot
     [Command]
     void CmdSpawnObj(GameObject obj)
@@ -113,34 +159,14 @@ public class GameStart : NetworkBehaviour
 				}
 			}
 		}
-
 		//Start the timer after the grid has been built
 		//gameObject.GetComponent<PlayerTurn>().enabled = true;
-		//Assign each player a random turn order
-		var players = GameObject.FindGameObjectsWithTag("Player");
-		var rnd = new System.Random();
-		var randomNumbers = Enumerable.Range(1,4).OrderBy(x => rnd.Next()).Take(4).ToArray();
-		int i = 0;
-		foreach (var player in players) {
-			player.GetComponent<PlayerID> ().playerTurnOrder = GameObject.Find ("GameManager").GetComponent<PlayerTurn> ().assortPlayerTurns[randomNumbers.ElementAt(i)];
-            player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
-            player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
-			//Set the first players turn
-			if (player.GetComponent<PlayerID> ().playerTurnOrder == 1) {
-				player.GetComponent<PlayerID> ().isPlayersTurn = true;
-				CmdSetFirstTurn (player.GetComponent<NetworkIdentity> ());
-			} else {
-				player.GetComponent<PlayerID> ().isPlayersTurn = false;
-				CmdDisableTurn (player.GetComponent<NetworkIdentity>());
-			}
-			//Only 4 people per game
-			if (i != NetworkServer.connections.Count)
-				i++;
-		}
 		gameObject.GetComponent<TurnTimer>().enabled = true;
 		CmdEnableTimer ();
 		buildGrid = false;
 	}
+
+    
     //Tell the server that this player turn is disabled
     [Command]
     void CmdDisableTurn(NetworkIdentity playerID)
