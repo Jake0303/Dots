@@ -36,12 +36,30 @@ public class PlayerID : NetworkBehaviour {
 	void OnScoreChanged(int score)
 	{
 		playerScore = score;
+        foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+        {
+            if (scores.name.Contains(playerTurnOrder.ToString()))
+            {
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
+                   playerScore.ToString(), gameObject);
+                break;
+            }
+        }
 		CmdTellServerMyScore (playerScore);
 	}
 	[Command]
 	void CmdTellServerMyScore(int score)
 	{
 		playerScore = score;
+        foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+        {
+            if (scores.name.Contains(playerTurnOrder.ToString()))
+            {
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
+                   playerScore.ToString(), gameObject);
+                break;
+            }
+        }
 	}
 
 	// Use this for initialization

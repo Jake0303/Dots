@@ -9,12 +9,6 @@ public class UIManager : NetworkBehaviour
     void Start()
     {
         StartCoroutine(DynamicPeriods());
-
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var player in players)
-        {
-            UpdateScore(player);
-        }
     }
 
 
@@ -27,8 +21,7 @@ public class UIManager : NetworkBehaviour
         {
             if (score.name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
             {
-                Debug.Log("Local textToUpdate: " + score.tag + "Local text: " + player.GetComponent<PlayerID>().playerScore.ToString() + "Local player:" + player.GetComponent<PlayerID>().playerID);
-                GameObject.Find(score.name).GetComponent<Text>().text = player.GetComponent<PlayerID>().playerScore.ToString();                    CmdUpdateUI(score.tag, player.GetComponent<PlayerID>().playerScore.ToString(), player);
+                //UpdateUI(score.GetComponent<Text>(), player.GetComponent<PlayerID>().playerScore.ToString(), player);
             }
         }
     }
@@ -39,18 +32,19 @@ public class UIManager : NetworkBehaviour
         //Update the player's UI with their name
         textToUpdate.text = text;
         if (isLocalPlayer)
-            CmdUpdateUI(textToUpdate.tag,text, player);
+        {
+            CmdUpdateUI(textToUpdate.tag, text, player);
+        }
     }
     //Tell the server to update the UI
     [Command]
     void CmdUpdateUI(string textToUpdate,string text, GameObject player)
     {
-        Debug.Log("Command textToUpdate: " + textToUpdate + "Command text: " + text + "Command player:" + player.GetComponent<PlayerID>().playerID);
         var uiObjects = GameObject.FindGameObjectsWithTag(textToUpdate);
         for (int i = 0; i < uiObjects.Length; i++)
         {
             //Updating names
-            if (uiObjects[i].GetComponent<Text>().ToString().Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
+            if (uiObjects[i].name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
             {
                 uiObjects[i].GetComponent<Text>().text = text;
             }            
@@ -62,11 +56,10 @@ public class UIManager : NetworkBehaviour
     [ClientRpc]
     void RpcUpdateUI(string textToUpdate, string text, GameObject player)
     {
-        Debug.Log("Rpc textToUpdate: " + textToUpdate + "Rpc text: " + text + "Rpc player:" + player.GetComponent<PlayerID>().playerID);
         var uiObjects = GameObject.FindGameObjectsWithTag(textToUpdate);
         for (int i = 0; i < uiObjects.Length; i++)
         {
-            if (uiObjects[i].GetComponent<Text>().ToString().Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
+            if (uiObjects[i].name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
             {
                 uiObjects[i].GetComponent<Text>().text = text;
             }

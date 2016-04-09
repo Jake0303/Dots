@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class PlayerClick : NetworkBehaviour
 {
@@ -26,6 +27,13 @@ public class PlayerClick : NetworkBehaviour
     private Collider[] hitCollidersTop;
     [SerializeField]
     private Collider[] hitCollidersBottom;
+    private GameObject[] scores;
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        scores = GameObject.FindGameObjectsWithTag("ScoreText");
+    }
 
     [ClientRpc]
     void RpcPaint(GameObject obj, Color col)
@@ -57,6 +65,12 @@ public class PlayerClick : NetworkBehaviour
     void CmdTellServerYourScore(int score)
     {
         GetComponent<PlayerID>().playerScore = score;
+        foreach(var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+        {
+            if(scores.name.Contains(GetComponent<PlayerID>().playerTurnOrder.ToString()))
+                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
+                   score.ToString(), gameObject);
+        }
         RpcUpdateScore(gameObject);
     }
     //Tell all the clients their current score
@@ -67,7 +81,15 @@ public class PlayerClick : NetworkBehaviour
         foreach (var aPlayer in players)
         {
             if (aPlayer == player)
+            {
                 player.GetComponent<PlayerID>().playerScore = aPlayer.GetComponent<PlayerID>().playerScore;
+                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                {
+                    if (scores.name.Contains(GetComponent<PlayerID>().playerTurnOrder.ToString()))
+                        GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
+                   player.GetComponent<PlayerID>().playerScore.ToString(), gameObject);
+                }
+            }
 
         }
     }
@@ -97,9 +119,9 @@ public class PlayerClick : NetworkBehaviour
             //If there is a 4 lines in the hitbox a square is made and the player gets a point.
             if (howManyLines == 4)
             {
-                GetComponent<PlayerID>().playerScore += 13;
+                GetComponent<PlayerID>().playerScore += 1;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
+                //Update the player's UI with their score
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersRight);
 
@@ -122,9 +144,8 @@ public class PlayerClick : NetworkBehaviour
             }
             if (howManyLines == 4)
             {
-                GetComponent<PlayerID>().playerScore += 13;
+                GetComponent<PlayerID>().playerScore += 1;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersLeft);
 
@@ -149,9 +170,8 @@ public class PlayerClick : NetworkBehaviour
             }
             if (howManyLines == 4)
             {
-                GetComponent<PlayerID>().playerScore += 13;
+                GetComponent<PlayerID>().playerScore += 1;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersBottom);
             }
@@ -171,9 +191,8 @@ public class PlayerClick : NetworkBehaviour
             }
             if (howManyLines == 4)
             {
-                GetComponent<PlayerID>().playerScore += 13;
+                GetComponent<PlayerID>().playerScore += 1;
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
-                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateScore(gameObject);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersTop);
             }
@@ -183,6 +202,7 @@ public class PlayerClick : NetworkBehaviour
     void PaintSquare(Collider[] squareLines)
     {
         NetworkInstanceId objID;
+        objID = new NetworkInstanceId();
         int i = 0;
         while (i < squareLines.Length)
         {

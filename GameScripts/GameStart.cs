@@ -83,7 +83,6 @@ public class GameStart : NetworkBehaviour
     {
         //Assign each player a random turn order
         var players = GameObject.FindGameObjectsWithTag("Player");
-        var names = GameObject.FindGameObjectsWithTag("NameText");
         var rnd = new System.Random();
         var randomNumbers = Enumerable.Range(1, 4).OrderBy(x => rnd.Next()).Take(4).ToArray();
         int i = 0;
