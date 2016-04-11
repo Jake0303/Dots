@@ -10,7 +10,10 @@ public class PlayerID : NetworkBehaviour {
 	[SyncVar (hook = "OnScoreChanged")] public int playerScore = 0;
 	private NetworkInstanceId playerNetID;
 	private Transform myTransform;
+    void Start()
+    {
 
+    }
 
     public override void OnStartClient()
     {
@@ -93,7 +96,7 @@ public class PlayerID : NetworkBehaviour {
 	
 	string MakeUniqueIdentity ()
 	{
-		string uniqueName = "Player" + playerNetID.ToString ();
+        string uniqueName = PlayerPrefs.GetString(Network.player.ipAddress);
 		return uniqueName;
 	}
 	[Command]

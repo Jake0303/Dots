@@ -14,7 +14,7 @@ public class NetworkManagerCustom : NetworkManager {
 	MatchInfo m_MatchInfo;
 	string m_MatchName = "";
 	NetworkMatch m_NetworkMatch;
-
+    string playerName;
 	// On the server there will be multiple connections, on the client this will only contain one ID
 
 
@@ -48,6 +48,8 @@ public class NetworkManagerCustom : NetworkManager {
         GameObject.Find("MenuManager").GetComponent<MenuManager>().TransitionToLobby();
         string conn = "Connecting";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
+        Debug.Log(Network.player.ipAddress);
+        PlayerPrefs.SetString(Network.player.ipAddress, GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
 		m_NetworkMatch.ListMatches(0, 1, "", (response) => {
 			m_MatchList = response.matches;
 			//Check to see if we should join a match or host one
