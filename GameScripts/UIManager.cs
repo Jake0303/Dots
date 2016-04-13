@@ -5,10 +5,63 @@ using UnityEngine.Networking;
 
 public class UIManager : NetworkBehaviour
 {
+    public SyncListString playerNames = new SyncListString();
+    [SyncVar]
+    int counter = 0;
     // Update the UI for the player score to 0
     void Start()
     {
         StartCoroutine(DynamicPeriods());
+    }
+
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        counter = 0;
+        foreach (var player in players)
+        {
+            foreach (var name in names)
+            {
+                if (name.name.Contains((counter + 1).ToString()))
+                {
+                    Debug.Log("true");
+                    UpdateUI(name.GetComponent<Text>(), playerNames[counter], gameObject);
+                    player.name = playerNames[counter];
+                    player.GetComponent<PlayerID>().playerID = playerNames[counter];
+                    player.GetComponent<PlayerID>().CmdTellServerMyName(playerNames[counter], name);
+                    player.GetComponent<PlayerID>().nameSet = true;
+                    name.GetComponent<NamePanel>().set = true;
+                    counter++;
+                }
+            }
+        }
+    }
+    public void SetPlayerName()
+    {
+            playerNames.Add(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+            var names = GameObject.FindGameObjectsWithTag("NameText");
+            var players = GameObject.FindGameObjectsWithTag("Player");
+            GameObject.Find("enterNamePanel").SetActive(false);
+            
+            foreach (var player in players)
+            {
+                foreach (var name in names)
+                {
+                    if (!player.GetComponent<PlayerID>().nameSet
+                        && name.name.Contains((counter+1).ToString()))
+                    {
+                        UpdateUI(name.GetComponent<Text>(), playerNames[counter], gameObject);
+                        player.name = playerNames[counter];
+                        player.GetComponent<PlayerID>().playerID = playerNames[counter];
+                        player.GetComponent<PlayerID>().CmdTellServerMyName(playerNames[counter], name);
+                        player.GetComponent<PlayerID>().nameSet = true;
+                        name.GetComponent<NamePanel>().set = true;
+                        counter++;
+                    }
+                }
+            }
     }
 
 

@@ -14,12 +14,13 @@ public class NetworkManagerCustom : NetworkManager {
 	MatchInfo m_MatchInfo;
 	string m_MatchName = "";
 	NetworkMatch m_NetworkMatch;
-    string playerName;
+    public List<string> playerNames = new List<string>();
 	// On the server there will be multiple connections, on the client this will only contain one ID
 
-
-
-	void Awake()
+    void OnMatchDestroyed(BasicResponse aResponse)
+    {
+    }
+    void Awake()
 	{
 		m_NetworkMatch = gameObject.AddComponent<NetworkMatch>();
 	}
@@ -32,6 +33,15 @@ public class NetworkManagerCustom : NetworkManager {
 
 	void OnApplicationQuit()
 	{
+        m_NetworkMatch.ListMatches(0, 1, "", (response) =>
+        {
+            m_MatchList = response.matches;
+            //Check to see if we should join a match or host one
+            foreach (var match in m_MatchList)
+            {
+                m_NetworkMatch.DestroyMatch(match.networkId, OnMatchDestroyed);
+            }
+        });
 		NetworkTransport.Shutdown();
 	}
 
@@ -47,10 +57,7 @@ public class NetworkManagerCustom : NetworkManager {
         bool matchFound = false;
         GameObject.Find("MenuManager").GetComponent<MenuManager>().TransitionToLobby();
         string conn = "Connecting";
-        GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
-        Debug.Log(Network.player.ipAddress);
-        PlayerPrefs.SetString(Network.player.ipAddress, GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
-		m_NetworkMatch.ListMatches(0, 1, "", (response) => {
+        m_NetworkMatch.ListMatches(0, 1, "", (response) => {
 			m_MatchList = response.matches;
 			//Check to see if we should join a match or host one
 			foreach (var match in m_MatchList) {

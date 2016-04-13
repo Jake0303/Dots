@@ -1,24 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 
-public class MenuManager : MonoBehaviour {
+public class MenuManager : NetworkBehaviour {
     string transitionText;
-    GameObject enterNameInputField,playButton;
-    void Start()
+    void Update()
     {
-        enterNameInputField = GameObject.Find("EnterNameInputField");
-        enterNameInputField.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        enterNameInputField.GetComponentInChildren<Text>().text = "";
-        enterNameInputField.SetActive(false);
-        playButton = GameObject.Find("LetsPlayButton");
-        playButton.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        playButton.GetComponentInChildren<Text>().text = "";
-        playButton.SetActive(false);
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
+        }
     }
     //Dynamic period animation
     IEnumerator DynamicPeriods(Text text)
     {
+       
         transitionText = text.text;
         string period = ".";
         for (; ; )
@@ -67,13 +64,6 @@ public class MenuManager : MonoBehaviour {
         GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
         GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
-        GameObject.Find("infoText").GetComponent<Text>().text = "Please enter a username";
-        enterNameInputField.SetActive(true);
-        enterNameInputField.GetComponentInChildren<CanvasRenderer>().SetAlpha(1);
-        enterNameInputField.GetComponentInChildren<Text>().text = "Enter a username...";
-        playButton.SetActive(true);
-        playButton.GetComponentInChildren<CanvasRenderer>().SetAlpha(1);
-        playButton.GetComponentInChildren<Text>().text = "Lets play!";
     }
     public void TransitionToLobby()
     {
@@ -87,15 +77,5 @@ public class MenuManager : MonoBehaviour {
         GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
         GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
-        GameObject.Find("infoText").GetComponent<Text>().text = "";
-        
-        enterNameInputField = GameObject.Find("EnterNameInputField");
-        enterNameInputField.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        enterNameInputField.GetComponentInChildren<Text>().text = "";
-        /*enterNameInputField.SetActive(false);*/
-        playButton = GameObject.Find("LetsPlayButton");
-        playButton.GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        playButton.GetComponentInChildren<Text>().text = "";
-        playButton.SetActive(false);
     }
 }
