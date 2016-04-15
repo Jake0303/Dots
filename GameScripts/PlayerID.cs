@@ -20,14 +20,23 @@ public class PlayerID : NetworkBehaviour
     public bool nameSet = false;
 
 
+
     void Start()
     {
+        GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.
+            AddListener(() => GetComponent<UIManager>().SetPlayerName());
+        myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
     }
 
-    void OnNameChanged(bool set)
+    public void OnNameChanged(bool set)
     {
         nameSet = set;
+        if (nameSet)
+        {
+            transform.name = playerID;
+        }
     }
 
     public override void OnStartClient()
@@ -48,7 +57,7 @@ public class PlayerID : NetworkBehaviour
         {
             if (scores.name.Contains(playerTurnOrder.ToString()))
             {
-                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
+                GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
                    playerScore.ToString(), gameObject);
                 break;
             }
@@ -63,7 +72,7 @@ public class PlayerID : NetworkBehaviour
         {
             if (scores.name.Contains(playerTurnOrder.ToString()))
             {
-                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
+                GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
                    playerScore.ToString(), gameObject);
                 break;
             }
@@ -111,27 +120,16 @@ public class PlayerID : NetworkBehaviour
         return uniqueName;
     }
     [Command]
-    public void CmdTellServerMyName(string name, GameObject namePanel)
+    public void CmdTellServerMyName(string name)
     {
-        if (!nameSet && !namePanel.GetComponent<NamePanel>().set)
-        {
             playerID = name;
             myTransform.name = playerID;
-            GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(namePanel.GetComponent<Text>(),
-               playerID, gameObject);
-            nameSet = true;
-            namePanel.GetComponent<NamePanel>().set = true;
-            RpcTellClientsMyName(name, namePanel);
-        }
+            RpcTellClientsMyName(name);
     }
     [ClientRpc]
-    public void RpcTellClientsMyName(string name, GameObject namePanel)
+    public void RpcTellClientsMyName(string name)
     {
         playerID = name;
         myTransform.name = playerID;
-        GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(namePanel.GetComponent<Text>(),
-           playerID, gameObject);
-        nameSet = true;
-        namePanel.GetComponent<NamePanel>().set = true;
     }
 }

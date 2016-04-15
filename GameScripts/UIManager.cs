@@ -5,63 +5,93 @@ using UnityEngine.Networking;
 
 public class UIManager : NetworkBehaviour
 {
-    public SyncListString playerNames = new SyncListString();
-    [SyncVar]
-    int counter = 0;
+    
+    [SyncVar (hook="OnCounterChanged")]
+    public int counter;
     // Update the UI for the player score to 0
     void Start()
     {
         StartCoroutine(DynamicPeriods());
     }
-
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+    }
+    void OnCounterChanged(int num)
+    {
+        counter = num;
+    }
     public override void OnStartClient()
     {
         base.OnStartClient();
+
         var names = GameObject.FindGameObjectsWithTag("NameText");
         var players = GameObject.FindGameObjectsWithTag("Player");
         counter = 0;
-        foreach (var player in players)
-        {
             foreach (var name in names)
             {
-                if (name.name.Contains((counter + 1).ToString()))
+                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > counter && name.name.Contains((counter + 1).ToString()))
                 {
-                    Debug.Log("true");
-                    UpdateUI(name.GetComponent<Text>(), playerNames[counter], gameObject);
-                    player.name = playerNames[counter];
-                    player.GetComponent<PlayerID>().playerID = playerNames[counter];
-                    player.GetComponent<PlayerID>().CmdTellServerMyName(playerNames[counter], name);
-                    player.GetComponent<PlayerID>().nameSet = true;
-                    name.GetComponent<NamePanel>().set = true;
+                    UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[counter], gameObject);
                     counter++;
                 }
             }
-        }
+    }
+
+    [Command]
+    public void CmdAddPlayer(string val)
+    {
+            GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
+            GetComponent<PlayerID>().nameSet = true;
+            gameObject.name = val;
+            GetComponent<PlayerID>().playerID = val;
+            GetComponent<PlayerID>().CmdTellServerMyName(val);
+            RpcAddPlayer(val);
+    }
+    [ClientRpc]
+    public void RpcAddPlayer(string val)
+    {
+        Debug.Log("player added: " + val);
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        
+            foreach (var name in names)
+            {
+                if (GetComponent<PlayerID>().nameSet
+                    && name.name.Contains((counter + 1).ToString())
+                    && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > counter)
+                {
+                    UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[counter], gameObject);
+                    counter++;
+                    break;
+                }
+            }
     }
     public void SetPlayerName()
     {
-            playerNames.Add(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
-            var names = GameObject.FindGameObjectsWithTag("NameText");
-            var players = GameObject.FindGameObjectsWithTag("Player");
-            GameObject.Find("enterNamePanel").SetActive(false);
-            
-            foreach (var player in players)
-            {
-                foreach (var name in names)
-                {
-                    if (!player.GetComponent<PlayerID>().nameSet
-                        && name.name.Contains((counter+1).ToString()))
-                    {
-                        UpdateUI(name.GetComponent<Text>(), playerNames[counter], gameObject);
-                        player.name = playerNames[counter];
-                        player.GetComponent<PlayerID>().playerID = playerNames[counter];
-                        player.GetComponent<PlayerID>().CmdTellServerMyName(playerNames[counter], name);
-                        player.GetComponent<PlayerID>().nameSet = true;
-                        name.GetComponent<NamePanel>().set = true;
-                        counter++;
-                    }
-                }
-            }
+        if (isLocalPlayer)
+        {
+            CmdAddPlayer(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+            Debug.Log("Local");
+
+        }
+        else if (isServer)
+        {
+            GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+            GetComponent<PlayerID>().nameSet = true;
+            gameObject.name = GameObject.Find("EnterNameInputField").GetComponent<InputField>().text;
+            GetComponent<PlayerID>().playerID = GameObject.Find("EnterNameInputField").GetComponent<InputField>().text;
+            GetComponent<PlayerID>().CmdTellServerMyName(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+            RpcAddPlayer(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+            Debug.Log("Server");
+
+        }
+        else
+        {
+            GetComponent<PlayerID>().OnNameChanged(true);
+            Debug.Log("Not local or server");
+
+        }
+        GameObject.Find("enterNamePanel").SetActive(false);
     }
 
 
@@ -91,7 +121,7 @@ public class UIManager : NetworkBehaviour
     }
     //Tell the server to update the UI
     [Command]
-    void CmdUpdateUI(string textToUpdate,string text, GameObject player)
+    void CmdUpdateUI(string textToUpdate, string text, GameObject player)
     {
         var uiObjects = GameObject.FindGameObjectsWithTag(textToUpdate);
         for (int i = 0; i < uiObjects.Length; i++)
@@ -100,9 +130,9 @@ public class UIManager : NetworkBehaviour
             if (uiObjects[i].name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
             {
                 uiObjects[i].GetComponent<Text>().text = text;
-            }            
+            }
         }
-        RpcUpdateUI(textToUpdate,text, player);
+        RpcUpdateUI(textToUpdate, text, player);
     }
 
     //Tell the server to update the UI and replicate to all clients

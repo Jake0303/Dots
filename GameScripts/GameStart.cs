@@ -9,7 +9,8 @@ public class GameStart : NetworkBehaviour
 
     [SerializeField]
     public GameObject dots, lineHor, lineVert;
-
+    [SerializeField]
+    public SyncListString playerNames = new SyncListString();
     //GridWidth
     public static int gridWidth = 6;
     //GridHeight
@@ -37,7 +38,15 @@ public class GameStart : NetworkBehaviour
         buildGrid = true;
         startGame = true;
     }
-    
+    void OnListChanged(SyncListString.Operation operation,int index)
+    {
+        Debug.Log("List op: " + operation);
+    }
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        playerNames.Callback = OnListChanged;
+    }
 
     void OnVertScaleChanged(Vector3 scale)
     {
@@ -68,7 +77,7 @@ public class GameStart : NetworkBehaviour
         {
             if (NetworkServer.connections.Count > 3 && startGame)
             {
-                StartCoroutine(StartGame());
+                //StartCoroutine(StartGame());
                 //Build the grid of dots
                 //Hide temporary lines
                 lineHor.GetComponent<Renderer>().enabled = false;
