@@ -18,14 +18,39 @@ public class PlayerID : NetworkBehaviour
     private GameObject[] names;
     [SyncVar(hook = "OnNameChanged")]
     public bool nameSet = false;
-
-
+    public GameObject prefabButton,userinputField,panel,infoText;
 
     void Start()
     {
-        GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.RemoveAllListeners();
-        GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.
-            AddListener(() => GetComponent<UIManager>().SetPlayerName());
+        //Setup the enter username panel locally
+        if (isLocalPlayer)
+        {
+            GameObject goPanel = (GameObject)Instantiate(panel);
+            goPanel.transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
+
+            GameObject goText = (GameObject)Instantiate(infoText);
+            goText.transform.localScale = new Vector3(5, 3, 3);
+
+            Text tempText = goText.GetComponent<Text>();
+            tempText.transform.SetParent(goPanel.transform, false);
+
+            GameObject goInputField = (GameObject)Instantiate(userinputField);
+            goInputField.transform.localScale = new Vector3(5, 3, 3);
+
+            GameObject goButton = (GameObject)Instantiate(prefabButton);
+            goButton.transform.localScale = new Vector3(5, 3, 3);
+
+            goPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
+
+            InputField tempField = goInputField.GetComponent<InputField>();
+            tempField.transform.SetParent(goPanel.transform, false);
+
+            Button tempButton = goButton.GetComponent<Button>();
+            tempButton.transform.SetParent(goPanel.transform, false);
+
+            tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel));
+        }
+
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
     }
@@ -122,9 +147,9 @@ public class PlayerID : NetworkBehaviour
     [Command]
     public void CmdTellServerMyName(string name)
     {
-            playerID = name;
-            myTransform.name = playerID;
-            RpcTellClientsMyName(name);
+        playerID = name;
+        myTransform.name = playerID;
+        RpcTellClientsMyName(name);
     }
     [ClientRpc]
     public void RpcTellClientsMyName(string name)
@@ -132,4 +157,5 @@ public class PlayerID : NetworkBehaviour
         playerID = name;
         myTransform.name = playerID;
     }
+
 }

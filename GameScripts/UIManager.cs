@@ -5,8 +5,8 @@ using UnityEngine.Networking;
 
 public class UIManager : NetworkBehaviour
 {
-    
-    [SyncVar (hook="OnCounterChanged")]
+
+    [SyncVar(hook = "OnCounterChanged")]
     public int counter;
     // Update the UI for the player score to 0
     void Start()
@@ -24,74 +24,59 @@ public class UIManager : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-
+        //TODO: When a 4th player connects it abolishes the hosts UI
         var names = GameObject.FindGameObjectsWithTag("NameText");
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        counter = 0;
-            foreach (var name in names)
+        int count = 0;
+        foreach (var name in names)
+        {
+            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > count && name.name.Contains((count + 1).ToString()))
             {
-                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > counter && name.name.Contains((counter + 1).ToString()))
-                {
-                    UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[counter], gameObject);
-                    counter++;
-                }
+                UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[count], gameObject);
+                count++;
             }
+        }
     }
-
+    //Add the player to the player list and update their name
     [Command]
     public void CmdAddPlayer(string val)
     {
-            GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
-            GetComponent<PlayerID>().nameSet = true;
-            gameObject.name = val;
-            GetComponent<PlayerID>().playerID = val;
-            GetComponent<PlayerID>().CmdTellServerMyName(val);
-            RpcAddPlayer(val);
+        GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
+        GetComponent<PlayerID>().nameSet = true;
+        name = val;
+        GetComponent<PlayerID>().playerID = val;
+        GetComponent<PlayerID>().CmdTellServerMyName(val);
+        RpcAddPlayer(val);
     }
+    //Update the UI to show who has joined the game
     [ClientRpc]
     public void RpcAddPlayer(string val)
     {
-        Debug.Log("player added: " + val);
         var names = GameObject.FindGameObjectsWithTag("NameText");
-        
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var player in players)
+        {
             foreach (var name in names)
             {
-                if (GetComponent<PlayerID>().nameSet
+                if (player.GetComponent<PlayerID>().nameSet
                     && name.name.Contains((counter + 1).ToString())
                     && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > counter)
                 {
                     UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[counter], gameObject);
                     counter++;
+                    Debug.Log(counter);
                     break;
                 }
             }
+        }
     }
-    public void SetPlayerName()
+    //Set the playername over the server 
+    public void SetPlayerName(InputField tempField,GameObject panel)
     {
         if (isLocalPlayer)
         {
-            CmdAddPlayer(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
-            Debug.Log("Local");
-
+            CmdAddPlayer(tempField.GetComponent<InputField>().text);
         }
-        else if (isServer)
-        {
-            GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
-            GetComponent<PlayerID>().nameSet = true;
-            gameObject.name = GameObject.Find("EnterNameInputField").GetComponent<InputField>().text;
-            GetComponent<PlayerID>().playerID = GameObject.Find("EnterNameInputField").GetComponent<InputField>().text;
-            GetComponent<PlayerID>().CmdTellServerMyName(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
-            RpcAddPlayer(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
-            Debug.Log("Server");
-
-        }
-        else
-        {
-            GetComponent<PlayerID>().OnNameChanged(true);
-            Debug.Log("Not local or server");
-
-        }
-        GameObject.Find("enterNamePanel").SetActive(false);
+            panel.SetActive(false);
     }
 
 
@@ -156,7 +141,8 @@ public class UIManager : NetworkBehaviour
         string[] origTexts = new string[4];
         for (int i = 0; i < names.Length; i++)
         {
-            StartCoroutine(FadeTextToFullAlpha(2f, names[i].GetComponent<Text>()));
+            if (isLocalPlayer)
+                StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>()));
             origTexts[i] = names[i].GetComponent<Text>().text;
         }
         string period = ".";

@@ -77,7 +77,8 @@ public class GameStart : NetworkBehaviour
         {
             if (NetworkServer.connections.Count > 3 && startGame)
             {
-                //StartCoroutine(StartGame());
+                //TODO: Commented out for now to test player name syncing
+                StartCoroutine(StartGame());
                 //Build the grid of dots
                 //Hide temporary lines
                 lineHor.GetComponent<Renderer>().enabled = false;
