@@ -23,7 +23,8 @@ public class GameStart : NetworkBehaviour
     public float spawnSpeed = 0.1f;
     [SyncVar]
     public bool buildGrid = false;
-    bool startGame = false;
+    [SyncVar (hook="OnStartChanged")]
+    public bool startGame = false;
     //Sync the rotation and scale,Network.Spawn only sync position
     [SyncVar(hook = "OnRotChanged")]
     public Quaternion lineRot;
@@ -36,11 +37,13 @@ public class GameStart : NetworkBehaviour
     {
         base.OnStartServer();
         buildGrid = true;
-        startGame = true;
+    }
+    void OnStartChanged(bool change)
+    {
+        startGame = change;
     }
     void OnListChanged(SyncListString.Operation operation,int index)
     {
-        Debug.Log("List op: " + operation);
     }
     public override void OnStartClient()
     {
@@ -73,9 +76,7 @@ public class GameStart : NetworkBehaviour
     }
     void Update()
     {
-        if(startGame)//This if statement is for testing
-        {
-            if (NetworkServer.connections.Count > 3 && startGame)
+            if (startGame)
             {
                 //TODO: Commented out for now to test player name syncing
                 StartCoroutine(StartGame());
@@ -85,8 +86,6 @@ public class GameStart : NetworkBehaviour
                 lineVert.GetComponent<Renderer>().enabled = false;
                 startGame = false;
             }
-        }
-
     }
 
     void AssignTurnsAndColors()

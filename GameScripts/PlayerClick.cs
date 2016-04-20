@@ -65,33 +65,27 @@ public class PlayerClick : NetworkBehaviour
     void CmdTellServerYourScore(int score)
     {
         GetComponent<PlayerID>().playerScore = score;
-        foreach(var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count;i++)
         {
-            if(scores.name.Contains(GetComponent<PlayerID>().playerTurnOrder.ToString()))
-                GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
-                   score.ToString(), gameObject);
+            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
+            {
+                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                {
+                    if (scores.name.Contains((i+1).ToString()))
+                    {
+                        //Update UI with score
+                        scores.GetComponent<Text>().text = score.ToString();
+                        return;
+                    }
+                }
+            }
         }
-        RpcUpdateScore(gameObject);
     }
     //Tell all the clients their current score
     [ClientRpc]
-    void RpcUpdateScore(GameObject player)
+    void RpcUpdateScore(GameObject player,int score,GameObject scores)
     {
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var aPlayer in players)
-        {
-            if (aPlayer == player)
-            {
-                player.GetComponent<PlayerID>().playerScore = aPlayer.GetComponent<PlayerID>().playerScore;
-                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
-                {
-                    if (scores.name.Contains(GetComponent<PlayerID>().playerTurnOrder.ToString()))
-                        GameObject.Find("GameManager").GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
-                   player.GetComponent<PlayerID>().playerScore.ToString(), gameObject);
-                }
-            }
-
-        }
+        //scores.GetComponent<Text>().text = score.ToString();
     }
     //Check if a square is made and if so award a point to the player
     void CheckIfSquareIsMade(RaycastHit hit)

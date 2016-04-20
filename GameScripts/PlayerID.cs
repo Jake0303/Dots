@@ -19,7 +19,8 @@ public class PlayerID : NetworkBehaviour
     [SyncVar(hook = "OnNameChanged")]
     public bool nameSet = false;
     public GameObject prefabButton,userinputField,panel,infoText;
-
+    [SyncVar (hook="OnPanelChanged")]
+    public GameObject playersPanel;
     void Start()
     {
         //Setup the enter username panel locally
@@ -70,6 +71,7 @@ public class PlayerID : NetworkBehaviour
         names = GameObject.FindGameObjectsWithTag("NameText");
         GetNetIdentity();
         SetIdentity();
+        playersPanel = GameObject.FindGameObjectWithTag("Panel");
     }
 
 
@@ -78,28 +80,41 @@ public class PlayerID : NetworkBehaviour
     void OnScoreChanged(int score)
     {
         playerScore = score;
-        foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
-            if (scores.name.Contains(playerTurnOrder.ToString()))
+            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
             {
-                GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
-                   playerScore.ToString(), gameObject);
-                break;
+                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                {
+                    if (scores.name.Contains((i + 1).ToString()))
+                    {
+                        //Update UI with score
+                        scores.GetComponent<Text>().text = score.ToString();
+                        return;
+                    }
+                }
             }
         }
-        CmdTellServerMyScore(playerScore);
+        if(isLocalPlayer)
+            CmdTellServerMyScore(playerScore);
     }
     [Command]
     void CmdTellServerMyScore(int score)
     {
         playerScore = score;
-        foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
-            if (scores.name.Contains(playerTurnOrder.ToString()))
+            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
             {
-                GetComponent<UIManager>().UpdateUI(scores.GetComponent<Text>(),
-                   playerScore.ToString(), gameObject);
-                break;
+                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                {
+                    if (scores.name.Contains((i + 1).ToString()))
+                    {
+                        //Update UI with score
+                        scores.GetComponent<Text>().text = score.ToString();
+                        return;
+                    }
+                }
             }
         }
     }
@@ -109,13 +124,24 @@ public class PlayerID : NetworkBehaviour
     {
         myTransform = transform;
     }
-
+    void OnPanelChanged(GameObject aPanel)
+    {
+        //playersPanel = aPanel;
+    }
     // Update is called once per frame
     void Update()
     {
         if (!nameSet)
         {
             SetIdentity();
+        }
+        if(isPlayersTurn)
+        {
+            //playersPanel.GetComponent<Image>().color = Color.green;
+        }
+        else
+        {
+            //playersPanel.GetComponent<Image>().color = Color.grey;
         }
     }
 

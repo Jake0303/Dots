@@ -24,14 +24,13 @@ public class UIManager : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
-        //TODO: When a 4th player connects it abolishes the hosts UI
         var names = GameObject.FindGameObjectsWithTag("NameText");
         int count = 0;
         foreach (var name in names)
         {
             if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > count && name.name.Contains((count + 1).ToString()))
             {
-                UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[count], gameObject);
+                name.GetComponent<Text>().text = GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[count];
                 count++;
             }
         }
@@ -53,30 +52,44 @@ public class UIManager : NetworkBehaviour
     {
         var names = GameObject.FindGameObjectsWithTag("NameText");
         var players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var player in players)
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
             foreach (var name in names)
             {
-                if (player.GetComponent<PlayerID>().nameSet
-                    && name.name.Contains((counter + 1).ToString())
-                    && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > counter)
+                if (name.name.Contains((i + 1).ToString()))
                 {
-                    UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[counter], gameObject);
-                    counter++;
-                    Debug.Log(counter);
+                    UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
                     break;
                 }
             }
         }
+        if (NetworkServer.connections.Count > 3 && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
+            && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > 3)
+        {
+            
+            GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
+        }
     }
     //Set the playername over the server 
-    public void SetPlayerName(InputField tempField,GameObject panel)
+    public void SetPlayerName(InputField tempField, GameObject panel)
     {
         if (isLocalPlayer)
         {
             CmdAddPlayer(tempField.GetComponent<InputField>().text);
         }
-            panel.SetActive(false);
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+        {
+            foreach (var panels in GameObject.FindGameObjectsWithTag("Panel"))
+            {
+                if (panels.name.Contains((i + 1).ToString()))
+                {
+                    GetComponent<PlayerID>().playersPanel = panels;
+                    //return;
+                }
+            }
+        }
+            
+        panel.SetActive(false);
     }
 
 
@@ -101,7 +114,7 @@ public class UIManager : NetworkBehaviour
         textToUpdate.text = text;
         if (isLocalPlayer)
         {
-            CmdUpdateUI(textToUpdate.tag, text, player);
+            //CmdUpdateUI(textToUpdate.tag, text, player);
         }
     }
     //Tell the server to update the UI
@@ -114,7 +127,7 @@ public class UIManager : NetworkBehaviour
             //Updating names
             if (uiObjects[i].name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
             {
-                uiObjects[i].GetComponent<Text>().text = text;
+                //uiObjects[i].GetComponent<Text>().text = text;
             }
         }
         RpcUpdateUI(textToUpdate, text, player);
@@ -129,7 +142,7 @@ public class UIManager : NetworkBehaviour
         {
             if (uiObjects[i].name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
             {
-                uiObjects[i].GetComponent<Text>().text = text;
+                //uiObjects[i].GetComponent<Text>().text = text;
             }
         }
     }
