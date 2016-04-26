@@ -66,30 +66,45 @@ public class UIManager : NetworkBehaviour
         if (NetworkServer.connections.Count > 3 && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
             && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > 3)
         {
-            
+            //Set the panels for each player
+            var panels = GameObject.FindGameObjectsWithTag("Panel");
+            for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+            {
+            Start:
+                foreach (var Apanel in panels)
+                {
+                    if (Apanel.name.Contains((i + 1).ToString()))
+                    {
+                        foreach (var player in players)
+                        {
+                            if (player.GetComponent<PlayerID>().playersPanel == "")
+                            {
+                                player.GetComponent<PlayerID>().playersPanel = Apanel.name;
+                                if(isLocalPlayer)
+                                {
+                                    GetComponent<PlayerID>().playersPanel = Apanel.name;
+                                }
+                                i++;
+                                goto Start;
+                            }
+                        }
+
+                    }
+                }
+            }
             GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
         }
     }
+
     //Set the playername over the server 
     public void SetPlayerName(InputField tempField, GameObject panel)
     {
         if (isLocalPlayer)
         {
             CmdAddPlayer(tempField.GetComponent<InputField>().text);
+            panel.SetActive(false);
+            var players = GameObject.FindGameObjectsWithTag("Player");
         }
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-        {
-            foreach (var panels in GameObject.FindGameObjectsWithTag("Panel"))
-            {
-                if (panels.name.Contains((i + 1).ToString()))
-                {
-                    GetComponent<PlayerID>().playersPanel = panels;
-                    //return;
-                }
-            }
-        }
-            
-        panel.SetActive(false);
     }
 
 

@@ -19,8 +19,8 @@ public class PlayerID : NetworkBehaviour
     [SyncVar(hook = "OnNameChanged")]
     public bool nameSet = false;
     public GameObject prefabButton,userinputField,panel,infoText;
-    [SyncVar (hook="OnPanelChanged")]
-    public GameObject playersPanel;
+    [SyncVar (hook = "OnPanelNameChanged")]
+    public string playersPanel = "";
     void Start()
     {
         //Setup the enter username panel locally
@@ -64,14 +64,16 @@ public class PlayerID : NetworkBehaviour
             transform.name = playerID;
         }
     }
-
+    void OnPanelNameChanged(string name)
+    {
+        playersPanel = name;
+    }
     public override void OnStartClient()
     {
         base.OnStartClient();
         names = GameObject.FindGameObjectsWithTag("NameText");
         GetNetIdentity();
         SetIdentity();
-        playersPanel = GameObject.FindGameObjectWithTag("Panel");
     }
 
 
@@ -124,10 +126,7 @@ public class PlayerID : NetworkBehaviour
     {
         myTransform = transform;
     }
-    void OnPanelChanged(GameObject aPanel)
-    {
-        //playersPanel = aPanel;
-    }
+
     // Update is called once per frame
     void Update()
     {
@@ -135,13 +134,14 @@ public class PlayerID : NetworkBehaviour
         {
             SetIdentity();
         }
-        if(isPlayersTurn)
+        //Update panel to green if its the players turn
+        if(isPlayersTurn && playersPanel != "")
         {
-            //playersPanel.GetComponent<Image>().color = Color.green;
+            GameObject.Find(playersPanel).GetComponent<Image>().color = Color.green;
         }
-        else
+        else if (!isPlayersTurn && playersPanel != "")
         {
-            //playersPanel.GetComponent<Image>().color = Color.grey;
+            GameObject.Find(playersPanel).GetComponent<Image>().color = new Color(0.5f,0.5f,0.5f,0.5f);
         }
     }
 
