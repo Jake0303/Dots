@@ -98,7 +98,7 @@ public class TurnTimer : NetworkBehaviour {
 	}
 	//Tell the server that it's the next player's turn
 	[Command]
-	void CmdChangePlayerTurn(GameObject nextPlayer,GameObject lastPlayer)
+	public void CmdChangePlayerTurn(GameObject nextPlayer,GameObject lastPlayer)
 	{
 		nextPlayer.GetComponent<PlayerID> ().isPlayersTurn = true;
 		lastPlayer.GetComponent<PlayerID> ().isPlayersTurn = false;

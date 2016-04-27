@@ -28,13 +28,18 @@ public class PlayerClick : NetworkBehaviour
     [SerializeField]
     private Collider[] hitCollidersBottom;
     private GameObject[] scores;
+    [SyncVar (hook="OnPointChanged")]
+    public bool pointScored = false;
 
     public override void OnStartClient()
     {
         base.OnStartClient();
         scores = GameObject.FindGameObjectsWithTag("ScoreText");
     }
-
+    void OnPointChanged(bool point)
+    {
+        pointScored = point;
+    }
     [ClientRpc]
     void RpcPaint(GameObject obj, Color col)
     {
@@ -43,6 +48,18 @@ public class PlayerClick : NetworkBehaviour
         obj.GetComponent<Renderer>().material.color = col;      // this is the line that actually makes the change in color happen
         obj.GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find("GameManager").GetComponent<TurnTimer>().nextTurn = true;
+    }
+
+    [ClientRpc]
+    void RpcPaintSameTurn(GameObject obj, Color col)
+    {
+        obj.GetComponent<Renderer>().enabled = true;
+        obj.GetComponent<Renderer>().material = lineMat;
+        obj.GetComponent<Renderer>().material.color = col;      // this is the line that actually makes the change in color happen
+        obj.GetComponent<LinePlaced>().linePlaced = true;
+        GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+        GetComponent<PlayerID>().isPlayersTurn = true;
+        pointScored = false;
     }
 
     //On click place a line at the mouse location
@@ -56,7 +73,15 @@ public class PlayerClick : NetworkBehaviour
         obj.GetComponent<LinePlaced>().linePlaced = true;
         if (objNetId.clientAuthorityOwner == null)
             objNetId.AssignClientAuthority(connectionToClient);
-        RpcPaint(obj, col);// use a Client RPC function to "paint" the object on all clients
+        if (!pointScored)
+        {
+            RpcPaint(obj, col);// use a Client RPC function to "paint" the object on all clients
+        }
+        else
+        {
+            RpcPaintSameTurn(obj, col);
+            pointScored = false;
+        }
     }
 
     
@@ -118,7 +143,8 @@ public class PlayerClick : NetworkBehaviour
                 //Update the player's UI with their score
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersRight);
-
+                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+                pointScored = true;
             }
 
             //Left hitbox
@@ -142,6 +168,8 @@ public class PlayerClick : NetworkBehaviour
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersLeft);
+                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+                pointScored = true;
 
             }
         }
@@ -168,6 +196,9 @@ public class PlayerClick : NetworkBehaviour
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersBottom);
+                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+                pointScored = true;
+
             }
             Vector3 centerOfSquareTop = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z - (GameStart.dotDistance / 2));
             hitCollidersTop = Physics.OverlapSphere(centerOfSquareTop, squareRadius);
@@ -189,8 +220,12 @@ public class PlayerClick : NetworkBehaviour
                 CmdTellServerYourScore(GetComponent<PlayerID>().playerScore);
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersTop);
+                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+                pointScored = true;
+
             }
         }
+        
     }
     //Paint the square that was made the players color
     void PaintSquare(Collider[] squareLines)
@@ -214,6 +249,7 @@ public class PlayerClick : NetworkBehaviour
     void CmdPaintSquare(GameObject line)
     {
         line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+        pointScored = true;
         //objNetId.RemoveClientAuthority(objNetId.connectionToClient);
         //objNetId.AssignClientAuthority(connectionToClient);
         RpcPaintSquare(line);
@@ -253,8 +289,8 @@ public class PlayerClick : NetworkBehaviour
                             objectID = GameObject.Find(hit.collider.name);// this gets the object that is hit
                             objectColor = GetComponent<PlayerColor>().playerColor;
                             objectID.GetComponent<LinePlaced>().linePlaced = true;
-                            CmdPlaceLine(objectID, objectColor);
                             CheckIfSquareIsMade(hit);
+                            CmdPlaceLine(objectID, objectColor);
                         }
                     }
                 }
