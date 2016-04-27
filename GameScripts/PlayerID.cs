@@ -21,12 +21,16 @@ public class PlayerID : NetworkBehaviour
     public GameObject prefabButton,userinputField,panel,infoText;
     [SyncVar (hook = "OnPanelNameChanged")]
     public string playersPanel = "";
+
+    private Button tempButton;
+    private InputField tempField;
+    private GameObject goPanel;
     void Start()
     {
         //Setup the enter username panel locally
         if (isLocalPlayer)
         {
-            GameObject goPanel = (GameObject)Instantiate(panel);
+            goPanel = (GameObject)Instantiate(panel);
             goPanel.transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
 
             GameObject goText = (GameObject)Instantiate(infoText);
@@ -43,10 +47,10 @@ public class PlayerID : NetworkBehaviour
 
             goPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
 
-            InputField tempField = goInputField.GetComponent<InputField>();
+            tempField = goInputField.GetComponent<InputField>();
             tempField.transform.SetParent(goPanel.transform, false);
 
-            Button tempButton = goButton.GetComponent<Button>();
+            tempButton = goButton.GetComponent<Button>();
             tempButton.transform.SetParent(goPanel.transform, false);
 
             tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel));
@@ -142,6 +146,13 @@ public class PlayerID : NetworkBehaviour
         else if (!isPlayersTurn && playersPanel != "")
         {
             GameObject.Find(playersPanel).GetComponent<Image>().color = new Color(0.5f,0.5f,0.5f,0.2f);
+        }
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if(tempButton != null && goPanel.activeSelf)
+            {
+                this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel);
+            }
         }
     }
 

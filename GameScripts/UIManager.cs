@@ -131,6 +131,8 @@ public class UIManager : NetworkBehaviour
         {
             //CmdUpdateUI(textToUpdate.tag, text, player);
         }
+                
+
     }
     //Tell the server to update the UI
     [Command]
