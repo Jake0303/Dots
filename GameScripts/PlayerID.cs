@@ -7,7 +7,7 @@ public class PlayerID : NetworkBehaviour
 {
     [SyncVar]
     public string playerID;
-    [SyncVar]
+    [SyncVar(hook = "OnPlayerTurn")]
     public bool isPlayersTurn = false;
     [SyncVar]
     public int playerTurnOrder = 0;
@@ -18,13 +18,15 @@ public class PlayerID : NetworkBehaviour
     private GameObject[] names;
     [SyncVar(hook = "OnNameChanged")]
     public bool nameSet = false;
-    public GameObject prefabButton,userinputField,panel,infoText;
-    [SyncVar (hook = "OnPanelNameChanged")]
+    public GameObject prefabButton, userinputField, panel, infoText;
+    [SyncVar(hook = "OnPanelNameChanged")]
     public string playersPanel = "";
 
     private Button tempButton;
     private InputField tempField;
     private GameObject goPanel;
+
+    private bool showPopup;
     void Start()
     {
         //Setup the enter username panel locally
@@ -59,7 +61,15 @@ public class PlayerID : NetworkBehaviour
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
     }
+    void OnPlayerTurn(bool turn)
+    {
+        isPlayersTurn = turn;
+        if (isPlayersTurn)
+            showPopup = true;
+        else
+            GameObject.Find("PopupText").GetComponent<Text>().text = "";
 
+    }
     public void OnNameChanged(bool set)
     {
         nameSet = set;
@@ -79,10 +89,6 @@ public class PlayerID : NetworkBehaviour
         GetNetIdentity();
         SetIdentity();
     }
-
-
-
-
     void OnScoreChanged(int score)
     {
         playerScore = score;
@@ -101,7 +107,7 @@ public class PlayerID : NetworkBehaviour
                 }
             }
         }
-        if(isLocalPlayer)
+        if (isLocalPlayer)
             CmdTellServerMyScore(playerScore);
     }
     [Command]
@@ -139,17 +145,27 @@ public class PlayerID : NetworkBehaviour
             SetIdentity();
         }
         //Update panel to green if its the players turn
-        if(isPlayersTurn && playersPanel != "")
+        if (isPlayersTurn && playersPanel != "")
         {
             GameObject.Find(playersPanel).GetComponent<Image>().color = Color.green;
+            if (isLocalPlayer)
+            {
+                if (showPopup)
+                {
+                    GameObject.Find("PopupText").GetComponent<Text>().text = "Its your turn, place a line!";
+                    StartCoroutine(this.GetComponent<UIManager>().FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), true));
+                    showPopup = false;
+                }
+            }
         }
         else if (!isPlayersTurn && playersPanel != "")
         {
-            GameObject.Find(playersPanel).GetComponent<Image>().color = new Color(0.5f,0.5f,0.5f,0.2f);
+            GameObject.Find(playersPanel).GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.2f);
         }
+        //If the use presses enter set the player name and join the game
         if (Input.GetKeyDown(KeyCode.Return))
         {
-            if(tempButton != null && goPanel.activeSelf)
+            if (tempButton != null && goPanel.activeSelf)
             {
                 this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel);
             }
@@ -160,7 +176,6 @@ public class PlayerID : NetworkBehaviour
     void GetNetIdentity()
     {
         playerNetID = GetComponent<NetworkIdentity>().netId;
-        //CmdTellServerMyName(MakeUniqueIdentity());
     }
 
     [Client]

@@ -106,62 +106,11 @@ public class UIManager : NetworkBehaviour
             var players = GameObject.FindGameObjectsWithTag("Player");
         }
     }
-
-
-    //Update the score text
-    public void UpdateScore(GameObject player)
-    {
-        //Update the player's UI with their score
-        var scores = GameObject.FindGameObjectsWithTag("ScoreText");
-        foreach (var score in scores)
-        {
-            if (score.name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
-            {
-                //UpdateUI(score.GetComponent<Text>(), player.GetComponent<PlayerID>().playerScore.ToString(), player);
-            }
-        }
-    }
-
     //Update the name text
     public void UpdateUI(Text textToUpdate, string text, GameObject player)
     {
         //Update the player's UI with their name
         textToUpdate.text = text;
-        if (isLocalPlayer)
-        {
-            //CmdUpdateUI(textToUpdate.tag, text, player);
-        }
-                
-
-    }
-    //Tell the server to update the UI
-    [Command]
-    void CmdUpdateUI(string textToUpdate, string text, GameObject player)
-    {
-        var uiObjects = GameObject.FindGameObjectsWithTag(textToUpdate);
-        for (int i = 0; i < uiObjects.Length; i++)
-        {
-            //Updating names
-            if (uiObjects[i].name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
-            {
-                //uiObjects[i].GetComponent<Text>().text = text;
-            }
-        }
-        RpcUpdateUI(textToUpdate, text, player);
-    }
-
-    //Tell the server to update the UI and replicate to all clients
-    [ClientRpc]
-    void RpcUpdateUI(string textToUpdate, string text, GameObject player)
-    {
-        var uiObjects = GameObject.FindGameObjectsWithTag(textToUpdate);
-        for (int i = 0; i < uiObjects.Length; i++)
-        {
-            if (uiObjects[i].name.Contains(player.GetComponent<PlayerID>().playerTurnOrder.ToString()))
-            {
-                //uiObjects[i].GetComponent<Text>().text = text;
-            }
-        }
     }
 
     //Dynamic period animation
@@ -172,7 +121,7 @@ public class UIManager : NetworkBehaviour
         for (int i = 0; i < names.Length; i++)
         {
             if (isLocalPlayer)
-                StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>()));
+                StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>(),false));
             origTexts[i] = names[i].GetComponent<Text>().text;
         }
         string period = ".";
@@ -220,8 +169,8 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    //Fade text animation for the connecting text
-    IEnumerator FadeTextToFullAlpha(float t, Text i)
+    //Fade in text animation
+    public IEnumerator FadeTextToFullAlpha(float t, Text i,bool fadeOut)
     {
         i.color = new Color(i.color.r, i.color.g, i.color.b, 0);
         while (i.color.a < 1.0f)
@@ -232,6 +181,22 @@ public class UIManager : NetworkBehaviour
             }
             yield return null;
         }
+        if(fadeOut)
+            StartCoroutine(FadeOutText(1f, i));
     }
+    //Fade out text animation
+    IEnumerator FadeOutText(float t, Text i)
+    {
+        yield return new WaitForSeconds(2f);
+        i.color = new Color(i.color.r, i.color.g, i.color.b, i.color.a);
+        while (i.color.a > 0f)
+        {
+            if (i != null)
+            {
+                i.color = new Color(i.color.r, i.color.g, i.color.b, i.color.a - (Time.deltaTime / t));
+            }
+            yield return null;
+        }
 
+    }
 }

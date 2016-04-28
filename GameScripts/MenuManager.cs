@@ -7,6 +7,7 @@ public class MenuManager : NetworkBehaviour {
     string transitionText;
     void Update()
     {
+        //TODO:Press J to join a game on a local network, for testing purposes until utilizing Unity Matchmaker
         if(Input.GetKeyDown(KeyCode.J))
         {
             GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
