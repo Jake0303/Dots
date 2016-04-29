@@ -11,7 +11,8 @@ public class UIManager : NetworkBehaviour
     // Update the UI for the player score to 0
     void Start()
     {
-        StartCoroutine(DynamicPeriods());
+        if(isLocalPlayer)
+            StartCoroutine(DynamicPeriods());
     }
     public override void OnStartServer()
     {
