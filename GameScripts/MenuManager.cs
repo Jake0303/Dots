@@ -49,7 +49,6 @@ public class MenuManager : NetworkBehaviour {
     //Show text while we connect to the matchmaking service
     public void DisplayLoadingText(string text)
     {
-
         GameObject.Find("transitionText").GetComponent<Text>().text = text;
         StartCoroutine(FadeTextToFullAlpha(2f, GameObject.Find("transitionText").GetComponent<Text>()));
         StartCoroutine(DynamicPeriods(GameObject.Find("transitionText").GetComponent<Text>()));

@@ -25,13 +25,15 @@ public class UIManager : NetworkBehaviour
     {
         base.OnStartClient();
         var names = GameObject.FindGameObjectsWithTag("NameText");
-        int count = 0;
-        foreach (var name in names)
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
-            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > count && name.name.Contains((count + 1).ToString()))
+            foreach (var name in names)
             {
-                name.GetComponent<Text>().text = GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[count];
-                count++;
+                if (name.name.Contains((i + 1).ToString()))
+                {
+                    UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
+                    break;
+                }
             }
         }
     }
