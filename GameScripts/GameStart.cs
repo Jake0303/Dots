@@ -9,7 +9,7 @@ public class GameStart : NetworkBehaviour
 
     [SerializeField]
     public GameObject dots, lineHor, lineVert;
-    [SerializeField]
+
     public SyncListString playerNames = new SyncListString();
     //GridWidth
     public static int gridWidth = 6;
@@ -23,7 +23,7 @@ public class GameStart : NetworkBehaviour
     public float spawnSpeed = 0.1f;
     [SyncVar]
     public bool buildGrid = false;
-    [SyncVar (hook="OnStartChanged")]
+    [SyncVar(hook = "OnStartChanged")]
     public bool startGame = false;
     //Sync the rotation and scale,Network.Spawn only sync position
     [SyncVar(hook = "OnRotChanged")]
@@ -42,9 +42,8 @@ public class GameStart : NetworkBehaviour
     {
         startGame = change;
     }
-    void OnListChanged(SyncListString.Operation operation,int index)
-    {
-    }
+    void OnListChanged(SyncListString.Operation operation, int index)
+    {    }
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -76,16 +75,16 @@ public class GameStart : NetworkBehaviour
     }
     void Update()
     {
-            if (startGame)
-            {
-                //TODO: Commented out for now to test player name syncing
-                StartCoroutine(StartGame());
-                //Build the grid of dots
-                //Hide temporary lines
-                lineHor.GetComponent<Renderer>().enabled = false;
-                lineVert.GetComponent<Renderer>().enabled = false;
-                startGame = false;
-            }
+        if (startGame)
+        {
+            //TODO: Commented out for now to test player name syncing
+            StartCoroutine(StartGame());
+            //Build the grid of dots
+            //Hide temporary lines
+            lineHor.GetComponent<Renderer>().enabled = false;
+            lineVert.GetComponent<Renderer>().enabled = false;
+            startGame = false;
+        }
     }
 
     void AssignTurnsAndColors()
@@ -95,7 +94,7 @@ public class GameStart : NetworkBehaviour
         var rnd = new System.Random();
         var randomNumbers = Enumerable.Range(1, 4).OrderBy(x => rnd.Next()).Take(4).ToArray();
         int i = 0;
-        
+
         foreach (var player in players)
         {
             player.GetComponent<PlayerID>().playerTurnOrder = GameObject.Find("GameManager").GetComponent<PlayerTurn>().assortPlayerTurns[randomNumbers.ElementAt(i)];
@@ -117,7 +116,7 @@ public class GameStart : NetworkBehaviour
                 i++;
         }
     }
-    
+
     //Tell the server that we spawned a line or dot
     [Command]
     void CmdSpawnObj(GameObject obj)
@@ -125,56 +124,59 @@ public class GameStart : NetworkBehaviour
         NetworkServer.Spawn(obj);
     }
     //Build the grid
-    IEnumerator CreateGrid() {
-		for(int x = 0; x < gridWidth; x++) {
-			yield return new WaitForSeconds(spawnSpeed);
-			
-			for(int z = 0; z < gridHeight; z++) {                
-				yield return new WaitForSeconds(spawnSpeed);
-				//Spawn dot
-				dots = Instantiate(dots, Vector3.zero, dots.transform.rotation) as GameObject;
-				dots.transform.localPosition = new Vector3(x*dotDistance, 0, z*dotDistance);
-				dots.transform.localScale = new Vector3(3,3,3);
-				dots.name = "Dot "+x.ToString()+","+z.ToString();
-				dots.GetComponent<DotID>().dotID = dots.name;
-				CmdSpawnObj (dots);
-				//This if statement stops from building extra unnecessary lines
-				if(z < gridHeight-1)
-				{
-					//Spawn line in between dots horizontally
-					lineHor = Instantiate(lineHor, Vector3.zero, lineHor.transform.rotation) as GameObject;
-					lineHor.transform.localPosition = new Vector3(x*dotDistance, 0, dots.transform.localPosition.z+(dotDistance/2.0f));
-					lineHorScale = new Vector3(3,3,dotDistance-dots.transform.localScale.z+0.5f);
-					//lineRot = lines.transform.rotation;
-					lineHor.name = "linesHorizontal "+x.ToString()+","+z.ToString();
-					lineHor.GetComponent<LineID>().lineID = lineHor.name;
-					lineHor.transform.localScale = lineHorScale;
-					//lines.transform.rotation = lineRot;
-					CmdSpawnObj (lineHor);
-				}
-				if(x < gridWidth-1)
-				{
-					//Spawn line in between dots vertically
-					lineVert = Instantiate(lineVert, Vector3.zero, lineVert.transform.rotation) as GameObject;
-					lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x+(dotDistance/2.0f), 0, z*dotDistance);
-					lineVertScale = new Vector3(dotDistance-dots.transform.localScale.z+0.5f,3,3);
-					//lineRot = lines.transform.rotation;
-					lineVert.name = "linesVertical "+x.ToString()+","+z.ToString();
-					lineVert.GetComponent<LineID>().lineID = lineVert.name;
-					lineVert.transform.localScale = lineVertScale;
-					//lines.transform.rotation = lineRot;
-					CmdSpawnObj (lineVert);
-				}
-			}
-		}
-		//Start the timer after the grid has been built
-		//gameObject.GetComponent<PlayerTurn>().enabled = true;
-		gameObject.GetComponent<TurnTimer>().enabled = true;
-		CmdEnableTimer ();
-		buildGrid = false;
-	}
+    IEnumerator CreateGrid()
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            yield return new WaitForSeconds(spawnSpeed);
 
-    
+            for (int z = 0; z < gridHeight; z++)
+            {
+                yield return new WaitForSeconds(spawnSpeed);
+                //Spawn dot
+                dots = Instantiate(dots, Vector3.zero, dots.transform.rotation) as GameObject;
+                dots.transform.localPosition = new Vector3(x * dotDistance, 0, z * dotDistance);
+                dots.transform.localScale = new Vector3(3, 3, 3);
+                dots.name = "Dot " + x.ToString() + "," + z.ToString();
+                dots.GetComponent<DotID>().dotID = dots.name;
+                CmdSpawnObj(dots);
+                //This if statement stops from building extra unnecessary lines
+                if (z < gridHeight - 1)
+                {
+                    //Spawn line in between dots horizontally
+                    lineHor = Instantiate(lineHor, Vector3.zero, lineHor.transform.rotation) as GameObject;
+                    lineHor.transform.localPosition = new Vector3(x * dotDistance, 0, dots.transform.localPosition.z + (dotDistance / 2.0f));
+                    lineHorScale = new Vector3(3, 3, dotDistance - dots.transform.localScale.z + 0.5f);
+                    //lineRot = lines.transform.rotation;
+                    lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
+                    lineHor.GetComponent<LineID>().lineID = lineHor.name;
+                    lineHor.transform.localScale = lineHorScale;
+                    //lines.transform.rotation = lineRot;
+                    CmdSpawnObj(lineHor);
+                }
+                if (x < gridWidth - 1)
+                {
+                    //Spawn line in between dots vertically
+                    lineVert = Instantiate(lineVert, Vector3.zero, lineVert.transform.rotation) as GameObject;
+                    lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (dotDistance / 2.0f), 0, z * dotDistance);
+                    lineVertScale = new Vector3(dotDistance - dots.transform.localScale.z + 0.5f, 3, 3);
+                    //lineRot = lines.transform.rotation;
+                    lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
+                    lineVert.GetComponent<LineID>().lineID = lineVert.name;
+                    lineVert.transform.localScale = lineVertScale;
+                    //lines.transform.rotation = lineRot;
+                    CmdSpawnObj(lineVert);
+                }
+            }
+        }
+        //Start the timer after the grid has been built
+        //gameObject.GetComponent<PlayerTurn>().enabled = true;
+        gameObject.GetComponent<TurnTimer>().enabled = true;
+        CmdEnableTimer();
+        buildGrid = false;
+    }
+
+
     //Tell the server that this player turn is disabled
     [Command]
     void CmdDisableTurn(NetworkIdentity playerID)

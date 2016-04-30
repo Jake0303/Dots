@@ -14,6 +14,7 @@ public class PlayerID : NetworkBehaviour
     [SyncVar(hook = "OnScoreChanged")]
     public int playerScore = 0;
     private NetworkInstanceId playerNetID;
+    private NetworkPlayer networkPlayer;
     private Transform myTransform;
     private GameObject[] names;
     [SyncVar(hook = "OnNameChanged")]

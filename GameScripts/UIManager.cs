@@ -5,23 +5,20 @@ using UnityEngine.Networking;
 
 public class UIManager : NetworkBehaviour
 {
-
-    [SyncVar(hook = "OnCounterChanged")]
-    public int counter;
-    // Update the UI for the player score to 0
+    private GameObject EscapeMenu;
+    // On Start show the Waiting for Player text
     void Start()
     {
-        if(isLocalPlayer)
+        if (isLocalPlayer)
+        {
             StartCoroutine(DynamicPeriods());
+            EscapeMenu = GameObject.Find("EscapeMenu");
+            GameObject.Find("EscapeMenu").SetActive(false);
+            EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+        }
+
     }
-    public override void OnStartServer()
-    {
-        base.OnStartServer();
-    }
-    void OnCounterChanged(int num)
-    {
-        counter = num;
-    }
+    //When the client has connected, populate the names of each panel for previous players
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -66,6 +63,7 @@ public class UIManager : NetworkBehaviour
                 }
             }
         }
+        //After 4 people have connected and set their name, start the game!
         if (NetworkServer.connections.Count > 3 && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
             && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > 3)
         {
@@ -83,7 +81,7 @@ public class UIManager : NetworkBehaviour
                             if (player.GetComponent<PlayerID>().playersPanel == "")
                             {
                                 player.GetComponent<PlayerID>().playersPanel = Apanel.name;
-                                if(isLocalPlayer)
+                                if (isLocalPlayer)
                                 {
                                     GetComponent<PlayerID>().playersPanel = Apanel.name;
                                 }
@@ -115,7 +113,21 @@ public class UIManager : NetworkBehaviour
         //Update the player's UI with their name
         textToUpdate.text = text;
     }
-
+    void Update()
+    {
+        //Escape menu
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!EscapeMenu.activeSelf)
+            {
+                EscapeMenu.SetActive(true);
+                if (NetworkServer.connections.Count <= 2)
+                    EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer());
+            }
+            else
+                EscapeMenu.SetActive(false);
+        }
+    }
     //Dynamic period animation
     IEnumerator DynamicPeriods()
     {
@@ -124,7 +136,7 @@ public class UIManager : NetworkBehaviour
         for (int i = 0; i < names.Length; i++)
         {
             if (isLocalPlayer)
-                StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>(),false));
+                StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>(), false));
             origTexts[i] = names[i].GetComponent<Text>().text;
         }
         string period = ".";
@@ -173,7 +185,7 @@ public class UIManager : NetworkBehaviour
     }
 
     //Fade in text animation
-    public IEnumerator FadeTextToFullAlpha(float t, Text i,bool fadeOut)
+    public IEnumerator FadeTextToFullAlpha(float t, Text i, bool fadeOut)
     {
         i.color = new Color(i.color.r, i.color.g, i.color.b, 0);
         while (i.color.a < 1.0f)
@@ -184,7 +196,7 @@ public class UIManager : NetworkBehaviour
             }
             yield return null;
         }
-        if(fadeOut)
+        if (fadeOut)
             StartCoroutine(FadeOutText(1f, i));
     }
     //Fade out text animation
@@ -202,4 +214,63 @@ public class UIManager : NetworkBehaviour
         }
 
     }
+
+    void DisconnectPlayer()
+    {
+        if (isLocalPlayer)
+        {
+            //Remove player from player list
+            for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+            {
+                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
+                {
+                    CmdRemovePlayerFromList(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    [Command]
+    public void CmdRemovePlayerFromList(int indexToRemove)
+    {
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.RemoveAt(indexToRemove);
+        foreach (var name in names)
+        {
+            if (name.name.Contains((indexToRemove + 1).ToString()))
+            {
+                name.GetComponent<Text>().text = "Waiting for player";
+                break;
+            }
+        }
+        RpcRemovePlayerFromList(indexToRemove);
+    }
+    [ClientRpc]
+    void RpcRemovePlayerFromList(int indexToRemove)
+    {
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        foreach (var name in names)
+        {
+            if (name.name.Contains((indexToRemove + 1).ToString()))
+            {
+                name.GetComponent<Text>().text = "Waiting for player";
+                //Disconnect player 
+                if (isLocalPlayer)
+                {
+                    if (GLOBALS.ISLOCAL)
+                    {
+                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopHost();
+                    }
+                    //TODO TEST MATCHMAKER
+                    else
+                    {
+                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopHost();
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
 }

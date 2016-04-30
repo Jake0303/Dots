@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
-public class NetworkManagerLocal : NetworkManager {
+public class NetworkManagerLocal : NetworkManager
+{
 
     public void StartupHost()
     {
@@ -26,5 +28,21 @@ public class NetworkManagerLocal : NetworkManager {
     void SetPort()
     {
         NetworkManager.singleton.networkPort = 7777;
+    }
+    void OnLevelWasLoaded(int level)
+    {
+        if (level == 0)
+        {}
+
+        else
+        {
+            SetupOtherSceneButtons();
+        }
+    }
+
+
+
+    void SetupOtherSceneButtons()
+    {
     }
 }
