@@ -60,7 +60,8 @@ public class TurnTimer : NetworkBehaviour {
 						foreach (var nextPlayer in players) {
 							//If their turn is last in the player order, reset to the first position
 							if (!nextPlayer.GetComponent<PlayerID> ().isPlayersTurn) {
-								if (player.GetComponent<PlayerID> ().playerTurnOrder == 4) {
+                                if (player.GetComponent<PlayerID>().playerTurnOrder == GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count)
+                                {
 									if (nextPlayer.GetComponent<PlayerID> ().playerTurnOrder == 1) {
 									if (isLocalPlayer)
 										CmdChangePlayerTurn (nextPlayer, player);

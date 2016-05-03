@@ -40,7 +40,11 @@ public class NetworkManagerLocal : NetworkManager
         }
     }
 
-
+    //Reset the game
+    public void ResetLevel()
+    {
+        NetworkManager.singleton.ServerChangeScene("Game");
+    }
 
     void SetupOtherSceneButtons()
     {

@@ -17,7 +17,6 @@ public class GameStart : NetworkBehaviour
     public static int gridHeight = 6;
     //The distance between each dot
     public static float dotDistance = 11.0f;
-    float connDelay = 0.5f;
     //The speed at which each dot in the grid spawns
     [SyncVar]
     public float spawnSpeed = 0.1f;
@@ -26,8 +25,10 @@ public class GameStart : NetworkBehaviour
     [SyncVar(hook = "OnStartChanged")]
     public bool startGame = false;
     //Sync the rotation and scale,Network.Spawn only sync position
-    [SyncVar(hook = "OnRotChanged")]
-    public Quaternion lineRot;
+    [SyncVar(hook = "OnVertRotChanged")]
+    public Quaternion lineVertRot;
+    [SyncVar(hook = "OnHorRotChanged")]
+    public Quaternion lineHorRot;
     [SyncVar(hook = "OnVertScaleChanged")]
     public Vector3 lineVertScale;
     [SyncVar(hook = "OnHorScaleChanged")]
@@ -61,14 +62,19 @@ public class GameStart : NetworkBehaviour
         lineHor.transform.localScale = lineHorScale;
     }
 
-    void OnRotChanged(Quaternion rot)
+    void OnVertRotChanged(Quaternion rot)
     {
-        //lineRot = rot;
-        //lines.transform.localRotation = lineRot;
+        lineVertRot = rot;
+        lineVert.transform.localRotation = lineVertRot;
+    }
+    void OnHorRotChanged(Quaternion rot)
+    {
+        lineHorRot = rot;
+        lineHor.transform.localRotation = lineHorRot;
     }
     IEnumerator StartGame()
     {
-        yield return new WaitForSeconds(connDelay);
+        yield return new WaitForSeconds(GLOBALS.GAMESTARTDELAY);
         AssignTurnsAndColors();
         StartCoroutine(CreateGrid());
 
@@ -92,12 +98,12 @@ public class GameStart : NetworkBehaviour
         //Assign each player a random turn order
         var players = GameObject.FindGameObjectsWithTag("Player");
         var rnd = new System.Random();
-        var randomNumbers = Enumerable.Range(1, 4).OrderBy(x => rnd.Next()).Take(4).ToArray();
+        var randomNumbers = Enumerable.Range(1, GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count).OrderBy(x => rnd.Next()).Take(GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count).ToArray();
         int i = 0;
-
+        GetComponent<PlayerTurn>().AssignTurns();
         foreach (var player in players)
         {
-            player.GetComponent<PlayerID>().playerTurnOrder = GameObject.Find("GameManager").GetComponent<PlayerTurn>().assortPlayerTurns[randomNumbers.ElementAt(i)];
+            player.GetComponent<PlayerID>().playerTurnOrder = GetComponent<PlayerTurn>().assortPlayerTurns[randomNumbers.ElementAt(i)];
             player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
             player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
             //Set the first players turn
@@ -112,7 +118,7 @@ public class GameStart : NetworkBehaviour
                 CmdDisableTurn(player.GetComponent<NetworkIdentity>());
             }
             //Only 4 people per game
-            if (i != NetworkServer.connections.Count)
+            if (i != GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count)
                 i++;
         }
     }
@@ -147,11 +153,11 @@ public class GameStart : NetworkBehaviour
                     lineHor = Instantiate(lineHor, Vector3.zero, lineHor.transform.rotation) as GameObject;
                     lineHor.transform.localPosition = new Vector3(x * dotDistance, 0, dots.transform.localPosition.z + (dotDistance / 2.0f));
                     lineHorScale = new Vector3(3, 3, dotDistance - dots.transform.localScale.z + 0.5f);
-                    //lineRot = lines.transform.rotation;
+                    lineHorRot = Quaternion.Euler(0, 0, 0);
                     lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
                     lineHor.GetComponent<LineID>().lineID = lineHor.name;
                     lineHor.transform.localScale = lineHorScale;
-                    //lines.transform.rotation = lineRot;
+                    lineHor.transform.rotation = lineHorRot;
                     CmdSpawnObj(lineHor);
                 }
                 if (x < gridWidth - 1)
@@ -160,11 +166,11 @@ public class GameStart : NetworkBehaviour
                     lineVert = Instantiate(lineVert, Vector3.zero, lineVert.transform.rotation) as GameObject;
                     lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (dotDistance / 2.0f), 0, z * dotDistance);
                     lineVertScale = new Vector3(dotDistance - dots.transform.localScale.z + 0.5f, 3, 3);
-                    //lineRot = lines.transform.rotation;
+                    lineVertRot = Quaternion.Euler(0,0,0);
                     lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
                     lineVert.GetComponent<LineID>().lineID = lineVert.name;
                     lineVert.transform.localScale = lineVertScale;
-                    //lines.transform.rotation = lineRot;
+                    lineVert.transform.rotation = lineVertRot;
                     CmdSpawnObj(lineVert);
                 }
             }

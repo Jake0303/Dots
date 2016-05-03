@@ -39,7 +39,13 @@ public class GameOver : NetworkBehaviour {
 	}
 	//Reset the game
 	void ResetGame()
-	{
-		GameObject.Find ("NetworkManager").GetComponent<NetworkManagerCustom> ().ResetLevel ();
-	}
+    {
+        if (GLOBALS.ISNETWORKLOCAL)
+        {
+            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().ResetLevel();
+        }
+        {
+            GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().ResetLevel();
+        }
+    }
 }

@@ -64,8 +64,11 @@ public class UIManager : NetworkBehaviour
             }
         }
         //After 4 people have connected and set their name, start the game!
-        if (NetworkServer.connections.Count > 3 && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
-            && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > 3)
+        //if (NetworkServer.connections.Count > 3 && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
+          //  && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > 3)
+            //TESTING FOR 1 player
+            if (NetworkServer.connections.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
+              && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
         {
             //Set the panels for each player
             var panels = GameObject.FindGameObjectsWithTag("Panel");
@@ -121,8 +124,17 @@ public class UIManager : NetworkBehaviour
             if (!EscapeMenu.activeSelf)
             {
                 EscapeMenu.SetActive(true);
-                if (NetworkServer.connections.Count <= 2)
-                    EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer());
+                if (NetworkServer.connections.Count < 2)
+                {
+                    if (GLOBALS.ISNETWORKLOCAL)
+                    {
+                        EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer());
+                    }
+                    else
+                    {
+                        //EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopServer());
+                    }
+                }
             }
             else
                 EscapeMenu.SetActive(false);
@@ -258,14 +270,15 @@ public class UIManager : NetworkBehaviour
                 //Disconnect player 
                 if (isLocalPlayer)
                 {
-                    if (GLOBALS.ISLOCAL)
+                    if (GLOBALS.ISNETWORKLOCAL)
                     {
                         GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopHost();
                     }
                     //TODO TEST MATCHMAKER
                     else
                     {
-                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopHost();
+                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().m_NetworkMatch.DropConnection(GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.networkId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.nodeId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().OnMatchDestroyed);
+                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopHost();   
                     }
                     break;
                 }

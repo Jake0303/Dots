@@ -8,18 +8,15 @@ using System.Collections.Generic;
 
 public class NetworkManagerCustom : NetworkManager {
 	// Matchmaker related
-	List<MatchDesc> m_MatchList = new List<MatchDesc>();
+	public List<MatchDesc> m_MatchList = new List<MatchDesc>();
 	bool m_MatchCreated;
 	bool m_MatchJoined;
-	MatchInfo m_MatchInfo;
-	string m_MatchName = "";
-	NetworkMatch m_NetworkMatch;
+	public MatchInfo m_MatchInfo;
+	string m_MatchName = "Test";
+	public NetworkMatch m_NetworkMatch;
     public List<string> playerNames = new List<string>();
 	// On the server there will be multiple connections, on the client this will only contain one ID
 
-    void OnMatchDestroyed(BasicResponse aResponse)
-    {
-    }
     void Awake()
 	{
 		m_NetworkMatch = gameObject.AddComponent<NetworkMatch>();
@@ -85,5 +82,9 @@ public class NetworkManagerCustom : NetworkManager {
     public override void OnMatchCreate(CreateMatchResponse matchInfo)
     {
         base.OnMatchCreate(matchInfo);
+    }
+    public void OnMatchDestroyed(BasicResponse destroyMatchResponse)
+    {
+        Debug.Log("Cancel success: " + destroyMatchResponse.success);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class PlayerClick : NetworkBehaviour
 {
@@ -28,9 +29,38 @@ public class PlayerClick : NetworkBehaviour
     [SerializeField]
     private Collider[] hitCollidersBottom;
     private GameObject[] scores;
-    [SyncVar (hook="OnPointChanged")]
+    [SyncVar(hook = "OnPointChanged")]
     public bool pointScored = false;
+    //Sync Line position
+    [SyncVar(hook = "SyncPositionValues")]
+    private Vector3 syncPos;
 
+    private float lerpRate;
+    private float normalLerpRate = 5;
+    private float fasterLerpRate = 9;
+
+    private Vector3 lastPos;
+    private float threshold = 0.5f;
+
+    private bool animFinished = false;
+    private bool playingAnim = false;
+    private List<Vector3> syncPosList = new List<Vector3>();
+    private float closeEnough = 0.11f;
+    //Sync Line rotation
+    [SyncVar(hook = "OnLineRotSynced")]
+    private float syncLineRotation;
+
+    private float rotLerpRate = 7;
+
+    private float lastLineRot;
+    private float rotThreshold = 0.1f;
+
+    private List<float> syncLineRotList = new List<float>();
+    private float rotCloseEnough = 0.4f;
+    void Start()
+    {
+        lerpRate = normalLerpRate;
+    }
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -40,6 +70,31 @@ public class PlayerClick : NetworkBehaviour
     {
         pointScored = point;
     }
+    [Command]
+    void CmdNextTurn()
+    {
+        if (!pointScored)
+        {
+            RpcNextTurn();
+        }
+        else
+        {
+            RpcSameTurn();
+            pointScored = false;
+        }
+    }
+    [ClientRpc]
+    void RpcSameTurn()
+    {
+        GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+        GetComponent<PlayerID>().isPlayersTurn = true;
+        pointScored = false;
+    }
+    [ClientRpc]
+    void RpcNextTurn()
+    {
+        GameObject.Find("GameManager").GetComponent<TurnTimer>().nextTurn = true;
+    }
     [ClientRpc]
     void RpcPaint(GameObject obj, Color col)
     {
@@ -47,7 +102,6 @@ public class PlayerClick : NetworkBehaviour
         obj.GetComponent<Renderer>().material = lineMat;
         obj.GetComponent<Renderer>().material.color = col;      // this is the line that actually makes the change in color happen
         obj.GetComponent<LinePlaced>().linePlaced = true;
-        GameObject.Find("GameManager").GetComponent<TurnTimer>().nextTurn = true;
     }
 
     [ClientRpc]
@@ -59,7 +113,6 @@ public class PlayerClick : NetworkBehaviour
         obj.GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
         GetComponent<PlayerID>().isPlayersTurn = true;
-        pointScored = false;
     }
 
     //On click place a line at the mouse location
@@ -80,23 +133,22 @@ public class PlayerClick : NetworkBehaviour
         else
         {
             RpcPaintSameTurn(obj, col);
-            pointScored = false;
         }
     }
 
-    
+
     //Tell the server the current players score
     [Command]
     void CmdTellServerYourScore(int score)
     {
         GetComponent<PlayerID>().playerScore = score;
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count;i++)
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
             if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
             {
                 foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
                 {
-                    if (scores.name.Contains((i+1).ToString()))
+                    if (scores.name.Contains((i + 1).ToString()))
                     {
                         //Update UI with score
                         scores.GetComponent<Text>().text = score.ToString();
@@ -108,7 +160,7 @@ public class PlayerClick : NetworkBehaviour
     }
     //Tell all the clients their current score
     [ClientRpc]
-    void RpcUpdateScore(GameObject player,int score,GameObject scores)
+    void RpcUpdateScore(GameObject player, int score, GameObject scores)
     {
         //scores.GetComponent<Text>().text = score.ToString();
     }
@@ -225,7 +277,7 @@ public class PlayerClick : NetworkBehaviour
 
             }
         }
-        
+
     }
     //Paint the square that was made the players color
     void PaintSquare(Collider[] squareLines)
@@ -268,6 +320,7 @@ public class PlayerClick : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+
         //Must be the players turn to place a line
         if (GetComponent<PlayerID>().isPlayersTurn)
         {
@@ -284,18 +337,134 @@ public class PlayerClick : NetworkBehaviour
                     //Raycast from the mouse to the level, if hit place a line
                     if (Physics.Raycast(ray, out hit))
                     {
-                        if (hit.collider.name.Contains("line") && hit.collider.GetComponent<LinePlaced>().linePlaced == false)
+                        if (hit.collider.name.Contains("line") && hit.collider.GetComponent<LinePlaced>().linePlaced == false && !playingAnim)
                         {
                             objectID = GameObject.Find(hit.collider.name);// this gets the object that is hit
                             objectColor = GetComponent<PlayerColor>().playerColor;
                             objectID.GetComponent<LinePlaced>().linePlaced = true;
                             CheckIfSquareIsMade(hit);
                             CmdPlaceLine(objectID, objectColor);
+                            objectID.transform.position = new Vector3(objectID.transform.position.x, GLOBALS.LINEHEIGHT, objectID.transform.position.z);
+                            animFinished = false;
                         }
                     }
                 }
             }
         }
+        //Lerp the lines location and rotation for a smooth animation
+        if (isLocalPlayer)
+        {
+            if (objectID != null && !animFinished)
+            //if (objectID != null)
+            {
+                playingAnim = true;
+                //if (syncLineRotList.Count > 0)
+                //{
+                    if (objectID.name.Contains("Horizontal"))
+                    {
+                        objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+                        //if (Mathf.Abs(objectID.transform.localEulerAngles.x - syncLineRotList[0]) < rotCloseEnough)
+                        //{
+                          //  syncLineRotList.RemoveAt(0);
+                        //}
+                    }
+                    else
+                    {
+                        objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
+                        //if (Mathf.Abs(objectID.transform.localEulerAngles.z - syncLineRotList[0]) < rotCloseEnough)
+                        //{
+                          //  syncLineRotList.RemoveAt(0);
+                        //}
+                    }
+
+
+                //}
+                if (syncPosList.Count > 0)
+                {
+                    objectID.transform.position = Vector3.Lerp(objectID.transform.position, new Vector3(objectID.transform.position.x, 0, objectID.transform.position.z), Time.deltaTime * lerpRate);
+
+                    if (Vector3.Distance(objectID.transform.position, syncPosList[0]) < closeEnough)
+                    {
+                        syncPosList.RemoveAt(0);
+                    }
+
+                    if (syncPosList.Count > 10)
+                    {
+                        lerpRate = fasterLerpRate;
+                    }
+                    else
+                    {
+                        lerpRate = normalLerpRate;
+                    }
+
+                }
+
+            }
+        }
+        if (objectID != null)
+        {
+            if (objectID.transform.position.y <0.1 && !animFinished)
+            {
+                Debug.Log("true");
+                animFinished = true;
+                playingAnim = false;
+                if (isLocalPlayer)
+                    CmdNextTurn();
+            }
+        }
+    }
+    void FixedUpdate()
+    {
+        TransmitPosition();
+        TransmitRotations();
+    }
+    [Command]
+    void CmdProvidePositionToServer(Vector3 pos)
+    {
+        syncPos = pos;
+    }
+    [ClientCallback]
+    void TransmitPosition()
+    {
+        if (objectID != null)
+        {
+            if (isLocalPlayer && Vector3.Distance(objectID.transform.position, lastPos) > threshold)
+            {
+                CmdProvidePositionToServer(objectID.transform.position);
+                lastPos = objectID.transform.position;
+            }
+        }
+    }
+
+    [Client]
+    void SyncPositionValues(Vector3 latestPos)
+    {
+        syncPos = latestPos;
+        syncPosList.Add(syncPos);
+    }
+
+    [Command]
+    void CmdProvideRotationsToServer(float lineRot)
+    {
+        syncLineRotation = lineRot;
+    }
+
+    [ClientCallback]
+    void TransmitRotations()
+    {
+        if (objectID != null)
+        {
+            if (isLocalPlayer)
+            {
+                CmdProvideRotationsToServer(objectID.transform.localEulerAngles.z);
+            }
+        }
+    }
+    [Client]
+    void OnLineRotSynced(float latestLineRot)
+    {
+        syncLineRotation = latestLineRot;
+        syncLineRotList.Add(syncLineRotation);
     }
 }
 
