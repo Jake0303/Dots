@@ -65,10 +65,10 @@ public class PlayerID : NetworkBehaviour
     void OnPlayerTurn(bool turn)
     {
         isPlayersTurn = turn;
-        if (isPlayersTurn)
+        if (isPlayersTurn && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
             showPopup = true;
-        else
-            this.GetComponent<UIManager>().DisplayPopupText("");
+        else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
+            showPopup = false;
 
     }
     public void OnNameChanged(bool set)
@@ -157,6 +157,7 @@ public class PlayerID : NetworkBehaviour
                     showPopup = false;
                 }
             }
+
         }
         else if (!isPlayersTurn && playersPanel != "")
         {

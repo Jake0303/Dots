@@ -6,17 +6,21 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameOver : NetworkBehaviour {
-	[SyncVar] public bool gameOver = false;
+public class GameOver : NetworkBehaviour
+{
+    [SyncVar]
+    public bool gameOver = false;
 
-	// Update is called once per frame
-	void Update () {
-		if (gameOver) {
-			StartCoroutine (DisplayWinner ());
-		}
-	}
-	//Display the winner of the game
-	IEnumerator DisplayWinner()
+    // Update is called once per frame
+    void Update()
+    {
+        if (gameOver)
+        {
+            StartCoroutine(DisplayWinner());
+        }
+    }
+    //Display the winner of the game
+    IEnumerator DisplayWinner()
 	{
 		var players = GameObject.FindGameObjectsWithTag ("Player");
 		List<int> scores = new List<int>();
@@ -24,21 +28,27 @@ public class GameOver : NetworkBehaviour {
 		foreach (var player in players) {
 			scores.Add (player.GetComponent<PlayerID> ().playerScore);
 		}
+        string winner = "";
 		int highestScore = scores.Max ();
 		//Display the winner
 		foreach (var player in players) {
 			//The winner
 			if (player.GetComponent<PlayerID> ().playerScore == highestScore) {
-				gameOver = false;
+                winner = player.name;
 			}
+            if(winner != "")
+            {
+                player.GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!");
+                break;
+            }
 		}
 		//Wait 5 seconds before resetting
 		yield return new WaitForSeconds(5);
 
 		ResetGame();
 	}
-	//Reset the game
-	void ResetGame()
+    //Reset the game
+    void ResetGame()
     {
         if (GLOBALS.ISNETWORKLOCAL)
         {

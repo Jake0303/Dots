@@ -75,15 +75,12 @@ public class GameStart : NetworkBehaviour
     IEnumerator StartGame()
     {
         yield return new WaitForSeconds(GLOBALS.GAMESTARTDELAY);
-        AssignTurnsAndColors();
         StartCoroutine(CreateGrid());
-
     }
     void Update()
     {
         if (startGame)
         {
-            //TODO: Commented out for now to test player name syncing
             StartCoroutine(StartGame());
             //Build the grid of dots
             //Hide temporary lines
@@ -179,6 +176,7 @@ public class GameStart : NetworkBehaviour
         //gameObject.GetComponent<PlayerTurn>().enabled = true;
         gameObject.GetComponent<TurnTimer>().enabled = true;
         CmdEnableTimer();
+        AssignTurnsAndColors();
         buildGrid = false;
     }
 

@@ -337,7 +337,11 @@ public class PlayerClick : NetworkBehaviour
                     //Raycast from the mouse to the level, if hit place a line
                     if (Physics.Raycast(ray, out hit))
                     {
-                        if (hit.collider.name.Contains("line") && hit.collider.GetComponent<LinePlaced>().linePlaced == false && !playingAnim)
+                        if (hit.collider.name.Contains("line") 
+                            && hit.collider.GetComponent<LinePlaced>().linePlaced == false 
+                            && !playingAnim 
+                            && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
+                            && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                         {
                             objectID = GameObject.Find(hit.collider.name);// this gets the object that is hit
                             objectColor = GetComponent<PlayerColor>().playerColor;
@@ -401,11 +405,11 @@ public class PlayerClick : NetworkBehaviour
 
             }
         }
+        //After the animation has played then changed turns
         if (objectID != null)
         {
-            if (objectID.transform.position.y <0.1 && !animFinished)
+            if (objectID.transform.position.y < 0.1 && !animFinished)
             {
-                Debug.Log("true");
                 animFinished = true;
                 playingAnim = false;
                 if (isLocalPlayer)
