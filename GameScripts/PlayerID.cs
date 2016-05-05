@@ -68,7 +68,7 @@ public class PlayerID : NetworkBehaviour
         if (isPlayersTurn)
             showPopup = true;
         else
-            GameObject.Find("PopupText").GetComponent<Text>().text = "";
+            this.GetComponent<UIManager>().DisplayPopupText("");
 
     }
     public void OnNameChanged(bool set)
@@ -153,8 +153,7 @@ public class PlayerID : NetworkBehaviour
             {
                 if (showPopup)
                 {
-                    GameObject.Find("PopupText").GetComponent<Text>().text = "Its your turn, place a line!";
-                    StartCoroutine(this.GetComponent<UIManager>().FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), true));
+                    this.GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!");
                     showPopup = false;
                 }
             }

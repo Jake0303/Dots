@@ -44,6 +44,7 @@ public class GameOver : NetworkBehaviour {
         {
             GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().ResetLevel();
         }
+        else
         {
             GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().ResetLevel();
         }

@@ -37,7 +37,7 @@ public class PlayerClick : NetworkBehaviour
 
     private float lerpRate;
     private float normalLerpRate = 5;
-    private float fasterLerpRate = 9;
+    private float fasterLerpRate = 6;
 
     private Vector3 lastPos;
     private float threshold = 0.5f;
@@ -45,15 +45,15 @@ public class PlayerClick : NetworkBehaviour
     private bool animFinished = false;
     private bool playingAnim = false;
     private List<Vector3> syncPosList = new List<Vector3>();
-    private float closeEnough = 0.11f;
+    private float closeEnough = 0.01f;
     //Sync Line rotation
     [SyncVar(hook = "OnLineRotSynced")]
     private float syncLineRotation;
 
-    private float rotLerpRate = 7;
+    private float rotLerpRate = 6;
 
     private float lastLineRot;
-    private float rotThreshold = 0.1f;
+    private float rotThreshold = 0.01f;
 
     private List<float> syncLineRotList = new List<float>();
     private float rotCloseEnough = 0.4f;

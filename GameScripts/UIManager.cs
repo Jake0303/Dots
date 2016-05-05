@@ -274,7 +274,6 @@ public class UIManager : NetworkBehaviour
                     {
                         GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopHost();
                     }
-                    //TODO TEST MATCHMAKER
                     else
                     {
                         GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().m_NetworkMatch.DropConnection(GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.networkId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.nodeId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().OnMatchDestroyed);
@@ -284,6 +283,13 @@ public class UIManager : NetworkBehaviour
                 }
             }
         }
+    }
+    //Display popup text for the player
+    public void DisplayPopupText(string text)
+    {
+        GameObject.Find("PopupText").GetComponent<Text>().text = text;
+        if(text != "")
+            StartCoroutine(FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), true));
     }
 
 }
