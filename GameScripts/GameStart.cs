@@ -9,7 +9,7 @@ public class GameStart : NetworkBehaviour
 
     [SerializeField]
     public GameObject dots, lineHor, lineVert;
-
+    public GameObject hoverLineHor, hoverLineVert;
     public SyncListString playerNames = new SyncListString();
     //GridWidth
     public static int gridWidth = 6;

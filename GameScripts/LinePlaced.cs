@@ -14,7 +14,6 @@ public class LinePlaced : NetworkBehaviour {
 	void OnLinePlaced(bool lineChanged)
 	{
 		if (lineChanged && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid) {
-			//GetComponent<Renderer> ().enabled = true;
 			linePlaced = lineChanged;
 		}
 	}

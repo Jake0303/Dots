@@ -31,32 +31,31 @@ public class PlayerClick : NetworkBehaviour
     private GameObject[] scores;
     [SyncVar(hook = "OnPointChanged")]
     public bool pointScored = false;
-    //Sync Line position
-    [SyncVar(hook = "SyncPositionValues")]
-    private Vector3 syncPos;
 
+
+    /*
+     * Sync Line position
+     */
     private float lerpRate;
     private float normalLerpRate = 5;
     private float fasterLerpRate = 6;
 
     private Vector3 lastPos;
-    private float threshold = 0.5f;
+    private float threshold = 0.1f;
 
     private bool animFinished = false;
     private bool playingAnim = false;
-    private List<Vector3> syncPosList = new List<Vector3>();
     private float closeEnough = 0.01f;
-    //Sync Line rotation
-    [SyncVar(hook = "OnLineRotSynced")]
-    private float syncLineRotation;
 
+    /*
+     * Sync Line rotation
+     */
     private float rotLerpRate = 6;
 
     private float lastLineRot;
     private float rotThreshold = 0.01f;
 
-    private List<float> syncLineRotList = new List<float>();
-    private float rotCloseEnough = 0.4f;
+    private float rotCloseEnough = 0.1f;
     void Start()
     {
         lerpRate = normalLerpRate;
@@ -98,6 +97,7 @@ public class PlayerClick : NetworkBehaviour
     [ClientRpc]
     void RpcPaint(GameObject obj, Color col)
     {
+        obj.transform.position = new Vector3(obj.transform.position.x, GLOBALS.LINEHEIGHT, obj.transform.position.z);
         obj.GetComponent<Renderer>().enabled = true;
         obj.GetComponent<Renderer>().material = lineMat;
         obj.GetComponent<Renderer>().material.color = col;      // this is the line that actually makes the change in color happen
@@ -107,6 +107,7 @@ public class PlayerClick : NetworkBehaviour
     [ClientRpc]
     void RpcPaintSameTurn(GameObject obj, Color col)
     {
+        obj.transform.position = new Vector3(obj.transform.position.x, GLOBALS.LINEHEIGHT, obj.transform.position.z);
         obj.GetComponent<Renderer>().enabled = true;
         obj.GetComponent<Renderer>().material = lineMat;
         obj.GetComponent<Renderer>().material.color = col;      // this is the line that actually makes the change in color happen
@@ -120,6 +121,7 @@ public class PlayerClick : NetworkBehaviour
     void CmdPlaceLine(GameObject obj, Color col)
     {
         objNetId = obj.GetComponent<NetworkIdentity>();
+        obj.transform.position = new Vector3(obj.transform.position.x, GLOBALS.LINEHEIGHT, obj.transform.position.z);
         obj.GetComponent<Renderer>().enabled = true;// get the object's network ID
         obj.GetComponent<Renderer>().material = lineMat;
         obj.GetComponent<Renderer>().material.color = col;
@@ -337,9 +339,9 @@ public class PlayerClick : NetworkBehaviour
                     //Raycast from the mouse to the level, if hit place a line
                     if (Physics.Raycast(ray, out hit))
                     {
-                        if (hit.collider.name.Contains("line") 
-                            && hit.collider.GetComponent<LinePlaced>().linePlaced == false 
-                            && !playingAnim 
+                        if (hit.collider.name.Contains("line")
+                            && hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                            && !playingAnim
                             && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                             && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                         {
@@ -347,128 +349,56 @@ public class PlayerClick : NetworkBehaviour
                             objectColor = GetComponent<PlayerColor>().playerColor;
                             objectID.GetComponent<LinePlaced>().linePlaced = true;
                             CheckIfSquareIsMade(hit);
-                            CmdPlaceLine(objectID, objectColor);
                             objectID.transform.position = new Vector3(objectID.transform.position.x, GLOBALS.LINEHEIGHT, objectID.transform.position.z);
+                            CmdPlaceLine(objectID, objectColor);
                             animFinished = false;
+                            StartCoroutine(StartLineAnim());
                         }
                     }
                 }
             }
         }
-        //Lerp the lines location and rotation for a smooth animation
-        if (isLocalPlayer)
+
+    }
+    IEnumerator StartLineAnim()
+    {
+        yield return new WaitForSeconds(0.01f);
+        while (!animFinished)
         {
+            yield return new WaitForSeconds(0.01f);
+            //Lerp the lines location and rotation for a smooth animation
             if (objectID != null && !animFinished)
-            //if (objectID != null)
             {
                 playingAnim = true;
-                //if (syncLineRotList.Count > 0)
-                //{
-                    if (objectID.name.Contains("Horizontal"))
-                    {
-                        objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
-                        //if (Mathf.Abs(objectID.transform.localEulerAngles.x - syncLineRotList[0]) < rotCloseEnough)
-                        //{
-                          //  syncLineRotList.RemoveAt(0);
-                        //}
-                    }
-                    else
-                    {
-                        objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
-                        //if (Mathf.Abs(objectID.transform.localEulerAngles.z - syncLineRotList[0]) < rotCloseEnough)
-                        //{
-                          //  syncLineRotList.RemoveAt(0);
-                        //}
-                    }
-
-
-                //}
-                if (syncPosList.Count > 0)
+                if (objectID.name.Contains("Horizontal"))
+                {
+                    objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+                }
+                else
+                {
+                    objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
+                }
+                if (objectID.transform.position.y > 0)
                 {
                     objectID.transform.position = Vector3.Lerp(objectID.transform.position, new Vector3(objectID.transform.position.x, 0, objectID.transform.position.z), Time.deltaTime * lerpRate);
-
-                    if (Vector3.Distance(objectID.transform.position, syncPosList[0]) < closeEnough)
-                    {
-                        syncPosList.RemoveAt(0);
-                    }
-
-                    if (syncPosList.Count > 10)
-                    {
-                        lerpRate = fasterLerpRate;
-                    }
-                    else
-                    {
-                        lerpRate = normalLerpRate;
-                    }
-
                 }
-
             }
-        }
-        //After the animation has played then changed turns
-        if (objectID != null)
-        {
-            if (objectID.transform.position.y < 0.1 && !animFinished)
+
+            //After the animation has played then changed turns
+            if (objectID != null)
             {
-                animFinished = true;
-                playingAnim = false;
-                if (isLocalPlayer)
-                    CmdNextTurn();
+                if (objectID.transform.position.y < 0.1 && !animFinished)
+                {
+                    animFinished = true;
+                    playingAnim = false;
+                    if (isLocalPlayer)
+                    {
+                        CmdNextTurn();
+                    }
+                    objectID = null;
+                }
             }
         }
-    }
-    void FixedUpdate()
-    {
-        TransmitPosition();
-        TransmitRotations();
-    }
-    [Command]
-    void CmdProvidePositionToServer(Vector3 pos)
-    {
-        syncPos = pos;
-    }
-    [ClientCallback]
-    void TransmitPosition()
-    {
-        if (objectID != null)
-        {
-            if (isLocalPlayer && Vector3.Distance(objectID.transform.position, lastPos) > threshold)
-            {
-                CmdProvidePositionToServer(objectID.transform.position);
-                lastPos = objectID.transform.position;
-            }
-        }
-    }
-
-    [Client]
-    void SyncPositionValues(Vector3 latestPos)
-    {
-        syncPos = latestPos;
-        syncPosList.Add(syncPos);
-    }
-
-    [Command]
-    void CmdProvideRotationsToServer(float lineRot)
-    {
-        syncLineRotation = lineRot;
-    }
-
-    [ClientCallback]
-    void TransmitRotations()
-    {
-        if (objectID != null)
-        {
-            if (isLocalPlayer)
-            {
-                CmdProvideRotationsToServer(objectID.transform.localEulerAngles.z);
-            }
-        }
-    }
-    [Client]
-    void OnLineRotSynced(float latestLineRot)
-    {
-        syncLineRotation = latestLineRot;
-        syncLineRotList.Add(syncLineRotation);
     }
 }
 
