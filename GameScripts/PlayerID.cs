@@ -9,6 +9,7 @@ public class PlayerID : NetworkBehaviour
     public string playerID;
     [SyncVar(hook = "OnPlayerTurn")]
     public bool isPlayersTurn = false;
+    public bool winner = false;
     [SyncVar]
     public int playerTurnOrder = 0;
     [SyncVar(hook = "OnScoreChanged")]
@@ -28,6 +29,7 @@ public class PlayerID : NetworkBehaviour
     private GameObject goPanel;
 
     private bool showPopup;
+    private bool showWinner = true;
     void Start()
     {
         //Setup the enter username panel locally
@@ -52,6 +54,7 @@ public class PlayerID : NetworkBehaviour
 
             tempField = goInputField.GetComponent<InputField>();
             tempField.transform.SetParent(goPanel.transform, false);
+            tempField.ActivateInputField();
 
             tempButton = goButton.GetComponent<Button>();
             tempButton.transform.SetParent(goPanel.transform, false);
@@ -69,6 +72,8 @@ public class PlayerID : NetworkBehaviour
             showPopup = true;
         else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
             showPopup = false;
+        else if (!isPlayersTurn)
+            this.GetComponent<UIManager>().DisplayPopupText("");
 
     }
     public void OnNameChanged(bool set)
@@ -169,6 +174,21 @@ public class PlayerID : NetworkBehaviour
             if (tempButton != null && goPanel.activeSelf)
             {
                 this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel);
+            }
+        }
+        if(GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
+        {
+            if (isLocalPlayer && showWinner)
+            {
+                if (winner)
+                {
+                    GetComponent<UIManager>().DisplayPopupText("You have won the game!");
+                }
+                else
+                {
+                    GetComponent<UIManager>().DisplayPopupText(GameObject.Find("GameManager").GetComponent<GameOver>().winner + " has won the game!");
+                }
+                showWinner = false;
             }
         }
     }

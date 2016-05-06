@@ -11,10 +11,11 @@ public class TurnTimer : NetworkBehaviour
     public bool nextTurn = false;
     private const float MAX_TURN_TIME = 30.0f;
     private bool isGameOver;
+    private GameObject[] timerTexts;
     // Use this for initialization
     void Start()
     {
-
+        timerTexts = GameObject.FindGameObjectsWithTag("TimerText");
     }
     //Algorithm to check the majority points
     int CalculateMajorityPoints()
@@ -32,7 +33,32 @@ public class TurnTimer : NetworkBehaviour
     public void StartTimer()
     {
         timer -= Time.deltaTime;
-        GameObject.Find("TimerText").GetComponent<Text>().text = "Time Left: " + Mathf.Round(timer);
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        //Update timer
+        foreach (var player in players)
+        {
+            if (player.GetComponent<PlayerID>().isPlayersTurn)
+            {
+                for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+                {
+                    if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                    {
+                        foreach (var timerText in timerTexts)
+                        {
+                            if (timerText.name.Contains((i + 1).ToString()))
+                            {
+                                //Update UI with the time left
+                                timerText.GetComponent<Text>().text = "Time left: " + Mathf.Round(timer);
+                            }
+                            else
+                            {
+                                timerText.GetComponent<Text>().text = "";
+                            }
+                        }
+                    }
+                }
+            }
+        }
         //After the timer has ended or a player has placed a line, set the next players turn
         if (timer <= 0 || nextTurn)
         {
@@ -53,9 +79,27 @@ public class TurnTimer : NetworkBehaviour
                 }
             }
             //End game if the majority of possible squares are made
-            var players = GameObject.FindGameObjectsWithTag("Player");
             foreach (var player in players)
             {
+                if (player.GetComponent<PlayerID>().isPlayersTurn)
+                {
+                    for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+                    {
+                        if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                        {
+                            foreach (var timerText in timerTexts)
+                            {
+                                if (timerText.name.Contains((i + 1).ToString()))
+                                {
+                                    //Update UI with the time left
+                                    timerText.GetComponent<Text>().text = "Time left: " + Mathf.Round(timer);
+                                }
+                            }
+                        }
+                    }
+                    //GameObject.Find("TimerText").GetComponent<Text>().text = "Time Left: " + Mathf.Round(timer);
+                }
+
                 if (player.GetComponent<PlayerID>().playerScore >= CalculateMajorityPoints())
                 {
                     isGameOver = true;

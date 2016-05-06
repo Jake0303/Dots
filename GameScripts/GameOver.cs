@@ -10,6 +10,8 @@ public class GameOver : NetworkBehaviour
 {
     [SyncVar]
     public bool gameOver = false;
+    [SyncVar (hook="OnWinnerChanged")]
+    public string winner = "";
 
     // Update is called once per frame
     void Update()
@@ -18,6 +20,10 @@ public class GameOver : NetworkBehaviour
         {
             StartCoroutine(DisplayWinner());
         }
+    }
+    void OnWinnerChanged(string theWinner)
+    {
+        winner = theWinner;
     }
     //Display the winner of the game
     IEnumerator DisplayWinner()
@@ -28,18 +34,18 @@ public class GameOver : NetworkBehaviour
 		foreach (var player in players) {
 			scores.Add (player.GetComponent<PlayerID> ().playerScore);
 		}
-        string winner = "";
 		int highestScore = scores.Max ();
 		//Display the winner
 		foreach (var player in players) {
 			//The winner
 			if (player.GetComponent<PlayerID> ().playerScore == highestScore) {
                 winner = player.name;
+                player.GetComponent<PlayerID>().winner = true;
+                
 			}
-            if(winner != "")
+            else
             {
-                player.GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!");
-                break;
+                player.GetComponent<PlayerID>().winner = false;
             }
 		}
 		//Wait 5 seconds before resetting

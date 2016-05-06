@@ -63,10 +63,6 @@ public class UIManager : NetworkBehaviour
                 }
             }
         }
-        //After 4 people have connected and set their name, start the game!
-        //if (NetworkServer.connections.Count > 3 && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
-          //  && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count > 3)
-            //TESTING FOR 1 player
             if (NetworkServer.connections.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
               && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
         {
