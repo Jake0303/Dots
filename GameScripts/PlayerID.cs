@@ -20,13 +20,14 @@ public class PlayerID : NetworkBehaviour
     private GameObject[] names;
     [SyncVar(hook = "OnNameChanged")]
     public bool nameSet = false;
-    public GameObject prefabButton, userinputField, panel, infoText;
+    public GameObject prefabButton, userinputField, panel, infoText, errorText;
     [SyncVar(hook = "OnPanelNameChanged")]
     public string playersPanel = "";
 
     private Button tempButton;
     private InputField tempField;
     private GameObject goPanel;
+    private Text errorMsg;
 
     private bool showPopup;
     private bool showWinner = true;
@@ -41,8 +42,15 @@ public class PlayerID : NetworkBehaviour
             GameObject goText = (GameObject)Instantiate(infoText);
             goText.transform.localScale = new Vector3(5, 3, 3);
 
+            GameObject errorTxt = (GameObject)Instantiate(errorText);
+            errorTxt.transform.localScale = new Vector3(5, 3, 3);
+
             Text tempText = goText.GetComponent<Text>();
             tempText.transform.SetParent(goPanel.transform, false);
+
+            errorMsg = errorTxt.GetComponent<Text>();
+            errorMsg.transform.SetParent(goPanel.transform, false);
+            errorMsg.transform.position = new Vector3(errorMsg.transform.position.x,40,errorMsg.transform.position.z);
 
             GameObject goInputField = (GameObject)Instantiate(userinputField);
             goInputField.transform.localScale = new Vector3(5, 3, 3);
@@ -54,12 +62,13 @@ public class PlayerID : NetworkBehaviour
 
             tempField = goInputField.GetComponent<InputField>();
             tempField.transform.SetParent(goPanel.transform, false);
+            tempField.characterLimit = 12;
+            tempField.characterValidation = InputField.CharacterValidation.Alphanumeric;
             tempField.ActivateInputField();
 
             tempButton = goButton.GetComponent<Button>();
             tempButton.transform.SetParent(goPanel.transform, false);
-
-            tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel));
+            tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel,errorMsg));
         }
 
         myTransform = transform;
@@ -173,9 +182,10 @@ public class PlayerID : NetworkBehaviour
         {
             if (tempButton != null && goPanel.activeSelf)
             {
-                this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel);
+                this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel,errorMsg);
             }
         }
+        //If gameover display the winner
         if(GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
         {
             if (isLocalPlayer && showWinner)
@@ -190,6 +200,10 @@ public class PlayerID : NetworkBehaviour
                 }
                 showWinner = false;
             }
+        }
+        if(tempField.isFocused)
+        {
+            errorMsg.text = "";
         }
     }
 

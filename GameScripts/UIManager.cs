@@ -97,9 +97,26 @@ public class UIManager : NetworkBehaviour
     }
 
     //Set the playername over the server 
-    public void SetPlayerName(InputField tempField, GameObject panel)
+    public void SetPlayerName(InputField tempField, GameObject panel,Text errorMsg)
     {
-        if (isLocalPlayer)
+        bool aError = false;
+        if (tempField.GetComponent<InputField>().text == "")
+        {
+            errorMsg.text = "Username cannot be blank";
+            aError = true;
+            return;
+        }
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        foreach (var name in names)
+        {
+            if(name.GetComponent<Text>().text == tempField.GetComponent<InputField>().text)
+            {
+                errorMsg.text = "Someone already has that name!";
+                aError = true;
+                return;
+            }
+        }
+        if (isLocalPlayer && !aError)
         {
             CmdAddPlayer(tempField.GetComponent<InputField>().text);
             panel.SetActive(false);
