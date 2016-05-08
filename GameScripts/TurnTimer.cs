@@ -6,10 +6,9 @@ using UnityEngine.Networking;
 public class TurnTimer : NetworkBehaviour
 {
     [SyncVar]
-    public float timer = MAX_TURN_TIME;
+    public float timer = GLOBALS.MAXTURNTIME;
     [SyncVar]
     public bool nextTurn = false;
-    private const float MAX_TURN_TIME = 30.0f;
     private bool isGameOver;
     private GameObject[] timerTexts;
     // Use this for initialization
@@ -185,7 +184,7 @@ public class TurnTimer : NetworkBehaviour
     {
         if (!isGameOver)
         {
-            timer = MAX_TURN_TIME;
+            timer = GLOBALS.MAXTURNTIME;
             nextTurn = false;
             //End game if the majority of possible squares are made
             var players = GameObject.FindGameObjectsWithTag("Player");

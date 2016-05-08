@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class GameStart : NetworkBehaviour
 {
@@ -33,7 +34,7 @@ public class GameStart : NetworkBehaviour
     public Vector3 lineVertScale;
     [SyncVar(hook = "OnHorScaleChanged")]
     public Vector3 lineHorScale;
-
+    private List<GameObject> objectsToDelete = new List<GameObject>();
     public override void OnStartServer()
     {
         base.OnStartServer();
@@ -44,7 +45,7 @@ public class GameStart : NetworkBehaviour
         startGame = change;
     }
     void OnListChanged(SyncListString.Operation operation, int index)
-    {    }
+    { }
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -81,105 +82,125 @@ public class GameStart : NetworkBehaviour
     {
         if (startGame)
         {
+
             StartCoroutine(StartGame());
             //Build the grid of dots
             //Hide temporary lines
             lineHor.GetComponent<Renderer>().enabled = false;
             lineVert.GetComponent<Renderer>().enabled = false;
             startGame = false;
+
         }
     }
 
     void AssignTurnsAndColors()
     {
-        //Assign each player a random turn order
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        var rnd = new System.Random();
-        var randomNumbers = Enumerable.Range(1, GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count).OrderBy(x => rnd.Next()).Take(GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count).ToArray();
-        int i = 0;
-        GetComponent<PlayerTurn>().AssignTurns();
-        foreach (var player in players)
+        if (isServer)
         {
-            player.GetComponent<PlayerID>().playerTurnOrder = GetComponent<PlayerTurn>().assortPlayerTurns[randomNumbers.ElementAt(i)];
-            player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
-            player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
-            //Set the first players turn
-            if (player.GetComponent<PlayerID>().playerTurnOrder == 1)
+            //Assign each player a random turn order
+            var players = GameObject.FindGameObjectsWithTag("Player");
+            var rnd = new System.Random();
+            var randomNumbers = Enumerable.Range(1, GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count).OrderBy(x => rnd.Next()).Take(GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count).ToArray();
+            int i = 0;
+            GetComponent<PlayerTurn>().AssignTurns();
+            foreach (var player in players)
             {
-                player.GetComponent<PlayerID>().isPlayersTurn = true;
-                CmdSetFirstTurn(player.GetComponent<NetworkIdentity>());
+                player.GetComponent<PlayerID>().playerTurnOrder = GetComponent<PlayerTurn>().assortPlayerTurns[randomNumbers.ElementAt(i)];
+                player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
+                player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
+                //Set the first players turn
+                if (player.GetComponent<PlayerID>().playerTurnOrder == 1)
+                {
+                    player.GetComponent<PlayerID>().isPlayersTurn = true;
+                    CmdSetFirstTurn(player.GetComponent<NetworkIdentity>());
+                }
+                else
+                {
+                    player.GetComponent<PlayerID>().isPlayersTurn = false;
+                    CmdDisableTurn(player.GetComponent<NetworkIdentity>());
+                }
+                //Only 4 people per game
+                if (i != GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count)
+                    i++;
             }
-            else
-            {
-                player.GetComponent<PlayerID>().isPlayersTurn = false;
-                CmdDisableTurn(player.GetComponent<NetworkIdentity>());
-            }
-            //Only 4 people per game
-            if (i != GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count)
-                i++;
         }
     }
 
     //Tell the server that we spawned a line or dot
-    [Command]
-    void CmdSpawnObj(GameObject obj)
+    void SpawnObj(GameObject obj)
     {
         NetworkServer.Spawn(obj);
     }
     //Build the grid
     IEnumerator CreateGrid()
     {
-        for (int x = 0; x < gridWidth; x++)
+        if (isServer)
         {
-            yield return new WaitForSeconds(spawnSpeed);
-
-            for (int z = 0; z < gridHeight; z++)
+            for (int x = 0; x < gridWidth; x++)
             {
                 yield return new WaitForSeconds(spawnSpeed);
-                //Spawn dot
-                dots = Instantiate(dots, Vector3.zero, dots.transform.rotation) as GameObject;
-                dots.transform.localPosition = new Vector3(x * dotDistance, 0, z * dotDistance);
-                dots.transform.localScale = new Vector3(3, 3, 3);
-                dots.name = "Dot " + x.ToString() + "," + z.ToString();
-                dots.GetComponent<DotID>().dotID = dots.name;
-                CmdSpawnObj(dots);
-                //This if statement stops from building extra unnecessary lines
-                if (z < gridHeight - 1)
+
+                for (int z = 0; z < gridHeight; z++)
                 {
-                    //Spawn line in between dots horizontally
-                    lineHor = Instantiate(lineHor, Vector3.zero, lineHor.transform.rotation) as GameObject;
-                    lineHor.transform.localPosition = new Vector3(x * dotDistance, 0, dots.transform.localPosition.z + (dotDistance / 2.0f));
-                    lineHorScale = new Vector3(3, 3, dotDistance - dots.transform.localScale.z + 0.5f);
-                    lineHorRot = Quaternion.Euler(0, 0, 0);
-                    lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
-                    lineHor.GetComponent<LineID>().lineID = lineHor.name;
-                    lineHor.transform.localScale = lineHorScale;
-                    lineHor.transform.rotation = lineHorRot;
-                    CmdSpawnObj(lineHor);
-                }
-                if (x < gridWidth - 1)
-                {
-                    //Spawn line in between dots vertically
-                    lineVert = Instantiate(lineVert, Vector3.zero, lineVert.transform.rotation) as GameObject;
-                    lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (dotDistance / 2.0f), 0, z * dotDistance);
-                    lineVertScale = new Vector3(dotDistance - dots.transform.localScale.z + 0.5f, 3, 3);
-                    lineVertRot = Quaternion.Euler(0,0,0);
-                    lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
-                    lineVert.GetComponent<LineID>().lineID = lineVert.name;
-                    lineVert.transform.localScale = lineVertScale;
-                    lineVert.transform.rotation = lineVertRot;
-                    CmdSpawnObj(lineVert);
+                    yield return new WaitForSeconds(spawnSpeed);
+                    //Spawn dot
+
+                    GameObject dot = Instantiate(dots, Vector3.zero, dots.transform.rotation) as GameObject;
+                    dot.transform.localPosition = new Vector3(x * dotDistance, 0, z * dotDistance);
+                    dot.transform.localScale = new Vector3(3, 3, 3);
+                    dot.name = "Dot " + x.ToString() + "," + z.ToString();
+                    dot.GetComponent<DotID>().dotID = dot.name;
+                    objectsToDelete.Add(dot);
+                    SpawnObj(dot);
+
+                    //This if statement stops from building extra unnecessary lines
+                    if (z < gridHeight - 1)
+                    {
+                        //Spawn line in between dots horizontally
+                        GameObject lineHorizontal = Instantiate(lineHor, Vector3.zero, lineHor.transform.rotation) as GameObject;
+                        lineHorizontal.transform.localPosition = new Vector3(x * dotDistance, 0, dot.transform.localPosition.z + (dotDistance / 2.0f));
+                        lineHorScale = new Vector3(3, 3, dotDistance - dot.transform.localScale.z + 0.5f);
+                        lineHorRot = Quaternion.Euler(0, 0, 0);
+                        lineHorizontal.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
+                        lineHorizontal.GetComponent<LineID>().lineID = lineHorizontal.name;
+                        lineHorizontal.transform.localScale = lineHorScale;
+                        lineHorizontal.transform.rotation = lineHorRot;
+                        objectsToDelete.Add(lineHorizontal);
+                        SpawnObj(lineHorizontal);
+                    }
+                    if (x < gridWidth - 1)
+                    {
+                        //Spawn line in between dots vertically
+                        GameObject lineVertical = Instantiate(lineVert, Vector3.zero, lineVert.transform.rotation) as GameObject;
+                        lineVertical.transform.localPosition = new Vector3(dot.transform.localPosition.x + (dotDistance / 2.0f), 0, z * dotDistance);
+                        lineVertScale = new Vector3(dotDistance - dot.transform.localScale.z + 0.5f, 3, 3);
+                        lineVertRot = Quaternion.Euler(0, 0, 0);
+                        lineVertical.name = "linesVertical " + x.ToString() + "," + z.ToString();
+                        lineVertical.GetComponent<LineID>().lineID = lineVertical.name;
+                        lineVertical.transform.localScale = lineVertScale;
+                        lineVertical.transform.rotation = lineVertRot;
+                        objectsToDelete.Add(lineVertical);
+                        SpawnObj(lineVertical);
+                    }
                 }
             }
+            //Start the timer after the grid has been built
+            gameObject.GetComponent<TurnTimer>().enabled = true;
+            RpcEnableTimer();
+            AssignTurnsAndColors();
+            buildGrid = false;
         }
-        //Start the timer after the grid has been built
-        //gameObject.GetComponent<PlayerTurn>().enabled = true;
-        gameObject.GetComponent<TurnTimer>().enabled = true;
-        CmdEnableTimer();
-        AssignTurnsAndColors();
-        buildGrid = false;
     }
 
+    //Destroy the grid
+    public void DestroyGrid()
+    {
+        foreach (var obj in objectsToDelete)
+        {
+            GameObject.Destroy(obj);
+        }
+        objectsToDelete.Clear();
+    }
 
     //Tell the server that this player turn is disabled
     [Command]
@@ -207,16 +228,8 @@ public class GameStart : NetworkBehaviour
     {
         playerID.GetComponent<PlayerID>().isPlayersTurn = true;
     }
-    //Tell the server the timer has started
-    [Command]
-    void CmdEnableTimer()
-    {
-        gameObject.GetComponent<PlayerTurn>().enabled = true;
-        gameObject.GetComponent<TurnTimer>().enabled = true;
-        RpcEnableTimer();
-    }
-    //Replicate to all clients
     [ClientRpc]
+    //Tell the server the timer has started
     void RpcEnableTimer()
     {
         gameObject.GetComponent<PlayerTurn>().enabled = true;

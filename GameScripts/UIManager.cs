@@ -100,6 +100,7 @@ public class UIManager : NetworkBehaviour
     public void SetPlayerName(InputField tempField, GameObject panel,Text errorMsg)
     {
         bool aError = false;
+        //If there is an error display a error message
         if (tempField.GetComponent<InputField>().text == "")
         {
             errorMsg.text = "Username cannot be blank";
@@ -116,6 +117,7 @@ public class UIManager : NetworkBehaviour
                 return;
             }
         }
+        //If there is no error add the player name and update UI
         if (isLocalPlayer && !aError)
         {
             CmdAddPlayer(tempField.GetComponent<InputField>().text);

@@ -30,7 +30,7 @@ public class PlayerID : NetworkBehaviour
     private Text errorMsg;
 
     private bool showPopup;
-    private bool showWinner = true;
+    public bool showWinner = true;
     void Start()
     {
         //Setup the enter username panel locally
@@ -201,9 +201,12 @@ public class PlayerID : NetworkBehaviour
                 showWinner = false;
             }
         }
-        if(tempField.isFocused)
+        if (tempField != null && isLocalPlayer)
         {
-            errorMsg.text = "";
+            if (tempField.isFocused)
+            {
+                errorMsg.text = "";
+            }
         }
     }
 
