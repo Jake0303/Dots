@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 
 public class LineID : NetworkBehaviour {
 	[SyncVar] public string lineID;
+    [SerializeField]
 	 private Transform myTransform;
 	 // Use this for initialization
 	 void Start () 

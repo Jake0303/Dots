@@ -10,11 +10,12 @@ public class UIManager : NetworkBehaviour
     // On Start show the Waiting for Player text
     void Start()
     {
-        EscapeMenu = GameObject.Find("EscapeMenu");
-        GameObject.Find("EscapeMenu").SetActive(false);
-        EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+
         if (isLocalPlayer)
         {
+            EscapeMenu = GameObject.Find("EscapeMenu");
+            GameObject.Find("EscapeMenu").SetActive(false);
+            EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
             StartCoroutine(DynamicPeriods());
         }
 

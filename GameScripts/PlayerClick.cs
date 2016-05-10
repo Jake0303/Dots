@@ -38,14 +38,18 @@ public class PlayerClick : NetworkBehaviour
      */
     private float lerpRate;
     private float normalLerpRate = 5;
-    private float fasterLerpRate = 6;
+    private float fasterLerpRate = 8;
+
+    private List<Vector3> syncPosList = new List<Vector3>();
+    [SyncVar(hook = "SyncPositionValues")]
+    private Vector3 syncPos;
 
     private Vector3 lastPos;
-    private float threshold = 0.1f;
+    private float threshold = 0.5f;
 
     private bool animFinished = false;
     private bool playingAnim = false;
-    private float closeEnough = 0.01f;
+    private float closeEnough = 1f;
 
     /*
      * Sync Line rotation
@@ -56,6 +60,11 @@ public class PlayerClick : NetworkBehaviour
     private float rotThreshold = 0.01f;
 
     private float rotCloseEnough = 0.1f;
+
+    private List<float> syncLineRotList = new List<float>();
+    [SyncVar(hook = "SyncRotationValues")]
+    private float syncLineRotation;
+
     void Start()
     {
         lerpRate = normalLerpRate;
@@ -371,18 +380,45 @@ public class PlayerClick : NetworkBehaviour
             //Lerp the lines location and rotation for a smooth animation
             if (objectID != null && !animFinished)
             {
-                playingAnim = true;
-                if (objectID.name.Contains("Horizontal"))
+                if (syncLineRotList.Count > 0)
                 {
-                    objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+                    playingAnim = true;
+                    if (objectID.name.Contains("Horizontal"))
+                    {
+                        objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+                        if (Mathf.Abs(objectID.transform.localEulerAngles.x - syncLineRotList[0]) < rotCloseEnough)
+                        {
+                            syncLineRotList.RemoveAt(0);
+                        }
+                    }
+                    else
+                    {
+                        objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
+                        if (Mathf.Abs(objectID.transform.localEulerAngles.x - syncLineRotList[0]) < rotCloseEnough)
+                        {
+                            syncLineRotList.RemoveAt(0);
+                        }
+                    }
                 }
-                else
+                if (syncPosList.Count > 0)
                 {
-                    objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
-                }
-                if (objectID.transform.position.y > 0)
-                {
-                    objectID.transform.position = Vector3.Lerp(objectID.transform.position, new Vector3(objectID.transform.position.x, 0, objectID.transform.position.z), Time.deltaTime * lerpRate);
+                    if (objectID.transform.position.y > 0)
+                    {
+                        objectID.transform.position = Vector3.Lerp(objectID.transform.position, new Vector3(objectID.transform.position.x, 0, objectID.transform.position.z), Time.deltaTime * lerpRate);
+                    }
+                    if (Vector3.Distance(objectID.transform.position, syncPosList[0]) < closeEnough)
+                    {
+                        syncPosList.RemoveAt(0);
+                    }
+
+                    if (syncPosList.Count > 10)
+                    {
+                        lerpRate = fasterLerpRate;
+                    }
+                    else
+                    {
+                        lerpRate = normalLerpRate;
+                    }
                 }
             }
 
@@ -401,6 +437,42 @@ public class PlayerClick : NetworkBehaviour
                 }
             }
         }
+    }
+    void FixedUpdate()
+    {
+        TransmitPosition();
+    }
+    [Command]
+    void CmdProvidePositionToServer(Vector3 pos,float zAngle)
+    {
+        syncPos = pos;
+        syncLineRotation = zAngle;
+    }
+    [ClientCallback]
+    void TransmitPosition()
+    {
+        if (objectID != null)
+        {
+            if (isLocalPlayer && Vector3.Distance(objectID.transform.position, lastPos) > threshold)
+            {
+                CmdProvidePositionToServer(objectID.transform.position, objectID.transform.rotation.z);
+                lastPos = objectID.transform.position;
+                lastLineRot = objectID.transform.rotation.z;
+            }
+        }
+    }
+
+    [Client]
+    void SyncPositionValues(Vector3 latestPos)
+    {
+        syncPos = latestPos;
+        syncPosList.Add(syncPos);
+        syncLineRotList.Add(syncLineRotation);
+    }
+    [Client]
+    void SyncRotationValues(float latestRot)
+    {
+        syncLineRotation = latestRot;
     }
 }
 
