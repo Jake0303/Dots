@@ -78,4 +78,8 @@ public class MenuManager : NetworkBehaviour {
         GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
     }
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
