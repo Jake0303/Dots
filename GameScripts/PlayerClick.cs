@@ -353,6 +353,8 @@ public class PlayerClick : NetworkBehaviour
                             CmdPlaceLine(objectID, objectColor);
                             animFinished = false;
                             StartCoroutine(StartLineAnim());
+                            GetComponent<UIManager>().DisplayPopupText("");
+                            GetComponent<UIManager>().StopCoroutine(GetComponent<UIManager>().routine);
                         }
                     }
                 }

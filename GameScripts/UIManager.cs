@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class UIManager : NetworkBehaviour
 {
     private GameObject EscapeMenu;
+    public Coroutine routine;
     // On Start show the Waiting for Player text
     void Start()
     {
@@ -63,8 +64,8 @@ public class UIManager : NetworkBehaviour
                 }
             }
         }
-            if (NetworkServer.connections.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
-              && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
+        if (NetworkServer.connections.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
+          && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
         {
             //Set the panels for each player
             var panels = GameObject.FindGameObjectsWithTag("Panel");
@@ -97,7 +98,7 @@ public class UIManager : NetworkBehaviour
     }
 
     //Set the playername over the server 
-    public void SetPlayerName(InputField tempField, GameObject panel,Text errorMsg)
+    public void SetPlayerName(InputField tempField, GameObject panel, Text errorMsg)
     {
         bool aError = false;
         //If there is an error display a error message
@@ -110,7 +111,7 @@ public class UIManager : NetworkBehaviour
         var names = GameObject.FindGameObjectsWithTag("NameText");
         foreach (var name in names)
         {
-            if(name.GetComponent<Text>().text == tempField.GetComponent<InputField>().text)
+            if (name.GetComponent<Text>().text == tempField.GetComponent<InputField>().text)
             {
                 errorMsg.text = "Someone already has that name!";
                 aError = true;
@@ -224,12 +225,14 @@ public class UIManager : NetworkBehaviour
             yield return null;
         }
         if (fadeOut)
+        {
             StartCoroutine(FadeOutText(1f, i));
+        }
     }
     //Fade out text animation
     IEnumerator FadeOutText(float t, Text i)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         i.color = new Color(i.color.r, i.color.g, i.color.b, i.color.a);
         while (i.color.a > 0f)
         {
@@ -239,7 +242,7 @@ public class UIManager : NetworkBehaviour
             }
             yield return null;
         }
-
+        StopCoroutine(routine);
     }
 
     void DisconnectPlayer()
@@ -292,7 +295,7 @@ public class UIManager : NetworkBehaviour
                     else
                     {
                         GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().m_NetworkMatch.DropConnection(GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.networkId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.nodeId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().OnMatchDestroyed);
-                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopHost();   
+                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopHost();
                     }
                     break;
                 }
@@ -302,9 +305,14 @@ public class UIManager : NetworkBehaviour
     //Display popup text for the player
     public void DisplayPopupText(string text)
     {
-        GameObject.Find("PopupText").GetComponent<Text>().text = text;
-        if(text != "")
-            StartCoroutine(FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), true));
+        if (isLocalPlayer)
+        {
+            GameObject.Find("PopupText").GetComponent<Text>().text = text;
+            if (text != "")
+            {
+                routine = StartCoroutine(FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), true));
+            }
+        }
     }
 
 }

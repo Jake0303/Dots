@@ -33,7 +33,7 @@ public class PlayerID : NetworkBehaviour
     public bool showWinner = true;
     void Start()
     {
-        //Setup the enter username panel locally
+        //Setup the enter username panel UI locally
         if (isLocalPlayer)
         {
             goPanel = (GameObject)Instantiate(panel);
