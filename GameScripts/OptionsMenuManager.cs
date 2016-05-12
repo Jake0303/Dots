@@ -16,6 +16,7 @@ public class OptionsMenuManager : MonoBehaviour {
     {
         GLOBALS.Volume = value;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
+        GameObject.Find("AudioManager").GetComponent<Sound>().fxSound.volume = (GLOBALS.Volume/100);
     }
     //Go back to the main menu
     public void MainMenu()
