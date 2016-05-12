@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
-public class MenuManager : NetworkBehaviour {
+public class MenuManager : MonoBehaviour {
     string transitionText;
+
     void Update()
     {
         //TODO:Press J to join a game on a local network, for testing purposes until utilizing Unity Matchmaker
@@ -64,6 +65,8 @@ public class MenuManager : NetworkBehaviour {
         GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
         GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
+        GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+        GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
     }
     public void TransitionToLobby()
     {
@@ -77,6 +80,13 @@ public class MenuManager : NetworkBehaviour {
         GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
         GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
+        GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+        GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
+    }
+   
+    public void Options()
+    {
+        SceneManager.LoadScene("Options");
     }
     public void ExitGame()
     {

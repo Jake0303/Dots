@@ -7,7 +7,7 @@ public class Sound : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        DontDestroyOnLoad(transform.gameObject);
+        //DontDestroyOnLoad(transform.gameObject);
         // Audio Source responsavel por emitir os sons
         fxSound = GetComponent<AudioSource>();
         //TODO:Enable sound
