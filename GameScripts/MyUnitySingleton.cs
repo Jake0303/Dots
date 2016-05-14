@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+//This class removes duplicate objects if attached
 public class MyUnitySingleton : MonoBehaviour {
 
     private static MyUnitySingleton instance = null;

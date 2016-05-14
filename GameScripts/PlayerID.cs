@@ -50,7 +50,7 @@ public class PlayerID : NetworkBehaviour
 
             errorMsg = errorTxt.GetComponent<Text>();
             errorMsg.transform.SetParent(goPanel.transform, false);
-            errorMsg.transform.position = new Vector3(errorMsg.transform.position.x,40,errorMsg.transform.position.z);
+            errorMsg.transform.position = new Vector3(errorMsg.transform.position.x, 40, errorMsg.transform.position.z);
 
             GameObject goInputField = (GameObject)Instantiate(userinputField);
             goInputField.transform.localScale = new Vector3(5, 3, 3);
@@ -68,7 +68,7 @@ public class PlayerID : NetworkBehaviour
 
             tempButton = goButton.GetComponent<Button>();
             tempButton.transform.SetParent(goPanel.transform, false);
-            tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel,errorMsg));
+            tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg));
         }
 
         myTransform = transform;
@@ -82,7 +82,7 @@ public class PlayerID : NetworkBehaviour
         else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
             showPopup = false;
         else if (!isPlayersTurn)
-            this.GetComponent<UIManager>().DisplayPopupText("");
+            this.GetComponent<UIManager>().DisplayPopupText("", false);
 
     }
     public void OnNameChanged(bool set)
@@ -103,6 +103,7 @@ public class PlayerID : NetworkBehaviour
         names = GameObject.FindGameObjectsWithTag("NameText");
         GetNetIdentity();
         SetIdentity();
+        GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
     }
     void OnScoreChanged(int score)
     {
@@ -167,7 +168,7 @@ public class PlayerID : NetworkBehaviour
             {
                 if (showPopup)
                 {
-                    this.GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!");
+                    this.GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!", true);
                     showPopup = false;
                 }
             }
@@ -182,21 +183,21 @@ public class PlayerID : NetworkBehaviour
         {
             if (tempButton != null && goPanel.activeSelf)
             {
-                this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel,errorMsg);
+                this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg);
             }
         }
         //If gameover display the winner
-        if(GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
+        if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
         {
             if (isLocalPlayer && showWinner)
             {
                 if (winner)
                 {
-                    GetComponent<UIManager>().DisplayPopupText("You have won the game!");
+                    GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
                 }
                 else
                 {
-                    GetComponent<UIManager>().DisplayPopupText(GameObject.Find("GameManager").GetComponent<GameOver>().winner + " has won the game!");
+                    GetComponent<UIManager>().DisplayPopupText(GameObject.Find("GameManager").GetComponent<GameOver>().winner + " has won the game!", true);
                 }
                 showWinner = false;
             }

@@ -82,7 +82,7 @@ public class GameStart : NetworkBehaviour
     {
         if (startGame)
         {
-
+            GetComponent<GameState>().gameState = GameState.State.BuildingGrid;
             StartCoroutine(StartGame());
             //Build the grid of dots
             //Hide temporary lines
@@ -188,6 +188,7 @@ public class GameStart : NetworkBehaviour
             gameObject.GetComponent<TurnTimer>().enabled = true;
             RpcEnableTimer();
             AssignTurnsAndColors();
+            GetComponent<GameState>().gameState = GameState.State.InProgress;
             buildGrid = false;
         }
     }

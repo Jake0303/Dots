@@ -19,6 +19,8 @@ public class GameOver : NetworkBehaviour
         if (gameOver)
         {
             StartCoroutine("DisplayWinner");
+            GetComponent<GameState>().gameState = GameState.State.GameOver;
+
         }
     }
     void OnWinnerChanged(string theWinner)
@@ -62,6 +64,8 @@ public class GameOver : NetworkBehaviour
         GameObject.Find("GameManager").GetComponent<GameStart>().DestroyGrid();
         var players = GameObject.FindGameObjectsWithTag("Player");
         var timerTexts = GameObject.FindGameObjectsWithTag("TimerText");
+        GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid = true;
+        GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
         //Update timer
         foreach (var player in players)
         {
@@ -84,8 +88,6 @@ public class GameOver : NetworkBehaviour
         }
         gameObject.GetComponent<TurnTimer>().timer = GLOBALS.MAXTURNTIME;
         gameObject.GetComponent<TurnTimer>().enabled = false;
-        GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid = true;
-        GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
         StopAllCoroutines();
         gameOver = false;
     }

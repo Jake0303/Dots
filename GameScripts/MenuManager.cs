@@ -5,7 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour {
     string transitionText;
-
+    void Start()
+    {
+        GameObject.Find("GameName").GetComponent<Text>().text = GLOBALS.GameName;
+    }
     void Update()
     {
         //TODO:Press J to join a game on a local network, for testing purposes until utilizing Unity Matchmaker
@@ -70,7 +73,7 @@ public class MenuManager : MonoBehaviour {
     }
     public void TransitionToLobby()
     {
-        GameObject.Find("Dots").GetComponent<Text>().text = "";
+        GameObject.Find("GameName").GetComponent<Text>().text = "";
         GameObject.Find("PlayButton").GetComponent<Button>().enabled = false;
         GameObject.Find("PlayButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("PlayButton").GetComponentInChildren<Text>().color = Color.clear;
@@ -83,11 +86,17 @@ public class MenuManager : MonoBehaviour {
         GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
     }
-   
+   //Go to the options menu
     public void Options()
     {
         SceneManager.LoadScene("Options");
     }
+    //Go to the options menu
+    public void Instructions()
+    {
+        SceneManager.LoadScene("Instructions");
+    }
+    //Quit the game
     public void ExitGame()
     {
         Application.Quit();

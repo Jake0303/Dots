@@ -362,7 +362,7 @@ public class PlayerClick : NetworkBehaviour
                             CmdPlaceLine(objectID, objectColor);
                             animFinished = false;
                             StartCoroutine(StartLineAnim());
-                            GetComponent<UIManager>().DisplayPopupText("");
+                            GetComponent<UIManager>().DisplayPopupText("",false);
                             GetComponent<UIManager>().StopCoroutine(GetComponent<UIManager>().routine);
                         }
                     }
@@ -373,10 +373,8 @@ public class PlayerClick : NetworkBehaviour
     }
     IEnumerator StartLineAnim()
     {
-        yield return new WaitForSeconds(0.01f);
         while (!animFinished)
         {
-            yield return new WaitForSeconds(0.01f);
             //Lerp the lines location and rotation for a smooth animation
             if (objectID != null && !animFinished)
             {
@@ -394,7 +392,7 @@ public class PlayerClick : NetworkBehaviour
                     else
                     {
                         objectID.transform.rotation = Quaternion.Slerp(objectID.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
-                        if (Mathf.Abs(objectID.transform.localEulerAngles.x - syncLineRotList[0]) < rotCloseEnough)
+                        if (Mathf.Abs(objectID.transform.localEulerAngles.z - syncLineRotList[0]) < rotCloseEnough)
                         {
                             syncLineRotList.RemoveAt(0);
                         }
@@ -436,6 +434,7 @@ public class PlayerClick : NetworkBehaviour
                     objectID = null;
                 }
             }
+            yield return new WaitForSeconds(0.01f);
         }
     }
     void FixedUpdate()
@@ -455,9 +454,18 @@ public class PlayerClick : NetworkBehaviour
         {
             if (isLocalPlayer && Vector3.Distance(objectID.transform.position, lastPos) > threshold)
             {
-                CmdProvidePositionToServer(objectID.transform.position, objectID.transform.rotation.z);
+                if (objectID.name.Contains("Horizontal"))
+                {
+                    CmdProvidePositionToServer(objectID.transform.position, objectID.transform.localEulerAngles.x);
+                    lastLineRot = objectID.transform.localEulerAngles.x;
+                }
+                else
+                {
+                    CmdProvidePositionToServer(objectID.transform.position, objectID.transform.localEulerAngles.z);
+                    lastLineRot = objectID.transform.localEulerAngles.z;
+
+                }
                 lastPos = objectID.transform.position;
-                lastLineRot = objectID.transform.rotation.z;
             }
         }
     }

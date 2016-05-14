@@ -18,7 +18,7 @@ public class UIManager : NetworkBehaviour
             EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
             StartCoroutine(DynamicPeriods());
         }
-
+        GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
     }
     //When the client has connected, populate the names of each panel for previous players
     public override void OnStartClient()
@@ -36,6 +36,7 @@ public class UIManager : NetworkBehaviour
                 }
             }
         }
+
     }
     //Add the player to the player list and update their name
     [Command]
@@ -65,6 +66,7 @@ public class UIManager : NetworkBehaviour
                 }
             }
         }
+        //Start game
         if (NetworkServer.connections.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
           && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
         {
@@ -304,14 +306,16 @@ public class UIManager : NetworkBehaviour
         }
     }
     //Display popup text for the player
-    public void DisplayPopupText(string text)
+    public void DisplayPopupText(string text,bool fadeOutMessage)
     {
+        if (routine != null)
+            StopCoroutine(routine);
         if (isLocalPlayer)
         {
             GameObject.Find("PopupText").GetComponent<Text>().text = text;
             if (text != "")
             {
-                routine = StartCoroutine(FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), true));
+                routine = StartCoroutine(FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), fadeOutMessage));
             }
         }
     }
