@@ -34,7 +34,7 @@ public class GameStart : NetworkBehaviour
     public Vector3 lineVertScale;
     [SyncVar(hook = "OnHorScaleChanged")]
     public Vector3 lineHorScale;
-    private List<GameObject> objectsToDelete = new List<GameObject>();
+    public List<GameObject> objectsToDelete = new List<GameObject>();
     public override void OnStartServer()
     {
         base.OnStartServer();
