@@ -10,14 +10,7 @@ public class UIManager : NetworkBehaviour
     // On Start show the Waiting for Player text
     void Start()
     {
-
-        if (isLocalPlayer)
-        {
-            EscapeMenu = GameObject.Find("EscapeMenu");
-            GameObject.Find("EscapeMenu").SetActive(false);
-            EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
-            StartCoroutine(DynamicPeriods());
-        }
+        StartCoroutine(DynamicPeriods());
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
     }
     //When the client has connected, populate the names of each panel for previous players
@@ -138,25 +131,32 @@ public class UIManager : NetworkBehaviour
     void Update()
     {
         //Escape menu
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (isLocalPlayer)
         {
-            if (!EscapeMenu.activeSelf)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                EscapeMenu.SetActive(true);
-                if (NetworkServer.connections.Count < 2)
+                EscapeMenu = GameObject.Find("EscapeMenu");
+                EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+                if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0))
                 {
-                    if (GLOBALS.ISNETWORKLOCAL)
+                    EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                    if (NetworkServer.connections.Count < 2)
                     {
-                        EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer());
-                    }
-                    else
-                    {
-                        //EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopServer());
+                        if (GLOBALS.ISNETWORKLOCAL)
+                        {
+                            EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer());
+                        }
+                        else
+                        {
+                            //EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopServer());
+                        }
                     }
                 }
+                else
+                {
+                    EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
+                }
             }
-            else
-                EscapeMenu.SetActive(false);
         }
     }
     //Dynamic period animation
@@ -306,7 +306,7 @@ public class UIManager : NetworkBehaviour
         }
     }
     //Display popup text for the player
-    public void DisplayPopupText(string text,bool fadeOutMessage)
+    public void DisplayPopupText(string text, bool fadeOutMessage)
     {
         if (routine != null)
             StopCoroutine(routine);

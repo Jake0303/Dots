@@ -329,18 +329,11 @@ public class PlayerClick : NetworkBehaviour
         int i = 0;
         while (i < squareLines.Length)
         {
-            if (!squareLines[i].gameObject.name.Contains("temp"))
-            {
-                line = squareLines[i].gameObject;
-                objID = squareLines[i].GetComponent<NetworkIdentity>().netId;
-                objNetId = squareLines[i].GetComponent<NetworkIdentity>();
-                squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-                CmdPaintSquare(line);
-            }
-            else
-            {
-                squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-            }
+            line = squareLines[i].gameObject;
+            objID = squareLines[i].GetComponent<NetworkIdentity>().netId;
+            objNetId = squareLines[i].GetComponent<NetworkIdentity>();
+            squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            CmdPaintSquare(line);
             i++;
         }
 
@@ -349,16 +342,21 @@ public class PlayerClick : NetworkBehaviour
     [Command]
     void CmdPaintSquare(GameObject line)
     {
-        line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-        pointScored = true;
-        RpcPaintSquare(line);
-
+        if (line != null)
+        {
+            line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            pointScored = true;
+            RpcPaintSquare(line);
+        }
     }
 
     [ClientRpc]
     void RpcPaintSquare(GameObject line)
     {
-        line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+        if (line != null)
+        {
+            line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+        }
     }
 
     // Update is called once per frame
@@ -409,6 +407,7 @@ public class PlayerClick : NetworkBehaviour
         objectColor = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
     }
+    //Spawn a temporary line for an animation
     void SpawnLineForAnim(string line)
     {
         if (GameObject.Find(line).name.Contains("Horizontal"))
