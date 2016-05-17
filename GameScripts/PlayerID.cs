@@ -82,7 +82,7 @@ public class PlayerID : NetworkBehaviour
         else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
             showPopup = false;
         else if (!isPlayersTurn)
-            this.GetComponent<UIManager>().DisplayPopupText("", false);
+            this.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
 
     }
     public void OnNameChanged(bool set)

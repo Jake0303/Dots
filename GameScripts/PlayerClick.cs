@@ -392,8 +392,6 @@ public class PlayerClick : NetworkBehaviour
                             CmdPlayAnim();
                             objectColor = GetComponent<PlayerColor>().playerColor;
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
-                            GetComponent<UIManager>().DisplayPopupText("", false);
-                            GetComponent<UIManager>().StopCoroutine(GetComponent<UIManager>().routine);
                         }
                     }
                 }

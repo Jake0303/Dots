@@ -80,6 +80,8 @@ public class TurnTimer : NetworkBehaviour
             //End game if the majority of possible squares are made
             foreach (var player in players)
             {
+                if (player.GetComponent<UIManager>().routine != null)
+                    //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
                 if (player.GetComponent<PlayerID>().isPlayersTurn)
                 {
                     for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)

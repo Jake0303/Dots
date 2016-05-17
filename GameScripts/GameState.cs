@@ -37,18 +37,32 @@ public class GameState : NetworkBehaviour
                 }
                 break;
             case State.InProgress:
-                    DisplayServerMessage("", false);
-                    foreach (var player in players)
+                foreach (var player in players)
+                {
+                    if (player.GetComponent<UIManager>().routine != null)
+                        //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
+                    if (!player.GetComponent<PlayerID>().isPlayersTurn)
                     {
-                        player.GetComponent<UIManager>().DisplayPopupText("", false);
+                        player.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
                     }
+                }
                 break;
             case State.BuildingGrid:
                 DisplayServerMessage("Building grid", false);
-                    foreach (var player in players)
+                foreach (var player in players)
+                {
+                    player.GetComponent<UIManager>().DisplayPopupText("Building grid", false);
+                }
+                break;
+            case State.GameOver:
+                foreach (var player in players)
+                {
+                    if (player.GetComponent<UIManager>().routine != null)
                     {
-                        player.GetComponent<UIManager>().DisplayPopupText("Building grid", false);
+                        //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
+
                     }
+                }
                 break;
         }
     }
@@ -64,19 +78,12 @@ public class GameState : NetworkBehaviour
                     player.GetComponent<UIManager>().DisplayPopupText("Waiting for players", false);
                 }
                 break;
-            case State.InProgress:
-                    DisplayServerMessage("", false);
-                    foreach (var player in players)
-                    {
-                        player.GetComponent<UIManager>().DisplayPopupText("", false);
-                    }
-                break;
             case State.BuildingGrid:
-                 DisplayServerMessage("Building grid", false);
-                    foreach (var player in players)
-                    {
-                        player.GetComponent<UIManager>().DisplayPopupText("Building grid", false);
-                    }
+                DisplayServerMessage("Building grid", false);
+                foreach (var player in players)
+                {
+                    player.GetComponent<UIManager>().DisplayPopupText("Building grid", false);
+                }
                 break;
         }
     }
@@ -99,7 +106,7 @@ public class GameState : NetworkBehaviour
         }
         else
         {
-            StopCoroutine(routine);
+            //StopCoroutine(routine);
         }
     }
     //Fade out text animation
@@ -115,7 +122,7 @@ public class GameState : NetworkBehaviour
             }
             yield return null;
         }
-        StopCoroutine(routine);
+        //StopCoroutine(routine);
     }
     //Display popup text for the player
     public void DisplayServerMessage(string text, bool fadeOutMessage)

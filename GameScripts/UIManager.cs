@@ -229,8 +229,9 @@ public class UIManager : NetworkBehaviour
         }
         if (fadeOut)
         {
-            StartCoroutine(FadeOutText(1f, i));
+            //StartCoroutine(FadeOutText(1f, i));
         }
+
     }
     //Fade out text animation
     IEnumerator FadeOutText(float t, Text i)
@@ -245,7 +246,6 @@ public class UIManager : NetworkBehaviour
             }
             yield return null;
         }
-        StopCoroutine(routine);
     }
 
     void DisconnectPlayer()
@@ -308,13 +308,11 @@ public class UIManager : NetworkBehaviour
     //Display popup text for the player
     public void DisplayPopupText(string text, bool fadeOutMessage)
     {
-        if (routine != null)
-            StopCoroutine(routine);
         if (isLocalPlayer)
         {
-            GameObject.Find("PopupText").GetComponent<Text>().text = text;
             if (text != "")
             {
+                GameObject.Find("PopupText").GetComponent<Text>().text = text;
                 routine = StartCoroutine(FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), fadeOutMessage));
             }
         }
