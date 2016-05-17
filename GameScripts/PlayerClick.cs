@@ -33,6 +33,9 @@ public class PlayerClick : NetworkBehaviour
     public bool pointScored = false;
     [SerializeField]
     public GameObject lineHorizontal, lineVertical;
+
+    [SerializeField]
+    public GameObject line;
     /*
      * Sync Line position
      */
@@ -77,7 +80,7 @@ public class PlayerClick : NetworkBehaviour
         playingAnim = anim;
         if (playingAnim)
         {
-            StartCoroutine(StartLineAnim(objectID,hit));
+            StartCoroutine(StartLineAnim(objectID, hit));
         }
     }
     void OnAnimFinished(bool anim)
@@ -206,7 +209,6 @@ public class PlayerClick : NetworkBehaviour
     {
         //Check if square is made
         //Check horizontal line hitboxes
-        Debug.Log(hit.collider.GetComponent<Renderer>().enabled);
         if (hit.collider.name.Contains("linesHorizontal") && hit.collider.GetComponent<Renderer>().enabled)
         {
 
@@ -267,7 +269,6 @@ public class PlayerClick : NetworkBehaviour
         //Same as above just for vertical lines
         if (hit.collider.name.Contains("linesVertical") && hit.collider.GetComponent<Renderer>().enabled)
         {
-            Debug.Log("Contains vertical");
 
             Vector3 centerOfSquareBottom = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z + (GameStart.dotDistance / 2));
             hitCollidersBottom = Physics.OverlapSphere(centerOfSquareBottom, squareRadius);
@@ -328,23 +329,28 @@ public class PlayerClick : NetworkBehaviour
         int i = 0;
         while (i < squareLines.Length)
         {
-            GameObject line = squareLines[i].gameObject;
-            objID = squareLines[i].GetComponent<NetworkIdentity>().netId;
-            objNetId = squareLines[i].GetComponent<NetworkIdentity>();
-            squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-            CmdPaintSquare(line);
+            if (!squareLines[i].gameObject.name.Contains("temp"))
+            {
+                line = squareLines[i].gameObject;
+                objID = squareLines[i].GetComponent<NetworkIdentity>().netId;
+                objNetId = squareLines[i].GetComponent<NetworkIdentity>();
+                squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+                CmdPaintSquare(line);
+            }
+            else
+            {
+                squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            }
             i++;
         }
 
     }
-    //TODO: Line 344 is causing an error and not coloring the square if a client has gotten square
+    //Paint the square the player made
     [Command]
     void CmdPaintSquare(GameObject line)
     {
-        //line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+        line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
         pointScored = true;
-        //objNetId.RemoveClientAuthority(objNetId.connectionToClient);
-        //objNetId.AssignClientAuthority(connectionToClient);
         RpcPaintSquare(line);
 
     }
@@ -352,10 +358,7 @@ public class PlayerClick : NetworkBehaviour
     [ClientRpc]
     void RpcPaintSquare(GameObject line)
     {
-
-        //line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-        //objNetId.RemoveClientAuthority(objNetId.connectionToClient);
-        //objNetId.AssignClientAuthority(connectionToClient);
+        line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
     }
 
     // Update is called once per frame
@@ -398,7 +401,6 @@ public class PlayerClick : NetworkBehaviour
                 }
             }
         }
-
     }
     [Command]
     void CmdSelectObject(string name)
@@ -407,7 +409,7 @@ public class PlayerClick : NetworkBehaviour
         objectColor = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
     }
-    IEnumerator StartLineAnim(string line, RaycastHit hit)
+    void SpawnLineForAnim(string line)
     {
         if (GameObject.Find(line).name.Contains("Horizontal"))
         {
@@ -431,36 +433,47 @@ public class PlayerClick : NetworkBehaviour
             lineVertical.GetComponent<Renderer>().material.color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineVertical);
         }
+    }
+    //Play the line animation of falling from the sky and rotating
+    IEnumerator StartLineAnim(string line, RaycastHit hit)
+    {
+        SpawnLineForAnim(line);
         while (!animFinished)
         {
             //Lerp the lines location and rotation for a smooth animation
-            if (line != null && !animFinished)
+            if (GameObject.Find(objectID).name.Contains("Horizontal") && lineHorizontal != null)
             {
-                if (GameObject.Find(objectID).name.Contains("Horizontal"))
+                lineHorizontal.transform.rotation = Quaternion.Slerp(lineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+                if (lineHorizontal.transform.position.y > 0)
                 {
-                    lineHorizontal.transform.rotation = Quaternion.Slerp(lineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
-                    if (lineHorizontal.transform.position.y > 0)
-                    {
-                        lineHorizontal.transform.position = Vector3.Lerp(lineHorizontal.transform.position, new Vector3(lineHorizontal.transform.position.x, 0, lineHorizontal.transform.position.z), Time.deltaTime * lerpRate);
-                    }
+                    lineHorizontal.transform.position = Vector3.Lerp(lineHorizontal.transform.position, new Vector3(lineHorizontal.transform.position.x, 0, lineHorizontal.transform.position.z), Time.deltaTime * lerpRate);
+                }
 
-                    if (lineHorizontal.transform.position.y < 0.1 && !animFinished)
+                if (lineHorizontal.transform.position.y < 0.01 && !animFinished)
+                {
+                    if (isLocalPlayer && GetComponent<PlayerID>().isPlayersTurn)
                     {
-                        if (isLocalPlayer && GetComponent<PlayerID>().isPlayersTurn)
+                        if (lineHorizontal != null)
+                            lineHorizontal.GetComponent<Renderer>().enabled = false;
+                        if (lineVertical != null)
+                            lineVertical.GetComponent<Renderer>().enabled = false;
 
-                        {
-                            GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
-                            CmdPlaceLine(objectID, objectColor);
-                            CheckIfSquareIsMade(hit);
-                            CmdStopAnim();
-                            CmdNextTurn();
-                            //lineHorizontal.GetComponent<Renderer>().enabled = false;
-                            //Destroy(lineVertical);
-                            animFinished = true;
-                        }
+                        GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
+                        GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
+                        GameObject.Find(objectID).GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+                        GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
+                        CmdPlaceLine(objectID, objectColor);
+                        CheckIfSquareIsMade(hit);
+                        CmdStopAnim();
+                        CmdNextTurn();
+                        animFinished = true;
                     }
                 }
-                else
+            }
+            //Lerp vertical line 
+            else
+            {
+                if (lineVertical != null)
                 {
                     lineVertical.transform.rotation = Quaternion.Slerp(lineVertical.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
                     if (lineVertical.transform.position.y > 0)
@@ -468,23 +481,35 @@ public class PlayerClick : NetworkBehaviour
                         lineVertical.transform.position = Vector3.Lerp(lineVertical.transform.position, new Vector3(lineVertical.transform.position.x, 0, lineVertical.transform.position.z), Time.deltaTime * lerpRate);
                     }
 
-                    if (lineVertical.transform.position.y < 0.1 && !animFinished)
+                    if (lineVertical.transform.position.y < 0.01 && !animFinished)
                     {
                         if (isLocalPlayer && GetComponent<PlayerID>().isPlayersTurn)
                         {
+                            if (lineHorizontal != null)
+                                lineHorizontal.GetComponent<Renderer>().enabled = false;
+                            if (lineVertical != null)
+                                lineVertical.GetComponent<Renderer>().enabled = false;
                             GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
+                            GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
+                            GameObject.Find(objectID).GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+                            GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                             CmdPlaceLine(objectID, objectColor);
                             CheckIfSquareIsMade(hit);
                             CmdStopAnim();
                             CmdNextTurn();
-                            //lineVertical.GetComponent<Renderer>().enabled = false;
-                            //Destroy(lineVertical);
                             animFinished = true;
                         }
-                        //objectID = null;
+
                     }
 
                 }
+            }
+            if (animFinished)
+            {
+                if (lineHorizontal != null)
+                    lineHorizontal.GetComponent<Renderer>().enabled = false;
+                if (lineVertical != null)
+                    lineVertical.GetComponent<Renderer>().enabled = false;
             }
             yield return new WaitForSeconds(0.01f);
         }

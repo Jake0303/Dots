@@ -17,7 +17,7 @@ public class LineHover : MonoBehaviour
     void OnMouseOver()
     {
         if (GetComponent<Renderer>().enabled != true && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid
-            && !GetComponent<LinePlaced>().linePlaced)
+            && !GetComponent<LinePlaced>().linePlaced && !name.Contains("temp"))
         {
             GetComponent<Renderer>().enabled = true;
             GetComponent<Renderer>().material = hoverMat;
