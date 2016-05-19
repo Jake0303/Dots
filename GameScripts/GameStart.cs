@@ -9,7 +9,7 @@ public class GameStart : NetworkBehaviour
 {
 
     [SerializeField]
-    public GameObject dots, lineHor, lineVert;
+    public GameObject dots, lineHor, lineVert,centerSquare;
     public GameObject hoverLineHor, hoverLineVert;
     public SyncListString playerNames = new SyncListString();
     //GridWidth
@@ -34,6 +34,8 @@ public class GameStart : NetworkBehaviour
     public Vector3 lineVertScale;
     [SyncVar(hook = "OnHorScaleChanged")]
     public Vector3 lineHorScale;
+    [SyncVar(hook = "OnSquareScaleChanged")]
+    public Vector3 squareScale;
     public List<GameObject> objectsToDelete = new List<GameObject>();
     public override void OnStartServer()
     {
@@ -44,14 +46,15 @@ public class GameStart : NetworkBehaviour
     {
         startGame = change;
     }
-    void OnListChanged(SyncListString.Operation operation, int index)
-    { }
     public override void OnStartClient()
     {
         base.OnStartClient();
-        playerNames.Callback = OnListChanged;
     }
-
+    void OnSquareScaleChanged(Vector3 scale)
+    {
+        squareScale = scale;
+        centerSquare.transform.localScale = squareScale;
+    }
     void OnVertScaleChanged(Vector3 scale)
     {
         lineVertScale = scale;
@@ -88,6 +91,7 @@ public class GameStart : NetworkBehaviour
             //Hide temporary lines
             lineHor.GetComponent<Renderer>().enabled = false;
             lineVert.GetComponent<Renderer>().enabled = false;
+            //centerSquare.GetComponent<Renderer>().enabled = false;
             startGame = false;
 
         }
@@ -152,7 +156,7 @@ public class GameStart : NetworkBehaviour
                     dot.GetComponent<DotID>().dotID = dot.name;
                     objectsToDelete.Add(dot);
                     SpawnObj(dot);
-
+                   
                     //This if statement stops from building extra unnecessary lines
                     if (z < gridHeight - 1)
                     {
@@ -181,6 +185,19 @@ public class GameStart : NetworkBehaviour
                         lineVertical.transform.rotation = lineVertRot;
                         objectsToDelete.Add(lineVertical);
                         SpawnObj(lineVertical);
+                    }
+                    //Spawn the center of a square
+                    if (x < gridWidth - 1 && z < gridHeight - 1)
+                    {
+                        GameObject centerSq = Instantiate(centerSquare, Vector3.zero, centerSquare.transform.rotation) as GameObject;
+                        centerSq.transform.localPosition = new Vector3(dot.transform.localPosition.x + (dotDistance / 2.0f), 0, dot.transform.localPosition.z + (dotDistance / 2.0f));
+                        squareScale = new Vector3(1f, 1f, 1f);
+                        centerSq.transform.localScale = squareScale;
+                        centerSq.name = "Centre " + x.ToString() + "," + z.ToString();
+                        centerSq.GetComponent<SquareID>().squareID = centerSq.name;
+                        objectsToDelete.Add(centerSq);
+                        SpawnObj(centerSq);
+                        centerSq.GetComponent<Renderer>().enabled = false;
                     }
                 }
             }

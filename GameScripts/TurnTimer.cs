@@ -19,8 +19,7 @@ public class TurnTimer : NetworkBehaviour
     //Algorithm to check the majority points
     int CalculateMajorityPoints()
     {
-        //return ((GameStart.gridWidth - 1) * (GameStart.gridHeight - 1) / 2)+1;
-        return 1;
+        return GLOBALS.POINTSTOWIN;
     }
 
     // Update is called once per frame

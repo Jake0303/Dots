@@ -47,7 +47,17 @@ public class NetworkManagerCustom : NetworkManager {
 	{
 		NetworkManager.singleton.ServerChangeScene ("Game");
 	}
-
+    void OnLevelWasLoaded(int level)
+    {
+        if (level == 0)
+        {
+            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TransitionToLobby()));
+            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => HostOrJoinGame()));
+            GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Options()));
+            GameObject.Find("ExitButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().ExitGame()));
+            GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Instructions()));
+        }
+    }
   
 	public void HostOrJoinGame()
 	{

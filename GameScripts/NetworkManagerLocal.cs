@@ -29,11 +29,18 @@ public class NetworkManagerLocal : NetworkManager
     {
         NetworkManager.singleton.networkPort = 7777;
     }
+    //When the main menu is loaded add the listeners for each button
     void OnLevelWasLoaded(int level)
     {
-        if (level == 0)
-        {}
 
+        if (level == 0)
+        {
+            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TransitionToLobby()));
+            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => StartupHost()));
+            GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() =>  GameObject.Find("MenuManager").GetComponent<MenuManager>().Options()));
+            GameObject.Find("ExitButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().ExitGame()));
+            GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Instructions()));
+        }
         else
         {
             SetupOtherSceneButtons();

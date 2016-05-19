@@ -293,7 +293,9 @@ public class UIManager : NetworkBehaviour
                 {
                     if (GLOBALS.ISNETWORKLOCAL)
                     {
+                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopClient();
                         GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopHost();
+                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer();
                     }
                     else
                     {

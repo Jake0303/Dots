@@ -15,9 +15,11 @@ public class PlayerClick : NetworkBehaviour
     [SyncVar]
     private float squareRadius = GameStart.dotDistance / 2;
     [SyncVar]
-    private Color objectColor;
+    private Color objectColor, squareColor;
     [SyncVar(hook = "OnObjectClicked")]
     public string objectID;
+    [SyncVar(hook = "OnSquareClicked")]
+    public string squareID;
     private NetworkIdentity objNetId;
     private RaycastHit hit;
     [SerializeField]
@@ -32,10 +34,10 @@ public class PlayerClick : NetworkBehaviour
     [SyncVar(hook = "OnPointChanged")]
     public bool pointScored = false;
     [SerializeField]
-    public GameObject lineHorizontal, lineVertical;
+    public GameObject lineHorizontal, lineVertical, centerSquare;
 
     [SerializeField]
-    public GameObject line;
+    public GameObject line, square;
     /*
      * Sync Line position
      */
@@ -46,8 +48,12 @@ public class PlayerClick : NetworkBehaviour
     private float threshold = 0.5f;
     [SyncVar(hook = "OnAnimFinished")]
     public bool animFinished = false;
+    [SyncVar(hook = "OnSquareAnimFinished")]
+    public bool squareAnimFinished = false;
     [SyncVar(hook = "OnPlayAnim")]
     public bool playingAnim = false;
+    [SyncVar(hook = "OnPlaySquareAnim")]
+    public bool playingSquareAnim = false;
     private float closeEnough = 1f;
 
     /*
@@ -83,14 +89,30 @@ public class PlayerClick : NetworkBehaviour
             StartCoroutine(StartLineAnim(objectID, hit));
         }
     }
+    void OnPlaySquareAnim(bool anim)
+    {
+        playingSquareAnim = anim;
+        if (playingSquareAnim)
+        {
+            StartCoroutine(StartSquareAnim(squareID));
+        }
+    }
     void OnAnimFinished(bool anim)
     {
         animFinished = anim;
+    }
+    void OnSquareAnimFinished(bool anim)
+    {
+        squareAnimFinished = anim;
     }
     void OnObjectClicked(string obj)
     {
         objectID = obj;
 
+    }
+    void OnSquareClicked(string sq)
+    {
+        squareID = sq;
     }
     [Command]
     void CmdNextTurn()
@@ -142,6 +164,18 @@ public class PlayerClick : NetworkBehaviour
         animFinished = false;
         playingAnim = true;
         //RpcPlayAnim();
+    }
+    [Command]
+    void CmdPlaySquareAnim()
+    {
+        squareAnimFinished = false;
+        playingSquareAnim = true;
+    }
+    [Command]
+    void CmdStopSquareAnim()
+    {
+        squareAnimFinished = true;
+        playingSquareAnim = false;
     }
     [Command]
     void CmdStopAnim()
@@ -327,35 +361,63 @@ public class PlayerClick : NetworkBehaviour
         NetworkInstanceId objID;
         objID = new NetworkInstanceId();
         int i = 0;
+        GameObject[] squares = GameObject.FindGameObjectsWithTag("CenterSquare");
+        GameObject squareFound = null;
         while (i < squareLines.Length)
         {
             line = squareLines[i].gameObject;
             objID = squareLines[i].GetComponent<NetworkIdentity>().netId;
             objNetId = squareLines[i].GetComponent<NetworkIdentity>();
             squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-            CmdPaintSquare(line);
+            if (squareFound == null)
+            {
+                foreach (var aSquare in squares)
+                {
+                    if (!aSquare.name.Contains("temp") && aSquare.name.Contains(line.name))
+                    {
+                        square = aSquare;
+                        squareFound = square;
+                        squareID = squareFound.name;
+                        CmdPlaySquareAnim();
+                        squareColor = GetComponent<PlayerColor>().playerColor;
+                        break;
+                    }
+                }
+            }
+            CmdPaintSquare(line, square);
             i++;
         }
-
     }
     //Paint the square the player made
     [Command]
-    void CmdPaintSquare(GameObject line)
+    void CmdPaintSquare(GameObject line, GameObject aSquare)
     {
         if (line != null)
         {
             line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            if (aSquare != null)
+            {
+                square = aSquare;
+                squareID = aSquare.name;
+                squareColor = GetComponent<PlayerColor>().playerColor;
+            }
             pointScored = true;
-            RpcPaintSquare(line);
+            RpcPaintSquare(line, aSquare);
         }
     }
 
     [ClientRpc]
-    void RpcPaintSquare(GameObject line)
+    void RpcPaintSquare(GameObject line, GameObject aSquare)
     {
         if (line != null)
         {
             line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            if (aSquare != null)
+            {
+                square = aSquare;
+                squareID = aSquare.name;
+                squareColor = GetComponent<PlayerColor>().playerColor;
+            }
         }
     }
 
@@ -462,8 +524,11 @@ public class PlayerClick : NetworkBehaviour
                         CmdPlaceLine(objectID, objectColor);
                         CheckIfSquareIsMade(hit);
                         CmdStopAnim();
-                        CmdNextTurn();
                         animFinished = true;
+                        if (!pointScored)
+                        {
+                            CmdNextTurn();
+                        }
                     }
                 }
             }
@@ -493,8 +558,11 @@ public class PlayerClick : NetworkBehaviour
                             CmdPlaceLine(objectID, objectColor);
                             CheckIfSquareIsMade(hit);
                             CmdStopAnim();
-                            CmdNextTurn();
                             animFinished = true;
+                            if (!pointScored)
+                            {
+                                CmdNextTurn();
+                            }
                         }
 
                     }
@@ -509,6 +577,54 @@ public class PlayerClick : NetworkBehaviour
                     lineVertical.GetComponent<Renderer>().enabled = false;
             }
             yield return new WaitForSeconds(0.01f);
+        }
+    }
+    //Spawn a temporary square for an animation
+    void SpawnSquareForAnim(string square)
+    {
+        centerSquare = Instantiate(GameObject.Find(square), Vector3.zero, GameObject.Find(square).transform.rotation) as GameObject;
+        centerSquare.name = "tempSquare";
+        centerSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z);
+        centerSquare.transform.rotation = GameObject.Find(square).transform.rotation;
+        centerSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
+        centerSquare.GetComponent<Renderer>().material = lineMat;
+        centerSquare.GetComponent<Renderer>().material.color = squareColor;
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(centerSquare);
+
+
+    }
+    //Play the line animation of falling from the sky and rotating
+    IEnumerator StartSquareAnim(string square)
+    {
+        SpawnSquareForAnim(square);
+        while (!squareAnimFinished)
+        {
+            //Lerp the square location and rotation for a smooth animation
+            centerSquare.transform.rotation = Quaternion.Slerp(centerSquare.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+            if (centerSquare.transform.position.y > 0)
+            {
+                centerSquare.transform.position = Vector3.Lerp(centerSquare.transform.position, new Vector3(centerSquare.transform.position.x, 0, centerSquare.transform.position.z), Time.deltaTime * lerpRate);
+            }
+            if (centerSquare.transform.position.y < 0.01 && !squareAnimFinished)
+            {
+                if (isLocalPlayer && GetComponent<PlayerID>().isPlayersTurn)
+                {
+                    if (centerSquare != null)
+                        centerSquare.GetComponent<Renderer>().enabled = false;
+                    GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
+                    GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
+                    GameObject.Find(squareID).GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+                    CmdStopSquareAnim();
+                    CmdNextTurn();
+                    squareAnimFinished = true;
+                }
+            }
+            if (squareAnimFinished)
+            {
+                if (centerSquare != null)
+                    centerSquare.GetComponent<Renderer>().enabled = false;
+            }
+            yield return new WaitForSeconds(0.1f);
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-//This class removes duplicate objects if attached
-public class MyUnitySingleton : MonoBehaviour {
 
-    private static MyUnitySingleton instance = null;
-    public static MyUnitySingleton Instance
+public class MenuSingleton : MonoBehaviour {
+
+    private static MenuSingleton instance = null;
+    public static MenuSingleton Instance
     {
         get { return instance; }
     }
