@@ -378,46 +378,61 @@ public class PlayerClick : NetworkBehaviour
                         square = aSquare;
                         squareFound = square;
                         squareID = squareFound.name;
-                        CmdPlaySquareAnim();
                         squareColor = GetComponent<PlayerColor>().playerColor;
+                        CmdPaintSquare(square);
+                        CmdPlaySquareAnim();
                         break;
                     }
                 }
             }
-            CmdPaintSquare(line, square);
+            CmdPaintLines(line);
             i++;
+        }
+    }
+    [Command]
+    void CmdPaintSquare(GameObject aSquare)
+    {
+        if (aSquare != null)
+        {
+            square = aSquare;
+            squareID = aSquare.name;
+            squareColor = GetComponent<PlayerColor>().playerColor;
+            square.GetComponent<Renderer>().material = lineMat;
+            square.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            pointScored = true;
+            RpcPaintLine(square);
+        }
+    }
+    [ClientRpc]
+    void RpcPaintSquare(GameObject aSquare)
+    {
+        if (aSquare != null)
+        {
+            square = aSquare;
+            squareID = aSquare.name;
+            squareColor = GetComponent<PlayerColor>().playerColor;
+            square.GetComponent<Renderer>().material = lineMat;
+            square.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            pointScored = true;
         }
     }
     //Paint the square the player made
     [Command]
-    void CmdPaintSquare(GameObject line, GameObject aSquare)
+    void CmdPaintLines(GameObject line)
     {
         if (line != null)
         {
             line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-            if (aSquare != null)
-            {
-                square = aSquare;
-                squareID = aSquare.name;
-                squareColor = GetComponent<PlayerColor>().playerColor;
-            }
-            pointScored = true;
-            RpcPaintSquare(line, aSquare);
+            RpcPaintLine(line);
         }
     }
 
     [ClientRpc]
-    void RpcPaintSquare(GameObject line, GameObject aSquare)
+    void RpcPaintLine(GameObject line)
     {
         if (line != null)
         {
             line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-            if (aSquare != null)
-            {
-                square = aSquare;
-                squareID = aSquare.name;
-                squareColor = GetComponent<PlayerColor>().playerColor;
-            }
         }
     }
 
@@ -452,8 +467,6 @@ public class PlayerClick : NetworkBehaviour
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                             CmdSelectObject(hit.collider.name);
                             CmdPlayAnim();
-                            objectColor = GetComponent<PlayerColor>().playerColor;
-                            GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                         }
                     }
                 }
@@ -593,11 +606,11 @@ public class PlayerClick : NetworkBehaviour
 
 
     }
-    //Play the line animation of falling from the sky and rotating
+    //Play the square animation of falling from the sky and rotating
     IEnumerator StartSquareAnim(string square)
     {
         SpawnSquareForAnim(square);
-        while (!squareAnimFinished)
+        while (!squareAnimFinished && centerSquare != null)
         {
             //Lerp the square location and rotation for a smooth animation
             centerSquare.transform.rotation = Quaternion.Slerp(centerSquare.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
@@ -624,7 +637,7 @@ public class PlayerClick : NetworkBehaviour
                 if (centerSquare != null)
                     centerSquare.GetComponent<Renderer>().enabled = false;
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.01f);
         }
     }
 }

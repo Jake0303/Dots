@@ -191,7 +191,7 @@ public class GameStart : NetworkBehaviour
                     {
                         GameObject centerSq = Instantiate(centerSquare, Vector3.zero, centerSquare.transform.rotation) as GameObject;
                         centerSq.transform.localPosition = new Vector3(dot.transform.localPosition.x + (dotDistance / 2.0f), 0, dot.transform.localPosition.z + (dotDistance / 2.0f));
-                        squareScale = new Vector3(1f, 1f, 1f);
+                        squareScale = new Vector3(8.5f, 2f, 8.5f);
                         centerSq.transform.localScale = squareScale;
                         centerSq.name = "Centre " + x.ToString() + "," + z.ToString();
                         centerSq.GetComponent<SquareID>().squareID = centerSq.name;

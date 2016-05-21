@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 public class NetworkManagerLocal : NetworkManager
 {
-
+    public void SetupMigrationManager(UnityEngine.Networking.NetworkMigrationManager man)
+    {
+        base.SetupMigrationManager(man);
+    }
     public void StartupHost()
     {
         SetPort();
