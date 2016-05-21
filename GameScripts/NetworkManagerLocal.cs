@@ -59,4 +59,17 @@ public class NetworkManagerLocal : NetworkManager
     void SetupOtherSceneButtons()
     {
     }
+    public override void OnServerDisconnect(NetworkConnection conn)
+    {
+        base.OnServerDisconnect(conn);
+        GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
+        GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+    }
+    void DisconnectPlayer()
+    {
+        GetComponent<NetworkManagerLocal>().StopServer();
+        GetComponent<NetworkManagerLocal>().StopHost();
+
+    }
 }
