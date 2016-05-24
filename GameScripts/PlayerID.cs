@@ -95,6 +95,21 @@ public class PlayerID : NetworkBehaviour
     void OnPanelNameChanged(string name)
     {
         playersPanel = name;
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+        {
+            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
+            {
+                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                {
+                    if (scores.name.Contains((i + 1).ToString()))
+                    {
+                        //Update UI with score
+                        scores.GetComponent<Text>().text = playerScore.ToString();
+                        return;
+                    }
+                }
+            }
+        }
     }
     public override void OnStartClient()
     {

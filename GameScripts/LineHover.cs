@@ -8,7 +8,7 @@ public class LineHover : MonoBehaviour
     //Hide the temporary line if the mouse is not on it
     void OnMouseExit()
     {
-        if (GetComponent<Renderer>().material.color == new Color(1.0f, 0f, 0f, 0.5f))
+        if (GetComponent<Renderer>().material.GetColor("_TintColor") == new Color(1.0f, 0f, 0f, 0.5f))
             GetComponent<Renderer>().enabled = false;
 
 
@@ -21,7 +21,7 @@ public class LineHover : MonoBehaviour
         {
             GetComponent<Renderer>().enabled = true;
             GetComponent<Renderer>().material = hoverMat;
-            GetComponent<Renderer>().material.color = new Color(1.0f, 0f, 0f, 0.5f);
+            GetComponent<Renderer>().material.SetColor("_TintColor", new Color(1.0f, 0f, 0f, 0.5f));
         }
     }
 }

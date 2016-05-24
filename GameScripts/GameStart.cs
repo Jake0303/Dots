@@ -12,12 +12,6 @@ public class GameStart : NetworkBehaviour
     public GameObject dots, lineHor, lineVert,centerSquare;
     public GameObject hoverLineHor, hoverLineVert;
     public SyncListString playerNames = new SyncListString();
-    //GridWidth
-    public static int gridWidth = 6;
-    //GridHeight
-    public static int gridHeight = 6;
-    //The distance between each dot
-    public static float dotDistance = 11.0f;
     //The speed at which each dot in the grid spawns
     [SyncVar]
     public float spawnSpeed = 0.1f;
@@ -140,17 +134,17 @@ public class GameStart : NetworkBehaviour
     {
         if (isServer)
         {
-            for (int x = 0; x < gridWidth; x++)
+            for (int x = 0; x < GLOBALS.GRIDWIDTH; x++)
             {
                 yield return new WaitForSeconds(spawnSpeed);
 
-                for (int z = 0; z < gridHeight; z++)
+                for (int z = 0; z < GLOBALS.GRIDHEIGHT; z++)
                 {
                     yield return new WaitForSeconds(spawnSpeed);
                     //Spawn dot
 
-                    GameObject dot = Instantiate(dots, Vector3.zero, dots.transform.rotation) as GameObject;
-                    dot.transform.localPosition = new Vector3(x * dotDistance, 0, z * dotDistance);
+                    GameObject dot = Instantiate(dots, Vector3.zero, Quaternion.Euler(90,0,0)) as GameObject;
+                    dot.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, z * GLOBALS.DOTDISTANCE);
                     dot.transform.localScale = new Vector3(3, 3, 3);
                     dot.name = "Dot " + x.ToString() + "," + z.ToString();
                     dot.GetComponent<DotID>().dotID = dot.name;
@@ -158,12 +152,12 @@ public class GameStart : NetworkBehaviour
                     SpawnObj(dot);
                    
                     //This if statement stops from building extra unnecessary lines
-                    if (z < gridHeight - 1)
+                    if (z < GLOBALS.GRIDHEIGHT - 1)
                     {
                         //Spawn line in between dots horizontally
                         GameObject lineHorizontal = Instantiate(lineHor, Vector3.zero, lineHor.transform.rotation) as GameObject;
-                        lineHorizontal.transform.localPosition = new Vector3(x * dotDistance, 0, dot.transform.localPosition.z + (dotDistance / 2.0f));
-                        lineHorScale = new Vector3(3, 3, dotDistance - dot.transform.localScale.z + 0.5f);
+                        lineHorizontal.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, dot.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
+                        lineHorScale = new Vector3(3, 3, GLOBALS.DOTDISTANCE - dot.transform.localScale.z + 0.5f);
                         lineHorRot = Quaternion.Euler(0, 0, 0);
                         lineHorizontal.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
                         lineHorizontal.GetComponent<LineID>().lineID = lineHorizontal.name;
@@ -172,12 +166,12 @@ public class GameStart : NetworkBehaviour
                         objectsToDelete.Add(lineHorizontal);
                         SpawnObj(lineHorizontal);
                     }
-                    if (x < gridWidth - 1)
+                    if (x < GLOBALS.GRIDWIDTH - 1)
                     {
                         //Spawn line in between dots vertically
                         GameObject lineVertical = Instantiate(lineVert, Vector3.zero, lineVert.transform.rotation) as GameObject;
-                        lineVertical.transform.localPosition = new Vector3(dot.transform.localPosition.x + (dotDistance / 2.0f), 0, z * dotDistance);
-                        lineVertScale = new Vector3(dotDistance - dot.transform.localScale.z + 0.5f, 3, 3);
+                        lineVertical.transform.localPosition = new Vector3(dot.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, z * GLOBALS.DOTDISTANCE);
+                        lineVertScale = new Vector3(GLOBALS.DOTDISTANCE - dot.transform.localScale.z + 0.5f, 3, 3);
                         lineVertRot = Quaternion.Euler(0, 0, 0);
                         lineVertical.name = "linesVertical " + x.ToString() + "," + z.ToString();
                         lineVertical.GetComponent<LineID>().lineID = lineVertical.name;
@@ -187,10 +181,10 @@ public class GameStart : NetworkBehaviour
                         SpawnObj(lineVertical);
                     }
                     //Spawn the center of a square
-                    if (x < gridWidth - 1 && z < gridHeight - 1)
+                    if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
                     {
                         GameObject centerSq = Instantiate(centerSquare, Vector3.zero, centerSquare.transform.rotation) as GameObject;
-                        centerSq.transform.localPosition = new Vector3(dot.transform.localPosition.x + (dotDistance / 2.0f), 0, dot.transform.localPosition.z + (dotDistance / 2.0f));
+                        centerSq.transform.localPosition = new Vector3(dot.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dot.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
                         squareScale = new Vector3(8.5f, 2f, 8.5f);
                         centerSq.transform.localScale = squareScale;
                         centerSq.name = "Centre " + x.ToString() + "," + z.ToString();

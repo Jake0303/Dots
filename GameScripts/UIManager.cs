@@ -39,6 +39,7 @@ public class UIManager : NetworkBehaviour
         GetComponent<PlayerID>().nameSet = true;
         name = val;
         GetComponent<PlayerID>().playerID = val;
+        GetComponent<PlayerID>().playerScore = 0;
         GetComponent<PlayerID>().CmdTellServerMyName(val);
         RpcAddPlayer(val);
     }
@@ -77,6 +78,7 @@ public class UIManager : NetworkBehaviour
                             if (player.GetComponent<PlayerID>().playersPanel == "")
                             {
                                 player.GetComponent<PlayerID>().playersPanel = Apanel.name;
+                                player.GetComponent<PlayerID>().playerScore = 0;
                                 if (isLocalPlayer)
                                 {
                                     GetComponent<PlayerID>().playersPanel = Apanel.name;

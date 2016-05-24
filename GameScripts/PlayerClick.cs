@@ -13,7 +13,7 @@ public class PlayerClick : NetworkBehaviour
     public Material lineMat;
     //Radius of the square hitbox
     [SyncVar]
-    private float squareRadius = GameStart.dotDistance / 2;
+    private float squareRadius = GLOBALS.DOTDISTANCE / 2;
     [SyncVar]
     private Color objectColor, squareColor;
     [SyncVar(hook = "OnObjectClicked")]
@@ -80,6 +80,11 @@ public class PlayerClick : NetworkBehaviour
     void OnPointChanged(bool point)
     {
         pointScored = point;
+        if(pointScored && isLocalPlayer && GetComponent<PlayerID>().playerScore != GLOBALS.POINTSTOWIN)
+        {
+            this.GetComponent<UIManager>().DisplayPopupText("Good job! Please place another line.", true);
+
+        }
     }
     void OnPlayAnim(bool anim)
     {
@@ -144,7 +149,8 @@ public class PlayerClick : NetworkBehaviour
     {
         GameObject.Find(obj).GetComponent<Renderer>().enabled = true;
         GameObject.Find(obj).GetComponent<Renderer>().material = lineMat;
-        GameObject.Find(obj).GetComponent<Renderer>().material.color = col;      // this is the line that actually makes the change in color happen
+        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", col);
+        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", col);  
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
     }
 
@@ -153,7 +159,8 @@ public class PlayerClick : NetworkBehaviour
     {
         GameObject.Find(obj).GetComponent<Renderer>().enabled = true;
         GameObject.Find(obj).GetComponent<Renderer>().material = lineMat;
-        GameObject.Find(obj).GetComponent<Renderer>().material.color = col;      // this is the line that actually makes the change in color happen
+        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", col);
+        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", col);  
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
         GetComponent<PlayerID>().isPlayersTurn = true;
@@ -196,7 +203,8 @@ public class PlayerClick : NetworkBehaviour
         objNetId = GameObject.Find(obj).GetComponent<NetworkIdentity>();
         GameObject.Find(obj).GetComponent<Renderer>().enabled = true;// get the object's network ID
         GameObject.Find(obj).GetComponent<Renderer>().material = lineMat;
-        GameObject.Find(obj).GetComponent<Renderer>().material.color = col;
+        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", col);
+        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", col); 
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         if (objNetId.clientAuthorityOwner == null)
             objNetId.AssignClientAuthority(connectionToClient);
@@ -246,7 +254,7 @@ public class PlayerClick : NetworkBehaviour
         if (hit.collider.name.Contains("linesHorizontal") && hit.collider.GetComponent<Renderer>().enabled)
         {
 
-            Vector3 centerOfSquareRight = new Vector3(hit.collider.transform.localPosition.x + (GameStart.dotDistance / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
+            Vector3 centerOfSquareRight = new Vector3(hit.collider.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
             hitCollidersRight = Physics.OverlapSphere(centerOfSquareRight, squareRadius);
             int i = 0;
             int howManyLines = 0;
@@ -275,7 +283,7 @@ public class PlayerClick : NetworkBehaviour
             }
 
             //Left hitbox
-            Vector3 centerOfSquareLeft = new Vector3(hit.collider.transform.localPosition.x - (GameStart.dotDistance / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
+            Vector3 centerOfSquareLeft = new Vector3(hit.collider.transform.localPosition.x - (GLOBALS.DOTDISTANCE / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
             hitCollidersLeft = Physics.OverlapSphere(centerOfSquareLeft, squareRadius);
             int j = 0;
             howManyLines = 0;
@@ -304,7 +312,7 @@ public class PlayerClick : NetworkBehaviour
         if (hit.collider.name.Contains("linesVertical") && hit.collider.GetComponent<Renderer>().enabled)
         {
 
-            Vector3 centerOfSquareBottom = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z + (GameStart.dotDistance / 2));
+            Vector3 centerOfSquareBottom = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2));
             hitCollidersBottom = Physics.OverlapSphere(centerOfSquareBottom, squareRadius);
             int i = 0;
             int howManyLines = 0;
@@ -328,7 +336,7 @@ public class PlayerClick : NetworkBehaviour
                 pointScored = true;
 
             }
-            Vector3 centerOfSquareTop = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z - (GameStart.dotDistance / 2));
+            Vector3 centerOfSquareTop = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z - (GLOBALS.DOTDISTANCE / 2));
             hitCollidersTop = Physics.OverlapSphere(centerOfSquareTop, squareRadius);
             int j = 0;
             howManyLines = 0;
@@ -366,9 +374,8 @@ public class PlayerClick : NetworkBehaviour
         while (i < squareLines.Length)
         {
             line = squareLines[i].gameObject;
-            objID = squareLines[i].GetComponent<NetworkIdentity>().netId;
-            objNetId = squareLines[i].GetComponent<NetworkIdentity>();
-            squareLines[i].GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            squareLines[i].GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+            squareLines[i].GetComponent<Renderer>().material.SetColor("_MKTexColor", GetComponent<PlayerColor>().playerColor);
             if (squareFound == null)
             {
                 foreach (var aSquare in squares)
@@ -385,10 +392,16 @@ public class PlayerClick : NetworkBehaviour
                     }
                 }
             }
-            CmdPaintLines(line);
+            if (!line.name.Contains("temp") && !line.name.Contains("Centre"))
+                CmdPaintLines(line);
+            else if (line.name.Contains("temp"))
+            {
+                line.GetComponent<Renderer>().enabled = false;
+            }
             i++;
         }
     }
+    //Tell the server to paint the square
     [Command]
     void CmdPaintSquare(GameObject aSquare)
     {
@@ -398,11 +411,13 @@ public class PlayerClick : NetworkBehaviour
             squareID = aSquare.name;
             squareColor = GetComponent<PlayerColor>().playerColor;
             square.GetComponent<Renderer>().material = lineMat;
-            square.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            square.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+            square.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             pointScored = true;
-            RpcPaintLine(square);
+            RpcPaintSquare(square);
         }
     }
+    //Tell the clients to paint the square
     [ClientRpc]
     void RpcPaintSquare(GameObject aSquare)
     {
@@ -412,7 +427,8 @@ public class PlayerClick : NetworkBehaviour
             squareID = aSquare.name;
             squareColor = GetComponent<PlayerColor>().playerColor;
             square.GetComponent<Renderer>().material = lineMat;
-            square.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+            square.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+            square.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             pointScored = true;
         }
     }
@@ -420,20 +436,18 @@ public class PlayerClick : NetworkBehaviour
     [Command]
     void CmdPaintLines(GameObject line)
     {
-        if (line != null)
-        {
-            line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-            RpcPaintLine(line);
-        }
+
+        line.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+        line.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        RpcPaintLine(line);
     }
 
     [ClientRpc]
     void RpcPaintLine(GameObject line)
     {
-        if (line != null)
-        {
-            line.GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
-        }
+
+        line.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+        line.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
     }
 
     // Update is called once per frame
@@ -491,7 +505,8 @@ public class PlayerClick : NetworkBehaviour
             lineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
             lineHorizontal.GetComponent<Renderer>().enabled = true;// get the object's network ID
             lineHorizontal.GetComponent<Renderer>().material = lineMat;
-            lineHorizontal.GetComponent<Renderer>().material.color = objectColor;
+            lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
+            lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineHorizontal);
         }
         else
@@ -502,7 +517,8 @@ public class PlayerClick : NetworkBehaviour
             lineVertical.transform.rotation = GameObject.Find(line).transform.rotation;
             lineVertical.GetComponent<Renderer>().enabled = true;// get the object's network ID
             lineVertical.GetComponent<Renderer>().material = lineMat;
-            lineVertical.GetComponent<Renderer>().material.color = objectColor;
+            lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
+            lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineVertical);
         }
     }
@@ -532,7 +548,8 @@ public class PlayerClick : NetworkBehaviour
 
                         GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                         GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
-                        GameObject.Find(objectID).GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+                       GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+                        GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                         CmdPlaceLine(objectID, objectColor);
                         CheckIfSquareIsMade(hit);
@@ -543,6 +560,14 @@ public class PlayerClick : NetworkBehaviour
                             CmdNextTurn();
                         }
                     }
+                }
+                if (animFinished)
+                {
+                    if (lineHorizontal != null)
+                        lineHorizontal.GetComponent<Renderer>().enabled = false;
+                    if (lineVertical != null)
+                        lineVertical.GetComponent<Renderer>().enabled = false;
+                    GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
                 }
             }
             //Lerp vertical line 
@@ -566,7 +591,8 @@ public class PlayerClick : NetworkBehaviour
                                 lineVertical.GetComponent<Renderer>().enabled = false;
                             GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                             GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
-                            GameObject.Find(objectID).GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+                            GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+                            GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                             CmdPlaceLine(objectID, objectColor);
                             CheckIfSquareIsMade(hit);
@@ -588,8 +614,17 @@ public class PlayerClick : NetworkBehaviour
                     lineHorizontal.GetComponent<Renderer>().enabled = false;
                 if (lineVertical != null)
                     lineVertical.GetComponent<Renderer>().enabled = false;
+                GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
             }
             yield return new WaitForSeconds(0.01f);
+        }
+        if (animFinished)
+        {
+            if (lineHorizontal != null)
+                lineHorizontal.GetComponent<Renderer>().enabled = false;
+            if (lineVertical != null)
+                lineVertical.GetComponent<Renderer>().enabled = false;
+            GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
         }
     }
     //Spawn a temporary square for an animation
@@ -601,7 +636,8 @@ public class PlayerClick : NetworkBehaviour
         centerSquare.transform.rotation = GameObject.Find(square).transform.rotation;
         centerSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
         centerSquare.GetComponent<Renderer>().material = lineMat;
-        centerSquare.GetComponent<Renderer>().material.color = squareColor;
+        centerSquare.GetComponent<Renderer>().material.SetColor("_MKGlowColor", squareColor);
+        centerSquare.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(centerSquare);
 
 
@@ -626,7 +662,8 @@ public class PlayerClick : NetworkBehaviour
                         centerSquare.GetComponent<Renderer>().enabled = false;
                     GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                     GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
-                    GameObject.Find(squareID).GetComponent<Renderer>().material.color = GetComponent<PlayerColor>().playerColor;
+                    GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+                    GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                     CmdStopSquareAnim();
                     CmdNextTurn();
                     squareAnimFinished = true;
