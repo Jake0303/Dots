@@ -262,6 +262,7 @@ public class PlayerClick : NetworkBehaviour
             while (i < hitCollidersRight.Length)
             {
                 if (hitCollidersRight[i].name.Contains("lines") && hitCollidersRight[i].GetComponent<Renderer>().enabled
+                    && hitCollidersRight[i].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersRight[i].name.Contains("square"))
                 {
                     hitCollidersRight[i].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
@@ -290,6 +291,7 @@ public class PlayerClick : NetworkBehaviour
             while (j < hitCollidersLeft.Length)
             {
                 if (hitCollidersLeft[j].name.Contains("lines") && hitCollidersLeft[j].GetComponent<Renderer>().enabled
+                    && hitCollidersLeft[j].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersLeft[j].name.Contains("square"))
                 {
                     hitCollidersLeft[j].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
@@ -319,6 +321,7 @@ public class PlayerClick : NetworkBehaviour
             while (i < hitCollidersBottom.Length)
             {
                 if (hitCollidersBottom[i].name.Contains("lines") && hitCollidersBottom[i].GetComponent<Renderer>().enabled
+                    && hitCollidersBottom[i].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersBottom[i].name.Contains("square"))
                 {
                     hitCollidersBottom[i].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
@@ -343,6 +346,7 @@ public class PlayerClick : NetworkBehaviour
             while (j < hitCollidersTop.Length)
             {
                 if (hitCollidersTop[j].name.Contains("lines") && hitCollidersTop[j].GetComponent<Renderer>().enabled
+                    && hitCollidersTop[j].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersTop[j].name.Contains("square"))
                 {
                     hitCollidersTop[j].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
@@ -387,7 +391,6 @@ public class PlayerClick : NetworkBehaviour
                         squareID = squareFound.name;
                         squareColor = GetComponent<PlayerColor>().playerColor;
                         CmdPaintSquare(square);
-                        CmdPlaySquareAnim();
                         break;
                     }
                 }
@@ -400,6 +403,7 @@ public class PlayerClick : NetworkBehaviour
             }
             i++;
         }
+        CmdPlaySquareAnim();
     }
     //Tell the server to paint the square
     [Command]
@@ -477,6 +481,7 @@ public class PlayerClick : NetworkBehaviour
                             && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                         {
                             objectID = hit.collider.name;// this gets the object that is hit
+                            hit.collider.GetComponent<Renderer>().enabled = false;
                             objectColor = GetComponent<PlayerColor>().playerColor;
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                             CmdSelectObject(hit.collider.name);
@@ -552,9 +557,9 @@ public class PlayerClick : NetworkBehaviour
                         GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                         CmdPlaceLine(objectID, objectColor);
-                        CheckIfSquareIsMade(hit);
                         CmdStopAnim();
                         animFinished = true;
+                        CheckIfSquareIsMade(hit);
                         if (!pointScored)
                         {
                             CmdNextTurn();
@@ -595,9 +600,9 @@ public class PlayerClick : NetworkBehaviour
                             GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                             CmdPlaceLine(objectID, objectColor);
-                            CheckIfSquareIsMade(hit);
                             CmdStopAnim();
                             animFinished = true;
+                            CheckIfSquareIsMade(hit);
                             if (!pointScored)
                             {
                                 CmdNextTurn();

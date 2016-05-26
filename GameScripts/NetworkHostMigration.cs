@@ -18,6 +18,9 @@ public class NetworkHostMigration : NetworkMigrationManager
     }
     void DisconnectPlayer()
     {
-        GetComponent<NetworkManagerLocal>().StopClient();
+        if(GLOBALS.ISNETWORKLOCAL)
+            GetComponent<NetworkManagerLocal>().StopClient();
+        else
+            GetComponent<NetworkManagerCustom>().StopClient();
     }
 }

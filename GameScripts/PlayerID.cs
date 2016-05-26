@@ -177,7 +177,7 @@ public class PlayerID : NetworkBehaviour
         //Update panel to green if its the players turn
         if (isPlayersTurn && playersPanel != "")
         {
-            GameObject.Find(playersPanel).GetComponent<Image>().color = Color.green;
+            GameObject.Find(playersPanel).GetComponent<Image>().color = GetComponent<PlayerColor>().playerColor;
             if (isLocalPlayer)
             {
                 if (showPopup)
@@ -190,7 +190,7 @@ public class PlayerID : NetworkBehaviour
         }
         else if (!isPlayersTurn && playersPanel != "")
         {
-            GameObject.Find(playersPanel).GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.2f);
+            GameObject.Find(playersPanel).GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.6f);
         }
         //If the use presses enter set the player name and join the game
         if (Input.GetKeyDown(KeyCode.Return))

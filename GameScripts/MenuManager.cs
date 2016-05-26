@@ -12,7 +12,7 @@ public class MenuManager : MonoBehaviour {
     void Update()
     {
         //TODO:Press J to join a game on a local network, for testing purposes until utilizing Unity Matchmaker
-        if(Input.GetKeyDown(KeyCode.J))
+        if(Input.GetKeyDown(KeyCode.J) && GLOBALS.ISNETWORKLOCAL)
         {
             GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
         }

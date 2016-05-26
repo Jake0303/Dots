@@ -1,27 +1,41 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class LineHover : MonoBehaviour
+public class LineHover : NetworkBehaviour
 {
     public Material hoverMat;
-    //Player Hover
-    //Hide the temporary line if the mouse is not on it
-    void OnMouseExit()
-    {
-        if (GetComponent<Renderer>().material.GetColor("_TintColor") == new Color(1.0f, 0f, 0f, 0.5f))
-            GetComponent<Renderer>().enabled = false;
+    private RaycastHit hit;
 
-
-    }
-    //When the mouse is between 2 dots show a temporary line
-    void OnMouseOver()
+    // Update is called once per frame
+    void Update()
     {
-        if (GetComponent<Renderer>().enabled != true && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid
-            && !GetComponent<LinePlaced>().linePlaced && !name.Contains("temp"))
+        //Check if a player is hovering
+        if (isLocalPlayer)
         {
-            GetComponent<Renderer>().enabled = true;
-            GetComponent<Renderer>().material = hoverMat;
-            GetComponent<Renderer>().material.SetColor("_TintColor", new Color(1.0f, 0f, 0f, 0.5f));
+            //empty RaycastHit object which raycast puts the hit details into
+            hit = new RaycastHit();
+            //ray shooting out of the camera from where the mouse is
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            //Raycast from the mouse to the level
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.name.Contains("line")
+                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
+                    && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
+                {
+                    hit.collider.GetComponent<Renderer>().enabled = true;
+                    hit.collider.GetComponent<Renderer>().material = hoverMat;
+                    hit.collider.GetComponent<Renderer>().material.SetColor("_TintColor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponent<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
+                }
+                else if (hit.collider.GetComponent<LinePlaced>() != null && hit.collider.GetComponent<LinePlaced>().linePlaced && hit.collider.name.Contains("line") && hit.collider.material == hoverMat) 
+                {
+                    hit.collider.GetComponent<Renderer>().enabled = false;
+                }
+            }
         }
     }
 }

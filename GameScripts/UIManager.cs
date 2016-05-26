@@ -178,40 +178,40 @@ public class UIManager : NetworkBehaviour
             if (NetworkServer.connections.Count > 3)
                 StopAllCoroutines();
 
-            if (names[0].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
                 names[0].GetComponent<Text>().text = origTexts[0];
-            if (names[1].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
                 names[1].GetComponent<Text>().text = origTexts[1];
-            if (names[2].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
                 names[2].GetComponent<Text>().text = origTexts[2];
-            if (names[3].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
                 names[3].GetComponent<Text>().text = origTexts[3];
             yield return new WaitForSeconds(0.25f);
-            if (names[0].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
                 names[0].GetComponent<Text>().text = origTexts[0] + period;
-            if (names[1].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
                 names[1].GetComponent<Text>().text = origTexts[1] + period;
-            if (names[2].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
                 names[2].GetComponent<Text>().text = origTexts[2] + period;
-            if (names[3].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
                 names[3].GetComponent<Text>().text = origTexts[3] + period;
             yield return new WaitForSeconds(0.25f);
-            if (names[0].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
                 names[0].GetComponent<Text>().text = origTexts[0] + period + period;
-            if (names[1].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
                 names[1].GetComponent<Text>().text = origTexts[1] + period + period;
-            if (names[2].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
                 names[2].GetComponent<Text>().text = origTexts[2] + period + period;
-            if (names[3].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
                 names[3].GetComponent<Text>().text = origTexts[3] + period + period;
             yield return new WaitForSeconds(0.25f);
-            if (names[0].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
                 names[0].GetComponent<Text>().text = origTexts[0] + period + period + period;
-            if (names[1].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
                 names[1].GetComponent<Text>().text = origTexts[1] + period + period + period;
-            if (names[2].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
                 names[2].GetComponent<Text>().text = origTexts[2] + period + period + period;
-            if (names[3].GetComponent<Text>().text.Contains("Waiting"))
+            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
                 names[3].GetComponent<Text>().text = origTexts[3] + period + period + period;
             yield return new WaitForSeconds(0.25f);
         }
