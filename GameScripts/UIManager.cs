@@ -61,7 +61,7 @@ public class UIManager : NetworkBehaviour
             }
         }
         //Start game
-        if (NetworkServer.connections.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME && !GameObject.Find("GameManager").GetComponent<GameStart>().startGame
+        if (!GameObject.Find("GameManager").GetComponent<GameStart>().startGame
           && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
         {
             //Set the panels for each player

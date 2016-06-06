@@ -2,12 +2,23 @@
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.Networking.NetworkSystem;
 
 public class NetworkManagerLocal : NetworkManager
 {
+    [SerializeField]
+    private GameObject _playerPrefab = null;
+    private bool isPlayer = false;
     public void SetupMigrationManager(UnityEngine.Networking.NetworkMigrationManager man)
     {
         base.SetupMigrationManager(man);
+        Setup();
+    }
+    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
+    {
+        GameObject player = (GameObject)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+ 
+        NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
     }
     public void StartupHost()
     {
@@ -19,9 +30,22 @@ public class NetworkManagerLocal : NetworkManager
     {
         SetIPAddress();
         SetPort();
+        isPlayer = true;
         NetworkManager.singleton.StartClient();
     }
 
+    public override void OnClientConnect(NetworkConnection conn)
+    {
+        if (NetworkClient.active && !ClientScene.ready && isPlayer)
+        {
+            ClientScene.Ready(this.client.connection);
+
+            if (ClientScene.localPlayers.Count == 0)
+            {
+                ClientScene.AddPlayer(0);
+            }
+        }
+    }
     void SetIPAddress()
     {
         string ipAddress = "localhost";
@@ -49,7 +73,13 @@ public class NetworkManagerLocal : NetworkManager
             SetupOtherSceneButtons();
         }
     }
+    private void Setup()
+    {
+        // ...
 
+        NetworkServer.RegisterHandler(MsgType.AddPlayer, OnClientAddPlayer);
+        // ...
+    }
     //Reset the game
     public void ResetLevel()
     {
@@ -71,5 +101,20 @@ public class NetworkManagerLocal : NetworkManager
         GetComponent<NetworkManagerLocal>().StopServer();
         GetComponent<NetworkManagerLocal>().StopHost();
 
+    }
+    private void SpawnPlayer(NetworkConnection conn) // spawn a new player for the desired connection
+     {
+         GameObject playerObj = GameObject.Instantiate(_playerPrefab); // instantiate on server side
+         NetworkServer.AddPlayerForConnection(conn, playerObj, 0); // spawn on the clients and set owner
+     }
+ 
+    private void OnClientAddPlayer(NetworkMessage netMsg)
+    {
+        AddPlayerMessage msg = netMsg.ReadMessage<AddPlayerMessage>();
+        if (msg.playerControllerId == 0) // if you wanna check this
+        {
+            Debug.Log("Spawning player...");
+            SpawnPlayer(netMsg.conn); // the above function
+        }
     }
 }
