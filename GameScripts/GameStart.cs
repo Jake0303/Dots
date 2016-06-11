@@ -34,6 +34,11 @@ public class GameStart : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
+        if (isServer)
+        {
+            GameObject.Find("Camera").SetActive(false);
+            GameObject.Find("Canvas").SetActive(false);
+        }
         buildGrid = true;
     }
     void OnStartChanged(bool change)
