@@ -1,26 +1,22 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Photon;
 
-public class PlayerID : NetworkBehaviour
+
+public class PlayerID : PunBehaviour
 {
-    [SyncVar]
     public string playerID;
-    [SyncVar(hook = "OnPlayerTurn")]
     public bool isPlayersTurn = false;
     public bool winner = false;
-    [SyncVar]
+    
     public int playerTurnOrder = 0;
-    [SyncVar(hook = "OnScoreChanged")]
     public int playerScore = 0;
-    private NetworkInstanceId playerNetID;
     private Transform myTransform;
     private GameObject[] names;
-    [SyncVar(hook = "OnNameChanged")]
     public bool nameSet = false;
     public GameObject prefabButton, userinputField, panel, infoText, errorText;
-    [SyncVar(hook = "OnPanelNameChanged")]
     public string playersPanel = "";
 
     private Button tempButton;
@@ -33,7 +29,7 @@ public class PlayerID : NetworkBehaviour
     void Start()
     {
         //Setup the enter username panel UI locally
-        if (isLocalPlayer)
+        if (photonView.isMine)
         {
             goPanel = (GameObject)Instantiate(panel);
             goPanel.transform.localScale = new Vector3(0.25f, 0.5f, 0.25f);
@@ -73,49 +69,57 @@ public class PlayerID : NetworkBehaviour
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
     }
-    void OnPlayerTurn(bool turn)
-    {
-        isPlayersTurn = turn;
-        if (isPlayersTurn && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
-            showPopup = true;
-        else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
-            showPopup = false;
-        else if (!isPlayersTurn)
-            this.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
 
-    }
-    public void OnNameChanged(bool set)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        nameSet = set;
-        if (nameSet)
+        if (stream.isWriting)
         {
-            transform.name = playerID;
-        }
-    }
-    void OnPanelNameChanged(string name)
-    {
-        playersPanel = name;
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-        {
-            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
+            // We own this player: send the others our data
+            //Syncing player turn
+            stream.SendNext(isPlayersTurn);
+            if (isPlayersTurn && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
+                showPopup = true;
+            else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
+                showPopup = false;
+            else if (!isPlayersTurn)
+                this.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
+            //Syncing if a player name is set
+            stream.SendNext(nameSet);
+            if (nameSet)
             {
-                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                transform.name = playerID;
+            }
+            //Syncing players UI panel
+            stream.SendNext(playersPanel);
+            for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+            {
+                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
                 {
-                    if (scores.name.Contains((i + 1).ToString()))
+                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
                     {
-                        //Update UI with score
-                        scores.GetComponent<Text>().text = playerScore.ToString();
-                        return;
+                        if (scores.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with score
+                            scores.GetComponent<Text>().text = playerScore.ToString();
+                            return;
+                        }
                     }
                 }
             }
         }
+        else
+        {
+            // Network player, receive data
+            this.isPlayersTurn = (bool)stream.ReceiveNext();
+            this.nameSet = (bool)stream.ReceiveNext();
+            this.playersPanel = (string)stream.ReceiveNext();
+        }
     }
-    public override void OnStartClient()
+
+    public override void OnJoinedRoom()
     {
-        base.OnStartClient();
+ 	    base.OnJoinedRoom();
         names = GameObject.FindGameObjectsWithTag("NameText");
-        GetNetIdentity();
         SetIdentity();
         GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
     }
@@ -137,10 +141,10 @@ public class PlayerID : NetworkBehaviour
                 }
             }
         }
-        if (isLocalPlayer)
-            CmdTellServerMyScore(playerScore);
+        if (photonView.isMine)
+            photonView.RPC("CmdTellServerMyScore", PhotonTargets.AllBuffered, playerScore);
     }
-    [Command]
+    [PunRPC]
     void CmdTellServerMyScore(int score)
     {
         playerScore = score;
@@ -178,7 +182,7 @@ public class PlayerID : NetworkBehaviour
         if (isPlayersTurn && playersPanel != "")
         {
             GameObject.Find(playersPanel).GetComponent<Image>().color = GetComponent<PlayerColor>().playerColor;
-            if (isLocalPlayer)
+            if (photonView.isMine)
             {
                 if (showPopup)
                 {
@@ -201,9 +205,10 @@ public class PlayerID : NetworkBehaviour
             }
         }
         //If gameover display the winner
-        if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
+        if (GameObject.Find("GameManager").GetComponent<GameOver>() != null && 
+            GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
         {
-            if (isLocalPlayer && showWinner)
+            if (photonView.isMine && showWinner)
             {
                 if (winner)
                 {
@@ -216,7 +221,7 @@ public class PlayerID : NetworkBehaviour
                 showWinner = false;
             }
         }
-        if (tempField != null && isLocalPlayer)
+        if (tempField != null && photonView.isMine)
         {
             if (tempField.isFocused)
             {
@@ -225,16 +230,11 @@ public class PlayerID : NetworkBehaviour
         }
     }
 
-    [Client]
-    void GetNetIdentity()
-    {
-        playerNetID = GetComponent<NetworkIdentity>().netId;
-    }
 
-    [Client]
+
     void SetIdentity()
     {
-        if (!isLocalPlayer)
+        if (!photonView.isMine)
         {
             myTransform.name = playerID;
         }
@@ -246,17 +246,17 @@ public class PlayerID : NetworkBehaviour
 
     string MakeUniqueIdentity()
     {
-        string uniqueName = "Player " + playerNetID;
+        string uniqueName = "Player " + PhotonNetwork.player.ID;
         return uniqueName;
     }
-    [Command]
+    [PunRPC]
     public void CmdTellServerMyName(string name)
     {
         playerID = name;
         myTransform.name = playerID;
-        RpcTellClientsMyName(name);
+        //RpcTellClientsMyName(name);
     }
-    [ClientRpc]
+    [PunRPC]
     public void RpcTellClientsMyName(string name)
     {
         playerID = name;

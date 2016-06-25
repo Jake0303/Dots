@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
+using Photon;
 
-public class UIManager : NetworkBehaviour
+
+public class UIManager : PunBehaviour
 {
     private GameObject EscapeMenu;
     public Coroutine routine;
@@ -14,9 +16,9 @@ public class UIManager : NetworkBehaviour
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
     }
     //When the client has connected, populate the names of each panel for previous players
-    public override void OnStartClient()
+    public override void OnJoinedRoom()
     {
-        base.OnStartClient();
+        base.OnJoinedRoom();
         var names = GameObject.FindGameObjectsWithTag("NameText");
         for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
@@ -32,7 +34,7 @@ public class UIManager : NetworkBehaviour
 
     }
     //Add the player to the player list and update their name
-    [Command]
+    [PunRPC]
     public void CmdAddPlayer(string val)
     {
         GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
@@ -41,21 +43,15 @@ public class UIManager : NetworkBehaviour
         GetComponent<PlayerID>().playerID = val;
         GetComponent<PlayerID>().playerScore = 0;
         GetComponent<PlayerID>().CmdTellServerMyName(val);
-        RpcAddPlayer(val);
-    }
-    //Update the UI to show who has joined the game
-    [ClientRpc]
-    public void RpcAddPlayer(string val)
-    {
         var names = GameObject.FindGameObjectsWithTag("NameText");
         var players = GameObject.FindGameObjectsWithTag("Player");
         for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
-            foreach (var name in names)
+            foreach (var aName in names)
             {
-                if (name.name.Contains((i + 1).ToString()))
+                if (aName.name.Contains((i + 1).ToString()))
                 {
-                    UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
+                    UpdateUI(aName.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
                     break;
                 }
             }
@@ -79,7 +75,7 @@ public class UIManager : NetworkBehaviour
                             {
                                 player.GetComponent<PlayerID>().playersPanel = Apanel.name;
                                 player.GetComponent<PlayerID>().playerScore = 0;
-                                if (isLocalPlayer)
+                                if (photonView.isMine)
                                 {
                                     GetComponent<PlayerID>().playersPanel = Apanel.name;
                                 }
@@ -94,6 +90,7 @@ public class UIManager : NetworkBehaviour
             GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
         }
     }
+    
 
     //Set the playername over the server 
     public void SetPlayerName(InputField tempField, GameObject panel, Text errorMsg)
@@ -117,9 +114,9 @@ public class UIManager : NetworkBehaviour
             }
         }
         //If there is no error add the player name and update UI
-        if (isLocalPlayer && !aError)
+        if (photonView.isMine && !aError)
         {
-            CmdAddPlayer(tempField.GetComponent<InputField>().text);
+            photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, tempField.GetComponent<InputField>().text);
             panel.SetActive(false);
             var players = GameObject.FindGameObjectsWithTag("Player");
         }
@@ -133,7 +130,7 @@ public class UIManager : NetworkBehaviour
     void Update()
     {
         //Escape menu
-        if (isLocalPlayer)
+        if (photonView.isMine)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -146,12 +143,10 @@ public class UIManager : NetworkBehaviour
                     {
                         if (GLOBALS.ISNETWORKLOCAL)
                         {
-                            EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer());
+                            EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => 
+                                PhotonNetwork.LeaveRoom());
                         }
-                        else
-                        {
-                            //EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopServer());
-                        }
+
                     }
                 }
                 else
@@ -168,7 +163,7 @@ public class UIManager : NetworkBehaviour
         string[] origTexts = new string[4];
         for (int i = 0; i < names.Length; i++)
         {
-            if (isLocalPlayer)
+            if (photonView.isMine)
                 StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>(), false));
             origTexts[i] = names[i].GetComponent<Text>().text;
         }
@@ -182,6 +177,7 @@ public class UIManager : NetworkBehaviour
                 names[0].GetComponent<Text>().text = origTexts[0];
             if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
                 names[1].GetComponent<Text>().text = origTexts[1];
+            /*
             if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
                 names[2].GetComponent<Text>().text = origTexts[2];
             if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
@@ -213,6 +209,7 @@ public class UIManager : NetworkBehaviour
                 names[2].GetComponent<Text>().text = origTexts[2] + period + period + period;
             if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
                 names[3].GetComponent<Text>().text = origTexts[3] + period + period + period;
+             */ 
             yield return new WaitForSeconds(0.25f);
         }
     }
@@ -252,21 +249,21 @@ public class UIManager : NetworkBehaviour
 
     void DisconnectPlayer()
     {
-        if (isLocalPlayer)
+        if (photonView.isMine)
         {
             //Remove player from player list
             for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
             {
                 if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
                 {
-                    CmdRemovePlayerFromList(i);
+                    photonView.RPC("CmdRemovePlayerFromList", PhotonTargets.AllBuffered, i);
                     break;
                 }
             }
         }
     }
 
-    [Command]
+    [PunRPC]
     public void CmdRemovePlayerFromList(int indexToRemove)
     {
         var names = GameObject.FindGameObjectsWithTag("NameText");
@@ -279,9 +276,9 @@ public class UIManager : NetworkBehaviour
                 break;
             }
         }
-        RpcRemovePlayerFromList(indexToRemove);
+        //RpcRemovePlayerFromList(indexToRemove);
     }
-    [ClientRpc]
+    [PunRPC]
     void RpcRemovePlayerFromList(int indexToRemove)
     {
         var names = GameObject.FindGameObjectsWithTag("NameText");
@@ -291,18 +288,11 @@ public class UIManager : NetworkBehaviour
             {
                 name.GetComponent<Text>().text = "Waiting for player";
                 //Disconnect player 
-                if (isLocalPlayer)
+                if (photonView.isMine)
                 {
                     if (GLOBALS.ISNETWORKLOCAL)
                     {
-                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopClient();
-                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopHost();
-                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().StopServer();
-                    }
-                    else
-                    {
-                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().m_NetworkMatch.DropConnection(GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.networkId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().matchInfo.nodeId, GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().OnMatchDestroyed);
-                        GameObject.Find("NetworkManager").GetComponent<NetworkManagerCustom>().StopHost();
+                        PhotonNetwork.LeaveRoom();
                     }
                     break;
                 }
@@ -312,7 +302,7 @@ public class UIManager : NetworkBehaviour
     //Display popup text for the player
     public void DisplayPopupText(string text, bool fadeOutMessage)
     {
-        if (isLocalPlayer)
+        if (photonView.isMine)
         {
             if (text != "")
             {

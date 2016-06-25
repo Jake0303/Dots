@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Photon;
 
-public class GameState : NetworkBehaviour
+
+public class GameState : PunBehaviour
 {
     public Coroutine routine;
     GameObject[] players;
@@ -17,12 +19,62 @@ public class GameState : NetworkBehaviour
         InProgress,
         GameOver
     };
-    [SyncVar(hook = "OnStateChanged")]
     public State gameState;
     void Start()
     {
         gameState = State.None;
         players = GameObject.FindGameObjectsWithTag("Player");
+    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(gameState);
+            switch (gameState)
+            {
+                case State.Waiting:
+                    DisplayServerMessage("Waiting for players", false);
+                    foreach (var player in players)
+                    {
+                        player.GetComponent<UIManager>().DisplayPopupText("Waiting for players", false);
+                    }
+                    break;
+                case State.InProgress:
+                    foreach (var player in players)
+                    {
+                        if (player.GetComponent<UIManager>().routine != null)
+                            //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
+                            if (!player.GetComponent<PlayerID>().isPlayersTurn)
+                            {
+                                player.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
+                            }
+                    }
+                    break;
+                case State.BuildingGrid:
+                    DisplayServerMessage("Building grid", false);
+                    foreach (var player in players)
+                    {
+                        player.GetComponent<UIManager>().DisplayPopupText("Building grid", false);
+                    }
+                    break;
+                case State.GameOver:
+                    foreach (var player in players)
+                    {
+                        if (player.GetComponent<UIManager>().routine != null)
+                        {
+                            //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
+
+                        }
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            // Network player, receive data
+            this.gameState = (State)stream.ReceiveNext();
+        }
     }
     void OnStateChanged(State newState)
     {
@@ -66,9 +118,8 @@ public class GameState : NetworkBehaviour
                 break;
         }
     }
-    public override void OnStartLocalPlayer()
+    public override void OnConnectedToMaster()
     {
-        base.OnStartLocalPlayer();
         switch (gameState)
         {
             case State.Waiting:
@@ -127,7 +178,7 @@ public class GameState : NetworkBehaviour
     //Display popup text for the player
     public void DisplayServerMessage(string text, bool fadeOutMessage)
     {
-        if (isLocalPlayer)
+        if (photonView.isMine)
         {
             GameObject.Find("PopupText").GetComponent<Text>().text = text;
             if (text != "")

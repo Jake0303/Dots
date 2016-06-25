@@ -1,26 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class NetworkHostMigration : NetworkMigrationManager
 {
-    void Start()
-    {
-        GetComponent<NetworkManager>().SetupMigrationManager(this);
-    }
-    protected override void OnClientDisconnectedFromHost(NetworkConnection conn, out SceneChangeOption sceneChange)
-    {
-        base.OnClientDisconnectedFromHost(conn, out sceneChange);
-        GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-        GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
-        GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
-    }
-    void DisconnectPlayer()
-    {
-        if(GLOBALS.ISNETWORKLOCAL)
-            GetComponent<NetworkManagerLocal>().StopClient();
-        else
-            GetComponent<NetworkManagerCustom>().StopClient();
-    }
+    //TODO Integrate host migration with photon
 }

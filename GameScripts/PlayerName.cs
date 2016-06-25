@@ -1,21 +1,33 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-public class PlayerName : NetworkBehaviour {
-    [SyncVar (hook="nameChanged")]
+using Photon;
+
+public class PlayerName : PunBehaviour {
     public string enteredName;
 
     public void setName()
     {
-        if(isLocalPlayer)
+        if(photonView.isMine)
             enteredName = GameObject.Find("EnterNameInputField").GetComponent<InputField>().text;
     }
-
-	void nameChanged(string name)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if (isLocalPlayer)
-            enteredName = name;
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            //Syncing player turn
+            if (photonView.isMine)
+            {
+                stream.SendNext(enteredName);
+            }
+        }
+        else
+        {
+            // Network player, receive data
+            this.enteredName = (string)stream.ReceiveNext();
+
+        }
     }
-	
 }

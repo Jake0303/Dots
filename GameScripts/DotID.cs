@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using Photon;
 
-public class DotID : NetworkBehaviour {
 
-	[SyncVar] public string dotID;
+public class DotID : PunBehaviour {
+
+	public string dotID;
 	private Transform myTransform;
 	
 	// Use this for initialization
@@ -12,7 +14,7 @@ public class DotID : NetworkBehaviour {
 	{
 		myTransform = transform;
 	}
-	
+
 	// Update is called once per frame
 	void Update () 
 	{
@@ -21,7 +23,7 @@ public class DotID : NetworkBehaviour {
 	
 	void SetIdentity()
 	{
-		if(myTransform.name == "" || myTransform.name == "Dots(Clone)")
+		if(myTransform.name == "" || myTransform.name.Contains("Clone"))
 		{
 			myTransform.name = dotID;
 		}

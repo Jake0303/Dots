@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -8,14 +8,6 @@ public class MenuManager : MonoBehaviour {
     void Start()
     {
         GameObject.Find("GameName").GetComponent<Text>().text = GLOBALS.GameName;
-    }
-    void Update()
-    {
-        //TODO:Press J to join a game on a local network, for testing purposes until utilizing Unity Matchmaker
-        if(Input.GetKeyDown(KeyCode.J) && GLOBALS.ISNETWORKLOCAL)
-        {
-            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
-        }
     }
     //Dynamic period animation
     IEnumerator DynamicPeriods(Text text)

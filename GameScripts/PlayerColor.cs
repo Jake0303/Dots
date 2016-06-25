@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using Photon;
 
-public class PlayerColor : NetworkBehaviour {
-	[SyncVar] public Color playerColor;
+
+public class PlayerColor : PunBehaviour {
+	public Color playerColor;
 	private Transform myTransform;
     
     public Color[] colors = new Color[5];
@@ -19,10 +21,19 @@ public class PlayerColor : NetworkBehaviour {
 
     }
 
-	public override void OnStartLocalPlayer()
-	{
-		//GetNetIdentity ();
-	}
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(playerColor);
+        }
+        else
+        {
+            // Network player, receive data
+            this.playerColor = (Color)stream.ReceiveNext();
+        }
+    }
 
 	// Use this for initialization
 	void Awake () {
@@ -33,7 +44,6 @@ public class PlayerColor : NetworkBehaviour {
 
 	}
 
-	[Client]
 	void GetNetIdentity()
 	{
 		CmdTellServerMyColor (MakeUniqueColor());
@@ -47,7 +57,6 @@ public class PlayerColor : NetworkBehaviour {
 		Color uniqueColor = new Color (Random.value, Random.value, Random.value, Random.value);
 		return uniqueColor;
 	}
-	[Command]
 	public void CmdTellServerMyColor (Color myColor)
 	{
 		playerColor = myColor;

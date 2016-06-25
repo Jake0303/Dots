@@ -1,17 +1,33 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon;
 
-public class GameOver : NetworkBehaviour
+
+public class GameOver : PunBehaviour
 {
-    [SyncVar]
     public bool gameOver = false;
-    [SyncVar(hook = "OnWinnerChanged")]
     public string winner = "";
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(gameOver);
+            stream.SendNext(winner);
+        }
+        else
+        {
+            // Network player, receive data
+            this.gameOver = (bool)stream.ReceiveNext();
+            this.winner = (string)stream.ReceiveNext();
+        }
+    }
 
     // Update is called once per frame
     void Update()

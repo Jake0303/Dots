@@ -1,12 +1,30 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
 using System;
+using Photon;
+using System.Collections.Generic;
 
 
-public class PlayerTurn : NetworkBehaviour {
-	public SyncListInt assortPlayerTurns = new SyncListInt();
+public class PlayerTurn : PunBehaviour {
+	public List<int> assortPlayerTurns = new List<int>();
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            //Syncing player turn
+            stream.SendNext(assortPlayerTurns);
+        }
+        else
+        {
+            // Network player, receive data
+            this.assortPlayerTurns = (List<int>)stream.ReceiveNext();
+
+        }
+    }
 	// Assort the player turn order randomly at the start of a game
 	public void AssignTurns () {
 		var rnd = new System.Random();

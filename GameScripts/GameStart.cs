@@ -1,79 +1,62 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Linq;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Photon;
 
-public class GameStart : NetworkBehaviour
+
+public class GameStart : PunBehaviour
 {
-
     [SerializeField]
     public GameObject dots, lineHor, lineVert,centerSquare;
     public GameObject hoverLineHor, hoverLineVert;
-    public SyncListString playerNames = new SyncListString();
+    public List<string> playerNames = new List<string>();
     //The speed at which each dot in the grid spawns
-    [SyncVar]
+    
     public float spawnSpeed = 0.1f;
-    [SyncVar]
+    
     public bool buildGrid = false;
-    [SyncVar(hook = "OnStartChanged")]
     public bool startGame = false;
-    //Sync the rotation and scale,Network.Spawn only sync position
-    [SyncVar(hook = "OnVertRotChanged")]
+    //Sync the rotation and scale,PhotonNetwork.Spawn only sync position
     public Quaternion lineVertRot;
-    [SyncVar(hook = "OnHorRotChanged")]
     public Quaternion lineHorRot;
-    [SyncVar(hook = "OnVertScaleChanged")]
     public Vector3 lineVertScale;
-    [SyncVar(hook = "OnHorScaleChanged")]
     public Vector3 lineHorScale;
-    [SyncVar(hook = "OnSquareScaleChanged")]
     public Vector3 squareScale;
     public List<GameObject> objectsToDelete = new List<GameObject>();
-    public override void OnStartServer()
+    private PhotonView photonView;
+    private int viewID;
+    void Start()
     {
-        base.OnStartServer();
-        if (isServer)
-        {
-            GameObject.Find("Camera").SetActive(false);
-            GameObject.Find("Canvas").SetActive(false);
-        }
-        buildGrid = true;
-    }
-    void OnStartChanged(bool change)
-    {
-        startGame = change;
-    }
-    public override void OnStartClient()
-    {
-        base.OnStartClient();
-    }
-    void OnSquareScaleChanged(Vector3 scale)
-    {
-        squareScale = scale;
-        centerSquare.transform.localScale = squareScale;
-    }
-    void OnVertScaleChanged(Vector3 scale)
-    {
-        lineVertScale = scale;
-        lineVert.transform.localScale = lineVertScale;
-    }
-    void OnHorScaleChanged(Vector3 scale)
-    {
-        lineHorScale = scale;
-        lineHor.transform.localScale = lineHorScale;
+        photonView = this.GetComponent<PhotonView>();
     }
 
-    void OnVertRotChanged(Quaternion rot)
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        lineVertRot = rot;
-        lineVert.transform.localRotation = lineVertRot;
-    }
-    void OnHorRotChanged(Quaternion rot)
-    {
-        lineHorRot = rot;
-        lineHor.transform.localRotation = lineHorRot;
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            stream.SendNext(startGame);
+            stream.SendNext(squareScale);
+            stream.SendNext(lineVertScale);
+            stream.SendNext(lineHorScale);
+            stream.SendNext(lineVertRot);
+            stream.SendNext(lineHorRot);
+            stream.SendNext(playerNames);
+        }
+        else
+        {
+            // Network player, receive data
+            this.playerNames = (List<string>)stream.ReceiveNext();
+            this.startGame = (bool)stream.ReceiveNext();
+            this.squareScale = (Vector3)stream.ReceiveNext();
+            this.lineVertScale = (Vector3)stream.ReceiveNext();
+            this.lineHorScale = (Vector3)stream.ReceiveNext();
+            this.lineVertRot = (Quaternion)stream.ReceiveNext();
+            this.lineHorRot = (Quaternion)stream.ReceiveNext();
+        }
     }
     IEnumerator StartGame()
     {
@@ -90,7 +73,7 @@ public class GameStart : NetworkBehaviour
             //Hide temporary lines
             lineHor.GetComponent<Renderer>().enabled = false;
             lineVert.GetComponent<Renderer>().enabled = false;
-            //centerSquare.GetComponent<Renderer>().enabled = false;
+            //centerSquareuare.GetComponent<Renderer>().enabled = false;
             startGame = false;
 
         }
@@ -98,7 +81,7 @@ public class GameStart : NetworkBehaviour
 
     void AssignTurnsAndColors()
     {
-        if (isServer)
+        if (PhotonNetwork.isMasterClient)
         {
             //Assign each player a random turn order
             var players = GameObject.FindGameObjectsWithTag("Player");
@@ -115,12 +98,12 @@ public class GameStart : NetworkBehaviour
                 if (player.GetComponent<PlayerID>().playerTurnOrder == 1)
                 {
                     player.GetComponent<PlayerID>().isPlayersTurn = true;
-                    CmdSetFirstTurn(player.GetComponent<NetworkIdentity>());
+                    photonView.RPC("RpcSetFirstTurn", PhotonTargets.AllBuffered, player.name);
                 }
                 else
                 {
                     player.GetComponent<PlayerID>().isPlayersTurn = false;
-                    CmdDisableTurn(player.GetComponent<NetworkIdentity>());
+                    photonView.RPC("RpcDisableTurn", PhotonTargets.AllBuffered, player.name);
                 }
                 //Only 4 people per game
                 if (i != GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count)
@@ -128,16 +111,38 @@ public class GameStart : NetworkBehaviour
             }
         }
     }
-
+    [PunRPC]
     //Tell the server that we spawned a line or dot
-    void SpawnObj(GameObject obj)
+    void SpawnOnNetwork(string objName,Vector3 pos, Quaternion rot, int id1)
     {
-        NetworkServer.Spawn(obj);
+        GameObject newObj = null;
+        switch(objName)
+        {
+            case "dot":
+                newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot,0);
+                break;
+            case "lineHor":
+                newObj = PhotonNetwork.Instantiate("Prefabs/LineHor", pos, rot, 0);
+                break;
+            case "lineVert":
+                newObj = PhotonNetwork.Instantiate("Prefabs/LineVert", pos, rot, 0);
+                break;
+            case "centerSquare":
+                newObj = PhotonNetwork.Instantiate("Prefabs/CenterSquare", pos, rot, 0);
+                break;
+        }
+        // Set objects PhotonView
+        if (newObj != null)
+        {
+            PhotonView nViews = newObj.GetComponent<PhotonView>();
+            nViews.viewID = id1;
+            objectsToDelete.Add(newObj);
+        }
     }
     //Build the grid
     IEnumerator CreateGrid()
     {
-        if (isServer)
+        if (PhotonNetwork.isMasterClient)
         {
             for (int x = 0; x < GLOBALS.GRIDWIDTH; x++)
             {
@@ -147,62 +152,57 @@ public class GameStart : NetworkBehaviour
                 {
                     yield return new WaitForSeconds(spawnSpeed);
                     //Spawn dot
-
-                    GameObject dot = Instantiate(dots, Vector3.zero, Quaternion.Euler(90,0,0)) as GameObject;
-                    dot.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, z * GLOBALS.DOTDISTANCE);
-                    dot.transform.localScale = new Vector3(3, 3, 3);
-                    dot.name = "Dot " + x.ToString() + "," + z.ToString();
-                    dot.GetComponent<DotID>().dotID = dot.name;
-                    objectsToDelete.Add(dot);
-                    SpawnObj(dot);
-                   
+                    // Manually allocate PhotonViewID
+                    viewID = PhotonNetwork.AllocateViewID();
+                    dots.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, z * GLOBALS.DOTDISTANCE);
+                    dots.transform.localScale = new Vector3(3, 3, 3);
+                    dots.name = "Dot " + x.ToString() + "," + z.ToString();
+                    dots.GetComponent<DotID>().dotID = dots.name;
+                    photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0), viewID);
                     //This if statement stops from building extra unnecessary lines
                     if (z < GLOBALS.GRIDHEIGHT - 1)
                     {
+                        viewID = PhotonNetwork.AllocateViewID();
                         //Spawn line in between dots horizontally
-                        GameObject lineHorizontal = Instantiate(lineHor, Vector3.zero, lineHor.transform.rotation) as GameObject;
-                        lineHorizontal.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, dot.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
-                        lineHorScale = new Vector3(3, 3, GLOBALS.DOTDISTANCE - dot.transform.localScale.z + 0.5f);
+                        lineHor.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
+                        lineHorScale = new Vector3(3, 3, GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f);
                         lineHorRot = Quaternion.Euler(0, 0, 0);
-                        lineHorizontal.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
-                        lineHorizontal.GetComponent<LineID>().lineID = lineHorizontal.name;
-                        lineHorizontal.transform.localScale = lineHorScale;
-                        lineHorizontal.transform.rotation = lineHorRot;
-                        objectsToDelete.Add(lineHorizontal);
-                        SpawnObj(lineHorizontal);
+                        lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
+                        lineHor.GetComponent<LineID>().lineID = lineHor.name;
+                        lineHor.transform.localScale = lineHorScale;
+                        lineHor.transform.rotation = lineHorRot;
+                        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0), viewID);
                     }
                     if (x < GLOBALS.GRIDWIDTH - 1)
                     {
+                        viewID = PhotonNetwork.AllocateViewID();
                         //Spawn line in between dots vertically
-                        GameObject lineVertical = Instantiate(lineVert, Vector3.zero, lineVert.transform.rotation) as GameObject;
-                        lineVertical.transform.localPosition = new Vector3(dot.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, z * GLOBALS.DOTDISTANCE);
-                        lineVertScale = new Vector3(GLOBALS.DOTDISTANCE - dot.transform.localScale.z + 0.5f, 3, 3);
+                        lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, z * GLOBALS.DOTDISTANCE);
+                        lineVertScale = new Vector3(GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f, 3, 3);
                         lineVertRot = Quaternion.Euler(0, 0, 0);
-                        lineVertical.name = "linesVertical " + x.ToString() + "," + z.ToString();
-                        lineVertical.GetComponent<LineID>().lineID = lineVertical.name;
-                        lineVertical.transform.localScale = lineVertScale;
-                        lineVertical.transform.rotation = lineVertRot;
-                        objectsToDelete.Add(lineVertical);
-                        SpawnObj(lineVertical);
+                        lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
+                        lineVert.GetComponent<LineID>().lineID = lineVert.name;
+                        lineVert.transform.localScale = lineVertScale;
+                        lineVert.transform.rotation = lineVertRot;
+                        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0), viewID);
                     }
                     //Spawn the center of a square
                     if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
                     {
-                        GameObject centerSq = Instantiate(centerSquare, Vector3.zero, centerSquare.transform.rotation) as GameObject;
-                        centerSq.transform.localPosition = new Vector3(dot.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dot.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
+                        viewID = PhotonNetwork.AllocateViewID();
+                        centerSquare.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
                         squareScale = new Vector3(8.5f, 2f, 8.5f);
-                        centerSq.transform.localScale = squareScale;
-                        centerSq.name = "Centre " + x.ToString() + "," + z.ToString();
-                        centerSq.GetComponent<SquareID>().squareID = centerSq.name;
-                        objectsToDelete.Add(centerSq);
-                        SpawnObj(centerSq);
-                        centerSq.GetComponent<Renderer>().enabled = false;
+                        centerSquare.transform.localScale = squareScale;
+                        centerSquare.name = "Centre " + x.ToString() + "," + z.ToString();
+                        centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
+                        centerSquare.GetComponent<Renderer>().enabled = false;
+                        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation, viewID);
                     }
                 }
             }
             //Start the timer after the grid has been built
             gameObject.GetComponent<TurnTimer>().enabled = true;
-            RpcEnableTimer();
+            photonView.RPC("RpcEnableTimer", PhotonTargets.AllBuffered);
             AssignTurnsAndColors();
             GetComponent<GameState>().gameState = GameState.State.InProgress;
             buildGrid = false;
@@ -214,38 +214,26 @@ public class GameStart : NetworkBehaviour
     {
         foreach (var obj in objectsToDelete)
         {
-            GameObject.Destroy(obj);
+            PhotonNetwork.Destroy(obj);
         }
         objectsToDelete.Clear();
     }
 
-    //Tell the server that this player turn is disabled
-    [Command]
-    void CmdDisableTurn(NetworkIdentity playerID)
-    {
-        playerID.GetComponent<PlayerID>().isPlayersTurn = false;
-        RpcDisableTurn(playerID);
-    }
+
     //Tell all clients who turn it is not
-    [ClientRpc]
-    void RpcDisableTurn(NetworkIdentity playerID)
+    [PunRPC]
+    void RpcDisableTurn(string playerID)
     {
-        playerID.GetComponent<PlayerID>().isPlayersTurn = false;
+        GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = false;
     }
-    //Tell the server that the first player turn is up
-    [Command]
-    void CmdSetFirstTurn(NetworkIdentity playerID)
-    {
-        playerID.GetComponent<PlayerID>().isPlayersTurn = true;
-        RpcSetFirstTurn(playerID);
-    }
+
     //Tell all clients who turn it is
-    [ClientRpc]
-    void RpcSetFirstTurn(NetworkIdentity playerID)
+    [PunRPC]
+    void RpcSetFirstTurn(string playerID)
     {
-        playerID.GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
     }
-    [ClientRpc]
+    [PunRPC]
     //Tell the server the timer has started
     void RpcEnableTimer()
     {

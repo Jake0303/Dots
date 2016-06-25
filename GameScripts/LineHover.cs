@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using Photon;
 
-public class LineHover : NetworkBehaviour
+
+public class LineHover : PunBehaviour
 {
     public Material hoverMat;
     private RaycastHit hit;
@@ -11,7 +13,7 @@ public class LineHover : NetworkBehaviour
     void Update()
     {
         //Check if a player is hovering
-        if (isLocalPlayer)
+        if (photonView.isMine)
         {
             //empty RaycastHit object which raycast puts the hit details into
             hit = new RaycastHit();

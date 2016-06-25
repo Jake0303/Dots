@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using Photon;
 
-public class SquareID : NetworkBehaviour
+
+public class SquareID : PunBehaviour
 {
-    [SyncVar]
+    //
     public string squareID;
     [SerializeField]
     private Transform myTransform;
@@ -13,7 +15,21 @@ public class SquareID : NetworkBehaviour
     {
         myTransform = transform;
     }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            //Syncing player turn
+            stream.SendNext(squareID);
+        }
+        else
+        {
+            // Network player, receive data
+            this.squareID = (string)stream.ReceiveNext();
 
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -22,7 +38,7 @@ public class SquareID : NetworkBehaviour
 
     void SetIdentity()
     {
-        if (myTransform.name == "" || myTransform.name == "CenterSquare(Clone)")
+        if (myTransform.name == "" || myTransform.name.Contains("Clone"))
         {
             myTransform.name = squareID;
         }

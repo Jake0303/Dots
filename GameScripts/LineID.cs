@@ -1,17 +1,31 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
+using Photon;
 
-public class LineID : NetworkBehaviour {
-	[SyncVar] public string lineID;
-    [SerializeField]
+
+public class LineID : PunBehaviour {
+	 public string lineID;
+     [SerializeField]
 	 private Transform myTransform;
 	 // Use this for initialization
 	 void Start () 
 	 {
 		myTransform = transform;
 	 }
-	 
+     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+     {
+         if (stream.isWriting)
+         {
+             // We own this player: send the others our data
+             stream.SendNext(lineID);
+         }
+         else
+         {
+             // Network player, receive data
+             this.lineID = (string)stream.ReceiveNext();
+         }
+     }
 	 // Update is called once per frame
 	 void Update () 
 	 {
@@ -20,7 +34,7 @@ public class LineID : NetworkBehaviour {
 	 
 	 void SetIdentity()
 	 {
-		if(myTransform.name == "" || myTransform.name == "LineHor(Clone)" || myTransform.name == "LineVert(Clone)")
+         if (myTransform.name == "" || myTransform.name.Contains("Clone"))
 		{
 			myTransform.name = lineID;
 		}

@@ -1,113 +1,107 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Networking.NetworkSystem;
+using Photon;
 
-public class NetworkManagerLocal : NetworkManager
+public class NetworkManagerLocal : PunBehaviour
 {
     [SerializeField]
     private GameObject _playerPrefab = null;
     private bool isPlayer = false;
-    //Setup Host Migration
-    public void SetupMigrationManager(UnityEngine.Networking.NetworkMigrationManager man)
-    {
-        base.SetupMigrationManager(man);
-        Setup();
-    }
-    //Create a new player object when someone has connected
-    public override void OnServerAddPlayer(NetworkConnection conn, short playerControllerId)
-    {
-        GameObject player = (GameObject)Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
-        NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
-    }
-    //Start an online match as a host
-    public void StartupHost()
-    {
-        SetPort();
-        NetworkManager.singleton.StartHost();
-    }
-    //Join a match
-    public void JoinGame()
-    {
-        SetIPAddress();
-        SetPort();
-        isPlayer = true;
-        NetworkManager.singleton.StartClient();
-    }
-    //Ready the player when they join a game
-    public override void OnClientConnect(NetworkConnection conn)
-    {
-        if (NetworkClient.active && !ClientScene.ready && isPlayer)
-        {
-            ClientScene.Ready(this.client.connection);
+    public bool AutoConnect = true;
 
-            if (ClientScene.localPlayers.Count == 0)
-            {
-                ClientScene.AddPlayer(0);
-            }
+    public byte Version = 1;
+    private bool ConnectInUpdate = true;
+
+    void Start()
+    {
+        PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
+        PhotonNetwork.automaticallySyncScene = true;
+
+    }
+    void Update()
+    {
+        if (ConnectInUpdate && AutoConnect && !PhotonNetwork.connected)
+        {
+            ConnectInUpdate = false;
+            PhotonNetwork.ConnectUsingSettings(Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
         }
     }
-    void SetIPAddress()
+    //Join lobby
+    public void JoinGame()
     {
-        string ipAddress = "localhost";
-        NetworkManager.singleton.networkAddress = ipAddress;
+        PhotonNetwork.JoinLobby();
+    }
+    public override void OnJoinedLobby()
+    {
+        base.OnJoinedLobby();
+        //Tries to join any random game:
+        PhotonNetwork.JoinRandomRoom();
+        //Fails if there are no matching games: OnPhotonRandomJoinFailed
+    }
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        LoadLevel();
+    }
+    //If joining a match failed, create one
+    void OnPhotonRandomJoinFailed()
+    {
+        PhotonNetwork.CreateRoom(null, new RoomOptions() { maxPlayers = 2 }, null);
     }
 
-    void SetPort()
-    {
-        NetworkManager.singleton.networkPort = 7777;
-    }
     //When the main menu is loaded add the listeners for each button
     void OnLevelWasLoaded(int level)
     {
+        //Mainmenu
         if (level == 0)
         {
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TransitionToLobby()));
-            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => StartupHost()));
+            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
             GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() =>  GameObject.Find("MenuManager").GetComponent<MenuManager>().Options()));
             GameObject.Find("ExitButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().ExitGame()));
             GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Instructions()));
         }
+        //Game
+        else if(level == 1)
+        {
+            SpawnPlayer();
+        }
     }
-    //Setup NetworkServer
-    private void Setup()
-    {
-        NetworkServer.RegisterHandler(MsgType.AddPlayer, OnClientAddPlayer);
-    }
+
     //Reset the game
-    public void ResetLevel()
+    public void LoadLevel()
     {
-        NetworkManager.singleton.ServerChangeScene("Game");
+        PhotonNetwork.LoadLevel("Game");
     }
     //Let the player know if the opponent disconnected
-    public override void OnServerDisconnect(NetworkConnection conn)
+    public override void OnDisconnectedFromPhoton()
     {
-        base.OnServerDisconnect(conn);
+ 	    base.OnDisconnectedFromPhoton();
         GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
         GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
-        GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+        //TODO add disconnect popup
+        //GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
     }
-    //Disconnect the player
-    void DisconnectPlayer()
+    //Spawn the player
+    void SpawnPlayer()
     {
-        GetComponent<NetworkManagerLocal>().StopServer();
-        GetComponent<NetworkManagerLocal>().StopHost();
+        // Manually allocate PhotonViewID
+        int id1 = PhotonNetwork.AllocateViewID();
 
+        PhotonView photonView = this.GetComponent<PhotonView>();
+        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, transform.position, transform.rotation, id1, PhotonNetwork.player);
     }
-    private void SpawnPlayer(NetworkConnection conn) // spawn a new player for the desired connection
-     {
-         GameObject playerObj = GameObject.Instantiate(_playerPrefab); // instantiate on server side
-         NetworkServer.AddPlayerForConnection(conn, playerObj, 0); // spawn on the clients and set owner
-     }
- 
-    private void OnClientAddPlayer(NetworkMessage netMsg)
+
+    [PunRPC]
+    void SpawnOnNetwork(Vector3 pos, Quaternion rot, int id1, PhotonPlayer np)
     {
-        AddPlayerMessage msg = netMsg.ReadMessage<AddPlayerMessage>();
-        if (msg.playerControllerId == 0) // if you wanna check this
-        {
-            Debug.Log("Spawning player...");
-            SpawnPlayer(netMsg.conn); // the above function
-        }
+        GameObject newPlayer = Instantiate(_playerPrefab, pos, rot) as GameObject;
+
+        // Set player's PhotonView
+        PhotonView nViews = newPlayer.GetComponent<PhotonView>();
+        nViews.viewID = id1;
     }
 }

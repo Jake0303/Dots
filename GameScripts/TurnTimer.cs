@@ -1,13 +1,15 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using Photon;
 
-public class TurnTimer : NetworkBehaviour
+
+public class TurnTimer : PunBehaviour
 {
-    [SyncVar]
+    //
     public float timer = GLOBALS.MAXTURNTIME;
-    [SyncVar]
+    //
     public bool nextTurn = false;
     private bool isGameOver;
     private GameObject[] timerTexts;
@@ -21,7 +23,22 @@ public class TurnTimer : NetworkBehaviour
     {
         return GLOBALS.POINTSTOWIN;
     }
-
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            //Syncing player turn
+            stream.SendNext(timer);
+            stream.SendNext(nextTurn);
+        }
+        else
+        {
+            // Network player, receive data
+            this.timer = (float)stream.ReceiveNext();
+            this.nextTurn = (bool)stream.ReceiveNext();
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -126,10 +143,10 @@ public class TurnTimer : NetworkBehaviour
                             {
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
-                                    if (isLocalPlayer)
-                                        CmdChangePlayerTurn(nextPlayer, player);
+                                    if (photonView.isMine)
+                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer, player);
                                     //This if statement is for the host so this code isnt called twice
-                                    else if (isServer)
+                                    else if (PhotonNetwork.isMasterClient)
                                     {
                                         nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
                                         //Lastly end the players turn
@@ -144,9 +161,9 @@ public class TurnTimer : NetworkBehaviour
                             {
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder - player.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
-                                    if (isLocalPlayer)
-                                        CmdChangePlayerTurn(nextPlayer, player);
-                                    else if (isServer)
+                                    if (photonView.isMine)
+                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer, player);
+                                    else if (PhotonNetwork.isMasterClient)
                                     {
                                         nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
                                         //Lastly end the players turn
@@ -166,15 +183,15 @@ public class TurnTimer : NetworkBehaviour
         }
     }
     //Tell the server that it's the next player's turn
-    [Command]
+    [PunRPC]
     public void CmdChangePlayerTurn(GameObject nextPlayer, GameObject lastPlayer)
     {
         nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
         lastPlayer.GetComponent<PlayerID>().isPlayersTurn = false;
-        RpcChangePlayerTurn(nextPlayer, lastPlayer);
+        //RpcChangePlayerTurn(nextPlayer, lastPlayer);
     }
     //Tell all clients who turn it is	
-    [ClientRpc]
+    [PunRPC]
     void RpcChangePlayerTurn(GameObject nextPlayer, GameObject lastPlayer)
     {
         nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
