@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using Photon;
+using ExitGames.Client.Photon;
 
 
 public class PlayerColor : PunBehaviour {
@@ -12,6 +13,7 @@ public class PlayerColor : PunBehaviour {
 
     void Start()
     {
+        PhotonPeer.RegisterType(typeof(Color), (byte)'C', SerializeColor, DeserializeColor);
         //This is added just so we can have indexes 1-4 not 0-3
         colors[0] = Color.black;
         colors[1] = Color.blue;
@@ -19,6 +21,30 @@ public class PlayerColor : PunBehaviour {
         colors[3] = new Color(1,0,1,1);
         colors[4] = Color.red;
 
+    }
+
+    private static byte[] SerializeColor(object customobject)
+    {
+        Color vo = (Color)customobject;
+
+        byte[] bytes = new byte[4 * 4];
+        int index = 0;
+        Protocol.Serialize(vo.r, bytes, ref index);
+        Protocol.Serialize(vo.g, bytes, ref index);
+        Protocol.Serialize(vo.b, bytes, ref index);
+        Protocol.Serialize(vo.a, bytes, ref index);
+        return bytes;
+    }
+
+    private static object DeserializeColor(byte[] bytes)
+    {
+        Color vo = new Color();
+        int index = 0;
+        Protocol.Deserialize(out vo.r, bytes, ref index);
+        Protocol.Deserialize(out vo.g, bytes, ref index);
+        Protocol.Deserialize(out vo.b, bytes, ref index);
+        Protocol.Deserialize(out vo.a, bytes, ref index);
+        return vo;
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

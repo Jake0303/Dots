@@ -9,16 +9,17 @@ public class NetworkManagerLocal : PunBehaviour
 {
     [SerializeField]
     private GameObject _playerPrefab = null;
-    private bool isPlayer = false;
     public bool AutoConnect = true;
 
     public byte Version = 1;
     private bool ConnectInUpdate = true;
+    private PhotonView photonView;
 
     void Start()
     {
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
         PhotonNetwork.automaticallySyncScene = true;
+        photonView = this.GetComponent<PhotonView>();
 
     }
     void Update()
@@ -44,7 +45,8 @@ public class NetworkManagerLocal : PunBehaviour
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        LoadLevel();
+        if(photonView.isMine)
+            LoadLevel();
     }
     //If joining a match failed, create one
     void OnPhotonRandomJoinFailed()
@@ -91,17 +93,11 @@ public class NetworkManagerLocal : PunBehaviour
         // Manually allocate PhotonViewID
         int id1 = PhotonNetwork.AllocateViewID();
 
-        PhotonView photonView = this.GetComponent<PhotonView>();
-        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, transform.position, transform.rotation, id1, PhotonNetwork.player);
+        SpawnOnNetwork(transform.position, transform.rotation, id1, PhotonNetwork.player);
     }
 
-    [PunRPC]
     void SpawnOnNetwork(Vector3 pos, Quaternion rot, int id1, PhotonPlayer np)
     {
-        GameObject newPlayer = Instantiate(_playerPrefab, pos, rot) as GameObject;
-
-        // Set player's PhotonView
-        PhotonView nViews = newPlayer.GetComponent<PhotonView>();
-        nViews.viewID = id1;
+        GameObject newPlayer = PhotonNetwork.Instantiate("Prefabs/Player", pos, rot,0) as GameObject;
     }
 }

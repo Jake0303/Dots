@@ -5,18 +5,38 @@ using System.Linq;
 using System;
 using Photon;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 
 
 public class PlayerTurn : PunBehaviour {
 	public List<int> assortPlayerTurns = new List<int>();
+    void Start()
+    {
+        PhotonPeer.RegisterType(typeof(List<int>), (byte)'L', SerializeListInt, DeserializeListInt);
+    }
+    private static byte[] SerializeListInt(object customobject)
+    {
+        List<int> vo = (List<int>)customobject;
 
+        byte[] bytes = new byte[vo.Count * 4];
+        bytes = vo.SelectMany<int, byte>(BitConverter.GetBytes).ToArray();
+        Protocol.Serialize(bytes);
+        return bytes;
+    }
+
+    private static object DeserializeListInt(byte[] bytes)
+    {
+        List<int> vo = new List<int>();
+        Protocol.Deserialize(vo.SelectMany<int, byte>(BitConverter.GetBytes).ToArray());
+        return vo;
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
             // We own this player: send the others our data
             //Syncing player turn
-            stream.SendNext(assortPlayerTurns);
+            stream.SendNext(SerializeListInt(assortPlayerTurns));
         }
         else
         {

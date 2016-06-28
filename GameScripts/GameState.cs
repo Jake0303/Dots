@@ -25,12 +25,14 @@ public class GameState : PunBehaviour
         gameState = State.None;
         players = GameObject.FindGameObjectsWithTag("Player");
     }
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
         {
+            
             // We own this player: send the others our data
             stream.SendNext(gameState);
+            /*
             switch (gameState)
             {
                 case State.Waiting:
@@ -68,54 +70,12 @@ public class GameState : PunBehaviour
                         }
                     }
                     break;
-            }
+            }*/
         }
         else
         {
             // Network player, receive data
             this.gameState = (State)stream.ReceiveNext();
-        }
-    }
-    void OnStateChanged(State newState)
-    {
-        gameState = newState;
-        switch (gameState)
-        {
-            case State.Waiting:
-                DisplayServerMessage("Waiting for players", false);
-                foreach (var player in players)
-                {
-                    player.GetComponent<UIManager>().DisplayPopupText("Waiting for players", false);
-                }
-                break;
-            case State.InProgress:
-                foreach (var player in players)
-                {
-                    if (player.GetComponent<UIManager>().routine != null)
-                        //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
-                    if (!player.GetComponent<PlayerID>().isPlayersTurn)
-                    {
-                        player.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
-                    }
-                }
-                break;
-            case State.BuildingGrid:
-                DisplayServerMessage("Building grid", false);
-                foreach (var player in players)
-                {
-                    player.GetComponent<UIManager>().DisplayPopupText("Building grid", false);
-                }
-                break;
-            case State.GameOver:
-                foreach (var player in players)
-                {
-                    if (player.GetComponent<UIManager>().routine != null)
-                    {
-                        //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
-
-                    }
-                }
-                break;
         }
     }
     public override void OnConnectedToMaster()

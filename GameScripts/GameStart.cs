@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Photon;
+using ExitGames.Client.Photon;
 
 
 public class GameStart : PunBehaviour
@@ -30,9 +31,30 @@ public class GameStart : PunBehaviour
     private int viewID;
     void Start()
     {
+        PhotonPeer.RegisterType(typeof(List<string>), (byte)'L', SerializeListString, DeserializeListString);
         photonView = this.GetComponent<PhotonView>();
     }
 
+    private static byte[] SerializeListString(object customobject)
+    {
+        List<string> vo = (List<string>)customobject;
+
+        byte[] bytes = new byte[vo.Count * 4];
+        bytes = vo.
+            SelectMany(s => System.Text.Encoding.ASCII.GetBytes(s))
+            .ToArray();
+        Protocol.Serialize(bytes);
+        return bytes;
+    }
+
+    private static object DeserializeListString(byte[] bytes)
+    {
+        List<string> vo = new List<string>();
+        Protocol.Deserialize(vo.
+            SelectMany(s => System.Text.Encoding.ASCII.GetBytes(s))
+            .ToArray());
+        return vo;
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
@@ -44,18 +66,18 @@ public class GameStart : PunBehaviour
             stream.SendNext(lineHorScale);
             stream.SendNext(lineVertRot);
             stream.SendNext(lineHorRot);
-            stream.SendNext(playerNames);
+            stream.SendNext(SerializeListString(playerNames));
         }
         else
         {
             // Network player, receive data
-            this.playerNames = (List<string>)stream.ReceiveNext();
             this.startGame = (bool)stream.ReceiveNext();
             this.squareScale = (Vector3)stream.ReceiveNext();
             this.lineVertScale = (Vector3)stream.ReceiveNext();
             this.lineHorScale = (Vector3)stream.ReceiveNext();
             this.lineVertRot = (Quaternion)stream.ReceiveNext();
             this.lineHorRot = (Quaternion)stream.ReceiveNext();
+            //this.playerNames = (List<string>)stream.ReceiveNext();
         }
     }
     IEnumerator StartGame()

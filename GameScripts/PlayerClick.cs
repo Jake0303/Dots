@@ -426,11 +426,11 @@ public class PlayerClick : PunBehaviour
     }
 
     [PunRPC]
-    void RpcPaintLine(GameObject line)
+    void RpcPaintLine(string line)
     {
 
-        line.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-        line.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(line).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(line).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
     }
 
     // Update is called once per frame

@@ -144,7 +144,7 @@ public class TurnTimer : PunBehaviour
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
                                     if (photonView.isMine)
-                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer, player);
+                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
                                     //This if statement is for the host so this code isnt called twice
                                     else if (PhotonNetwork.isMasterClient)
                                     {
@@ -162,7 +162,7 @@ public class TurnTimer : PunBehaviour
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder - player.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
                                     if (photonView.isMine)
-                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer, player);
+                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
                                     else if (PhotonNetwork.isMasterClient)
                                     {
                                         nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
@@ -184,18 +184,18 @@ public class TurnTimer : PunBehaviour
     }
     //Tell the server that it's the next player's turn
     [PunRPC]
-    public void CmdChangePlayerTurn(GameObject nextPlayer, GameObject lastPlayer)
+    public void CmdChangePlayerTurn(string nextPlayer,string lastPlayer)
     {
-        nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
-        lastPlayer.GetComponent<PlayerID>().isPlayersTurn = false;
+        GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
         //RpcChangePlayerTurn(nextPlayer, lastPlayer);
     }
     //Tell all clients who turn it is	
     [PunRPC]
-    void RpcChangePlayerTurn(GameObject nextPlayer, GameObject lastPlayer)
+    void RpcChangePlayerTurn(string nextPlayer, string lastPlayer)
     {
-        nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
-        lastPlayer.GetComponent<PlayerID>().isPlayersTurn = false;
+        GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
     }
     //Reset the turn timer
     public void ResetTimer()

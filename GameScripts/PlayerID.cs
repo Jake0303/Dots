@@ -72,10 +72,12 @@ public class PlayerID : PunBehaviour
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
+
         if (stream.isWriting)
         {
             // We own this player: send the others our data
             //Syncing player turn
+            
             stream.SendNext(isPlayersTurn);
             if (isPlayersTurn && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
                 showPopup = true;
