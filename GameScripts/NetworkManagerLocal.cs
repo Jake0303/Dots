@@ -70,6 +70,7 @@ public class NetworkManagerLocal : PunBehaviour
         else if(level == 1)
         {
             SpawnPlayer();
+            GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
         }
     }
 

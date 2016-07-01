@@ -475,7 +475,7 @@ public class PlayerClick : PunBehaviour
     {
         if (GameObject.Find(line).name.Contains("Horizontal"))
         {
-            lineHorizontal = Instantiate(GameObject.Find(line), Vector3.zero, GameObject.Find(line).transform.rotation) as GameObject;
+            lineHorizontal = Instantiate(lineHorizontal, Vector3.zero, GameObject.Find(line).transform.rotation) as GameObject;
             lineHorizontal.name = "temp";
             lineHorizontal.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
             lineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
@@ -487,7 +487,7 @@ public class PlayerClick : PunBehaviour
         }
         else
         {
-            lineVertical = Instantiate(GameObject.Find(line), Vector3.zero, GameObject.Find(line).transform.rotation) as GameObject;
+            lineVertical = Instantiate(lineVertical, Vector3.zero, GameObject.Find(line).transform.rotation) as GameObject;
             lineVertical.name = "temp";
             lineVertical.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
             lineVertical.transform.rotation = GameObject.Find(line).transform.rotation;

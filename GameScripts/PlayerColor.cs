@@ -52,12 +52,12 @@ public class PlayerColor : PunBehaviour {
         if (stream.isWriting)
         {
             // We own this player: send the others our data
-            stream.SendNext(playerColor);
+            stream.SendNext(SerializeColor(playerColor));
         }
         else
         {
             // Network player, receive data
-            this.playerColor = (Color)stream.ReceiveNext();
+            this.playerColor = (Color)DeserializeColor((byte[])stream.ReceiveNext());
         }
     }
 
@@ -83,6 +83,7 @@ public class PlayerColor : PunBehaviour {
 		Color uniqueColor = new Color (Random.value, Random.value, Random.value, Random.value);
 		return uniqueColor;
 	}
+    [PunRPC]
 	public void CmdTellServerMyColor (Color myColor)
 	{
 		playerColor = myColor;

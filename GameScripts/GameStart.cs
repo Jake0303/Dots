@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Photon;
 using ExitGames.Client.Photon;
+using System;
+using System.Text;
 
 
 public class GameStart : PunBehaviour
@@ -31,30 +33,9 @@ public class GameStart : PunBehaviour
     private int viewID;
     void Start()
     {
-        PhotonPeer.RegisterType(typeof(List<string>), (byte)'L', SerializeListString, DeserializeListString);
         photonView = this.GetComponent<PhotonView>();
     }
 
-    private static byte[] SerializeListString(object customobject)
-    {
-        List<string> vo = (List<string>)customobject;
-
-        byte[] bytes = new byte[vo.Count * 4];
-        bytes = vo.
-            SelectMany(s => System.Text.Encoding.ASCII.GetBytes(s))
-            .ToArray();
-        Protocol.Serialize(bytes);
-        return bytes;
-    }
-
-    private static object DeserializeListString(byte[] bytes)
-    {
-        List<string> vo = new List<string>();
-        Protocol.Deserialize(vo.
-            SelectMany(s => System.Text.Encoding.ASCII.GetBytes(s))
-            .ToArray());
-        return vo;
-    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
@@ -66,7 +47,6 @@ public class GameStart : PunBehaviour
             stream.SendNext(lineHorScale);
             stream.SendNext(lineVertRot);
             stream.SendNext(lineHorRot);
-            stream.SendNext(SerializeListString(playerNames));
         }
         else
         {
@@ -77,17 +57,17 @@ public class GameStart : PunBehaviour
             this.lineHorScale = (Vector3)stream.ReceiveNext();
             this.lineVertRot = (Quaternion)stream.ReceiveNext();
             this.lineHorRot = (Quaternion)stream.ReceiveNext();
-            //this.playerNames = (List<string>)stream.ReceiveNext();
         }
     }
     IEnumerator StartGame()
     {
         yield return new WaitForSeconds(GLOBALS.GAMESTARTDELAY);
         StartCoroutine(CreateGrid());
+        photonView.RPC("BuildGridText", PhotonTargets.AllBuffered);
     }
     void Update()
     {
-        if (startGame)
+        if (startGame && PhotonNetwork.isMasterClient)
         {
             GetComponent<GameState>().gameState = GameState.State.BuildingGrid;
             StartCoroutine(StartGame());
@@ -133,24 +113,27 @@ public class GameStart : PunBehaviour
             }
         }
     }
-    [PunRPC]
     //Tell the server that we spawned a line or dot
-    void SpawnOnNetwork(string objName,Vector3 pos, Quaternion rot, int id1)
+    void SpawnOnNetwork(string objName,Vector3 pos, Quaternion rot, int id1,string name)
     {
         GameObject newObj = null;
         switch(objName)
         {
             case "dot":
                 newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot,0);
+                newObj.name = name;
                 break;
             case "lineHor":
                 newObj = PhotonNetwork.Instantiate("Prefabs/LineHor", pos, rot, 0);
+                newObj.name = name;
                 break;
             case "lineVert":
                 newObj = PhotonNetwork.Instantiate("Prefabs/LineVert", pos, rot, 0);
+                newObj.name = name;
                 break;
             case "centerSquare":
                 newObj = PhotonNetwork.Instantiate("Prefabs/CenterSquare", pos, rot, 0);
+                newObj.name = name;
                 break;
         }
         // Set objects PhotonView
@@ -164,8 +147,6 @@ public class GameStart : PunBehaviour
     //Build the grid
     IEnumerator CreateGrid()
     {
-        if (PhotonNetwork.isMasterClient)
-        {
             for (int x = 0; x < GLOBALS.GRIDWIDTH; x++)
             {
                 yield return new WaitForSeconds(spawnSpeed);
@@ -180,7 +161,8 @@ public class GameStart : PunBehaviour
                     dots.transform.localScale = new Vector3(3, 3, 3);
                     dots.name = "Dot " + x.ToString() + "," + z.ToString();
                     dots.GetComponent<DotID>().dotID = dots.name;
-                    photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0), viewID);
+                    SpawnOnNetwork("dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0), viewID,dots.name);
+                    PhotonNetwork.RaiseEvent(2,dots.name,true,null);
                     //This if statement stops from building extra unnecessary lines
                     if (z < GLOBALS.GRIDHEIGHT - 1)
                     {
@@ -193,7 +175,8 @@ public class GameStart : PunBehaviour
                         lineHor.GetComponent<LineID>().lineID = lineHor.name;
                         lineHor.transform.localScale = lineHorScale;
                         lineHor.transform.rotation = lineHorRot;
-                        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0), viewID);
+                        SpawnOnNetwork("lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0), viewID,lineHor.name);
+                        PhotonNetwork.RaiseEvent(3, lineHor.name, true, null);
                     }
                     if (x < GLOBALS.GRIDWIDTH - 1)
                     {
@@ -206,7 +189,8 @@ public class GameStart : PunBehaviour
                         lineVert.GetComponent<LineID>().lineID = lineVert.name;
                         lineVert.transform.localScale = lineVertScale;
                         lineVert.transform.rotation = lineVertRot;
-                        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0), viewID);
+                        SpawnOnNetwork("lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0), viewID,lineVert.name);
+                        PhotonNetwork.RaiseEvent(4, lineVert.name, true, null);
                     }
                     //Spawn the center of a square
                     if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
@@ -218,7 +202,8 @@ public class GameStart : PunBehaviour
                         centerSquare.name = "Centre " + x.ToString() + "," + z.ToString();
                         centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
                         centerSquare.GetComponent<Renderer>().enabled = false;
-                        photonView.RPC("SpawnOnNetwork", PhotonTargets.AllBuffered, "centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation, viewID);
+                        SpawnOnNetwork("centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation, viewID,centerSquare.name);
+                        PhotonNetwork.RaiseEvent(5, centerSquare.name, true, null);
                     }
                 }
             }
@@ -228,7 +213,6 @@ public class GameStart : PunBehaviour
             AssignTurnsAndColors();
             GetComponent<GameState>().gameState = GameState.State.InProgress;
             buildGrid = false;
-        }
     }
 
     //Destroy the grid
@@ -261,5 +245,12 @@ public class GameStart : PunBehaviour
     {
         gameObject.GetComponent<PlayerTurn>().enabled = true;
         gameObject.GetComponent<TurnTimer>().enabled = true;
+        PhotonNetwork.RaiseEvent(0, null, true, null);
+    }
+    [PunRPC]
+    //Tell the server the timer has started
+    void BuildGridText()
+    {
+        PhotonNetwork.RaiseEvent(1, null, true, null);
     }
 }

@@ -179,6 +179,7 @@ public class TurnTimer : PunBehaviour
                     break;
                 }
             }
+            PhotonNetwork.RaiseEvent(0, null, true, null);
             ResetTimer();
         }
     }

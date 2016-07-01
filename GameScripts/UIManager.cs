@@ -33,6 +33,7 @@ public class UIManager : PunBehaviour
         }
 
     }
+
     //Add the player to the player list and update their name
     [PunRPC]
     public void CmdAddPlayer(string val)

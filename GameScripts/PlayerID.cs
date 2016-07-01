@@ -28,6 +28,7 @@ public class PlayerID : PunBehaviour
     public bool showWinner = true;
     void Start()
     {
+        PhotonNetwork.OnEventCall += this.OnEvent;
         //Setup the enter username panel UI locally
         if (photonView.isMine)
         {
@@ -69,22 +70,31 @@ public class PlayerID : PunBehaviour
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
     }
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    private void OnEvent(byte eventcode, object content, int senderid)
     {
-
-        if (stream.isWriting)
+        //If a turn has changed
+        if (eventcode == 0)
         {
-            // We own this player: send the others our data
-            //Syncing player turn
-            
-            stream.SendNext(isPlayersTurn);
             if (isPlayersTurn && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
                 showPopup = true;
             else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
                 showPopup = false;
             else if (!isPlayersTurn)
                 this.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
+        }
+        //Building grid
+        else if(eventcode == 1)
+        {
+            this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
+        }
+    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting)
+        {
+            // We own this player: send the others our data
+            //Syncing player turn
+            stream.SendNext(isPlayersTurn);
             //Syncing if a player name is set
             stream.SendNext(nameSet);
             if (nameSet)
@@ -123,7 +133,6 @@ public class PlayerID : PunBehaviour
  	    base.OnJoinedRoom();
         names = GameObject.FindGameObjectsWithTag("NameText");
         SetIdentity();
-        GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
     }
     void OnScoreChanged(int score)
     {

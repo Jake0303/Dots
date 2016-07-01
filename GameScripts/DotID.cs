@@ -24,20 +24,14 @@ public class DotID : PunBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		myTransform = transform;
+        PhotonNetwork.OnEventCall += this.OnEvent;
 	}
-
-	// Update is called once per frame
-	void Update () 
-	{
-		SetIdentity();
-	}
-	
-	void SetIdentity()
-	{
-		if(myTransform.name == "" || myTransform.name.Contains("Clone"))
-		{
-			myTransform.name = dotID;
-		}
-	}
+    private void OnEvent(byte eventcode, object content, int senderid)
+    {
+        //Update dot name
+        if (eventcode == 2 && transform.name.Contains("Clone"))
+        {
+            transform.name = (string)content;
+        }
+    }
 }

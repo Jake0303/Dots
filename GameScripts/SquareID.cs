@@ -13,7 +13,7 @@ public class SquareID : PunBehaviour
     // Use this for initialization
     void Start()
     {
-        myTransform = transform;
+        PhotonNetwork.OnEventCall += this.OnEvent;
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -30,17 +30,12 @@ public class SquareID : PunBehaviour
 
         }
     }
-    // Update is called once per frame
-    void Update()
+    private void OnEvent(byte eventcode, object content, int senderid)
     {
-        SetIdentity();
-    }
-
-    void SetIdentity()
-    {
-        if (myTransform.name == "" || myTransform.name.Contains("Clone"))
+        //Update dot name
+        if (eventcode == 5 && transform.name.Contains("Clone"))
         {
-            myTransform.name = squareID;
+            transform.name = (string)content;
         }
     }
 }

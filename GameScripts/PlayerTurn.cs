@@ -10,6 +10,7 @@ using ExitGames.Client.Photon;
 
 public class PlayerTurn : PunBehaviour {
 	public List<int> assortPlayerTurns = new List<int>();
+    private byte[] playerTurns;
     void Start()
     {
         PhotonPeer.RegisterType(typeof(List<int>), (byte)'L', SerializeListInt, DeserializeListInt);
@@ -36,13 +37,16 @@ public class PlayerTurn : PunBehaviour {
         {
             // We own this player: send the others our data
             //Syncing player turn
-            stream.SendNext(SerializeListInt(assortPlayerTurns));
+            playerTurns = assortPlayerTurns.SelectMany<int, byte>(BitConverter.GetBytes).ToArray();
+            stream.SendNext(playerTurns);
         }
         else
         {
             // Network player, receive data
-            this.assortPlayerTurns = (List<int>)stream.ReceiveNext();
-
+            this.playerTurns = (byte[])stream.ReceiveNext();
+            this.assortPlayerTurns = Enumerable.Range(0, playerTurns.Length / 4)
+                             .Select(i => BitConverter.ToInt32(playerTurns, i * 4))
+                             .ToList();
         }
     }
 	// Assort the player turn order randomly at the start of a game

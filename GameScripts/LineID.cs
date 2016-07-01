@@ -11,8 +11,8 @@ public class LineID : PunBehaviour {
 	 // Use this for initialization
 	 void Start () 
 	 {
-		myTransform = transform;
-	 }
+         PhotonNetwork.OnEventCall += this.OnEvent;
+     }
      public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
      {
          if (stream.isWriting)
@@ -26,17 +26,13 @@ public class LineID : PunBehaviour {
              this.lineID = (string)stream.ReceiveNext();
          }
      }
-	 // Update is called once per frame
-	 void Update () 
-	 {
-		SetIdentity();
-	 }
-	 
-	 void SetIdentity()
-	 {
-         if (myTransform.name == "" || myTransform.name.Contains("Clone"))
-		{
-			myTransform.name = lineID;
-		}
-	 }
+     private void OnEvent(byte eventcode, object content, int senderid)
+     {
+         //Update dot name
+         if ((eventcode == 3 || eventcode == 4) && this != null 
+             && transform.name.Contains("Clone"))
+         {
+             transform.name = (string)content;
+         }
+     }
 }
