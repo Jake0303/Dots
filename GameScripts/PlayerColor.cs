@@ -60,29 +60,6 @@ public class PlayerColor : PunBehaviour {
             this.playerColor = (Color)DeserializeColor((byte[])stream.ReceiveNext());
         }
     }
-
-	// Use this for initialization
-	void Awake () {
-	}
-
-	// Update is called once per frame
-	void Update () {
-
-	}
-
-	void GetNetIdentity()
-	{
-		CmdTellServerMyColor (MakeUniqueColor());
-	}
-
-
-
-	Color MakeUniqueColor ()
-	{
-        
-		Color uniqueColor = new Color (Random.value, Random.value, Random.value, Random.value);
-		return uniqueColor;
-	}
     [PunRPC]
 	public void CmdTellServerMyColor (Color myColor)
 	{

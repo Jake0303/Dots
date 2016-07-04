@@ -119,7 +119,7 @@ public class UIManager : PunBehaviour
         {
             photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, tempField.GetComponent<InputField>().text);
             panel.SetActive(false);
-            var players = GameObject.FindGameObjectsWithTag("Player");
+            PhotonNetwork.player.name = tempField.GetComponent<InputField>().text;
         }
     }
     //Update the name text

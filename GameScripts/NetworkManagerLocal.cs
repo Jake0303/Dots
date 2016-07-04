@@ -45,7 +45,7 @@ public class NetworkManagerLocal : PunBehaviour
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        if(photonView.isMine)
+        if(PhotonNetwork.isMasterClient)
             LoadLevel();
     }
     //If joining a match failed, create one
@@ -69,8 +69,8 @@ public class NetworkManagerLocal : PunBehaviour
         //Game
         else if(level == 1)
         {
-            SpawnPlayer();
             GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
+            SpawnPlayer();
         }
     }
 
@@ -91,14 +91,11 @@ public class NetworkManagerLocal : PunBehaviour
     //Spawn the player
     void SpawnPlayer()
     {
-        // Manually allocate PhotonViewID
-        int id1 = PhotonNetwork.AllocateViewID();
-
-        SpawnOnNetwork(transform.position, transform.rotation, id1, PhotonNetwork.player);
+        SpawnOnNetwork(transform.position, transform.rotation);
     }
 
-    void SpawnOnNetwork(Vector3 pos, Quaternion rot, int id1, PhotonPlayer np)
+    void SpawnOnNetwork(Vector3 pos, Quaternion rot)
     {
-        GameObject newPlayer = PhotonNetwork.Instantiate("Prefabs/Player", pos, rot,0) as GameObject;
+        GameObject newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", pos, rot,0);
     }
 }
