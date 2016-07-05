@@ -121,19 +121,19 @@ public class GameStart : PunBehaviour
         {
             case "dot":
                 newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot,0);
-                newObj.name = name;
+                newObj.GetComponent<DotID>().CmdSetName(name);
                 break;
             case "lineHor":
                 newObj = PhotonNetwork.Instantiate("Prefabs/LineHor", pos, rot, 0);
-                newObj.name = name;
+                newObj.GetComponent<LineID>().CmdSetName(name);
                 break;
             case "lineVert":
                 newObj = PhotonNetwork.Instantiate("Prefabs/LineVert", pos, rot, 0);
-                newObj.name = name;
+                newObj.GetComponent<LineID>().CmdSetName(name);
                 break;
             case "centerSquare":
                 newObj = PhotonNetwork.Instantiate("Prefabs/CenterSquare", pos, rot, 0);
-                newObj.name = name;
+                newObj.GetComponent<SquareID>().CmdSetName(name);
                 break;
         }
         // Set objects PhotonView
@@ -158,7 +158,6 @@ public class GameStart : PunBehaviour
                     dots.name = "Dot " + x.ToString() + "," + z.ToString();
                     dots.GetComponent<DotID>().dotID = dots.name;
                     SpawnOnNetwork("dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0),dots.name);
-                    PhotonNetwork.RaiseEvent(2,dots.name,true,null);
                     //This if statement stops from building extra unnecessary lines
                     if (z < GLOBALS.GRIDHEIGHT - 1)
                     {
@@ -171,7 +170,6 @@ public class GameStart : PunBehaviour
                         lineHor.transform.localScale = lineHorScale;
                         lineHor.transform.rotation = lineHorRot;
                         SpawnOnNetwork("lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0),lineHor.name);
-                        PhotonNetwork.RaiseEvent(3, lineHor.name, true, null);
                     }
                     if (x < GLOBALS.GRIDWIDTH - 1)
                     {
@@ -184,7 +182,6 @@ public class GameStart : PunBehaviour
                         lineVert.transform.localScale = lineVertScale;
                         lineVert.transform.rotation = lineVertRot;
                         SpawnOnNetwork("lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0),lineVert.name);
-                        PhotonNetwork.RaiseEvent(4, lineVert.name, true, null);
                     }
                     //Spawn the center of a square
                     if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
@@ -196,7 +193,6 @@ public class GameStart : PunBehaviour
                         centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
                         centerSquare.GetComponent<Renderer>().enabled = false;
                         SpawnOnNetwork("centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation,centerSquare.name);
-                        PhotonNetwork.RaiseEvent(5, centerSquare.name, true, null);
                     }
                 }
             }

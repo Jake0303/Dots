@@ -6,15 +6,7 @@ using Photon;
 
 public class SquareID : PunBehaviour
 {
-    //
     public string squareID;
-    [SerializeField]
-    private Transform myTransform;
-    // Use this for initialization
-    void Start()
-    {
-        PhotonNetwork.OnEventCall += this.OnEvent;
-    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
@@ -30,12 +22,14 @@ public class SquareID : PunBehaviour
 
         }
     }
-    private void OnEvent(byte eventcode, object content, int senderid)
+   public void CmdSetName(string name)
     {
-        //Update dot name
-        if (eventcode == 5 && transform.name.Contains("Clone"))
-        {
-            transform.name = (string)content;
-        }
+        photonView.RPC("RpcSetName", PhotonTargets.AllBuffered, name);
+    }
+    [PunRPC]
+    void RpcSetName(string name)
+    {
+        squareID = name;
+        transform.name = name;
     }
 }

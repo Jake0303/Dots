@@ -21,17 +21,14 @@ public class DotID : PunBehaviour {
             this.dotID = (string)stream.ReceiveNext();
         }
     }
-	// Use this for initialization
-	void Start () 
-	{
-        PhotonNetwork.OnEventCall += this.OnEvent;
-	}
-    private void OnEvent(byte eventcode, object content, int senderid)
+    public void CmdSetName(string name)
     {
-        //Update dot name
-        if (eventcode == 2 && transform.name.Contains("Clone"))
-        {
-            transform.name = (string)content;
-        }
+        photonView.RPC("RpcSetName", PhotonTargets.AllBuffered, name);
+    }
+    [PunRPC]
+    void RpcSetName(string name)
+    {
+        dotID = name;
+        transform.name = name;
     }
 }

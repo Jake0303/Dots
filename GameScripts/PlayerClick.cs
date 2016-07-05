@@ -82,7 +82,6 @@ public class PlayerClick : PunBehaviour
             stream.SendNext(playingSquareAnim);
             stream.SendNext(animFinished);
             stream.SendNext(squareAnimFinished);
-            stream.SendNext(objectID);
             stream.SendNext(squareID);
 
         }
@@ -94,7 +93,6 @@ public class PlayerClick : PunBehaviour
             this.playingSquareAnim= (bool)stream.ReceiveNext();
             this.animFinished = (bool)stream.ReceiveNext();
             this.squareAnimFinished = (bool)stream.ReceiveNext();
-            this.objectID = (string)stream.ReceiveNext();
             this.squareID = (string)stream.ReceiveNext();
         }
     }
@@ -150,13 +148,13 @@ public class PlayerClick : PunBehaviour
         GetComponent<PlayerID>().isPlayersTurn = true;
     }
     [PunRPC]
-    void CmdPlayAnim()
+    void CmdPlayAnim(string line)
     {
         animFinished = false;
         playingAnim = true;
         if (playingAnim)
         {
-            StartCoroutine(StartLineAnim(objectID, hit));
+            StartCoroutine(StartLineAnim(line, hit));
         }
     }
     [PunRPC]
@@ -458,7 +456,7 @@ public class PlayerClick : PunBehaviour
                     objectColor = GetComponent<PlayerColor>().playerColor;
                     GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                     photonView.RPC("CmdSelectObject", PhotonTargets.AllBuffered, hit.collider.name);
-                    photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered);
+                    photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered,hit.collider.name);
                 }
             }
         }
@@ -475,11 +473,11 @@ public class PlayerClick : PunBehaviour
     {
         if (GameObject.Find(line).name.Contains("Horizontal"))
         {
-            lineHorizontal = Instantiate(lineHorizontal, Vector3.zero, GameObject.Find(line).transform.rotation) as GameObject;
+            lineHorizontal = Instantiate(lineHorizontal, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
             lineHorizontal.name = "temp";
             lineHorizontal.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
             lineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
-            lineHorizontal.GetComponent<Renderer>().enabled = true;// get the object's network ID
+            lineHorizontal.GetComponent<Renderer>().enabled = true;
             lineHorizontal.GetComponent<Renderer>().material = lineMat;
             lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
@@ -487,11 +485,11 @@ public class PlayerClick : PunBehaviour
         }
         else
         {
-            lineVertical = Instantiate(lineVertical, Vector3.zero, GameObject.Find(line).transform.rotation) as GameObject;
+            lineVertical = Instantiate(lineVertical, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
             lineVertical.name = "temp";
             lineVertical.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
             lineVertical.transform.rotation = GameObject.Find(line).transform.rotation;
-            lineVertical.GetComponent<Renderer>().enabled = true;// get the object's network ID
+            lineVertical.GetComponent<Renderer>().enabled = true;
             lineVertical.GetComponent<Renderer>().material = lineMat;
             lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
@@ -606,7 +604,7 @@ public class PlayerClick : PunBehaviour
     //Spawn a temporary square for an animation
     void SpawnSquareForAnim(string square)
     {
-        centerSquare = Instantiate(GameObject.Find(square), Vector3.zero, GameObject.Find(square).transform.rotation) as GameObject;
+        centerSquare = Instantiate(GameObject.Find(square), new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
         centerSquare.name = "tempSquare";
         centerSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z);
         centerSquare.transform.rotation = GameObject.Find(square).transform.rotation;
