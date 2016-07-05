@@ -33,7 +33,6 @@ public class LineHover : PunBehaviour
                     hit.collider.GetComponent<Renderer>().material = hoverMat;
                     hit.collider.GetComponent<Renderer>().material.SetColor("_TintColor", GetComponent<PlayerColor>().playerColor);
                     hit.collider.GetComponent<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
-                    Debug.Log(hit.collider.name);
                 }
                 else if (hit.collider.GetComponent<LinePlaced>() != null && hit.collider.GetComponent<LinePlaced>().linePlaced && hit.collider.name.Contains("line") && hit.collider.material == hoverMat)
                 {
