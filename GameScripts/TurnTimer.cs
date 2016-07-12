@@ -7,9 +7,7 @@ using Photon;
 
 public class TurnTimer : PunBehaviour
 {
-    //
     public float timer = GLOBALS.MAXTURNTIME;
-    //
     public bool nextTurn = false;
     private bool isGameOver;
     private GameObject[] timerTexts;
@@ -114,9 +112,7 @@ public class TurnTimer : PunBehaviour
                             }
                         }
                     }
-                    //GameObject.Find("TimerText").GetComponent<Text>().text = "Time Left: " + Mathf.Round(timer);
                 }
-
                 if (player.GetComponent<PlayerID>().playerScore >= CalculateMajorityPoints())
                 {
                     isGameOver = true;
@@ -144,14 +140,7 @@ public class TurnTimer : PunBehaviour
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
                                     if (photonView.isMine)
-                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
-                                    //This if statement is for the host so this code isnt called twice
-                                    else if (PhotonNetwork.isMasterClient)
-                                    {
-                                        nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
-                                        //Lastly end the players turn
-                                        player.GetComponent<PlayerID>().isPlayersTurn = false;
-                                    }
+                                        photonView.RPC("RpcChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
                                     //if we found the next player, exit the for loop
                                     break;
                                 }
@@ -162,13 +151,7 @@ public class TurnTimer : PunBehaviour
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder - player.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
                                     if (photonView.isMine)
-                                        photonView.RPC("CmdChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
-                                    else if (PhotonNetwork.isMasterClient)
-                                    {
-                                        nextPlayer.GetComponent<PlayerID>().isPlayersTurn = true;
-                                        //Lastly end the players turn
-                                        player.GetComponent<PlayerID>().isPlayersTurn = false;
-                                    }
+                                        photonView.RPC("RpcChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
                                     //if we found the next player, exit the for loop
                                     break;
                                 }
@@ -182,14 +165,6 @@ public class TurnTimer : PunBehaviour
             PhotonNetwork.RaiseEvent(0, null, true, null);
             ResetTimer();
         }
-    }
-    //Tell the server that it's the next player's turn
-    [PunRPC]
-    public void CmdChangePlayerTurn(string nextPlayer,string lastPlayer)
-    {
-        GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
-        GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
-        //RpcChangePlayerTurn(nextPlayer, lastPlayer);
     }
     //Tell all clients who turn it is	
     [PunRPC]

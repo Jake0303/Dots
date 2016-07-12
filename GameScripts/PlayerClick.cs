@@ -604,7 +604,7 @@ public class PlayerClick : PunBehaviour
     //Spawn a temporary square for an animation
     void SpawnSquareForAnim(string square)
     {
-        centerSquare = Instantiate(GameObject.Find(square), new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
+        centerSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
         centerSquare.name = "tempSquare";
         centerSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z);
         centerSquare.transform.rotation = GameObject.Find(square).transform.rotation;
