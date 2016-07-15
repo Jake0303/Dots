@@ -481,7 +481,7 @@ public class PlayerClick : PunBehaviour
             lineHorizontal.GetComponent<Renderer>().material = lineMat;
             lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
-            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineHorizontal);
+            //GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineHorizontal);
         }
         else
         {
@@ -493,7 +493,7 @@ public class PlayerClick : PunBehaviour
             lineVertical.GetComponent<Renderer>().material = lineMat;
             lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
-            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineVertical);
+            //.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineVertical);
         }
     }
     //Play the line animation of falling from the sky and rotating
@@ -503,7 +503,7 @@ public class PlayerClick : PunBehaviour
         while (!animFinished)
         {
             //Lerp the lines location and rotation for a smooth animation
-            if (GameObject.Find(objectID).name.Contains("Horizontal") && lineHorizontal != null)
+            if (lineHorizontal != null && GameObject.Find(objectID).name.Contains("Horizontal"))
             {
                 lineHorizontal.transform.rotation = Quaternion.Slerp(lineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
                 if (lineHorizontal.transform.position.y > 0)
@@ -612,7 +612,7 @@ public class PlayerClick : PunBehaviour
         centerSquare.GetComponent<Renderer>().material = lineMat;
         centerSquare.GetComponent<Renderer>().material.SetColor("_MKGlowColor", squareColor);
         centerSquare.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(centerSquare);
+        //GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(centerSquare);
 
 
     }

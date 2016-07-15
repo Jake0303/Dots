@@ -209,7 +209,10 @@ public class GameStart : PunBehaviour
     {
         foreach (var obj in objectsToDelete)
         {
-            PhotonNetwork.Destroy(obj);
+            if (obj.GetComponent<PhotonView>() != null)
+                PhotonNetwork.Destroy(obj);
+            else
+                Destroy(obj);
         }
         objectsToDelete.Clear();
     }
