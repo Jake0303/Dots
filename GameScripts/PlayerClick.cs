@@ -33,7 +33,7 @@ public class PlayerClick : PunBehaviour
     public bool pointScored = false;
     [SerializeField]
     public GameObject lineHorizontal, lineVertical, centerSquare;
-
+    private GameObject newLineHorizontal, newLineVertical, newSquare;
     [SerializeField]
     public GameObject line, square;
     /*
@@ -473,27 +473,27 @@ public class PlayerClick : PunBehaviour
     {
         if (GameObject.Find(line).name.Contains("Horizontal"))
         {
-            lineHorizontal = Instantiate(lineHorizontal, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
-            lineHorizontal.name = "temp";
-            lineHorizontal.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
-            lineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
-            lineHorizontal.GetComponent<Renderer>().enabled = true;
-            lineHorizontal.GetComponent<Renderer>().material = lineMat;
-            lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
-            lineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
-            //GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineHorizontal);
+            newLineHorizontal = Instantiate(lineHorizontal, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
+            newLineHorizontal.name = "temp";
+            newLineHorizontal.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
+            newLineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
+            newLineHorizontal.GetComponent<Renderer>().enabled = true;
+            newLineHorizontal.GetComponent<Renderer>().material = lineMat;
+            newLineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
+            newLineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineHorizontal);
         }
         else
         {
-            lineVertical = Instantiate(lineVertical, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
-            lineVertical.name = "temp";
-            lineVertical.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
-            lineVertical.transform.rotation = GameObject.Find(line).transform.rotation;
-            lineVertical.GetComponent<Renderer>().enabled = true;
-            lineVertical.GetComponent<Renderer>().material = lineMat;
-            lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
-            lineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
-            //.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(lineVertical);
+            newLineVertical = Instantiate(lineVertical, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
+            newLineVertical.name = "temp";
+            newLineVertical.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
+            newLineVertical.transform.rotation = GameObject.Find(line).transform.rotation;
+            newLineVertical.GetComponent<Renderer>().enabled = true;
+            newLineVertical.GetComponent<Renderer>().material = lineMat;
+            newLineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
+            newLineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineVertical);
         }
     }
     //Play the line animation of falling from the sky and rotating
@@ -503,22 +503,22 @@ public class PlayerClick : PunBehaviour
         while (!animFinished)
         {
             //Lerp the lines location and rotation for a smooth animation
-            if (lineHorizontal != null && GameObject.Find(objectID).name.Contains("Horizontal"))
+            if (newLineHorizontal != null && GameObject.Find(objectID).name.Contains("Horizontal"))
             {
-                lineHorizontal.transform.rotation = Quaternion.Slerp(lineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
-                if (lineHorizontal.transform.position.y > 0)
+                newLineHorizontal.transform.rotation = Quaternion.Slerp(newLineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+                if (newLineHorizontal.transform.position.y > 0)
                 {
-                    lineHorizontal.transform.position = Vector3.Lerp(lineHorizontal.transform.position, new Vector3(lineHorizontal.transform.position.x, 0, lineHorizontal.transform.position.z), Time.deltaTime * lerpRate);
+                    newLineHorizontal.transform.position = Vector3.Lerp(newLineHorizontal.transform.position, new Vector3(newLineHorizontal.transform.position.x, 0, newLineHorizontal.transform.position.z), Time.deltaTime * lerpRate);
                 }
 
-                if (lineHorizontal.transform.position.y < 0.01 && !animFinished)
+                if (newLineHorizontal.transform.position.y < 0.01 && !animFinished)
                 {
                     if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn)
                     {
-                        if (lineHorizontal != null)
-                            lineHorizontal.GetComponent<Renderer>().enabled = false;
-                        if (lineVertical != null)
-                            lineVertical.GetComponent<Renderer>().enabled = false;
+                        if (newLineHorizontal != null)
+                            newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                        if (newLineVertical != null)
+                            newLineVertical.GetComponent<Renderer>().enabled = false;
 
                         GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                         GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
@@ -537,32 +537,32 @@ public class PlayerClick : PunBehaviour
                 }
                 if (animFinished)
                 {
-                    if (lineHorizontal != null)
-                        lineHorizontal.GetComponent<Renderer>().enabled = false;
-                    if (lineVertical != null)
-                        lineVertical.GetComponent<Renderer>().enabled = false;
+                    if (newLineHorizontal != null)
+                        newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                    if (newLineVertical != null)
+                        newLineVertical.GetComponent<Renderer>().enabled = false;
                     GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
                 }
             }
             //Lerp vertical line 
             else
             {
-                if (lineVertical != null)
+                if (newLineVertical != null)
                 {
-                    lineVertical.transform.rotation = Quaternion.Slerp(lineVertical.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
-                    if (lineVertical.transform.position.y > 0)
+                    newLineVertical.transform.rotation = Quaternion.Slerp(newLineVertical.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
+                    if (newLineVertical.transform.position.y > 0)
                     {
-                        lineVertical.transform.position = Vector3.Lerp(lineVertical.transform.position, new Vector3(lineVertical.transform.position.x, 0, lineVertical.transform.position.z), Time.deltaTime * lerpRate);
+                        newLineVertical.transform.position = Vector3.Lerp(newLineVertical.transform.position, new Vector3(newLineVertical.transform.position.x, 0, newLineVertical.transform.position.z), Time.deltaTime * lerpRate);
                     }
 
-                    if (lineVertical.transform.position.y < 0.01 && !animFinished)
+                    if (newLineVertical.transform.position.y < 0.01 && !animFinished)
                     {
                         if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn)
                         {
-                            if (lineHorizontal != null)
-                                lineHorizontal.GetComponent<Renderer>().enabled = false;
-                            if (lineVertical != null)
-                                lineVertical.GetComponent<Renderer>().enabled = false;
+                            if (newLineHorizontal != null)
+                                newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                            if (newLineVertical != null)
+                                newLineVertical.GetComponent<Renderer>().enabled = false;
                             GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                             GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
                             GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -584,35 +584,35 @@ public class PlayerClick : PunBehaviour
             }
             if (animFinished)
             {
-                if (lineHorizontal != null)
-                    lineHorizontal.GetComponent<Renderer>().enabled = false;
-                if (lineVertical != null)
-                    lineVertical.GetComponent<Renderer>().enabled = false;
+                if (newLineHorizontal != null)
+                    newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                if (newLineVertical != null)
+                    newLineVertical.GetComponent<Renderer>().enabled = false;
                 GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
             }
             yield return new WaitForSeconds(0.01f);
         }
         if (animFinished)
         {
-            if (lineHorizontal != null)
-                lineHorizontal.GetComponent<Renderer>().enabled = false;
-            if (lineVertical != null)
-                lineVertical.GetComponent<Renderer>().enabled = false;
+            if (newLineHorizontal != null)
+                newLineHorizontal.GetComponent<Renderer>().enabled = false;
+            if (newLineVertical != null)
+                newLineVertical.GetComponent<Renderer>().enabled = false;
             GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
         }
     }
     //Spawn a temporary square for an animation
     void SpawnSquareForAnim(string square)
     {
-        centerSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
-        centerSquare.name = "tempSquare";
-        centerSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z);
-        centerSquare.transform.rotation = GameObject.Find(square).transform.rotation;
-        centerSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
-        centerSquare.GetComponent<Renderer>().material = lineMat;
-        centerSquare.GetComponent<Renderer>().material.SetColor("_MKGlowColor", squareColor);
-        centerSquare.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
-        //GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(centerSquare);
+        newSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
+        newSquare.name = "tempSquare";
+        newSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z);
+        newSquare.transform.rotation = GameObject.Find(square).transform.rotation;
+        newSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
+        newSquare.GetComponent<Renderer>().material = lineMat;
+        newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowColor", squareColor);
+        newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newSquare);
 
 
     }
@@ -620,20 +620,20 @@ public class PlayerClick : PunBehaviour
     IEnumerator StartSquareAnim(string square)
     {
         SpawnSquareForAnim(square);
-        while (!squareAnimFinished && centerSquare != null)
+        while (!squareAnimFinished && newSquare != null)
         {
             //Lerp the square location and rotation for a smooth animation
-            centerSquare.transform.rotation = Quaternion.Slerp(centerSquare.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
-            if (centerSquare.transform.position.y > 0)
+            newSquare.transform.rotation = Quaternion.Slerp(newSquare.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+            if (newSquare.transform.position.y > 0)
             {
-                centerSquare.transform.position = Vector3.Lerp(centerSquare.transform.position, new Vector3(centerSquare.transform.position.x, 0, centerSquare.transform.position.z), Time.deltaTime * lerpRate);
+                newSquare.transform.position = Vector3.Lerp(newSquare.transform.position, new Vector3(newSquare.transform.position.x, 0, newSquare.transform.position.z), Time.deltaTime * lerpRate);
             }
-            if (centerSquare.transform.position.y < 0.01 && !squareAnimFinished)
+            if (newSquare.transform.position.y < 0.01 && !squareAnimFinished)
             {
                 if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn)
                 {
-                    if (centerSquare != null)
-                        centerSquare.GetComponent<Renderer>().enabled = false;
+                    if (newSquare != null)
+                        newSquare.GetComponent<Renderer>().enabled = false;
                     GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                     GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
                     GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -645,8 +645,8 @@ public class PlayerClick : PunBehaviour
             }
             if (squareAnimFinished)
             {
-                if (centerSquare != null)
-                    centerSquare.GetComponent<Renderer>().enabled = false;
+                if (newSquare != null)
+                    newSquare.GetComponent<Renderer>().enabled = false;
             }
             yield return new WaitForSeconds(0.01f);
         }
