@@ -237,6 +237,7 @@ public class GameStart : PunBehaviour
     {
         gameObject.GetComponent<PlayerTurn>().enabled = true;
         gameObject.GetComponent<TurnTimer>().enabled = true;
+        buildGrid = false;
         PhotonNetwork.RaiseEvent(0, null, true, null);
     }
     [PunRPC]

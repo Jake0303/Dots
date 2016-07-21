@@ -25,6 +25,7 @@ public class LineHover : PunBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
+                    && hit.collider.GetComponent<LinePlaced>() != null
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == false
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)

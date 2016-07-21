@@ -26,15 +26,12 @@ public class TurnTimer : PunBehaviour
         if (stream.isWriting)
         {
             // We own this player: send the others our data
-            //Syncing player turn
             stream.SendNext(timer);
-            stream.SendNext(nextTurn);
         }
         else
         {
             // Network player, receive data
             this.timer = (float)stream.ReceiveNext();
-            this.nextTurn = (bool)stream.ReceiveNext();
         }
     }
     // Update is called once per frame
@@ -94,8 +91,6 @@ public class TurnTimer : PunBehaviour
             //End game if the majority of possible squares are made
             foreach (var player in players)
             {
-                if (player.GetComponent<UIManager>().routine != null)
-                    //player.GetComponent<UIManager>().StopCoroutine(player.GetComponent<UIManager>().routine);
                 if (player.GetComponent<PlayerID>().isPlayersTurn)
                 {
                     for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
@@ -144,8 +139,8 @@ public class TurnTimer : PunBehaviour
                                     //if we found the next player, exit the for loop
                                     break;
                                 }
-                                //Else, just increase by 1 to the next turn
                             }
+                            //Else, just increase by 1 to the next turn
                             else
                             {
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder - player.GetComponent<PlayerID>().playerTurnOrder == 1)
@@ -170,6 +165,7 @@ public class TurnTimer : PunBehaviour
     [PunRPC]
     void RpcChangePlayerTurn(string nextPlayer, string lastPlayer)
     {
+        Debug.Log("Turn changed!");
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
     }

@@ -96,7 +96,6 @@ public class PlayerClick : PunBehaviour
             this.squareID = (string)stream.ReceiveNext();
         }
     }
-    [PunRPC]
     void CmdNextTurn()
     {
         if (!pointScored)
@@ -111,7 +110,6 @@ public class PlayerClick : PunBehaviour
 
             }
             photonView.RPC("RpcSameTurn", PhotonTargets.AllBuffered);
-            pointScored = false;
         }
     }
     [PunRPC]
@@ -503,7 +501,7 @@ public class PlayerClick : PunBehaviour
         while (!animFinished)
         {
             //Lerp the lines location and rotation for a smooth animation
-            if (newLineHorizontal != null && GameObject.Find(objectID).name.Contains("Horizontal"))
+            if (newLineHorizontal != null && objectID != null && GameObject.Find(objectID).name.Contains("Horizontal"))
             {
                 newLineHorizontal.transform.rotation = Quaternion.Slerp(newLineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
                 if (newLineHorizontal.transform.position.y > 0)
@@ -531,7 +529,7 @@ public class PlayerClick : PunBehaviour
                         CheckIfSquareIsMade(hit);
                         if (!pointScored)
                         {
-                            photonView.RPC("CmdNextTurn", PhotonTargets.AllBuffered);
+                            CmdNextTurn();
                         }
                     }
                 }
@@ -574,7 +572,7 @@ public class PlayerClick : PunBehaviour
                             CheckIfSquareIsMade(hit);
                             if (!pointScored)
                             {
-                                photonView.RPC("CmdNextTurn", PhotonTargets.AllBuffered);
+                                CmdNextTurn();
                             }
                         }
 
@@ -639,7 +637,7 @@ public class PlayerClick : PunBehaviour
                     GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
                     GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                     photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered);
-                    photonView.RPC("CmdNextTurn", PhotonTargets.AllBuffered);
+                    CmdNextTurn();
                     squareAnimFinished = true;
                 }
             }
