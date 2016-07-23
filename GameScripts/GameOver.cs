@@ -12,6 +12,7 @@ public class GameOver : PunBehaviour
 {
     public bool gameOver = false;
     public string winner = "";
+    private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -36,7 +37,6 @@ public class GameOver : PunBehaviour
         {
             StartCoroutine("DisplayWinner");
             GetComponent<GameState>().gameState = GameState.State.GameOver;
-
         }
     }
     void OnWinnerChanged(string theWinner)
@@ -90,6 +90,7 @@ public class GameOver : PunBehaviour
             player.GetComponent<PlayerID>().playerScore = 0;
             player.GetComponent<PlayerID>().playerTurnOrder = 0;
             player.GetComponent<PlayerID>().showWinner = true;
+            GameObject.Find(player.GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
             for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
             {
                 if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)

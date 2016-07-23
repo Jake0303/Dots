@@ -11,6 +11,8 @@ public class TurnTimer : PunBehaviour
     public bool nextTurn = false;
     private bool isGameOver;
     private GameObject[] timerTexts;
+    private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
+
     // Use this for initialization
     void Start()
     {
@@ -135,7 +137,7 @@ public class TurnTimer : PunBehaviour
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
                                     if (photonView.isMine)
-                                        photonView.RPC("RpcChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
+                                        photonView.RPC("RpcChangePlayerTurn", PhotonTargets.AllBuffered, nextPlayer.name, player.name);
                                     //if we found the next player, exit the for loop
                                     break;
                                 }
@@ -146,7 +148,7 @@ public class TurnTimer : PunBehaviour
                                 if (nextPlayer.GetComponent<PlayerID>().playerTurnOrder - player.GetComponent<PlayerID>().playerTurnOrder == 1)
                                 {
                                     if (photonView.isMine)
-                                        photonView.RPC("RpcChangePlayerTurn", PhotonTargets.AllBuffered,nextPlayer.name, player.name);
+                                        photonView.RPC("RpcChangePlayerTurn", PhotonTargets.AllBuffered, nextPlayer.name, player.name);
                                     //if we found the next player, exit the for loop
                                     break;
                                 }
@@ -157,7 +159,6 @@ public class TurnTimer : PunBehaviour
                     break;
                 }
             }
-            PhotonNetwork.RaiseEvent(0, null, true, null);
             ResetTimer();
         }
     }
@@ -165,8 +166,15 @@ public class TurnTimer : PunBehaviour
     [PunRPC]
     void RpcChangePlayerTurn(string nextPlayer, string lastPlayer)
     {
+        PhotonNetwork.RaiseEvent(0, null, true, null);
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
+            .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
+        GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!", true);
+
         GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
+        GameObject.Find(GameObject.Find(lastPlayer).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
+        GameObject.Find(lastPlayer).GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
     }
     //Reset the turn timer
     public void ResetTimer()

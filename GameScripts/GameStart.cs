@@ -31,6 +31,8 @@ public class GameStart : PunBehaviour
     public List<GameObject> objectsToDelete = new List<GameObject>();
     private PhotonView photonView;
     private int viewID;
+    private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
+
     void Start()
     {
         photonView = this.GetComponent<PhotonView>();
@@ -63,12 +65,13 @@ public class GameStart : PunBehaviour
     {
         yield return new WaitForSeconds(GLOBALS.GAMESTARTDELAY);
         StartCoroutine(CreateGrid());
-        photonView.RPC("BuildGridText", PhotonTargets.AllBuffered);
     }
     void Update()
     {
         if (startGame && PhotonNetwork.isMasterClient)
         {
+            photonView.RPC("BuildGridText", PhotonTargets.AllBuffered);
+            PhotonNetwork.RaiseEvent(1, null, true, null);
             GetComponent<GameState>().gameState = GameState.State.BuildingGrid;
             StartCoroutine(StartGame());
             //Build the grid of dots
@@ -77,7 +80,6 @@ public class GameStart : PunBehaviour
             lineVert.GetComponent<Renderer>().enabled = false;
             //centerSquareuare.GetComponent<Renderer>().enabled = false;
             startGame = false;
-
         }
     }
 
@@ -201,7 +203,7 @@ public class GameStart : PunBehaviour
             photonView.RPC("RpcEnableTimer", PhotonTargets.AllBuffered);
             AssignTurnsAndColors();
             GetComponent<GameState>().gameState = GameState.State.InProgress;
-            buildGrid = false;
+            photonView.RPC("GridCompleted", PhotonTargets.AllBuffered);
     }
 
     //Destroy the grid
@@ -223,6 +225,9 @@ public class GameStart : PunBehaviour
     void RpcDisableTurn(string playerID)
     {
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = false;
+        GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = false;
+        GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
+        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
     }
 
     //Tell all clients who turn it is
@@ -230,20 +235,32 @@ public class GameStart : PunBehaviour
     void RpcSetFirstTurn(string playerID)
     {
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
+            .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
+        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!", true);
     }
     [PunRPC]
     //Tell the server the timer has started
     void RpcEnableTimer()
     {
+        PhotonNetwork.RaiseEvent(0, null, true, null);
         gameObject.GetComponent<PlayerTurn>().enabled = true;
         gameObject.GetComponent<TurnTimer>().enabled = true;
         buildGrid = false;
-        PhotonNetwork.RaiseEvent(0, null, true, null);
     }
     [PunRPC]
-    //Tell the server the timer has started
+    //Tell the server the grid is of dots is being built
     void BuildGridText()
     {
         PhotonNetwork.RaiseEvent(1, null, true, null);
+        buildGrid = true;
+    }
+    [PunRPC]
+    //Tell the server the grid is done
+    void GridCompleted()
+    {
+        PhotonNetwork.RaiseEvent(10, null, true, null);
+        buildGrid = false;
     }
 }

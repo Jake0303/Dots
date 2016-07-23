@@ -10,7 +10,7 @@ public class PlayerID : PunBehaviour
     public string playerID;
     public bool isPlayersTurn = false;
     public bool winner = false;
-    
+
     public int playerTurnOrder = 0;
     public int playerScore = 0;
     private Transform myTransform;
@@ -74,15 +74,10 @@ public class PlayerID : PunBehaviour
         //If a turn has changed
         if (eventcode == 0)
         {
-            if (isPlayersTurn && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
-                showPopup = true;
-            else if (GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
-                showPopup = false;
-            else if (!isPlayersTurn)
-                this.GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
+           
         }
         //Building grid
-        else if(eventcode == 1)
+        else if (eventcode == 1)
         {
             this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
         }
@@ -116,7 +111,7 @@ public class PlayerID : PunBehaviour
 
     public override void OnJoinedRoom()
     {
- 	    base.OnJoinedRoom();
+        base.OnJoinedRoom();
         names = GameObject.FindGameObjectsWithTag("NameText");
         SetIdentity();
     }
@@ -154,24 +149,6 @@ public class PlayerID : PunBehaviour
         {
             SetIdentity();
         }
-        //Update panel to green if its the players turn
-        if (isPlayersTurn && playersPanel != "")
-        {
-            GameObject.Find(playersPanel).GetComponent<Image>().color = GetComponent<PlayerColor>().playerColor;
-            if (photonView.isMine)
-            {
-                if (showPopup)
-                {
-                    this.GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!", true);
-                    showPopup = false;
-                }
-            }
-
-        }
-        else if (!isPlayersTurn && playersPanel != "")
-        {
-            GameObject.Find(playersPanel).GetComponent<Image>().color = new Color(0.5f, 0.5f, 0.5f, 0.6f);
-        }
         //If the use presses enter set the player name and join the game
         if (Input.GetKeyDown(KeyCode.Return))
         {
@@ -181,7 +158,7 @@ public class PlayerID : PunBehaviour
             }
         }
         //If gameover display the winner
-        if (GameObject.Find("GameManager").GetComponent<GameOver>() != null && 
+        if (GameObject.Find("GameManager").GetComponent<GameOver>() != null &&
             GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
         {
             if (photonView.isMine && showWinner)

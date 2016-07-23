@@ -18,7 +18,7 @@ public class GLOBALS : MonoBehaviour {
     public static string GameName = "Dots";
     //Points to win game
     //(((GameStart.gridWidth - 1) * (GameStart.gridHeight - 1) / 2)+1)
-    public const  int POINTSTOWIN = 2;
+    public const  int POINTSTOWIN = 1;
     //GridWidth
     public const int GRIDWIDTH = 5;
     //GridHeight
