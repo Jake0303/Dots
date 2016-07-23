@@ -88,6 +88,23 @@ public class UIManager : PunBehaviour
                     }
                 }
             }
+            foreach (var player in players)
+            {
+                for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+                {
+                    if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                    {
+                        foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                        {
+                            if (scores.name.Contains((i + 1).ToString()))
+                            {
+                                //Update UI with score
+                                scores.GetComponent<Text>().text = player.GetComponent<PlayerID>().playerScore.ToString();
+                            }
+                        }
+                    }
+                }
+            }
             GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
         }
     }

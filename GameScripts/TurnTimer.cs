@@ -165,7 +165,6 @@ public class TurnTimer : PunBehaviour
     [PunRPC]
     void RpcChangePlayerTurn(string nextPlayer, string lastPlayer)
     {
-        Debug.Log("Turn changed!");
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
     }

@@ -66,7 +66,6 @@ public class PlayerID : PunBehaviour
             tempButton.transform.SetParent(goPanel.transform, false);
             tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg));
         }
-
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
     }
@@ -103,21 +102,7 @@ public class PlayerID : PunBehaviour
             }
             //Syncing players UI panel
             stream.SendNext(playersPanel);
-            for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-            {
-                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
-                {
-                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
-                    {
-                        if (scores.name.Contains((i + 1).ToString()))
-                        {
-                            //Update UI with score
-                            scores.GetComponent<Text>().text = playerScore.ToString();
-                            return;
-                        }
-                    }
-                }
-            }
+            stream.SendNext(playerScore);
         }
         else
         {
@@ -125,6 +110,7 @@ public class PlayerID : PunBehaviour
             this.isPlayersTurn = (bool)stream.ReceiveNext();
             this.nameSet = (bool)stream.ReceiveNext();
             this.playersPanel = (string)stream.ReceiveNext();
+            this.playerScore = (int)stream.ReceiveNext();
         }
     }
 
@@ -133,27 +119,6 @@ public class PlayerID : PunBehaviour
  	    base.OnJoinedRoom();
         names = GameObject.FindGameObjectsWithTag("NameText");
         SetIdentity();
-    }
-    void OnScoreChanged(int score)
-    {
-        playerScore = score;
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-        {
-            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
-            {
-                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
-                {
-                    if (scores.name.Contains((i + 1).ToString()))
-                    {
-                        //Update UI with score
-                        scores.GetComponent<Text>().text = score.ToString();
-                        return;
-                    }
-                }
-            }
-        }
-        if (photonView.isMine)
-            photonView.RPC("CmdTellServerMyScore", PhotonTargets.AllBuffered, playerScore);
     }
     [PunRPC]
     void CmdTellServerMyScore(int score)
@@ -265,7 +230,6 @@ public class PlayerID : PunBehaviour
     {
         playerID = name;
         myTransform.name = playerID;
-        //RpcTellClientsMyName(name);
     }
     [PunRPC]
     public void RpcTellClientsMyName(string name)

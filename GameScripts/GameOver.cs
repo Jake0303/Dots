@@ -94,6 +94,15 @@ public class GameOver : PunBehaviour
             {
                 if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
                 {
+                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                    {
+                        //Reset scores
+                        if (scores.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with score
+                            scores.GetComponent<Text>().text = player.GetComponent<PlayerID>().playerScore.ToString();
+                        }
+                    }
                     foreach (var timerText in timerTexts)
                     {
                         timerText.GetComponent<Text>().text = "";
