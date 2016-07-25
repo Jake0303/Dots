@@ -611,8 +611,6 @@ public class PlayerClick : PunBehaviour
         newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowColor", squareColor);
         newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newSquare);
-
-
     }
     //Play the square animation of falling from the sky and rotating
     IEnumerator StartSquareAnim(string square)

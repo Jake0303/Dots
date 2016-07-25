@@ -35,8 +35,10 @@ public class GameOver : PunBehaviour
     {
         if (gameOver)
         {
-            StartCoroutine("DisplayWinner");
+            DisplayWinner();
             GetComponent<GameState>().gameState = GameState.State.GameOver;
+            StartCoroutine("DelayBeforeRestart");
+            gameOver = false;
         }
     }
     void OnWinnerChanged(string theWinner)
@@ -44,7 +46,7 @@ public class GameOver : PunBehaviour
         winner = theWinner;
     }
     //Display the winner of the game
-    IEnumerator DisplayWinner()
+    void DisplayWinner()
     {
         var players = GameObject.FindGameObjectsWithTag("Player");
         List<int> scores = new List<int>();
@@ -62,13 +64,26 @@ public class GameOver : PunBehaviour
             {
                 winner = player.name;
                 player.GetComponent<PlayerID>().winner = true;
-
             }
             else
             {
                 player.GetComponent<PlayerID>().winner = false;
             }
         }
+        foreach (var player in players)
+        {
+            if (player.GetComponent<PlayerID>().winner)
+            {
+                player.GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
+            }
+            else
+            {
+                player.GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
+            }
+        }
+    }
+    IEnumerator DelayBeforeRestart()
+    {
         //Wait 5 seconds before resetting
         yield return new WaitForSeconds(5);
         StopAllCoroutines();

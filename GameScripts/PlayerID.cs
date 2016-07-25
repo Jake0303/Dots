@@ -157,23 +157,6 @@ public class PlayerID : PunBehaviour
                 this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg);
             }
         }
-        //If gameover display the winner
-        if (GameObject.Find("GameManager").GetComponent<GameOver>() != null &&
-            GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
-        {
-            if (photonView.isMine && showWinner)
-            {
-                if (winner)
-                {
-                    GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
-                }
-                else
-                {
-                    GetComponent<UIManager>().DisplayPopupText(GameObject.Find("GameManager").GetComponent<GameOver>().winner + " has won the game!", true);
-                }
-                showWinner = false;
-            }
-        }
         if (tempField != null && photonView.isMine)
         {
             if (tempField.isFocused)
