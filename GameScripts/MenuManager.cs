@@ -17,14 +17,17 @@ public class MenuManager : MonoBehaviour {
         string period = ".";
         for (; ; )
         {
-            text.text = transitionText;
-            yield return new WaitForSeconds(0.25f);
-            text.text = transitionText + period;
-            yield return new WaitForSeconds(0.25f);
-            text.text = transitionText + period + period;
-            yield return new WaitForSeconds(0.25f);
-            text.text = transitionText + period + period + period;
-            yield return new WaitForSeconds(0.25f);
+            if (text != null)
+            {
+                text.text = transitionText;
+                yield return new WaitForSeconds(0.25f);
+                text.text = transitionText + period;
+                yield return new WaitForSeconds(0.25f);
+                text.text = transitionText + period + period;
+                yield return new WaitForSeconds(0.25f);
+                text.text = transitionText + period + period + period;
+                yield return new WaitForSeconds(0.25f);
+            }
         }
     }
 

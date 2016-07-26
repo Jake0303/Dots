@@ -31,11 +31,15 @@ public class NetworkManagerLocal : PunBehaviour
     //Join lobby
     public void JoinGame()
     {
+        string conn = "Connecting";
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         PhotonNetwork.JoinLobby();
     }
     public override void OnJoinedLobby()
     {
         base.OnJoinedLobby();
+        string conn = "Joining match";
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         //Tries to join any random game:
         PhotonNetwork.JoinRandomRoom();
         //Fails if there are no matching games: OnPhotonRandomJoinFailed
