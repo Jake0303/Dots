@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.Networking;
 using Photon;
+using UnityEngine.SceneManagement;
 
 
 public class UIManager : PunBehaviour
@@ -154,7 +155,8 @@ public class UIManager : PunBehaviour
             {
                 EscapeMenu = GameObject.Find("EscapeMenu");
                 EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
-                if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0))
+                if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0)
+                    && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
                     EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                     if (NetworkServer.connections.Count < 2)
@@ -162,7 +164,7 @@ public class UIManager : PunBehaviour
                         if (GLOBALS.ISNETWORKLOCAL)
                         {
                             EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => 
-                                PhotonNetwork.LeaveRoom());
+                                PhotonNetwork.Disconnect());
                         }
 
                     }
@@ -278,6 +280,7 @@ public class UIManager : PunBehaviour
                     break;
                 }
             }
+            SceneManager.LoadScene(0);
         }
     }
 
@@ -292,28 +295,6 @@ public class UIManager : PunBehaviour
             {
                 name.GetComponent<Text>().text = "Waiting for player";
                 break;
-            }
-        }
-        //RpcRemovePlayerFromList(indexToRemove);
-    }
-    [PunRPC]
-    void RpcRemovePlayerFromList(int indexToRemove)
-    {
-        var names = GameObject.FindGameObjectsWithTag("NameText");
-        foreach (var name in names)
-        {
-            if (name.name.Contains((indexToRemove + 1).ToString()))
-            {
-                name.GetComponent<Text>().text = "Waiting for player";
-                //Disconnect player 
-                if (photonView.isMine)
-                {
-                    if (GLOBALS.ISNETWORKLOCAL)
-                    {
-                        PhotonNetwork.LeaveRoom();
-                    }
-                    break;
-                }
             }
         }
     }

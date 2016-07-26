@@ -71,13 +71,8 @@ public class PlayerID : PunBehaviour
     }
     private void OnEvent(byte eventcode, object content, int senderid)
     {
-        //If a turn has changed
-        if (eventcode == 0)
-        {
-           
-        }
         //Building grid
-        else if (eventcode == 1)
+        if (eventcode == 1 && this != null)
         {
             this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
         }

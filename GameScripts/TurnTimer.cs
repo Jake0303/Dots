@@ -168,6 +168,7 @@ public class TurnTimer : PunBehaviour
     {
         PhotonNetwork.RaiseEvent(0, null, true, null);
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(nextPlayer).GetComponent<PlayerClick>().playingAnim = false;
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
         GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!", true);

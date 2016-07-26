@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Networking.NetworkSystem;
 using Photon;
+using UnityEngine.SceneManagement;
 
 public class NetworkManagerLocal : PunBehaviour
 {
@@ -11,15 +12,12 @@ public class NetworkManagerLocal : PunBehaviour
     private GameObject _playerPrefab = null;
     public bool AutoConnect = true;
 
-    public byte Version = 1;
     private bool ConnectInUpdate = true;
-    private PhotonView photonView;
 
     void Start()
     {
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
         PhotonNetwork.automaticallySyncScene = true;
-        photonView = this.GetComponent<PhotonView>();
 
     }
     void Update()
@@ -27,7 +25,7 @@ public class NetworkManagerLocal : PunBehaviour
         if (ConnectInUpdate && AutoConnect && !PhotonNetwork.connected)
         {
             ConnectInUpdate = false;
-            PhotonNetwork.ConnectUsingSettings(Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
+            PhotonNetwork.ConnectUsingSettings(GLOBALS.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
         }
     }
     //Join lobby
@@ -45,7 +43,7 @@ public class NetworkManagerLocal : PunBehaviour
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        if(PhotonNetwork.isMasterClient)
+        if (PhotonNetwork.isMasterClient)
             LoadLevel();
     }
     //If joining a match failed, create one
@@ -62,12 +60,13 @@ public class NetworkManagerLocal : PunBehaviour
         {
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TransitionToLobby()));
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
-            GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() =>  GameObject.Find("MenuManager").GetComponent<MenuManager>().Options()));
+            GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Options()));
             GameObject.Find("ExitButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().ExitGame()));
             GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Instructions()));
+            PhotonNetwork.ConnectUsingSettings(GLOBALS.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
         }
         //Game
-        else if(level == 1)
+        else if (level == 1)
         {
             GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
             SpawnPlayer();
@@ -80,13 +79,22 @@ public class NetworkManagerLocal : PunBehaviour
         PhotonNetwork.LoadLevel("Game");
     }
     //Let the player know if the opponent disconnected
-    public override void OnDisconnectedFromPhoton()
+    public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
- 	    base.OnDisconnectedFromPhoton();
-        GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-        GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
-        //TODO add disconnect popup
-        //GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+        base.OnDisconnectedFromPhoton();
+        if (GameObject.Find("EscapeMenu") != null)
+        {
+            GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+            GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
+            //TODO add disconnect popup
+            GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+        }
+    }
+
+    void DisconnectPlayer()
+    {
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene(0);
     }
     //Spawn the player
     void SpawnPlayer()
@@ -96,6 +104,6 @@ public class NetworkManagerLocal : PunBehaviour
 
     void SpawnOnNetwork(Vector3 pos, Quaternion rot)
     {
-        GameObject newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", pos, rot,0);
+        GameObject newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", pos, rot, 0);
     }
 }

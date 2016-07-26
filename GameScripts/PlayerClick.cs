@@ -78,7 +78,6 @@ public class PlayerClick : PunBehaviour
         {
             // We own this player: send the others our data
             stream.SendNext(pointScored);
-            stream.SendNext(playingAnim);
             stream.SendNext(playingSquareAnim);
             stream.SendNext(animFinished);
             stream.SendNext(squareAnimFinished);
@@ -89,7 +88,6 @@ public class PlayerClick : PunBehaviour
         {
             // Network player, receive data
             this.pointScored = (bool)stream.ReceiveNext();
-            this.playingAnim = (bool)stream.ReceiveNext();
             this.playingSquareAnim= (bool)stream.ReceiveNext();
             this.animFinished = (bool)stream.ReceiveNext();
             this.squareAnimFinished = (bool)stream.ReceiveNext();
@@ -118,6 +116,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
         GetComponent<PlayerID>().isPlayersTurn = true;
         pointScored = false;
+        playingAnim = false;
     }
     [PunRPC]
     void RpcNextTurn()
@@ -175,13 +174,6 @@ public class PlayerClick : PunBehaviour
     void CmdStopAnim()
     {
         animFinished = true;
-        playingAnim = false;
-    }
-    [PunRPC]
-    void RpcPlayAnim()
-    {
-        playingAnim = true;
-        animFinished = false;
     }
     //On click place a line at the mouse location
     [PunRPC]
@@ -433,7 +425,11 @@ public class PlayerClick : PunBehaviour
     void Update()
     {
         //Must be the players turn to place a line
-        if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn && Input.GetMouseButtonDown(0))
+        if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn 
+            && Input.GetMouseButtonDown(0)
+            && GameObject.Find("EscapeMenu") != null
+            //Escape Menu not open
+            && GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0))
         {
             //empty RaycastHit object which raycast puts the hit details into
             hit = new RaycastHit();
@@ -524,12 +520,16 @@ public class PlayerClick : PunBehaviour
                         GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                         photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
-                        photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                         animFinished = true;
                         CheckIfSquareIsMade(hit);
                         if (!pointScored)
                         {
                             CmdNextTurn();
+                            photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
+                        }
+                        else
+                        {
+                            photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                         }
                     }
                 }
@@ -567,12 +567,16 @@ public class PlayerClick : PunBehaviour
                             GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                             photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
-                            photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                             animFinished = true;
                             CheckIfSquareIsMade(hit);
                             if (!pointScored)
                             {
                                 CmdNextTurn();
+                                photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
+                            }
+                            else
+                            {
+                                photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                             }
                         }
 

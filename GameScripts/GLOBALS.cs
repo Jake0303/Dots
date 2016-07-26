@@ -18,11 +18,14 @@ public class GLOBALS : MonoBehaviour {
     public static string GameName = "Dots";
     //Points to win game
     //(((GameStart.gridWidth - 1) * (GameStart.gridHeight - 1) / 2)+1)
-    public const  int POINTSTOWIN = 1;
+    public const  int POINTSTOWIN = 2;
     //GridWidth
     public const int GRIDWIDTH = 5;
     //GridHeight
     public const int GRIDHEIGHT = 5;
     //The distance between each dot
     public const float DOTDISTANCE = 11.0f;
+    //Version of the game
+    public const byte Version = 1;
+
 }
