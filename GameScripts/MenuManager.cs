@@ -15,20 +15,30 @@ public class MenuManager : MonoBehaviour {
        
         transitionText = text.text;
         string period = ".";
+        yield return new WaitForSeconds(0.25f);
+        /*
         for (; ; )
         {
             if (text != null)
             {
                 text.text = transitionText;
-                yield return new WaitForSeconds(0.25f);
+            }
+            if (text != null)
+            {
                 text.text = transitionText + period;
                 yield return new WaitForSeconds(0.25f);
+            }
+            if (text != null)
+            {
                 text.text = transitionText + period + period;
                 yield return new WaitForSeconds(0.25f);
+            }
+            if (text != null)
+            {
                 text.text = transitionText + period + period + period;
                 yield return new WaitForSeconds(0.25f);
             }
-        }
+        }*/
     }
 
     //Fade text animation for the connecting text
@@ -78,6 +88,7 @@ public class MenuManager : MonoBehaviour {
         GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
         GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
+        GameObject.Find("InstructionsButton").GetComponent<Button>().enabled = false;
         GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
     }
