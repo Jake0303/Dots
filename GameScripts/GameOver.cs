@@ -92,6 +92,14 @@ public class GameOver : PunBehaviour
     //Reset the game
     void ResetGame()
     {
+        foreach(var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
+        {
+            tempObj.GetComponent<Renderer>().enabled = false;
+        }
+        foreach (var tempObj in GameObject.FindGameObjectsWithTag("Line"))
+        {
+            tempObj.GetComponent<Renderer>().enabled = false;
+        }
         GameObject.Find("GameManager").GetComponent<GameStart>().DestroyGrid();
         var players = GameObject.FindGameObjectsWithTag("Player");
         var timerTexts = GameObject.FindGameObjectsWithTag("TimerText");

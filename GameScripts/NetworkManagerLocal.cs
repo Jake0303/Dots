@@ -12,7 +12,7 @@ public class NetworkManagerLocal : PunBehaviour
     private GameObject _playerPrefab = null;
     public bool AutoConnect = true;
 
-    private bool ConnectInUpdate = true;
+    private bool ConnectInUpdate = false;
 
     void Start()
     {
@@ -24,26 +24,46 @@ public class NetworkManagerLocal : PunBehaviour
     {
         if (ConnectInUpdate && AutoConnect && !PhotonNetwork.connected)
         {
-            ConnectInUpdate = false;
+            string conn = "Connecting";
+            GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
             PhotonNetwork.ConnectUsingSettings(GLOBALS.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
+            ConnectInUpdate = false;
+
         }
     }
     //Join lobby
     public void JoinGame()
     {
-        string conn = "Connecting";
-        GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
-        PhotonNetwork.JoinLobby();
+        ConnectInUpdate = true;
     }
-    public override void OnJoinedLobby()
+    public override void OnConnectedToMaster()
     {
-        base.OnJoinedLobby();
+        base.OnConnectedToMaster();
+
         string conn = "Joining match";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         //Tries to join any random game:
         PhotonNetwork.JoinRandomRoom();
         //Fails if there are no matching games: OnPhotonRandomJoinFailed
     }
+    public override void OnFailedToConnectToPhoton(DisconnectCause cause)
+    {
+        base.OnFailedToConnectToPhoton(cause);
+        string conn = "There is a Network Issue, please check your Internet connection.";
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
+        GameObject.Find("BackToMenuButton").SetActive(true);
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+    }
+
+    public override void OnConnectionFail(DisconnectCause cause)
+    {
+        base.OnConnectionFail(cause);
+        string conn = "Our servers are full! Please try again later.";
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
+        GameObject.Find("BackToMenuButton").SetActive(true);
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+    }
+
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
@@ -67,7 +87,6 @@ public class NetworkManagerLocal : PunBehaviour
             GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Options()));
             GameObject.Find("ExitButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().ExitGame()));
             GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Instructions()));
-            PhotonNetwork.ConnectUsingSettings(GLOBALS.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
         }
         //Game
         else if (level == 1)

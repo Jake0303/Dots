@@ -14,9 +14,9 @@ public class PlayerClick : PunBehaviour
     [SerializeField]
     public Material lineMat;
     //Radius of the square hitbox
-    
+
     private float squareRadius = GLOBALS.DOTDISTANCE / 2;
-    
+
     private Color objectColor, squareColor;
     public string objectID;
     public string squareID;
@@ -31,9 +31,11 @@ public class PlayerClick : PunBehaviour
     private Collider[] hitCollidersBottom;
     private GameObject[] scores;
     public bool pointScored = false;
+    private bool isPointScored = false;
+    private bool doubleSquare = false;
     [SerializeField]
     public GameObject lineHorizontal, lineVertical, centerSquare;
-    private GameObject newLineHorizontal, newLineVertical, newSquare;
+    private GameObject newLineHorizontal, newLineVertical;
     [SerializeField]
     public GameObject line, square;
     /*
@@ -80,7 +82,6 @@ public class PlayerClick : PunBehaviour
             stream.SendNext(pointScored);
             stream.SendNext(playingSquareAnim);
             stream.SendNext(animFinished);
-            stream.SendNext(squareAnimFinished);
             stream.SendNext(squareID);
 
         }
@@ -88,9 +89,8 @@ public class PlayerClick : PunBehaviour
         {
             // Network player, receive data
             this.pointScored = (bool)stream.ReceiveNext();
-            this.playingSquareAnim= (bool)stream.ReceiveNext();
+            this.playingSquareAnim = (bool)stream.ReceiveNext();
             this.animFinished = (bool)stream.ReceiveNext();
-            this.squareAnimFinished = (bool)stream.ReceiveNext();
             this.squareID = (string)stream.ReceiveNext();
         }
     }
@@ -161,7 +161,7 @@ public class PlayerClick : PunBehaviour
         playingSquareAnim = true;
         if (playingSquareAnim)
         {
-            StartCoroutine(StartSquareAnim(squareID));
+            StartCoroutine("StartSquareAnim", squareID);
         }
     }
     [PunRPC]
@@ -249,7 +249,6 @@ public class PlayerClick : PunBehaviour
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersRight);
                 GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
-                pointScored = true;
             }
 
             //Left hitbox
@@ -275,7 +274,6 @@ public class PlayerClick : PunBehaviour
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersLeft);
                 GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
-                pointScored = true;
 
             }
         }
@@ -305,7 +303,6 @@ public class PlayerClick : PunBehaviour
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersBottom);
                 GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
-                pointScored = true;
 
             }
             Vector3 centerOfSquareTop = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z - (GLOBALS.DOTDISTANCE / 2));
@@ -330,8 +327,6 @@ public class PlayerClick : PunBehaviour
                 hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
                 PaintSquare(hitCollidersTop);
                 GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
-                pointScored = true;
-
             }
         }
 
@@ -384,8 +379,12 @@ public class PlayerClick : PunBehaviour
             square.GetComponent<Renderer>().material = lineMat;
             square.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+            //Determine if double square
+            if (pointScored)
+            {
+                doubleSquare = true;
+            }
             pointScored = true;
-            //RpcPaintSquare(square);
         }
     }
     //Tell the clients to paint the square
@@ -425,7 +424,7 @@ public class PlayerClick : PunBehaviour
     void Update()
     {
         //Must be the players turn to place a line
-        if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn 
+        if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn
             && Input.GetMouseButtonDown(0)
             && GameObject.Find("EscapeMenu") != null
             //Escape Menu not open
@@ -450,7 +449,7 @@ public class PlayerClick : PunBehaviour
                     objectColor = GetComponent<PlayerColor>().playerColor;
                     GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                     photonView.RPC("CmdSelectObject", PhotonTargets.AllBuffered, hit.collider.name);
-                    photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered,hit.collider.name);
+                    photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, hit.collider.name);
                 }
             }
         }
@@ -604,9 +603,9 @@ public class PlayerClick : PunBehaviour
         }
     }
     //Spawn a temporary square for an animation
-    void SpawnSquareForAnim(string square)
+    GameObject SpawnSquareForAnim(string square)
     {
-        newSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
+        GameObject newSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
         newSquare.name = "tempSquare";
         newSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z);
         newSquare.transform.rotation = GameObject.Find(square).transform.rotation;
@@ -614,12 +613,13 @@ public class PlayerClick : PunBehaviour
         newSquare.GetComponent<Renderer>().material = lineMat;
         newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowColor", squareColor);
         newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newSquare);
+        return newSquare;
     }
     //Play the square animation of falling from the sky and rotating
     IEnumerator StartSquareAnim(string square)
     {
-        SpawnSquareForAnim(square);
+        GameObject newSquare = SpawnSquareForAnim(square);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newSquare);
         while (!squareAnimFinished && newSquare != null)
         {
             //Lerp the square location and rotation for a smooth animation
@@ -632,8 +632,8 @@ public class PlayerClick : PunBehaviour
             {
                 if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn)
                 {
-                    if (newSquare != null)
-                        newSquare.GetComponent<Renderer>().enabled = false;
+                    //if (newSquare != null)
+                        //newSquare.GetComponent<Renderer>().enabled = false;
                     GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                     GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
                     GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -645,8 +645,8 @@ public class PlayerClick : PunBehaviour
             }
             if (squareAnimFinished)
             {
-                if (newSquare != null)
-                    newSquare.GetComponent<Renderer>().enabled = false;
+                //if (newSquare != null)
+                    //newSquare.GetComponent<Renderer>().enabled = false;
             }
             yield return new WaitForSeconds(0.01f);
         }

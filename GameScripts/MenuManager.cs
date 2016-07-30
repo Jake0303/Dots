@@ -5,9 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour {
     string transitionText;
+    public GameObject backButton;
     void Start()
     {
         GameObject.Find("GameName").GetComponent<Text>().text = GLOBALS.GameName;
+        backButton = GameObject.Find("BackToMenuButton");
+        backButton.SetActive(false);
+        //GameObject.Find("BackToMenuButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+        //GameObject.Find("BackToMenuButton").GetComponentInChildren<Text>().color = Color.clear;
     }
     //Dynamic period animation
     IEnumerator DynamicPeriods(Text text)
