@@ -14,7 +14,7 @@ using UnityEngine;
 /// <remarks>
 /// When entering a room, the first player will store the synchronized timestamp. 
 /// You can't set the room's synchronized time in CreateRoom, because the clock on the Master Server
-/// and those on the Game Servers are not in sync. We use many servers and each has it's own timer.
+/// and those on the Game Servers are not in sync. We use many servers and each has Its own timer.
 /// 
 /// Everyone else will join the room and check the property to calculate how much time passed since start.
 /// You can start a new round whenever you like.

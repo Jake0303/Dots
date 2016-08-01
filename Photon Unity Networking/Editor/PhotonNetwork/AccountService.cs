@@ -60,7 +60,7 @@ public class AccountService
     /// Check ReturnCode, Message and AppId to get the result of this attempt.
     /// </summary>
     /// <param name="email">Email of the account.</param>
-    /// <param name="origin">Marks which channel created the new account (if it's new).</param>
+    /// <param name="origin">Marks which channel created the new account (if Its new).</param>
     /// <param name="serviceType">Defines which type of Photon-service is being requested.</param>
     public void RegisterByEmail(string email, Origin origin, string serviceType = null)
     {
@@ -95,7 +95,7 @@ public class AccountService
     /// Once your callback is called, check ReturnCode, Message and AppId to get the result of this attempt.
     /// </summary>
     /// <param name="email">Email of the account.</param>
-    /// <param name="origin">Marks which channel created the new account (if it's new).</param>
+    /// <param name="origin">Marks which channel created the new account (if Its new).</param>
     /// <param name="serviceType">Defines which type of Photon-service is being requested.</param>
     /// <param name="callback">Called when the result is available.</param>
     public void RegisterByEmailAsync(string email, Origin origin, string serviceType, Action<AccountService> callback = null)

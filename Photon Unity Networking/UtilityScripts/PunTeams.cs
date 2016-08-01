@@ -14,7 +14,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 /// </remarks>
 public class PunTeams : MonoBehaviour
 {
-    /// <summary>Enum defining the teams available. First team should be neutral (it's the default value any field of this enum gets).</summary>
+    /// <summary>Enum defining the teams available. First team should be neutral (Its the default value any field of this enum gets).</summary>
     public enum Team : byte {none, red, blue};
 
     /// <summary>The main list of teams with their player-lists. Automatically kept up to date.</summary>

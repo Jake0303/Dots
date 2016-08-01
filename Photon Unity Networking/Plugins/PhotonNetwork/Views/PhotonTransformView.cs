@@ -99,10 +99,10 @@ public class PhotonTransformView : MonoBehaviour, IPunObservable
     /// <summary>
     /// These values are synchronized to the remote objects if the interpolation mode
     /// or the extrapolation mode SynchronizeValues is used. Your movement script should pass on
-    /// the current speed (in units/second) and turning speed (in angles/second) so the remote
+    /// the current speed (in unIts/second) and turning speed (in angles/second) so the remote
     /// object can use them to predict the objects movement.
     /// </summary>
-    /// <param name="speed">The current movement vector of the object in units/second.</param>
+    /// <param name="speed">The current movement vector of the object in unIts/second.</param>
     /// <param name="turnSpeed">The current turn speed of the object in angles/second.</param>
     public void SetSynchronizedValues( Vector3 speed, float turnSpeed )
     {

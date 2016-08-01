@@ -40,7 +40,7 @@ public enum PhotonNetworkingMessage
     /// </summary>
     /// <remarks>
     /// This callback is only useful to detect if the server can be reached at all (technically).
-    /// Most often, it's enough to implement OnFailedToConnectToPhoton() and OnDisconnectedFromPhoton().
+    /// Most often, Its enough to implement OnFailedToConnectToPhoton() and OnDisconnectedFromPhoton().
     ///
     /// <i>OnJoinedLobby() or OnConnectedToMaster() are called when PUN is ready.</i>
     ///
@@ -292,7 +292,7 @@ public enum PhotonNetworkingMessage
     /// </summary>
     /// <remarks>
     /// When this happens, the user might try again later. You can't create or join rooms in OnPhotonMaxCcuReached(), cause the client will be disconnecting.
-    /// You can raise the CCU limits with a new license (when you host yourself) or extended subscription (when using the Photon Cloud).
+    /// You can raise the CCU limIts with a new license (when you host yourself) or extended subscription (when using the Photon Cloud).
     /// The Photon Cloud will mail you when the CCU limit was reached. This is also visible in the Dashboard (webpage).
     ///
     /// Example: void OnPhotonMaxCccuReached() { ... }
@@ -441,9 +441,9 @@ public enum PhotonTargets
     Others,
     /// <summary>Sends the RPC to MasterClient only. Careful: The MasterClient might disconnect before it executes the RPC and that might cause dropped RPCs.</summary>
     MasterClient,
-    /// <summary>Sends the RPC to everyone else and executes it immediately on this client. New players get the RPC when they join as it's buffered (until this client leaves).</summary>
+    /// <summary>Sends the RPC to everyone else and executes it immediately on this client. New players get the RPC when they join as Its buffered (until this client leaves).</summary>
     AllBuffered,
-    /// <summary>Sends the RPC to everyone. This client does not execute the RPC. New players get the RPC when they join as it's buffered (until this client leaves).</summary>
+    /// <summary>Sends the RPC to everyone. This client does not execute the RPC. New players get the RPC when they join as Its buffered (until this client leaves).</summary>
     OthersBuffered,
     /// <summary>Sends the RPC to everyone (including this client) through the server.</summary>
     /// <remarks>

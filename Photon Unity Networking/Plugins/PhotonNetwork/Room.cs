@@ -116,7 +116,7 @@ public class Room : RoomInfo
     }
 
     /// <summary>
-    /// Defines if the room is listed in its lobby.
+    /// Defines if the room is listed in Its lobby.
     /// Rooms can be created invisible, or changed to invisible.
     /// To change if a room can be joined, use property: open.
     /// </summary>
@@ -222,7 +222,7 @@ public class Room : RoomInfo
     /// 
     /// To delete a named (custom) property of this room, use null as value.
     /// 
-    /// Locally, SetCustomProperties will update it's cache without delay. 
+    /// Locally, SetCustomProperties will update Its cache without delay. 
     /// Other clients are updated through Photon (the server) with a fitting operation.
     /// 
     /// <b>Check and Swap</b>

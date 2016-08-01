@@ -33,7 +33,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
 
     private static Stopwatch timerToStopConnectionInBackground;
 
-    protected internal static bool AppQuits;
+    protected internal static bool AppQuIts;
 
     protected internal static Type PingImplementation = null;
 
@@ -56,7 +56,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
     /// <summary>Called by Unity when the application is closed. Disconnects.</summary>
     protected void OnApplicationQuit()
     {
-        PhotonHandler.AppQuits = true;
+        PhotonHandler.AppQuIts = true;
         PhotonHandler.StopFallbackSendAckThread();
         PhotonNetwork.Disconnect();
     }

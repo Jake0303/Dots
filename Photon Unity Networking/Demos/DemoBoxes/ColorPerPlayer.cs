@@ -9,7 +9,7 @@ using UnityEngine;
 /// <remarks>
 /// This script is but one possible implementation to have players select a color in a room.
 /// It uses a Custom Property per player to store currently selected colors.
-/// When a player joins and someone else didn't pick a color yet, this script waits.
+/// When a player joins and someone else didn't pick a color yet, this script waIts.
 /// When a color is selected or a player leaves, this scripts selects a color if it didn't do that before.
 ///
 /// This could be extended to provide easy access to each player's color. Alternatively, you could write
@@ -156,7 +156,7 @@ public class ColorPerPlayer : PunBehaviour
             return;
         }
 
-        // go through the list of available colors and check each if it's taken or not
+        // go through the list of available colors and check each if Its taken or not
         // pick the first color that's not taken
         for (int index = 0; index < this.Colors.Length; index++)
         {

@@ -186,7 +186,7 @@ public class ServerSettingsInspector : Editor
 
         if (GUI.changed)
         {
-            EditorUtility.SetDirty(target);     // even in Unity 5.3+ it's OK to SetDirty() for non-scene objects. 
+            EditorUtility.SetDirty(target);     // even in Unity 5.3+ Its OK to SetDirty() for non-scene objects. 
         }
     }
 

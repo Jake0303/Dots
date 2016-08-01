@@ -5,7 +5,7 @@ using UnityEngine;
 /// </summary>
 /// <remarks>
 /// Requires a PhotonView. 
-/// Disables itself on GameObjects that are not owned on Start.
+/// Disables Itself on GameObjects that are not owned on Start.
 /// 
 /// Speed affects movement-speed. 
 /// JumpForce defines how high the object "jumps". 

@@ -155,7 +155,7 @@ public class PhotonView : Photon.MonoBehaviour
         get { return this.viewIdField; }
         set
         {
-            // if ID was 0 for an awakened PhotonView, the view should add itself into the networkingPeer.photonViewList after setup
+            // if ID was 0 for an awakened PhotonView, the view should add Itself into the networkingPeer.photonViewList after setup
             bool viewMustRegister = this.didAwake && this.viewIdField == 0;
 
             // TODO: decide if a viewID can be changed once it wasn't 0. most likely that is not a good idea
@@ -309,7 +309,7 @@ public class PhotonView : Photon.MonoBehaviour
             loading = Application.isLoadingLevel;
             #endif
 
-            if (wasInList && !loading && this.instantiationId > 0 && !PhotonHandler.AppQuits && PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
+            if (wasInList && !loading && this.instantiationId > 0 && !PhotonHandler.AppQuIts && PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
             {
                 Debug.Log("PUN-instantiated '" + this.gameObject.name + "' got destroyed by engine. This is OK when loading levels. Otherwise use: PhotonNetwork.Destroy().");
             }
@@ -553,7 +553,7 @@ public class PhotonView : Photon.MonoBehaviour
     ///
     /// RPC calls can target "All" or the "Others".
     /// Usually, the target "All" gets executed locally immediately after sending the RPC.
-    /// The "*ViaServer" options send the RPC to the server and execute it on this client when it's sent back.
+    /// The "*ViaServer" options send the RPC to the server and execute it on this client when Its sent back.
     /// Of course, calls are affected by this client's lag and that of remote clients.
     ///
     /// Each call automatically is routed to the same PhotonView (and GameObject) that was used on the
@@ -578,7 +578,7 @@ public class PhotonView : Photon.MonoBehaviour
     ///
     /// RPC calls can target "All" or the "Others".
     /// Usually, the target "All" gets executed locally immediately after sending the RPC.
-    /// The "*ViaServer" options send the RPC to the server and execute it on this client when it's sent back.
+    /// The "*ViaServer" options send the RPC to the server and execute it on this client when Its sent back.
     /// Of course, calls are affected by this client's lag and that of remote clients.
     ///
     /// Each call automatically is routed to the same PhotonView (and GameObject) that was used on the

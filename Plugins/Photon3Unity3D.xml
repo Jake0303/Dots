@@ -171,7 +171,7 @@
         </member>
         <member name="T:ExitGames.Client.Photon.IPhotonPeerListener">
             <summary>
-            Callback interface for the Photon client side. Must be provided to a new PhotonPeer in its constructor.
+            Callback interface for the Photon client side. Must be provided to a new PhotonPeer in Its constructor.
             </summary>
             <remarks>
             These methods are used by your PhotonPeer instance to keep your app updated. Read each method's
@@ -205,7 +205,7 @@
             in use (room names are their IDs).
             
             This method is used as general callback for all operations. Each response corresponds to a certain 
-            &quot;type&quot; of operation by its OperationCode (see: <see cref="!:Operations" />).
+            &quot;type&quot; of operation by Its OperationCode (see: <see cref="!:Operations" />).
             <para></para>
             </remarks>
             <example>
@@ -238,7 +238,7 @@
             Events are used for communication between clients and allow the server to update clients over time. 
             The creation of an event is often triggered by an operation (called by this client or an other). 
             
-            Each event carries its specific content in its Parameters. Your application knows which content to
+            Each event carries Its specific content in Its Parameters. Your application knows which content to
             expect by checking the event's 'type', given by the event's Code.
             
             Events can be defined and extended server-side. 
@@ -393,7 +393,7 @@
         </member>
         <member name="F:ExitGames.Client.Photon.PeerBase.peerConnectionState">
             <summary>
-            This is the (low level) connection state of the peer. It's internal and based on eNet's states.
+            This is the (low level) connection state of the peer. Its internal and based on eNet's states.
             </summary>
             <remarks>Applications can read the "high level" state as PhotonPeer.PeerState, which uses a different enum.</remarks>
         </member>
@@ -582,7 +582,7 @@
             A PhotonPeer instance allows communication with the Photon Server, which in turn distributes messages
             to other PhotonPeer clients.<para></para>
             An application can use more than one PhotonPeer instance, which are treated as separate users on the
-            server. Each should have its own listener instance, to separate the operations, callbacks and events.
+            server. Each should have Its own listener instance, to separate the operations, callbacks and events.
             </remarks>
         </member>
         <member name="F:ExitGames.Client.Photon.PhotonPeer.NoSocket">
@@ -704,7 +704,7 @@
             <remarks>
             Sent reliable commands begin with SND. Their acknowledgements with ACK.
             ACKs list the reliable sequence number of the command they acknowledge (not their own).
-            Careful: This method should not be called frequently, as it's time- and memory-consuming to create the log.
+            Careful: This method should not be called frequently, as Its time- and memory-consuming to create the log.
             </remarks>
         </member>
         <member name="P:ExitGames.Client.Photon.PhotonPeer.QuickResendAttempts">
@@ -757,7 +757,7 @@
         </member>
         <member name="P:ExitGames.Client.Photon.PhotonPeer.LimitOfUnreliableCommands">
             <summary>
-            Limits the queue of received unreliable commands within DispatchIncomingCommands before dispatching them.
+            LimIts the queue of received unreliable commands within DispatchIncomingCommands before dispatching them.
             This works only in UDP.
             This limit is applied when you call DispatchIncomingCommands. If this client (already) received more than
             LimitOfUnreliableCommands, it will throw away the older ones instead of dispatching them. This can produce
@@ -845,7 +845,7 @@
             <summary>
             Sets the milliseconds without reliable command before a ping command (reliable) will be sent (Default: 1000ms).
             The ping command is used to keep track of the connection in case the client does not send reliable commands
-            by itself.
+            by Itself.
             A ping (or reliable commands) will update the RoundTripTime calculation.
             </summary>
         </member>
@@ -991,7 +991,7 @@
             </summary>
             <remarks>
             This value affects the Packet-content. The resulting UDP packages will have additional
-            headers that also count against the package size (so it's bigger than this limit in the end)
+            headers that also count against the package size (so Its bigger than this limit in the end)
             Setting this value while being connected is not allowed and will throw an Exception.
             Minimum is 576. Huge values won't speed up connections in most cases!
             </remarks>
@@ -999,7 +999,7 @@
         <member name="P:ExitGames.Client.Photon.PhotonPeer.IsEncryptionAvailable">
             <summary>
             This property is set internally, when OpExchangeKeysForEncryption successfully finished.
-            While it's true, encryption can be used for operations.
+            While Its true, encryption can be used for operations.
             </summary>
         </member>
         <member name="P:ExitGames.Client.Photon.PhotonPeer.IsSendingOnlyAcks">
@@ -1035,7 +1035,7 @@
              This method does a DNS lookup (if necessary) and connects to the given serverAddress.
             
              The return value gives you feedback if the address has the correct format. If so, this
-             starts the process to establish the connection itself, which might take a few seconds.
+             starts the process to establish the connection Itself, which might take a few seconds.
             
              When the connection is established, a callback to IPhotonPeerListener.OnStatusChanged
              will be done. If the connection can't be established, despite having a valid address,
@@ -1142,7 +1142,7 @@
              This method is also called by Service().
              </summary>
              <remarks>
-             As the Photon library does not create any UDP/TCP packages by itself. Instead, the application
+             As the Photon library does not create any UDP/TCP packages by Itself. Instead, the application
              fully controls how many packages are sent and when. A tradeoff, an application will
              lose connection, if it is no longer calling SendOutgoingCommands or Service.
             
@@ -1161,7 +1161,7 @@
             
              Call this 2..20 times per second (depending on your target platform).
              </remarks>
-             <returns>The if commands are not yet sent. Udp limits it's package size, Tcp doesnt.</returns>
+             <returns>The if commands are not yet sent. Udp limIts Its package size, Tcp doesnt.</returns>
         </member>
         <member name="M:ExitGames.Client.Photon.PhotonPeer.DispatchIncomingCommands">
              <summary>
@@ -1243,11 +1243,11 @@
              <remarks>
              Variant with an OperationRequest object.
             
-             This variant offers an alternative way to describe a operation request. Operation code and it's parameters
+             This variant offers an alternative way to describe a operation request. Operation code and Its parameters
              are wrapped up in a object. Still, the parameters are a Dictionary.
              </remarks>
              <param name="operationRequest">The operation to call on Photon.</param>
-             <param name="sendReliable">Use unreliable (false) if the call might get lost (when it's content is soon outdated).</param>
+             <param name="sendReliable">Use unreliable (false) if the call might get lost (when Its content is soon outdated).</param>
              <param name="channelId">Defines the sequence of requests this operation belongs to.</param>
              <param name="encrypt">Encrypt request before sending. Depends on IsEncryptionAvailable.</param>
              <returns>If operation could be enqueued for sending</returns>
@@ -1361,7 +1361,7 @@
         </member>
         <member name="M:ExitGames.Client.Photon.EventData.ToString">
             <summary>ToString() override.</summary>
-            <returns>Short output of "Event" and it's Code.</returns>
+            <returns>Short output of "Event" and Its Code.</returns>
         </member>
         <member name="M:ExitGames.Client.Photon.EventData.ToStringFull">
             <summary>Extensive output of the event content.</summary>

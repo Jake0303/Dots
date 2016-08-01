@@ -19,8 +19,8 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 /// Summarizes a "player" within a room, identified (in that room) by actorID.
 /// </summary>
 /// <remarks>
-/// Each player has an actorId (or ID), valid for that room. It's -1 until it's assigned by server.
-/// Each client can set it's player's custom properties with SetCustomProperties, even before being in a room.
+/// Each player has an actorId (or ID), valid for that room. Its -1 until Its assigned by server.
+/// Each client can set Its player's custom properties with SetCustomProperties, even before being in a room.
 /// They are synced when joining a room.
 /// </remarks>
 /// \ingroup publicApi
@@ -212,7 +212,7 @@ public class PhotonPlayer
     ///
     /// To delete a named (custom) property of this room, use null as value.
     ///
-    /// Locally, SetCustomProperties will update it's cache without delay.
+    /// Locally, SetCustomProperties will update Its cache without delay.
     /// Other clients are updated through Photon (the server) with a fitting operation.
     ///
     /// <b>Check and Swap</b>
@@ -333,7 +333,7 @@ public class PhotonPlayer
     }
 
     /// <summary>
-    /// Brief summary string of the PhotonPlayer. Includes name or player.ID and if it's the Master Client.
+    /// Brief summary string of the PhotonPlayer. Includes name or player.ID and if Its the Master Client.
     /// </summary>
     public override string ToString()
     {

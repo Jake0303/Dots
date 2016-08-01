@@ -10,7 +10,7 @@ using AuthenticationValues = ExitGames.Client.Photon.Chat.AuthenticationValues;
 /// Simple Chat Server Gui to be put on a separate GameObject. Provides a global chat (in lobby) and a room chat (in room).
 /// </summary>
 /// <remarks>
-/// This script flags it's GameObject with DontDestroyOnLoad(). Make sure this is OK in your case.
+/// This script flags Its GameObject with DontDestroyOnLoad(). Make sure this is OK in your case.
 /// 
 /// The Chat Server API in ChatClient basically lets you create any number of channels. 
 /// You just have to name them. Example: "gc" for Global Channel or for rooms: "rc"+RoomName.GetHashCode()
@@ -140,7 +140,7 @@ public class ChatGui : MonoBehaviour, IChatClientListener
     {
         if (this.chatClient != null)
         {
-            this.chatClient.Service();  // make sure to call this regularly! it limits effort internally, so calling often is ok!
+            this.chatClient.Service();  // make sure to call this regularly! it limIts effort internally, so calling often is ok!
         }
     }
 

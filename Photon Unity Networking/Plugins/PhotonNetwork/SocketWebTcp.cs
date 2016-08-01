@@ -205,8 +205,8 @@ namespace ExitGames.Client.Photon
 						}
 
 
-						// check if it's a ping-result (first byte = 0xF0). this is 9 bytes in total. no other headers!
-						// note: its a coincidence that ping-result-size == header-size. if this changes we have to refactor this
+						// check if Its a ping-result (first byte = 0xF0). this is 9 bytes in total. no other headers!
+						// note: Its a coincidence that ping-result-size == header-size. if this changes we have to refactor this
 						if (inBuff[0] == 0xF0)
 						{
 							try

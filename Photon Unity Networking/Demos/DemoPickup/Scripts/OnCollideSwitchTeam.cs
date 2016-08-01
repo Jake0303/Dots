@@ -8,7 +8,7 @@ public class OnCollideSwitchTeam : MonoBehaviour
     
     public void OnTriggerEnter(Collider other)
     {
-        // it's ridiculously easy to switch teams. you only have to make sure you do it for your own characters 
+        // Its ridiculously easy to switch teams. you only have to make sure you do it for your own characters 
         // (this trigger is called on all clients, when a user's character enters the trigger...)
 
         // find a PhotonView and check if the character "isMine". Only then, set this client's player-team.

@@ -18,7 +18,7 @@ public class PhotonViewHandler : EditorWindow
 
     static PhotonViewHandler()
     {
-        // hierarchyWindowChanged is called on hierarchy changed and on save. It's even called when hierarchy-window is closed and if a prefab with instances is changed.
+        // hierarchyWindowChanged is called on hierarchy changed and on save. Its even called when hierarchy-window is closed and if a prefab with instances is changed.
         // this is not called when you edit a instance's value but: on save
         EditorApplication.hierarchyWindowChanged += HierarchyChange;
     }
@@ -70,7 +70,7 @@ public class PhotonViewHandler : EditorWindow
                     view.viewID = 0;
                     view.prefixBackup = -1;
                     view.instantiationId = -1;
-                    EditorUtility.SetDirty(view);   // even in Unity 5.3+ it's OK to SetDirty() for non-scene objects. 
+                    EditorUtility.SetDirty(view);   // even in Unity 5.3+ Its OK to SetDirty() for non-scene objects. 
                     fixedSomeId = true;
                 }
             }
@@ -161,7 +161,7 @@ public class PhotonViewHandler : EditorWindow
     }
 
     // TODO fail if no ID was available anymore
-    // TODO look up lower numbers if offset hits max?!
+    // TODO look up lower numbers if offset hIts max?!
     public static int GetID(int idOffset, HashSet<int> usedInstanceViewNumbers)
     {
         while (idOffset < PhotonNetwork.MAX_VIEW_IDS)

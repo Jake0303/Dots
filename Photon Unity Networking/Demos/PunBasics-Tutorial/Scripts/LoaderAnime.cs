@@ -71,8 +71,8 @@ namespace ExitGames.Demos.DemoAnimator
 				// we rotate over time. Time.deltaTime is mandatory to have a frame rate independant animation,
 				_transform.Rotate(0f,0f,speed*Time.deltaTime);
 				
-				// we move from the center to the desired radius to prevent the visual artifacts of particles jumping from their current spot, it's not very nice visually
-				// so the particle is centered in the scene so that when it starts rotating, it doesn't jump and slowy we animate it to its final radius giving a smooth transition.
+				// we move from the center to the desired radius to prevent the visual artifacts of particles jumping from their current spot, Its not very nice visually
+				// so the particle is centered in the scene so that when it starts rotating, it doesn't jump and slowy we animate it to Its final radius giving a smooth transition.
 				_particleTransform.localPosition = Vector3.MoveTowards(_particleTransform.localPosition, _offset, 0.5f*Time.deltaTime);
 			}
 		}

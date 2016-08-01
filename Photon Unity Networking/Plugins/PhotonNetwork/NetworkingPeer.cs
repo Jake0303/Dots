@@ -113,7 +113,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     private string[] friendListRequested;
 
     /// <summary>
-    /// Age of friend list info (in milliseconds). It's 0 until a friend list is fetched.
+    /// Age of friend list info (in milliseconds). Its 0 until a friend list is fetched.
     /// </summary>
     protected internal int FriendsListAge { get { return (this.isFetchingFriends || this.friendListTimestamp == 0) ? 0 : Environment.TickCount - this.friendListTimestamp; } }
 
@@ -376,9 +376,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
     public bool Connect(string serverAddress, ServerConnection type)
     {
-        if (PhotonHandler.AppQuits)
+        if (PhotonHandler.AppQuIts)
         {
-            Debug.LogWarning("Ignoring Connect() because app gets closed. If this is an error, check PhotonHandler.AppQuits.");
+            Debug.LogWarning("Ignoring Connect() because app gets closed. If this is an error, check PhotonHandler.AppQuIts.");
             return false;
         }
 
@@ -417,9 +417,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     /// <returns>If the workflow was started or failed right away.</returns>
     public bool ConnectToNameServer()
     {
-        if (PhotonHandler.AppQuits)
+        if (PhotonHandler.AppQuIts)
         {
-            Debug.LogWarning("Ignoring Connect() because app gets closed. If this is an error, check PhotonHandler.AppQuits.");
+            Debug.LogWarning("Ignoring Connect() because app gets closed. If this is an error, check PhotonHandler.AppQuIts.");
             return false;
         }
 
@@ -447,9 +447,9 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     /// <returns>If the operation could be sent. If false, no operation was sent.</returns>
     public bool ConnectToRegionMaster(CloudRegionCode region)
     {
-        if (PhotonHandler.AppQuits)
+        if (PhotonHandler.AppQuIts)
         {
-            Debug.LogWarning("Ignoring Connect() because app gets closed. If this is an error, check PhotonHandler.AppQuits.");
+            Debug.LogWarning("Ignoring Connect() because app gets closed. If this is an error, check PhotonHandler.AppQuIts.");
             return false;
         }
 
@@ -499,7 +499,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     {
         if (this.PeerState == PeerStateValue.Disconnected)
         {
-            if (!PhotonHandler.AppQuits)
+            if (!PhotonHandler.AppQuIts)
             {
                 Debug.LogWarning(string.Format("Can't execute Disconnect() while not connected. Nothing changed. State: {0}", this.State));
             }
@@ -815,7 +815,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         bool currentMasterIsLeaving = this.mMasterClientId == leavingPlayerId;
         bool someoneIsLeaving = leavingPlayerId > 0;
 
-        // return early if SOME player (leavingId > 0) is leaving AND it's NOT the current master
+        // return early if SOME player (leavingId > 0) is leaving AND Its NOT the current master
         if (someoneIsLeaving && !currentMasterIsLeaving)
         {
             return;
@@ -1137,7 +1137,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     }
 
     /// <summary>NetworkingPeer.OpJoinRandomRoom</summary>
-    /// <remarks>this override just makes sure we have a mRoomToGetInto, even if it's blank (the properties provided in this method are filters. they are not set when we join the game)</remarks>
+    /// <remarks>this override just makes sure we have a mRoomToGetInto, even if Its blank (the properties provided in this method are filters. they are not set when we join the game)</remarks>
     public override bool OpJoinRandomRoom(OpJoinRandomRoomParams opJoinRandomRoomParams)
     {
         enterRoomParamsCache = new EnterRoomParams();   // this is used when the client arrives on the GS and joins the room
@@ -1495,7 +1495,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             }
         }
 
-        // use the "secret" or "token" whenever we get it. doesn't really matter if it's in AuthResponse.
+        // use the "secret" or "token" whenever we get it. doesn't really matter if Its in AuthResponse.
         if (operationResponse.Parameters.ContainsKey(ParameterCode.Secret))
         {
             if (this.CustomAuthenticationValues == null)
@@ -1631,7 +1631,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
                         if (operationResponse.Parameters.ContainsKey(ParameterCode.Data))
                         {
-                            // optionally, OpAuth may return some data for the client to use. if it's available, call OnCustomAuthenticationResponse
+                            // optionally, OpAuth may return some data for the client to use. if Its available, call OnCustomAuthenticationResponse
                             Dictionary<string, object> data = (Dictionary<string, object>)operationResponse.Parameters[ParameterCode.Data];
                             if (data != null)
                             {
@@ -1687,7 +1687,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         enabledRegion = ((PhotonNetwork.PhotonServerSettings.EnabledRegions & flag) != 0);
                         if (!enabledRegion && PhotonNetwork.logLevel >= PhotonLogLevel.Informational)
                         {
-                            Debug.Log("Skipping region because it's not in PhotonServerSettings.EnabledRegions: " + code);
+                            Debug.Log("Skipping region because Its not in PhotonServerSettings.EnabledRegions: " + code);
                         }
                     }
                     if (enabledRegion) this.AvailableRegions.Add(new Region() { Code = code, HostAndPort = servers[i] });
@@ -2255,7 +2255,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
 
         // ts: updated with "flat" event data
-        int netViewID = (int)rpcData[(byte)0]; // LIMITS PHOTONVIEWS&PLAYERS
+        int netViewID = (int)rpcData[(byte)0]; // LIMIts PHOTONVIEWS&PLAYERS
         int otherSidePrefix = 0;    // by default, the prefix is 0 (and this is not being sent)
         if (rpcData.ContainsKey((byte)1))
         {
@@ -2266,7 +2266,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         string inMethodName;
         if (rpcData.ContainsKey((byte)5))
         {
-            int rpcIndex = (byte)rpcData[(byte)5];  // LIMITS RPC COUNT
+            int rpcIndex = (byte)rpcData[(byte)5];  // LIMIts RPC COUNT
             if (rpcIndex > PhotonNetwork.PhotonServerSettings.RpcList.Count - 1)
             {
                 Debug.LogError("Could not find RPC with index: " + rpcIndex + ". Going to ignore! Check PhotonServerSettings.RpcList");
@@ -2525,7 +2525,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     internal Hashtable SendInstantiate(string prefabName, Vector3 position, Quaternion rotation, int group, int[] viewIDs, object[] data, bool isGlobalObject)
     {
         // first viewID is now also the gameobject's instantiateId
-        int instantiateId = viewIDs[0];   // LIMITS PHOTONVIEWS&PLAYERS
+        int instantiateId = viewIDs[0];   // LIMIts PHOTONVIEWS&PLAYERS
 
         //TODO: reduce hashtable key usage by using a parameter array for the various values
         Hashtable instantiateEvent = new Hashtable(); // This players info is sent via ActorID
@@ -2549,7 +2549,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         // send the list of viewIDs only if there are more than one. else the instantiateId is the viewID
         if (viewIDs.Length > 1)
         {
-            instantiateEvent[(byte)4] = viewIDs; // LIMITS PHOTONVIEWS&PLAYERS
+            instantiateEvent[(byte)4] = viewIDs; // LIMIts PHOTONVIEWS&PLAYERS
         }
 
         if (data != null)
@@ -2692,7 +2692,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
             for (int i = 0; i < viewsIDs.Length; i++)
             {
-                // NOTE instantiating the loaded resource will keep the viewID but would not copy instantiation data, so it's set below
+                // NOTE instantiating the loaded resource will keep the viewID but would not copy instantiation data, so Its set below
                 // so we only set the viewID and instantiationId now. the instantiationData can be fetched
                 resourcePVs[i].viewID = viewsIDs[i];
                 resourcePVs[i].prefix = objLevelPrefix;
@@ -2702,12 +2702,12 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
             this.StoreInstantiationData(instantiationId, incomingInstantiationData);
 
-            // load the resource and set it's values before instantiating it:
+            // load the resource and set Its values before instantiating it:
             GameObject go = (GameObject)GameObject.Instantiate(resourceGameObject, position, rotation);
 
             for (int i = 0; i < viewsIDs.Length; i++)
             {
-                // NOTE instantiating the loaded resource will keep the viewID but would not copy instantiation data, so it's set below
+                // NOTE instantiating the loaded resource will keep the viewID but would not copy instantiation data, so Its set below
                 // so we only set the viewID and instantiationId now. the instantiationData can be fetched
                 resourcePVs[i].viewID = 0;
                 resourcePVs[i].prefix = -1;
@@ -2822,7 +2822,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     {
         if (go == null)
         {
-            Debug.LogError("Failed to 'network-remove' GameObject because it's null.");
+            Debug.LogError("Failed to 'network-remove' GameObject because Its null.");
             return;
         }
 
@@ -2835,7 +2835,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         }
 
         PhotonView viewZero = views[0];
-        int creatorId = viewZero.CreatorActorNr;            // creatorId of obj is needed to delete EvInstantiate (only if it's from that user)
+        int creatorId = viewZero.CreatorActorNr;            // creatorId of obj is needed to delete EvInstantiate (only if Its from that user)
         int instantiationId = viewZero.instantiationId;     // actual, live InstantiationIds start with 1 and go up
 
         // Don't remove GOs that are owned by others (unless this is the master and the remote player left)
@@ -3071,7 +3071,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     }
 
     ///// <summary>
-    ///// Will remove the view from list of views (by its ID).
+    ///// Will remove the view from list of views (by Its ID).
     ///// </summary>
     //public void RemovePhotonView(PhotonView netView)
     //{
@@ -3201,7 +3201,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
         //ts: changed RPCs to a one-level hashtable as described in internal.txt
         Hashtable rpcEvent = new Hashtable();
-        rpcEvent[(byte)0] = (int)view.viewID; // LIMITS PHOTONVIEWS&PLAYERS
+        rpcEvent[(byte)0] = (int)view.viewID; // LIMIts PHOTONVIEWS&PLAYERS
         if (view.prefix > 0)
         {
             rpcEvent[(byte)1] = (short)view.prefix;
@@ -3212,7 +3212,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         int shortcut = 0;
         if (rpcShortcuts.TryGetValue(methodName, out shortcut))
         {
-            rpcEvent[(byte)5] = (byte)shortcut; // LIMITS RPC COUNT
+            rpcEvent[(byte)5] = (byte)shortcut; // LIMIts RPC COUNT
         }
         else
         {
@@ -3263,7 +3263,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
         //ts: changed RPCs to a one-level hashtable as described in internal.txt
         Hashtable rpcEvent = new Hashtable();
-        rpcEvent[(byte)0] = (int)view.viewID; // LIMITS NETWORKVIEWS&PLAYERS
+        rpcEvent[(byte)0] = (int)view.viewID; // LIMIts NETWORKVIEWS&PLAYERS
         if (view.prefix > 0)
         {
             rpcEvent[(byte)1] = (short)view.prefix;
@@ -3275,7 +3275,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
         int shortcut = 0;
         if (rpcShortcuts.TryGetValue(methodName, out shortcut))
         {
-            rpcEvent[(byte)5] = (byte)shortcut; // LIMITS RPC COUNT
+            rpcEvent[(byte)5] = (byte)shortcut; // LIMIts RPC COUNT
         }
         else
         {
@@ -3491,7 +3491,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
     }
 
 
-    // this is called by Update() and in Unity that means it's single threaded.
+    // this is called by Update() and in Unity that means Its single threaded.
     public void RunViewUpdate()
     {
         if (!PhotonNetwork.connected || PhotonNetwork.offlineMode)
@@ -3543,7 +3543,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
                         continue; // Block sending on this group
                     }
 
-                    // Run it trough its OnSerialize
+                    // Run it trough Its OnSerialize
                     object[] evData = this.OnSerializeWrite(view);
                     if (evData == null)
                     {
@@ -3585,7 +3585,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
             }
         }
 
-        //Send the messages: every group is send in it's own message and unreliable and reliable are split as well
+        //Send the messages: every group is send in Its own message and unreliable and reliable are split as well
         RaiseEventOptions options = new RaiseEventOptions();
 
 #if PHOTON_DEVELOP
@@ -3822,7 +3822,7 @@ internal class NetworkingPeer : LoadbalancingPeer, IPhotonPeerListener
 
         if (currentContent.Length <= SyncFirstValue)
         {
-            return null;  // this send doesn't contain values (except the "headers"), so it's not being sent
+            return null;  // this send doesn't contain values (except the "headers"), so Its not being sent
         }
 
 

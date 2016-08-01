@@ -1,7 +1,7 @@
 ﻿
 #pragma warning disable 1587
 /// \file
-/// <summary>Reimplements a RPC Attribute, as it's no longer in all versions of the UnityEngine assembly.</summary>
+/// <summary>Reimplements a RPC Attribute, as Its no longer in all versions of the UnityEngine assembly.</summary>
 #pragma warning restore 1587
 
 using System;

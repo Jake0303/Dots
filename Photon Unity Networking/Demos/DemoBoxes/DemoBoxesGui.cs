@@ -14,7 +14,7 @@ public class DemoBoxesGui : MonoBehaviour
                                      {
                                          "Click planes to instantiate boxes.",
                                          "Click a box to send an RPC. This will flash the box.",
-                                         "Double click a box to destroy it. If it's yours.",
+                                         "Double click a box to destroy it. If Its yours.",
                                          "Boxes send ~10 updates per second when moving.",
                                          "Movement is not smoothed at all. It shows the updates 1:1.",
                                          "The script ColorPerPlayer assigns a color per player.",

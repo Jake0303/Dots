@@ -8,7 +8,7 @@
 // than in the original.
 //
 // This extrapolation script uses only position updates. This is very lean. 
-// The controlling client could calculate speed and send that, but it's not needed!
+// The controlling client could calculate speed and send that, but Its not needed!
 // 
 
 
@@ -49,7 +49,7 @@ public class CubeExtra : Photon.MonoBehaviour
             Vector3 updatedLocalPos = Vector3.zero;
             stream.Serialize(ref updatedLocalPos);
 
-            double timeDiffOfUpdates = info.timestamp - this.lastTime;  // the time that passed after the sender sent it's previous update
+            double timeDiffOfUpdates = info.timestamp - this.lastTime;  // the time that passed after the sender sent Its previous update
             this.lastTime = info.timestamp;
 
 

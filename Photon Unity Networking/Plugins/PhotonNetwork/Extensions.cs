@@ -116,7 +116,7 @@ public static class Extensions
 
     /// <summary>
     /// Returns a string-representation of the IDictionary's content, inlcuding type-information.
-    /// Note: This might turn out a "heavy-duty" call if used frequently but it's usfuly to debug Dictionary or Hashtable content.
+    /// Note: This might turn out a "heavy-duty" call if used frequently but Its usfuly to debug Dictionary or Hashtable content.
     /// </summary>
     /// <param name="origin">Some Dictionary or Hashtable.</param>
     /// <returns>String of the content of the IDictionary.</returns>

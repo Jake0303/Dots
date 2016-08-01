@@ -3,7 +3,7 @@
 //   Part of: Photon Unity Networking Demos
 // </copyright>
 // <summary>
-//  Used in DemoAnimator to deal with the networked player instance UI display tha follows a given player to show its health and name
+//  Used in DemoAnimator to deal with the networked player instance UI display tha follows a given player to show Its health and name
 // </summary>
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ namespace ExitGames.Demos.DemoAnimator
 		/// </summary>
 		void Update()
 		{
-			// Destroy itself if the target is null, It's a fail safe when Photon is destroying Instances of a Player over the network
+			// Destroy Itself if the target is null, Its a fail safe when Photon is destroying Instances of a Player over the network
 			if (_target == null) {
 				Destroy(this.gameObject);
 				return;
@@ -84,7 +84,7 @@ namespace ExitGames.Demos.DemoAnimator
 		/// </summary>
 		void LateUpdate () {
 
-			// Do not show the UI if we are not visible to the camera, thus avoid potential bugs with seeing the UI, but not the player itself.
+			// Do not show the UI if we are not visible to the camera, thus avoid potential bugs with seeing the UI, but not the player Itself.
 			if (_targetRenderer!=null) {
 				this.gameObject.SetActive(_targetRenderer.isVisible);
 			}

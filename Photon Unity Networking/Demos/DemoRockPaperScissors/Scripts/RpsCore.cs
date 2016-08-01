@@ -111,7 +111,7 @@ public class RpsCore : PunBehaviour, IPunTurnManagerCallbacks
     public void Update()
     {
 
-        // for debugging, it's useful to have a few actions tied to keys:
+        // for debugging, Its useful to have a few actions tied to keys:
         if (Input.GetKeyUp(KeyCode.L))
         {
             PhotonNetwork.LeaveRoom();
@@ -282,7 +282,7 @@ public class RpsCore : PunBehaviour, IPunTurnManagerCallbacks
     {
         if (this.result == ResultType.LocalWin)
         {
-            PhotonNetwork.player.AddScore(1);   // this is an extension method for PhotonPlayer. you can see it's implementation
+            PhotonNetwork.player.AddScore(1);   // this is an extension method for PhotonPlayer. you can see Its implementation
         }
     }
 

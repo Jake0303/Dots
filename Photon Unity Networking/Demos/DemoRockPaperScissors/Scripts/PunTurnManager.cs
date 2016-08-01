@@ -242,7 +242,7 @@ public static class TurnExtensions
         return (int)room.customProperties[TurnPropKey];
     }
 
-    /// <summary>Returns the start time when the turn began. This can be used to calculate how long it's going on.</summary>
+    /// <summary>Returns the start time when the turn began. This can be used to calculate how long Its going on.</summary>
     public static int GetTurnStart(this RoomInfo room)
     {
         if (room == null || room.customProperties == null || !room.customProperties.ContainsKey(TurnStartPropKey))

@@ -134,7 +134,7 @@ public class ThirdPersonCamera : MonoBehaviour
         // When jumping don't move camera upwards but only down!
         if( controller.IsJumping() )
         {
-            // We'd be moving the camera upwards, do that only if it's really high
+            // We'd be moving the camera upwards, do that only if Its really high
             float newTargetHeight = targetCenter.y + height;
             if( newTargetHeight < targetHeight || newTargetHeight - targetHeight > 5 )
                 targetHeight = targetCenter.y + height;
@@ -189,7 +189,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
     void SetUpRotation( Vector3 centerPos, Vector3 headPos )
     {
-        // Now it's getting hairy. The devil is in the details here, the big issue is jumping of course.
+        // Now Its getting hairy. The devil is in the details here, the big issue is jumping of course.
         // * When jumping up and down we don't want to center the guy in screen space.
         //  This is important to give a feel for how high you jump and avoiding large camera movements.
         //   

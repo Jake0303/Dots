@@ -57,7 +57,7 @@ public class PickupController : MonoBehaviour, IPunObservable
     private float jumpTimeout = 0.15f;
     private float groundedTimeout = 0.25f;
 
-    // The camera doesnt start following the target immediately but waits for a split second to avoid too much waving around.
+    // The camera doesnt start following the target immediately but waIts for a split second to avoid too much waving around.
     private float lockCameraTimer = 0.0f;
 
     // The current move direction in x-z
@@ -112,7 +112,7 @@ public class PickupController : MonoBehaviour, IPunObservable
                 pv.owner.TagObject = this.gameObject;
             }
 
-            // please note: we change this setting on ANY PickupController if "DoRotate" is off. not only locally when it's "our" GameObject!
+            // please note: we change this setting on ANY PickupController if "DoRotate" is off. not only locally when Its "our" GameObject!
             if (pv.observed is Transform && !DoRotate)
             {
                 pv.onSerializeTransformOption = OnSerializeTransform.OnlyPosition;

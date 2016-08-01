@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// Implements OnClick to destroy the GameObject it's attached to. Optionally a RPC is sent to do this.
+/// Implements OnClick to destroy the GameObject Its attached to. Optionally a RPC is sent to do this.
 /// </summary>
 /// <remarks>
 /// Using an RPC to Destroy a GameObject allows any player to Destroy a GameObject. But it might cause errors.

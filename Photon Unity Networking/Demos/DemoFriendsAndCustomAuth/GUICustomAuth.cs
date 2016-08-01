@@ -18,13 +18,13 @@ public class GUICustomAuth : MonoBehaviour
 
     public void OnJoinedLobby()
     {
-        // for ease of use, this script simply deactivates itself on successful connect
+        // for ease of use, this script simply deactivates Itself on successful connect
         this.enabled = false;
     }
 
     public void OnConnectedToMaster()
     {
-        // for ease of use, this script simply deactivates itself on successful connect
+        // for ease of use, this script simply deactivates Itself on successful connect
         this.enabled = false;
     }
 

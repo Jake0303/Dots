@@ -41,7 +41,7 @@ public static class PhotonNetwork
 
     /// <summary>
     /// Photon peer class that implements LoadBalancing in PUN.
-    /// Primary use is internal (by PUN itself).
+    /// Primary use is internal (by PUN Itself).
     /// </summary>
     internal static NetworkingPeer networkingPeer;
 
@@ -366,7 +366,7 @@ public static class PhotonNetwork
     public static List<FriendInfo> Friends { get; internal set; }
 
     /// <summary>
-    /// Age of friend list info (in milliseconds). It's 0 until a friend list is fetched.
+    /// Age of friend list info (in milliseconds). Its 0 until a friend list is fetched.
     /// </summary>
     public static int FriendsListAge
     {
@@ -408,7 +408,7 @@ public static class PhotonNetwork
     /// </summary>
     /// <remarks>
     /// Setting UsePrefabCache to false during runtime will not clear PrefabCache but will ignore it right away.
-    /// You could clean and modify the cache yourself. Read its comments.
+    /// You could clean and modify the cache yourself. Read Its comments.
     /// </remarks>
     public static bool UsePrefabCache = true;
 
@@ -441,7 +441,7 @@ public static class PhotonNetwork
     /// suffer.
     ///
     /// Optionally, SendMonoMessageTargets can be used to supply a list of target GameObjects. This
-    /// skips the FindObjectsOfType() but any GameObject that needs callbacks will have to Add itself
+    /// skips the FindObjectsOfType() but any GameObject that needs callbacks will have to Add Itself
     /// to this list.
     ///
     /// If null, the default behaviour is to do a SendMessage on each GameObject with a MonoBehaviour.
@@ -856,7 +856,7 @@ public static class PhotonNetwork
     /// To handle the timeout, implement: OnConnectionFail() (this case will use the cause: DisconnectByServerTimeout). 
     /// 
     /// 
-    /// It's best practice to let inactive apps/connections time out after a while but allow taking calls, etc.
+    /// Its best practice to let inactive apps/connections time out after a while but allow taking calls, etc.
     /// So a reasonable value should be found. 
     /// We think it could be 60 seconds.
     /// 
@@ -1070,7 +1070,7 @@ public static class PhotonNetwork
     public static EventCallback OnEventCall;
 
 
-    internal static int lastUsedViewSubId = 0;  // each player only needs to remember it's own (!) last used subId to speed up assignment
+    internal static int lastUsedViewSubId = 0;  // each player only needs to remember Its own (!) last used subId to speed up assignment
     internal static int lastUsedViewSubIdStatic = 0;  // per room, the master is able to instantiate GOs. the subId for this must be unique too
     internal static List<int> manuallyAllocatedViewIds = new List<int>();
 
@@ -1760,7 +1760,7 @@ public static class PhotonNetwork
     ///
     /// To join a room from the lobby's listing, use RoomInfo.name as roomName here.
     /// Despite using multiple lobbies, a roomName is always "global" for your application and so you don't
-    /// have to specify which lobby it's in. The Master Server will find the room.
+    /// have to specify which lobby Its in. The Master Server will find the room.
     /// In the Photon Cloud, an application is defined by AppId, Game- and PUN-version.
     /// </remarks>
     /// <see cref="PhotonNetworkingMessage.OnPhotonJoinRoomFailed"/>
@@ -1781,7 +1781,7 @@ public static class PhotonNetwork
     ///
     /// To join a room from the lobby's listing, use RoomInfo.name as roomName here.
     /// Despite using multiple lobbies, a roomName is always "global" for your application and so you don't
-    /// have to specify which lobby it's in. The Master Server will find the room.
+    /// have to specify which lobby Its in. The Master Server will find the room.
     /// In the Photon Cloud, an application is defined by AppId, Game- and PUN-version.
     /// 
     /// You can define an array of expectedUsers, to block player slots in the room for these users.
@@ -2063,7 +2063,7 @@ public static class PhotonNetwork
     /// The room list is sent and refreshed by the server. You can access this cached list by
     /// PhotonNetwork.GetRoomList().
     ///
-    /// Per room you should check if it's full or not before joining. Photon also lists rooms that are
+    /// Per room you should check if Its full or not before joining. Photon also lists rooms that are
     /// full, unless you close and hide them (room.open = false and room.visible = false).
     ///
     /// In best case, you make your clients join random games, as described here:
@@ -2079,7 +2079,7 @@ public static class PhotonNetwork
     ///
     /// You can use JoinRandomRoom without being in a lobby!
     /// Set autoJoinLobby = false before you connect, to not join a lobby. In that case, the
-    /// connect-workflow will call OnConnectedToMaster (if you implement it) when it's done.
+    /// connect-workflow will call OnConnectedToMaster (if you implement it) when Its done.
     /// </remarks>
     public static bool JoinLobby()
     {
@@ -2107,7 +2107,7 @@ public static class PhotonNetwork
     /// http://confluence.exitgames.com/display/PTN/Op+JoinRandomGame
     ///
     ///
-    /// Per room you should check if it's full or not before joining. Photon does list rooms that are
+    /// Per room you should check if Its full or not before joining. Photon does list rooms that are
     /// full, unless you close and hide them (room.open = false and room.visible = false).
     ///
     /// You can show your games current players and room count without joining a lobby (but you must
@@ -2118,7 +2118,7 @@ public static class PhotonNetwork
     ///
     /// You can use JoinRandomRoom without being in a lobby!
     /// Set autoJoinLobby = false before you connect, to not join a lobby. In that case, the
-    /// connect-workflow will call OnConnectedToMaster (if you implement it) when it's done.
+    /// connect-workflow will call OnConnectedToMaster (if you implement it) when Its done.
     /// </remarks>
     /// <param name="typedLobby">A typed lobby to join (must have name and type).</param>
     public static bool JoinLobby(TypedLobby typedLobby)
@@ -2456,7 +2456,7 @@ public static class PhotonNetwork
     /// <param name="position">Position Vector3 to apply on instantiation.</param>
     /// <param name="rotation">Rotation Quaternion to apply on instantiation.</param>
     /// <param name="group">The group for this PhotonView.</param>
-    /// <param name="data">Optional instantiation data. This will be saved to it's PhotonView.instantiationData.</param>
+    /// <param name="data">Optional instantiation data. This will be saved to Its PhotonView.instantiationData.</param>
     /// <returns>The new instance of a GameObject with initialized PhotonView.</returns>
     public static GameObject Instantiate(string prefabName, Vector3 position, Quaternion rotation, int group, object[] data)
     {
@@ -2516,7 +2516,7 @@ public static class PhotonNetwork
     /// <param name="position">Position Vector3 to apply on instantiation.</param>
     /// <param name="rotation">Rotation Quaternion to apply on instantiation.</param>
     /// <param name="group">The group for this PhotonView.</param>
-    /// <param name="data">Optional instantiation data. This will be saved to it's PhotonView.instantiationData.</param>
+    /// <param name="data">Optional instantiation data. This will be saved to Its PhotonView.instantiationData.</param>
     /// <returns>The new instance of a GameObject with initialized PhotonView.</returns>
     public static GameObject InstantiateSceneObject(string prefabName, Vector3 position, Quaternion rotation, int group, object[] data)
     {
@@ -2666,7 +2666,7 @@ public static class PhotonNetwork
     /// Locally the Master Client is immediately switched, while remote clients get an event. This means the game
     /// is tempoarily without Master Client like when a current Master Client leaves.
     ///
-    /// When switching the Master Client manually, keep in mind that this user might leave and not do it's work, just like
+    /// When switching the Master Client manually, keep in mind that this user might leave and not do Its work, just like
     /// any Master Client.
     ///
     /// </remarks>
@@ -3121,7 +3121,7 @@ public static class PhotonNetwork
     /// This uses Application.LoadLevel.
     /// </remarks>
     /// <param name='levelName'>
-    /// Name of the level to load. Make sure it's available to all clients in the same room.
+    /// Name of the level to load. Make sure Its available to all clients in the same room.
     /// </param>
     public static void LoadLevel(string levelName)
     {
@@ -3145,7 +3145,7 @@ public static class PhotonNetwork
     ///
     /// See PhotonNetworkingMessage.OnWebRpcResponse on how to get a response.
     ///
-    /// It's important to understand that the OperationResponse only tells if the WebRPC could be called.
+    /// Its important to understand that the OperationResponse only tells if the WebRPC could be called.
     /// The content of the response contains any values your web-service sent and the error/success code.
     /// In case the web-service failed, an error code and a debug message are usually inside the
     /// OperationResponse.

@@ -78,7 +78,7 @@ public interface IPunObservable
 /// PUN will call these methods on any script that implements them, analog to Unity's events and callbacks.
 /// The situation that triggers the call is described per method.
 ///
-/// OnPhotonSerializeView is NOT called like these callbacks! It's usage frequency is much higher and it is implemented in: IPunObservable.
+/// OnPhotonSerializeView is NOT called like these callbacks! Its usage frequency is much higher and it is implemented in: IPunObservable.
 /// </remarks>
 /// \ingroup publicApi
 public interface IPunCallbacks
@@ -88,7 +88,7 @@ public interface IPunCallbacks
     /// </summary>
     /// <remarks>
     /// This callback is only useful to detect if the server can be reached at all (technically).
-    /// Most often, it's enough to implement OnFailedToConnectToPhoton() and OnDisconnectedFromPhoton().
+    /// Most often, Its enough to implement OnFailedToConnectToPhoton() and OnDisconnectedFromPhoton().
     ///
     /// <i>OnJoinedLobby() or OnConnectedToMaster() are called when PUN is ready.</i>
     ///
@@ -274,7 +274,7 @@ public interface IPunCallbacks
     /// </summary>
     /// <remarks>
     /// When this happens, the user might try again later. You can't create or join rooms in OnPhotonMaxCcuReached(), cause the client will be disconnecting.
-    /// You can raise the CCU limits with a new license (when you host yourself) or extended subscription (when using the Photon Cloud).
+    /// You can raise the CCU limIts with a new license (when you host yourself) or extended subscription (when using the Photon Cloud).
     /// The Photon Cloud will mail you when the CCU limit was reached. This is also visible in the Dashboard (webpage).
     /// </remarks>
     void OnPhotonMaxCccuReached();
@@ -446,7 +446,7 @@ namespace Photon
 
         /// <summary>A cached reference to a PhotonView on this GameObject.</summary>
         /// <remarks>
-        /// If you intend to work with a PhotonView in a script, it's usually easier to write this.photonView.
+        /// If you intend to work with a PhotonView in a script, Its usually easier to write this.photonView.
         ///
         /// If you intend to remove the PhotonView component from the GameObject but keep this Photon.MonoBehaviour,
         /// avoid this reference or modify this code to use PhotonView.Get(obj) instead.
@@ -511,7 +511,7 @@ namespace Photon
         /// </summary>
         /// <remarks>
         /// This callback is only useful to detect if the server can be reached at all (technically).
-        /// Most often, it's enough to implement OnFailedToConnectToPhoton() and OnDisconnectedFromPhoton().
+        /// Most often, Its enough to implement OnFailedToConnectToPhoton() and OnDisconnectedFromPhoton().
         ///
         /// <i>OnJoinedLobby() or OnConnectedToMaster() are called when PUN is ready.</i>
         ///
@@ -733,7 +733,7 @@ namespace Photon
         /// </summary>
         /// <remarks>
         /// When this happens, the user might try again later. You can't create or join rooms in OnPhotonMaxCcuReached(), cause the client will be disconnecting.
-        /// You can raise the CCU limits with a new license (when you host yourself) or extended subscription (when using the Photon Cloud).
+        /// You can raise the CCU limIts with a new license (when you host yourself) or extended subscription (when using the Photon Cloud).
         /// The Photon Cloud will mail you when the CCU limit was reached. This is also visible in the Dashboard (webpage).
         /// </remarks>
         public virtual void OnPhotonMaxCccuReached()
@@ -989,7 +989,7 @@ public class RoomOptions
     /// <remarks>
     /// The operation will fail in case of a plugin missmatch returning error code PluginMismatch 32757(0x7FFF - 10).
     /// Setting string[]{} means the client expects no plugin to be setup.
-    /// Note: for backwards compatibility null omits any check.
+    /// Note: for backwards compatibility null omIts any check.
     /// </remarks>
     public string[] plugins;
 
@@ -1001,7 +1001,7 @@ public class RoomOptions
     /// That can save some traffic if you have some server logic that updates players
     /// but it can also limit the client's usability.
     ///
-    /// PUN will break if you use this, so it's not settable.
+    /// PUN will break if you use this, so Its not settable.
     /// </remarks>
     public bool suppressRoomEvents { get { return this.suppressRoomEventsField; } /*set { this.suppressRoomEventsField = value; }*/ }
     private bool suppressRoomEventsField = false;
@@ -1115,7 +1115,7 @@ internal class PunEvent
     public const byte CloseConnection = 203;
     public const byte Destroy = 204;
     public const byte RemoveCachedRPCs = 205;
-    public const byte SendSerializeReliable = 206;  // TS: added this but it's not really needed anymore
+    public const byte SendSerializeReliable = 206;  // TS: added this but Its not really needed anymore
     public const byte DestroyPlayer = 207;  // TS: added to make others remove all GOs of a player
     public const byte AssignMaster = 208;  // TS: added to assign someone master client (overriding the current)
     public const byte OwnershipRequest = 209;
@@ -1128,13 +1128,13 @@ internal class PunEvent
 /// </summary>
 /// <remarks>
 /// The isWriting property will be true if this client is the "owner" of the PhotonView (and thus the GameObject).
-/// Add data to the stream and it's sent via the server to the other players in a room.
+/// Add data to the stream and Its sent via the server to the other players in a room.
 /// On the receiving side, isWriting is false and the data should be read.
 ///
 /// Send as few data as possible to keep connection quality up. An empty PhotonStream will not be sent.
 ///
 /// Use either Serialize() for reading and writing or SendNext() and ReceiveNext(). The latter two are just explicit read and
-/// write methods but do about the same work as Serialize(). It's a matter of preference which methods you use.
+/// write methods but do about the same work as Serialize(). Its a matter of preference which methods you use.
 /// </remarks>
 /// <seealso cref="PhotonNetworkingMessage"/>
 /// \ingroup publicApi
@@ -1555,7 +1555,7 @@ public class WebRpcResponse
     /// <summary>Other key/values returned by the webservice that answered the WebRpc.</summary>
     public Dictionary<string, object> Parameters { get; private set; }
 
-    /// <summary>An OperationResponse for a WebRpc is needed to read it's values.</summary>
+    /// <summary>An OperationResponse for a WebRpc is needed to read Its values.</summary>
     public WebRpcResponse(OperationResponse response)
     {
         object value;
@@ -1581,40 +1581,40 @@ public class WebRpcResponse
 }
 
 /**
-public class PBitStream
+public class PBItstream
 {
     List<byte> streamBytes;
     private int currentByte;
-    private int totalBits = 0;
+    private int totalBIts = 0;
 
     public int ByteCount
     {
-        get { return BytesForBits(this.totalBits); }
+        get { return BytesForBIts(this.totalBIts); }
     }
 
     public int BitCount
     {
-        get { return this.totalBits; }
-        private set { this.totalBits = value; }
+        get { return this.totalBIts; }
+        private set { this.totalBIts = value; }
     }
 
-    public PBitStream()
+    public PBItstream()
     {
         this.streamBytes = new List<byte>(1);
     }
 
-    public PBitStream(int bitCount)
+    public PBItstream(int bitCount)
     {
-        this.streamBytes = new List<byte>(BytesForBits(bitCount));
+        this.streamBytes = new List<byte>(BytesForBIts(bitCount));
     }
 
-    public PBitStream(IEnumerable<byte> bytes, int bitCount)
+    public PBItstream(IEnumerable<byte> bytes, int bitCount)
     {
         this.streamBytes = new List<byte>(bytes);
         this.BitCount = bitCount;
     }
 
-    public static int BytesForBits(int bitCount)
+    public static int BytesForBIts(int bitCount)
     {
         if (bitCount <= 0)
         {
@@ -1626,19 +1626,19 @@ public class PBitStream
 
     public void Add(bool val)
     {
-        int bytePos = this.totalBits / 8;
-        if (bytePos > this.streamBytes.Count-1 || this.totalBits == 0)
+        int bytePos = this.totalBIts / 8;
+        if (bytePos > this.streamBytes.Count-1 || this.totalBIts == 0)
         {
             this.streamBytes.Add(0);
         }
 
         if (val)
         {
-            int currentByteBit = 7 - (this.totalBits % 8);
+            int currentByteBit = 7 - (this.totalBIts % 8);
             this.streamBytes[bytePos] |= (byte)(1 << currentByteBit);
         }
 
-        this.totalBits++;
+        this.totalBIts++;
     }
 
     public byte[] ToBytes()
@@ -1650,9 +1650,9 @@ public class PBitStream
 
     public bool GetNext()
     {
-        if (this.Position > this.totalBits)
+        if (this.Position > this.totalBIts)
         {
-            throw new Exception("End of PBitStream reached. Can't read more.");
+            throw new Exception("End of PBItstream reached. Can't read more.");
         }
 
         return Get(this.Position++);

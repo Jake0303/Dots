@@ -65,7 +65,7 @@ namespace ExitGames.Client.Photon.Chat
         /// <summary>The unique ID of a user/person, stored in AuthValues.UserId. Set it before you connect.</summary>
         /// <remarks>
         /// This value wraps AuthValues.UserId.
-        /// It's not a nickname and we assume users with the same userID are the same person.</remarks>
+        /// Its not a nickname and we assume users with the same userID are the same person.</remarks>
         public string UserId
         {
             get
@@ -185,7 +185,7 @@ namespace ExitGames.Client.Photon.Chat
         /// Must be called regularly to keep connection between client and server alive and to process incoming messages.
         /// </summary>
         /// <remarks>
-        /// This method limits the effort it does automatically using the private variable msDeltaForServiceCalls.
+        /// This method limIts the effort it does automatically using the private variable msDeltaForServiceCalls.
         /// That value is lower for connect and multiplied by 4 when chat-server connection is ready.
         /// </remarks>
         public void Service()
@@ -653,7 +653,7 @@ namespace ExitGames.Client.Photon.Chat
                     {
                         if (operationResponse.ReturnCode == -2)
                         {
-                            this.listener.DebugReturn(DebugLevel.ERROR, string.Format("Chat Operation {0} unknown on server. Check your AppId and make sure it's for a Chat application.", operationResponse.OperationCode));
+                            this.listener.DebugReturn(DebugLevel.ERROR, string.Format("Chat Operation {0} unknown on server. Check your AppId and make sure Its for a Chat application.", operationResponse.OperationCode));
                         }
                         else
                         {

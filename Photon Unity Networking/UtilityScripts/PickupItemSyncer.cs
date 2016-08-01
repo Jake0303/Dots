@@ -83,7 +83,7 @@ public class PickupItemSyncer : Photon.MonoBehaviour
 
 
     /// <summary>Summarizes all PickupItem ids and spawn times for new players. Calls RPC "PickupItemInit".</summary>
-    /// <param name="targtePlayer">The player to send the pickup times to. It's a targetted RPC.</param>
+    /// <param name="targtePlayer">The player to send the pickup times to. Its a targetted RPC.</param>
     private void SendPickedUpItems(PhotonPlayer targtePlayer)
     {
         if (targtePlayer == null)

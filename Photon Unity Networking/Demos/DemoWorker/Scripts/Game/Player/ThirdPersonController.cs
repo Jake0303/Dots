@@ -55,7 +55,7 @@ public class ThirdPersonController : MonoBehaviour
     private float jumpTimeout = 0.15f;
     private float groundedTimeout = 0.25f;
 
-    // The camera doesnt start following the target immediately but waits for a split second to avoid too much waving around.
+    // The camera doesnt start following the target immediately but waIts for a split second to avoid too much waving around.
     private float lockCameraTimer = 0.0f;
 
     // The current move direction in x-z

@@ -400,7 +400,7 @@ public class PhotonAnimatorView : MonoBehaviour
                         stream.SendNext(this.m_Animator.GetInteger(parameter.Name));
                         break;
                     case ParameterType.Trigger:
-						// here we can't rely on the current real state of the trigger, we might have missed its raise
+						// here we can't rely on the current real state of the trigger, we might have missed Its raise
 						stream.SendNext(this.m_raisedDiscreteTriggersCache.Contains(parameter.Name));
 						break;
                 }

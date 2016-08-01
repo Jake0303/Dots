@@ -171,7 +171,7 @@ public class TurnTimer : PunBehaviour
         GameObject.Find(nextPlayer).GetComponent<PlayerClick>().playingAnim = false;
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!", true);
+        GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("It's your turn, place a line!", true);
 
         GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
         GameObject.Find(GameObject.Find(lastPlayer).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;

@@ -288,7 +288,7 @@ namespace ExitGames.Client.Photon.Chat
         /// (-3) Operation can't be executed yet (e.g. OpJoin can't be called before being authenticated, RaiseEvent cant be used before getting into a room).
         /// </summary>
         /// <remarks>
-        /// Before you call any operations on the Cloud servers, the automated client workflow must complete its authorization.
+        /// Before you call any operations on the Cloud servers, the automated client workflow must complete Its authorization.
         /// In PUN, wait until State is: JoinedLobby (with AutoJoinLobby = true) or ConnectedToMaster (AutoJoinLobby = false)
         /// </remarks>
         public const int OperationNotAllowedInCurrentState = -3;

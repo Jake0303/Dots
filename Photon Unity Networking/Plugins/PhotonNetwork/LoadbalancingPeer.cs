@@ -586,7 +586,7 @@ namespace ExitGames.Client.Photon
         /// <remarks>This override explicitly uses another parameter order to not mix it up with the implementation for Hashtable only.</remarks>
         /// <param name="eventCode">Identifies this type of event (and the content). Your game's event codes can start with 0.</param>
         /// <param name="customEventContent">Any serializable datatype (including Hashtable like the other OpRaiseEvent overloads).</param>
-        /// <param name="sendReliable">If this event has to arrive reliably (potentially repeated if it's lost).</param>
+        /// <param name="sendReliable">If this event has to arrive reliably (potentially repeated if Its lost).</param>
         /// <param name="raiseEventOptions">Contains (slightly) less often used options. If you pass null, the default options will be used.</param>
         /// <returns>If operation could be enqueued for sending. Sent when calling: Service or SendOutgoingCommands.</returns>
         public virtual bool OpRaiseEvent(byte eventCode, object customEventContent, bool sendReliable, RaiseEventOptions raiseEventOptions)
@@ -645,7 +645,7 @@ namespace ExitGames.Client.Photon
         /// (-3) Operation can't be executed yet (e.g. OpJoin can't be called before being authenticated, RaiseEvent cant be used before getting into a room).
         /// </summary>
         /// <remarks>
-        /// Before you call any operations on the Cloud servers, the automated client workflow must complete its authorization.
+        /// Before you call any operations on the Cloud servers, the automated client workflow must complete Its authorization.
         /// In PUN, wait until State is: JoinedLobby (with AutoJoinLobby = true) or ConnectedToMaster (AutoJoinLobby = false)
         /// </remarks>
         public const int OperationNotAllowedInCurrentState = -3;
@@ -1093,7 +1093,7 @@ namespace ExitGames.Client.Photon
         /// Informs the server of the expected plugin setup.
         /// The operation will fail in case of a plugin mismatch returning error code PluginMismatch 32751(0x7FFF - 16).
         /// Setting string[]{} means the client expects no plugin to be setup.
-        /// Note: for backwards compatibility null omits any check.
+        /// Note: for backwards compatibility null omIts any check.
         /// </summary>
         public const byte Plugins = 204;
 
@@ -1175,7 +1175,7 @@ namespace ExitGames.Client.Photon
         /// <summary>Regular join. The room must exist.</summary>
         Default = 0,
 
-        /// <summary>Join or create the room if it's not existing. Used for OpJoinOrCreate for example.</summary>
+        /// <summary>Join or create the room if Its not existing. Used for OpJoinOrCreate for example.</summary>
         CreateIfNotExists = 1,
 
         /// <summary>The room might be out of memory and should be loaded (if possible) from a Turnbased web-service.</summary>
@@ -1356,7 +1356,7 @@ namespace ExitGames.Client.Photon
     //    /// <remarks>
     //    /// The operation will fail in case of a plugin missmatch returning error code PluginMismatch 32757(0x7FFF - 10).
     //    /// Setting string[]{} means the client expects no plugin to be setup.
-    //    /// Note: for backwards compatibility null omits any check.
+    //    /// Note: for backwards compatibility null omIts any check.
     //    /// </remarks>
     //    public string[] Plugins;
 

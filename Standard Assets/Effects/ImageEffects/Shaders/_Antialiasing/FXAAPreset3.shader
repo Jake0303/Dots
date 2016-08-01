@@ -23,11 +23,11 @@ CGPROGRAM
 // Copyright (c) 2010 NVIDIA Corporation. All rights reserved.
 //
 // TO  THE MAXIMUM  EXTENT PERMITTED  BY APPLICABLE  LAW, THIS SOFTWARE  IS PROVIDED
-// *AS IS*  AND NVIDIA AND  ITS SUPPLIERS DISCLAIM  ALL WARRANTIES,  EITHER  EXPRESS
+// *AS IS*  AND NVIDIA AND  Its SUPPLIERS DISCLAIM  ALL WARRANTIES,  EITHER  EXPRESS
 // OR IMPLIED, INCLUDING, BUT NOT LIMITED  TO, IMPLIED WARRANTIES OF MERCHANTABILITY
-// AND FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL  NVIDIA OR ITS SUPPLIERS
+// AND FITNESS FOR A PARTICULAR PURPOSE.  IN NO EVENT SHALL  NVIDIA OR Its SUPPLIERS
 // BE  LIABLE  FOR  ANY  SPECIAL,  INCIDENTAL,  INDIRECT,  OR  CONSEQUENTIAL DAMAGES
-// WHATSOEVER (INCLUDING, WITHOUT LIMITATION,  DAMAGES FOR LOSS OF BUSINESS PROFITS,
+// WHATSOEVER (INCLUDING, WITHOUT LIMITATION,  DAMAGES FOR LOSS OF BUSINESS PROFIts,
 // BUSINESS INTERRUPTION, LOSS OF BUSINESS INFORMATION, OR ANY OTHER PECUNIARY LOSS)
 // ARISING OUT OF THE  USE OF OR INABILITY  TO USE THIS SOFTWARE, EVEN IF NVIDIA HAS
 // BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
@@ -405,7 +405,7 @@ Given the following neighborhood,
     
 If the difference in local maximum and minimum luma (contrast "range") 
 is lower than a threshold proportional to the maximum local luma ("rangeMax"), 
-then the shader early exits (no visible aliasing). 
+then the shader early exIts (no visible aliasing). 
 This threshold is clamped at a minimum value ("FXAA_EDGE_THRESHOLD_MIN")
 to avoid processing in really dark areas.    
 ----------------------------------------------------------------------------*/

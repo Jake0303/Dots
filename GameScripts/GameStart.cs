@@ -238,7 +238,7 @@ public class GameStart : PunBehaviour
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("Its your turn, place a line!", true);
+        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("It's your turn, place a line!", true);
     }
     [PunRPC]
     //Tell the server the timer has started

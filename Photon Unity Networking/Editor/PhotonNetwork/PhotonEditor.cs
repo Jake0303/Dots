@@ -66,7 +66,7 @@ public class PunWizardText
     public string IncorrectRPCListLabel = "Your project's RPC-list is full, so we can't add some RPCs just compiled.\n\nBy removing outdated RPCs, the list will be long enough but incompatible with older client builds!\n\nMake sure you change the game version where you use PhotonNetwork.ConnectUsingSettings().";
     public string RemoveOutdatedRPCsLabel = "Remove outdated RPCs";
     public string FullRPCListTitle = "Warning: RPC-list is full!";
-    public string FullRPCListLabel = "Your project's RPC-list is too long for PUN.\n\nYou can change PUN's source to use short-typed RPC index. Look for comments 'LIMITS RPC COUNT'\n\nAlternatively, remove some RPC methods (use more parameters per RPC maybe).\n\nAfter a RPC-list refresh, make sure you change the game version where you use PhotonNetwork.ConnectUsingSettings().";
+    public string FullRPCListLabel = "Your project's RPC-list is too long for PUN.\n\nYou can change PUN's source to use short-typed RPC index. Look for comments 'LIMIts RPC COUNT'\n\nAlternatively, remove some RPC methods (use more parameters per RPC maybe).\n\nAfter a RPC-list refresh, make sure you change the game version where you use PhotonNetwork.ConnectUsingSettings().";
     public string SkipRPCListUpdateLabel = "Skip RPC-list update";
     public string PUNNameReplaceTitle = "Warning: RPC-list Compatibility";
     public string PUNNameReplaceLabel = "PUN replaces RPC names with numbers by using the RPC-list. All clients must use the same list for that.\n\nClearing it most likely makes your client incompatible with previous versions! Change your game version or make sure the RPC-list matches other clients.";
@@ -637,7 +637,7 @@ public class PhotonEditor : EditorWindow
 
 
     // Marks settings object as dirty, so it gets saved.
-    // unity 5.3 changes the usecase for SetDirty(). but here we don't modify a scene object! so it's ok to use
+    // unity 5.3 changes the usecase for SetDirty(). but here we don't modify a scene object! so Its ok to use
     private static void SaveSettings()
     {
         EditorUtility.SetDirty(PhotonNetwork.PhotonServerSettings);
@@ -684,7 +684,7 @@ public class PhotonEditor : EditorWindow
 
         if (additionalRpcs.Count > 0)
         {
-            // LIMITS RPC COUNT
+            // LIMIts RPC COUNT
             if (additionalRpcs.Count + PhotonNetwork.PhotonServerSettings.RpcList.Count >= byte.MaxValue)
             {
                 if (currentRpcs.Count <= byte.MaxValue)

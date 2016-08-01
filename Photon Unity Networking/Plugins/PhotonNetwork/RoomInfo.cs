@@ -42,7 +42,7 @@ public class RoomInfo
     /// <summary>Backing field for property.</summary>
     protected bool visibleField = true;
 
-    /// <summary>Backing field for property. False unless the GameProperty is set to true (else it's not sent).</summary>
+    /// <summary>Backing field for property. False unless the GameProperty is set to true (else Its not sent).</summary>
     protected bool autoCleanUpField = PhotonNetwork.autoCleanUpPlayerObjects;
 
     /// <summary>Backing field for property.</summary>
@@ -120,7 +120,7 @@ public class RoomInfo
     }
 
     /// <summary>
-    /// Defines if the room is listed in its lobby.
+    /// Defines if the room is listed in Its lobby.
     /// Rooms can be created invisible, or changed to invisible.
     /// To change if a room can be joined, use property: open.
     /// </summary>

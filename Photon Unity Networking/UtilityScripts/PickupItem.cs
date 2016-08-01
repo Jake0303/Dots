@@ -123,7 +123,7 @@ public class PickupItem : Photon.MonoBehaviour, IPunObservable
     [PunRPC]
     public void PunPickup(PhotonMessageInfo msgInfo)
     {
-        // when this client's RPC gets executed, this client no longer waits for a sent pickup and can try again
+        // when this client's RPC gets executed, this client no longer waIts for a sent pickup and can try again
         if (msgInfo.sender.isLocal) this.SentPickup = false;
 
 
@@ -195,7 +195,7 @@ public class PickupItem : Photon.MonoBehaviour, IPunObservable
     internal void PunRespawn()
     {
         #if DEBUG
-        // debugging: in some cases, the respawn is "late". it's unclear why! just be aware of this.
+        // debugging: in some cases, the respawn is "late". Its unclear why! just be aware of this.
         double timeDiffToRespawnTime = PhotonNetwork.time - this.TimeOfRespawn;
         if (timeDiffToRespawnTime > 0.1f) Debug.LogWarning("Spawn time is wrong by: " + timeDiffToRespawnTime + " (this is not an error. you just need to be aware of this.)");
         #endif

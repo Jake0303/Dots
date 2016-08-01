@@ -126,7 +126,7 @@ namespace ExitGames.Demos.DemoAnimator
 		/// <summary>
 		/// MonoBehaviour method called when the Collider 'other' enters the trigger.
 		/// Affect Health of the Player if the collider is a beam
-		/// Note: when jumping and firing at the same, you'll find that the player's own beam intersects with itself
+		/// Note: when jumping and firing at the same, you'll find that the player's own beam intersects with Itself
 		/// One could move the collider further away to prevent this or check if the beam belongs to the player.
 		/// </summary>
 		void OnTriggerEnter(Collider other) {
@@ -177,7 +177,7 @@ namespace ExitGames.Demos.DemoAnimator
 		/// <param name="level">Level index loaded</param>
 		void OnLevelWasLoaded(int level)
 		{
-			// check if we are outside the Arena and if it's the case, spawn around the center of the arena in a safe zone
+			// check if we are outside the Arena and if Its the case, spawn around the center of the arena in a safe zone
 			if (! Physics.Raycast(transform.position, -Vector3.up, 5f)) 
 			{
 				transform.position = new Vector3(0f,5f,0f);

@@ -13,7 +13,7 @@ namespace ExitGames.Client.DemoParticle
     using System;
 
     /// <summary>
-    /// A utility class that turns it's ShouldExecute property to true after a set interval time has passed.
+    /// A utility class that turns Its ShouldExecute property to true after a set interval time has passed.
     /// </summary>
     /// <remarks>
     /// TimeKeepers can be useful to execute tasks in a certain interval within a game loop (integrating a recurring task into a certain thread). 
@@ -42,7 +42,7 @@ namespace ExitGames.Client.DemoParticle
         }
 
         /// <summary>
-        /// Creates a new TimeKeeper and sets it's interval.
+        /// Creates a new TimeKeeper and sets Its interval.
         /// </summary>
         /// <param name="interval"></param>
         public TimeKeeper(int interval)

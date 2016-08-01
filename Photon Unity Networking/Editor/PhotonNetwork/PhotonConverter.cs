@@ -40,7 +40,7 @@ public class PhotonConverter : Photon.MonoBehaviour
         }
 
         //REAAAALY?
-        bool result = EditorUtility.DisplayDialog("Conversion", "Disclaimer: The code conversion feature is quite crude, but should do it's job well (see the sourcecode). A backup is therefore strongly recommended!", "Yes, I've made a backup: GO", "Abort");
+        bool result = EditorUtility.DisplayDialog("Conversion", "Disclaimer: The code conversion feature is quite crude, but should do Its job well (see the sourcecode). A backup is therefore strongly recommended!", "Yes, I've made a backup: GO", "Abort");
         if (!result)
         {
             return;
@@ -246,7 +246,7 @@ public class PhotonConverter : Photon.MonoBehaviour
                 text = PregReplace(text, NOT_VAR_WITH_DOT + "OnPlayerDisconnected" + NOT_VAR_WITH_DOT, "$1OnPhotonPlayerDisconnected$2");
                 text = PregReplace(text, NOT_VAR_WITH_DOT + "OnNetworkInstantiate" + NOT_VAR_WITH_DOT, "$1OnPhotonInstantiate$2");
                 text = PregReplace(text, NOT_VAR_WITH_DOT + "OnSerializeNetworkView" + NOT_VAR_WITH_DOT, "$1OnPhotonSerializeView$2");
-                text = PregReplace(text, NOT_VAR_WITH_DOT + "BitStream" + NOT_VAR_WITH_DOT, "$1PhotonStream$2");
+                text = PregReplace(text, NOT_VAR_WITH_DOT + "BItstream" + NOT_VAR_WITH_DOT, "$1PhotonStream$2");
 
                 //Not completely the same meaning
                 text = PregReplace(text, NOT_VAR_WITH_DOT + "OnServerInitialized" + NOT_VAR_WITH_DOT, "$1OnCreatedRoom$2");
