@@ -51,7 +51,7 @@ public class PlayerClick : PunBehaviour
     public bool playingAnim = false;
     public bool playingSquareAnim = false;
     private float closeEnough = 1f;
-
+    float gravity = 19.6f;
     /*
      * Sync Line rotation
      */
@@ -492,16 +492,24 @@ public class PlayerClick : PunBehaviour
     //Play the line animation of falling from the sky and rotating
     IEnumerator StartLineAnim(string line, RaycastHit hit)
     {
+        Vector3 velocity = new Vector3(0, 10, 0);
         SpawnLineForAnim(line);
         while (!animFinished)
         {
+            // apply gravity 
+
+            velocity.y -= gravity * Time.deltaTime;
+
+            // calculate new position
+
+            transform.position += velocity * Time.deltaTime;
             //Lerp the lines location and rotation for a smooth animation
             if (newLineHorizontal != null && objectID != null && GameObject.Find(objectID).name.Contains("Horizontal"))
             {
                 newLineHorizontal.transform.rotation = Quaternion.Slerp(newLineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
                 if (newLineHorizontal.transform.position.y > 0)
                 {
-                    newLineHorizontal.transform.position = Vector3.Lerp(newLineHorizontal.transform.position, new Vector3(newLineHorizontal.transform.position.x, 0, newLineHorizontal.transform.position.z), Time.deltaTime * lerpRate);
+                    newLineHorizontal.transform.position += velocity * Time.deltaTime;
                 }
 
                 if (newLineHorizontal.transform.position.y < 0.01 && !animFinished)
@@ -549,7 +557,7 @@ public class PlayerClick : PunBehaviour
                     newLineVertical.transform.rotation = Quaternion.Slerp(newLineVertical.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
                     if (newLineVertical.transform.position.y > 0)
                     {
-                        newLineVertical.transform.position = Vector3.Lerp(newLineVertical.transform.position, new Vector3(newLineVertical.transform.position.x, 0, newLineVertical.transform.position.z), Time.deltaTime * lerpRate);
+                        newLineVertical.transform.position += velocity * Time.deltaTime;
                     }
 
                     if (newLineVertical.transform.position.y < 0.01 && !animFinished)
@@ -618,15 +626,19 @@ public class PlayerClick : PunBehaviour
     //Play the square animation of falling from the sky and rotating
     IEnumerator StartSquareAnim(string square)
     {
+        Vector3 velocity = new Vector3(0, 10, 0);
         GameObject newSquare = SpawnSquareForAnim(square);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newSquare);
         while (!squareAnimFinished && newSquare != null)
         {
+            // apply gravity 
+
+            velocity.y -= gravity * Time.deltaTime;
             //Lerp the square location and rotation for a smooth animation
             newSquare.transform.rotation = Quaternion.Slerp(newSquare.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
             if (newSquare.transform.position.y > 0)
             {
-                newSquare.transform.position = Vector3.Lerp(newSquare.transform.position, new Vector3(newSquare.transform.position.x, 0, newSquare.transform.position.z), Time.deltaTime * lerpRate);
+                newSquare.transform.position += velocity * Time.deltaTime;
             }
             if (newSquare.transform.position.y < 0.01 && !squareAnimFinished)
             {
