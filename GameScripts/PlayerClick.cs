@@ -51,7 +51,7 @@ public class PlayerClick : PunBehaviour
     public bool playingAnim = false;
     public bool playingSquareAnim = false;
     private float closeEnough = 1f;
-    float gravity = 19.6f;
+    float gravity = 39.2f;//x4 gravity
     /*
      * Sync Line rotation
      */
@@ -466,9 +466,9 @@ public class PlayerClick : PunBehaviour
     {
         if (GameObject.Find(line).name.Contains("Horizontal"))
         {
-            newLineHorizontal = Instantiate(lineHorizontal, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
+            newLineHorizontal = Instantiate(lineHorizontal, new Vector3(GameObject.Find(line).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
             newLineHorizontal.name = "temp";
-            newLineHorizontal.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
+            newLineHorizontal.transform.position = new Vector3(GameObject.Find(line).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(line).transform.position.z);
             newLineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
             newLineHorizontal.GetComponent<Renderer>().enabled = true;
             newLineHorizontal.GetComponent<Renderer>().material = lineMat;
@@ -478,9 +478,9 @@ public class PlayerClick : PunBehaviour
         }
         else
         {
-            newLineVertical = Instantiate(lineVertical, new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
+            newLineVertical = Instantiate(lineVertical, new Vector3(GameObject.Find(line).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(line).transform.position.z), GameObject.Find(line).transform.rotation) as GameObject;
             newLineVertical.name = "temp";
-            newLineVertical.transform.position = new Vector3(GameObject.Find(line).transform.position.x, 50, GameObject.Find(line).transform.position.z);
+            newLineVertical.transform.position = new Vector3(GameObject.Find(line).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(line).transform.position.z);
             newLineVertical.transform.rotation = GameObject.Find(line).transform.rotation;
             newLineVertical.GetComponent<Renderer>().enabled = true;
             newLineVertical.GetComponent<Renderer>().material = lineMat;
@@ -492,7 +492,7 @@ public class PlayerClick : PunBehaviour
     //Play the line animation of falling from the sky and rotating
     IEnumerator StartLineAnim(string line, RaycastHit hit)
     {
-        Vector3 velocity = new Vector3(0, 10, 0);
+        Vector3 velocity = new Vector3(0, 1, 0);
         SpawnLineForAnim(line);
         while (!animFinished)
         {
@@ -506,7 +506,7 @@ public class PlayerClick : PunBehaviour
             //Lerp the lines location and rotation for a smooth animation
             if (newLineHorizontal != null && objectID != null && GameObject.Find(objectID).name.Contains("Horizontal"))
             {
-                newLineHorizontal.transform.rotation = Quaternion.Slerp(newLineHorizontal.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+                newLineHorizontal.transform.rotation = Quaternion.Slerp(newLineHorizontal.transform.rotation, Quaternion.Euler(900, 0, 0), rotLerpRate * Time.deltaTime);
                 if (newLineHorizontal.transform.position.y > 0)
                 {
                     newLineHorizontal.transform.position += velocity * Time.deltaTime;
@@ -554,7 +554,7 @@ public class PlayerClick : PunBehaviour
             {
                 if (newLineVertical != null)
                 {
-                    newLineVertical.transform.rotation = Quaternion.Slerp(newLineVertical.transform.rotation, Quaternion.Euler(0, 0, 540), rotLerpRate * Time.deltaTime);
+                    newLineVertical.transform.rotation = Quaternion.Slerp(newLineVertical.transform.rotation, Quaternion.Euler(0, 0, 900), rotLerpRate * Time.deltaTime);
                     if (newLineVertical.transform.position.y > 0)
                     {
                         newLineVertical.transform.position += velocity * Time.deltaTime;
@@ -613,9 +613,9 @@ public class PlayerClick : PunBehaviour
     //Spawn a temporary square for an animation
     GameObject SpawnSquareForAnim(string square)
     {
-        GameObject newSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
+        GameObject newSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
         newSquare.name = "tempSquare";
-        newSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, 50, GameObject.Find(square).transform.position.z);
+        newSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(square).transform.position.z);
         newSquare.transform.rotation = GameObject.Find(square).transform.rotation;
         newSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
         newSquare.GetComponent<Renderer>().material = lineMat;
@@ -626,7 +626,7 @@ public class PlayerClick : PunBehaviour
     //Play the square animation of falling from the sky and rotating
     IEnumerator StartSquareAnim(string square)
     {
-        Vector3 velocity = new Vector3(0, 10, 0);
+        Vector3 velocity = new Vector3(0, 1, 0); 
         GameObject newSquare = SpawnSquareForAnim(square);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newSquare);
         while (!squareAnimFinished && newSquare != null)
@@ -635,7 +635,7 @@ public class PlayerClick : PunBehaviour
 
             velocity.y -= gravity * Time.deltaTime;
             //Lerp the square location and rotation for a smooth animation
-            newSquare.transform.rotation = Quaternion.Slerp(newSquare.transform.rotation, Quaternion.Euler(540, 0, 0), rotLerpRate * Time.deltaTime);
+            newSquare.transform.rotation = Quaternion.Slerp(newSquare.transform.rotation, Quaternion.Euler(900, 0, 0), rotLerpRate * Time.deltaTime);
             if (newSquare.transform.position.y > 0)
             {
                 newSquare.transform.position += velocity * Time.deltaTime;
