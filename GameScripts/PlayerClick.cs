@@ -493,20 +493,22 @@ public class PlayerClick : PunBehaviour
     IEnumerator StartLineAnim(string line, RaycastHit hit)
     {
         Vector3 velocity = new Vector3(0, 1, 0);
+        float rotateSpeed = 0;
         SpawnLineForAnim(line);
         while (!animFinished)
         {
             // apply gravity 
 
             velocity.y -= gravity * Time.deltaTime;
-
+            rotateSpeed += 10;
             // calculate new position
 
             transform.position += velocity * Time.deltaTime;
             //Lerp the lines location and rotation for a smooth animation
             if (newLineHorizontal != null && objectID != null && GameObject.Find(objectID).name.Contains("Horizontal"))
             {
-                newLineHorizontal.transform.rotation = Quaternion.Slerp(newLineHorizontal.transform.rotation, Quaternion.Euler(900, 0, 0), rotLerpRate * Time.deltaTime);
+                //Perfectly rotate lines so they are at the right position when hitting the ground
+                newLineHorizontal.transform.Rotate(120*Time.deltaTime, 0, 0);
                 if (newLineHorizontal.transform.position.y > 0)
                 {
                     newLineHorizontal.transform.position += velocity * Time.deltaTime;
@@ -554,7 +556,8 @@ public class PlayerClick : PunBehaviour
             {
                 if (newLineVertical != null)
                 {
-                    newLineVertical.transform.rotation = Quaternion.Slerp(newLineVertical.transform.rotation, Quaternion.Euler(0, 0, 900), rotLerpRate * Time.deltaTime);
+                    //Perfectly rotate lines so they are at the right position when hitting the ground
+                    newLineVertical.transform.Rotate(0, 0, 120*Time.deltaTime);
                     if (newLineVertical.transform.position.y > 0)
                     {
                         newLineVertical.transform.position += velocity * Time.deltaTime;
@@ -635,14 +638,14 @@ public class PlayerClick : PunBehaviour
 
             velocity.y -= gravity * Time.deltaTime;
             //Lerp the square location and rotation for a smooth animation
-            newSquare.transform.rotation = Quaternion.Slerp(newSquare.transform.rotation, Quaternion.Euler(900, 0, 0), rotLerpRate * Time.deltaTime);
+            newSquare.transform.Rotate(120 * Time.deltaTime, 0, 0);
             if (newSquare.transform.position.y > 0)
             {
                 newSquare.transform.position += velocity * Time.deltaTime;
             }
             if (newSquare.transform.position.y < 0.01 && !squareAnimFinished)
             {
-                if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn)
+                if (!photonView.isMine)
                 {
                     //if (newSquare != null)
                         //newSquare.GetComponent<Renderer>().enabled = false;
@@ -650,15 +653,20 @@ public class PlayerClick : PunBehaviour
                     GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
                     GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
                     GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+                    newSquare.transform.rotation = Quaternion.Euler(0, 0, 0);
                     photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered);
                     CmdNextTurn();
                     squareAnimFinished = true;
                 }
+                else
+                    newSquare.transform.rotation = Quaternion.Euler(0, 0, 0);
             }
             if (squareAnimFinished)
             {
                 //if (newSquare != null)
                     //newSquare.GetComponent<Renderer>().enabled = false;
+                newSquare.transform.rotation = Quaternion.identity;
+
             }
             yield return new WaitForSeconds(0.01f);
         }

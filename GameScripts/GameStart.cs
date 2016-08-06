@@ -14,6 +14,7 @@ public class GameStart : PunBehaviour
 {
     [SerializeField]
     public GameObject dots, lineHor, lineVert,centerSquare;
+    public GameObject[] listOfDots = new GameObject[GLOBALS.GRIDHEIGHT*GLOBALS.GRIDWIDTH];
     public GameObject hoverLineHor, hoverLineVert;
     public List<string> playerNames = new List<string>();
     //The speed at which each dot in the grid spawns
@@ -147,6 +148,7 @@ public class GameStart : PunBehaviour
     //Build the grid
     IEnumerator CreateGrid()
     {
+        int index = 0;
             for (int x = 0; x < GLOBALS.GRIDWIDTH; x++)
             {
                 yield return new WaitForSeconds(spawnSpeed);
@@ -159,6 +161,8 @@ public class GameStart : PunBehaviour
                     dots.transform.localScale = new Vector3(3, 3, 3);
                     dots.name = "Dot " + x.ToString() + "," + z.ToString();
                     dots.GetComponent<DotID>().dotID = dots.name;
+                    listOfDots[index] = dots;
+                    index++;
                     SpawnOnNetwork("dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0),dots.name);
                     //This if statement stops from building extra unnecessary lines
                     if (z < GLOBALS.GRIDHEIGHT - 1)
@@ -198,6 +202,10 @@ public class GameStart : PunBehaviour
                     }
                 }
             }
+            GameObject.Find("Camera").transform.position = new Vector3(
+                (listOfDots[listOfDots.Length-1].transform.position.x)/2,
+        GameObject.Find("Camera").transform.position.y,
+        GameObject.Find("Camera").transform.position.z);
             //Start the timer after the grid has been built
             gameObject.GetComponent<TurnTimer>().enabled = true;
             photonView.RPC("RpcEnableTimer", PhotonTargets.AllBuffered);

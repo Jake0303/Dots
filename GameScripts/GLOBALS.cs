@@ -20,9 +20,9 @@ public class GLOBALS : MonoBehaviour {
     //(((GameStart.gridWidth - 1) * (GameStart.gridHeight - 1) / 2)+1)
     public const  int POINTSTOWIN = 3;
     //GridWidth
-    public const int GRIDWIDTH = 5;
+    public const int GRIDWIDTH = 4;
     //GridHeight
-    public const int GRIDHEIGHT = 5;
+    public const int GRIDHEIGHT = 4;
     //The distance between each dot
     public const float DOTDISTANCE = 11.0f;
     //Version of the game

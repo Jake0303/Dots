@@ -8,7 +8,6 @@ public class OptionsMenuManager : MonoBehaviour {
 
 	// Initialize volume slider
 	void Start () {
-        GameObject.Find("GameName").GetComponent<Text>().text = GLOBALS.GameName;
         if (GameObject.Find("VolumeSlider") != null)
             GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
 	}

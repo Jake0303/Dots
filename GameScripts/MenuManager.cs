@@ -63,9 +63,12 @@ public class MenuManager : MonoBehaviour {
     //Show text while we connect to the matchmaking service
     public void DisplayLoadingText(string text)
     {
-        GameObject.Find("transitionText").GetComponent<Text>().text = text;
-        StartCoroutine(FadeTextToFullAlpha(2f, GameObject.Find("transitionText").GetComponent<Text>()));
-        StartCoroutine(DynamicPeriods(GameObject.Find("transitionText").GetComponent<Text>()));
+        if (GameObject.Find("transitionText") != null)
+        {
+            GameObject.Find("transitionText").GetComponent<Text>().text = text;
+            StartCoroutine(FadeTextToFullAlpha(2f, GameObject.Find("transitionText").GetComponent<Text>()));
+            StartCoroutine(DynamicPeriods(GameObject.Find("transitionText").GetComponent<Text>()));
+        }
     }
     public void TransitionToEnterNameScreen()
     {
