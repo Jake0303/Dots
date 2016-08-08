@@ -38,6 +38,8 @@ public class PlayerClick : PunBehaviour
     private GameObject newLineHorizontal, newLineVertical;
     [SerializeField]
     public GameObject line, square;
+    [SerializeField]
+    private GameObject linePlaceEffect, squarePlaceEffect;
     /*
      * Sync Line position
      */
@@ -439,8 +441,8 @@ public class PlayerClick : PunBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
-                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    && !playingAnim
+                    //&& hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    //&& !playingAnim
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
@@ -522,6 +524,9 @@ public class PlayerClick : PunBehaviour
                             newLineHorizontal.GetComponent<Renderer>().enabled = false;
                         if (newLineVertical != null)
                             newLineVertical.GetComponent<Renderer>().enabled = false;
+                        //Play Effect
+                        GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineHorizontal.transform.position.x, (newLineHorizontal.transform.position.y * 2.5f), newLineHorizontal.transform.position.z + newLineHorizontal.transform.localScale.z), newLineHorizontal.transform.rotation) as GameObject;
+                        GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineHorizontal.transform.position.x, newLineHorizontal.transform.position.y * 2.5f, newLineHorizontal.transform.position.z - newLineHorizontal.transform.localScale.z), newLineHorizontal.transform.rotation) as GameObject;
 
                         GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                         GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
@@ -571,6 +576,12 @@ public class PlayerClick : PunBehaviour
                                 newLineHorizontal.GetComponent<Renderer>().enabled = false;
                             if (newLineVertical != null)
                                 newLineVertical.GetComponent<Renderer>().enabled = false;
+
+                            //Play Effect
+                            //Play Effect
+                            GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineVertical.transform.position.x + newLineVertical.transform.localScale.x, (newLineVertical.transform.position.y * 2.5f), newLineVertical.transform.position.z), newLineVertical.transform.rotation) as GameObject;
+                            GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineVertical.transform.position.x - newLineVertical.transform.localScale.x, newLineVertical.transform.position.y * 2.5f, newLineVertical.transform.position.z), newLineVertical.transform.rotation) as GameObject;
+
                             GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                             GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
                             GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -649,6 +660,10 @@ public class PlayerClick : PunBehaviour
                 {
                     //if (newSquare != null)
                         //newSquare.GetComponent<Renderer>().enabled = false;
+
+                    //Play Effect
+                    GameObject squareEffect = Instantiate(linePlaceEffect, new Vector3(newSquare.transform.position.x, (newSquare.transform.position.y*2.5f), newSquare.transform.position.z), newSquare.transform.rotation) as GameObject;
+
                     GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                     GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
                     GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
