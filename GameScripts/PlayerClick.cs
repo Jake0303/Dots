@@ -167,10 +167,29 @@ public class PlayerClick : PunBehaviour
         }
     }
     [PunRPC]
-    void CmdStopSquareAnim()
+    void CmdStopSquareAnim(string squareId, string tempSquare)
     {
         squareAnimFinished = true;
         playingSquareAnim = false;
+
+        GameObject.Find(tempSquare).GetComponent<Renderer>().enabled = false;
+        GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
+        GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
+        GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        //Play Effect
+        GameObject squareEffectLeftTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectLeftTop.GetComponent<ParticleSystem>().startColor = squareColor;
+        GameObject squareEffectLeftBot = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectLeftBot.GetComponent<ParticleSystem>().startColor = squareColor;
+        GameObject squareEffectRightTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectRightTop.GetComponent<ParticleSystem>().startColor = squareColor;
+        GameObject squareEffectRightBot = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectRightBot.GetComponent<ParticleSystem>().startColor = squareColor;
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftTop);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftBot);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightTop);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightBot);
     }
     [PunRPC]
     void CmdStopAnim()
@@ -186,6 +205,28 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
+        if (obj.Contains("Vertical"))
+        {
+            //Play Effect
+            GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z), GameObject.Find(obj).transform.rotation) as GameObject;
+            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+
+            GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x - (GLOBALS.DOTDISTANCE / 2), GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z), GameObject.Find(obj).transform.rotation) as GameObject;
+            rightLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(leftLineEffect);
+            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(rightLineEffect);
+        }
+        else
+        {
+            //Play Effect
+            GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x, (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(obj).transform.rotation) as GameObject;
+            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+
+            GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x, GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(obj).transform.rotation) as GameObject;
+            rightLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(leftLineEffect);
+            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(rightLineEffect);
+        }
         if (!pointScored)
         {
             photonView.RPC("RpcPaint", PhotonTargets.AllBuffered, obj, col);// use a Client RPC function to "paint" the object on all clients
@@ -441,8 +482,8 @@ public class PlayerClick : PunBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
-                    //&& hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    //&& !playingAnim
+                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    && !playingAnim
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
@@ -510,7 +551,7 @@ public class PlayerClick : PunBehaviour
             if (newLineHorizontal != null && objectID != null && GameObject.Find(objectID).name.Contains("Horizontal"))
             {
                 //Perfectly rotate lines so they are at the right position when hitting the ground
-                newLineHorizontal.transform.Rotate(120*Time.deltaTime, 0, 0);
+                newLineHorizontal.transform.Rotate(120 * Time.deltaTime, 0, 0);
                 if (newLineHorizontal.transform.position.y > 0)
                 {
                     newLineHorizontal.transform.position += velocity * Time.deltaTime;
@@ -518,15 +559,12 @@ public class PlayerClick : PunBehaviour
 
                 if (newLineHorizontal.transform.position.y < 0.01 && !animFinished)
                 {
-                    if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn)
+                    if (photonView.isMine)
                     {
                         if (newLineHorizontal != null)
                             newLineHorizontal.GetComponent<Renderer>().enabled = false;
                         if (newLineVertical != null)
                             newLineVertical.GetComponent<Renderer>().enabled = false;
-                        //Play Effect
-                        GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineHorizontal.transform.position.x, (newLineHorizontal.transform.position.y * 2.5f), newLineHorizontal.transform.position.z + newLineHorizontal.transform.localScale.z), newLineHorizontal.transform.rotation) as GameObject;
-                        GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineHorizontal.transform.position.x, newLineHorizontal.transform.position.y * 2.5f, newLineHorizontal.transform.position.z - newLineHorizontal.transform.localScale.z), newLineHorizontal.transform.rotation) as GameObject;
 
                         GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                         GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
@@ -562,25 +600,20 @@ public class PlayerClick : PunBehaviour
                 if (newLineVertical != null)
                 {
                     //Perfectly rotate lines so they are at the right position when hitting the ground
-                    newLineVertical.transform.Rotate(0, 0, 120*Time.deltaTime);
+                    newLineVertical.transform.Rotate(0, 0, 120 * Time.deltaTime);
                     if (newLineVertical.transform.position.y > 0)
                     {
                         newLineVertical.transform.position += velocity * Time.deltaTime;
                     }
-
                     if (newLineVertical.transform.position.y < 0.01 && !animFinished)
                     {
-                        if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn)
+
+                        if (photonView.isMine)
                         {
                             if (newLineHorizontal != null)
                                 newLineHorizontal.GetComponent<Renderer>().enabled = false;
                             if (newLineVertical != null)
                                 newLineVertical.GetComponent<Renderer>().enabled = false;
-
-                            //Play Effect
-                            //Play Effect
-                            GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineVertical.transform.position.x + newLineVertical.transform.localScale.x, (newLineVertical.transform.position.y * 2.5f), newLineVertical.transform.position.z), newLineVertical.transform.rotation) as GameObject;
-                            GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(newLineVertical.transform.position.x - newLineVertical.transform.localScale.x, newLineVertical.transform.position.y * 2.5f, newLineVertical.transform.position.z), newLineVertical.transform.rotation) as GameObject;
 
                             GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
                             GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
@@ -600,7 +633,6 @@ public class PlayerClick : PunBehaviour
                                 photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                             }
                         }
-
                     }
 
                 }
@@ -628,7 +660,7 @@ public class PlayerClick : PunBehaviour
     GameObject SpawnSquareForAnim(string square)
     {
         GameObject newSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
-        newSquare.name = "tempSquare";
+        newSquare.name = "tempSquare" + GameObject.Find(square).transform.position.x +""+ GameObject.Find(square).transform.position.z;
         newSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(square).transform.position.z);
         newSquare.transform.rotation = GameObject.Find(square).transform.rotation;
         newSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
@@ -640,7 +672,7 @@ public class PlayerClick : PunBehaviour
     //Play the square animation of falling from the sky and rotating
     IEnumerator StartSquareAnim(string square)
     {
-        Vector3 velocity = new Vector3(0, 1, 0); 
+        Vector3 velocity = new Vector3(0, 1, 0);
         GameObject newSquare = SpawnSquareForAnim(square);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newSquare);
         while (!squareAnimFinished && newSquare != null)
@@ -654,34 +686,12 @@ public class PlayerClick : PunBehaviour
             {
                 newSquare.transform.position += velocity * Time.deltaTime;
             }
-            if (newSquare.transform.position.y < 0.01 && !squareAnimFinished)
+            if (newSquare.transform.position.y < 1 && !squareAnimFinished)
             {
-                if (!photonView.isMine)
-                {
-                    //if (newSquare != null)
-                        //newSquare.GetComponent<Renderer>().enabled = false;
-
-                    //Play Effect
-                    GameObject squareEffect = Instantiate(linePlaceEffect, new Vector3(newSquare.transform.position.x, (newSquare.transform.position.y*2.5f), newSquare.transform.position.z), newSquare.transform.rotation) as GameObject;
-
-                    GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
-                    GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
-                    GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-                    GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
-                    newSquare.transform.rotation = Quaternion.Euler(0, 0, 0);
-                    photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered);
-                    CmdNextTurn();
-                    squareAnimFinished = true;
-                }
-                else
-                    newSquare.transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            if (squareAnimFinished)
-            {
-                //if (newSquare != null)
-                    //newSquare.GetComponent<Renderer>().enabled = false;
-                newSquare.transform.rotation = Quaternion.identity;
-
+                newSquare.GetComponent<Renderer>().enabled = false;
+                photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
+                CmdNextTurn();
+                squareAnimFinished = true;
             }
             yield return new WaitForSeconds(0.01f);
         }

@@ -104,7 +104,7 @@ public class TurnTimer : PunBehaviour
                                 if (timerText.name.Contains((i + 1).ToString()))
                                 {
                                     //Update UI with the time left
-                                    timerText.GetComponent<Text>().text = "Time left: " + Mathf.Round(timer);
+                                    //timerText.GetComponent<Text>().text = "Time left: " + Mathf.Round(timer);
                                 }
                             }
                         }

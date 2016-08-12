@@ -51,7 +51,7 @@ public class NetworkManagerLocal : PunBehaviour
         base.OnFailedToConnectToPhoton(cause);
         string conn = "There is a Network Issue, please check your Internet connection.";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
-        GameObject.Find("BackToMenuButton").SetActive(true);
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
         GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
@@ -60,7 +60,7 @@ public class NetworkManagerLocal : PunBehaviour
         base.OnConnectionFail(cause);
         string conn = "Our servers are full! Please try again later.";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
-        GameObject.Find("BackToMenuButton").SetActive(true);
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
         GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
@@ -109,7 +109,6 @@ public class NetworkManagerLocal : PunBehaviour
         {
             GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
-            //TODO add disconnect popup
             GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
         }
     }
