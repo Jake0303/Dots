@@ -119,11 +119,14 @@ public class PlayerClick : PunBehaviour
         GetComponent<PlayerID>().isPlayersTurn = true;
         pointScored = false;
         playingAnim = false;
+        doubleSquare = false;
+
     }
     [PunRPC]
     void RpcNextTurn()
     {
         GameObject.Find("GameManager").GetComponent<TurnTimer>().nextTurn = true;
+        doubleSquare = false;
     }
     [PunRPC]
     void RpcPaint(string obj, string col)
@@ -169,10 +172,12 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdStopSquareAnim(string squareId, string tempSquare)
     {
-        squareAnimFinished = true;
-        playingSquareAnim = false;
+        foreach (var square in GameObject.FindGameObjectsWithTag("CenterSquare"))
+        {
+            square.transform.rotation = Quaternion.identity;
+            square.transform.position = new Vector3(square.transform.position.x, 0, square.transform.position.z);
+        }
 
-        GameObject.Find(tempSquare).GetComponent<Renderer>().enabled = false;
         GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
         GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
         GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -190,6 +195,10 @@ public class PlayerClick : PunBehaviour
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftBot);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightTop);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightBot);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(GameObject.Find(tempSquare));
+
+        squareAnimFinished = true;
+        playingSquareAnim = false;
     }
     [PunRPC]
     void CmdStopAnim()
@@ -660,7 +669,7 @@ public class PlayerClick : PunBehaviour
     GameObject SpawnSquareForAnim(string square)
     {
         GameObject newSquare = Instantiate(centerSquare, new Vector3(GameObject.Find(square).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(square).transform.position.z), GameObject.Find(square).transform.rotation) as GameObject;
-        newSquare.name = "tempSquare" + GameObject.Find(square).transform.position.x +""+ GameObject.Find(square).transform.position.z;
+        newSquare.name = "tempSquare" + GameObject.Find(square).transform.position.x + "" + GameObject.Find(square).transform.position.z;
         newSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(square).transform.position.z);
         newSquare.transform.rotation = GameObject.Find(square).transform.rotation;
         newSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
@@ -686,9 +695,11 @@ public class PlayerClick : PunBehaviour
             {
                 newSquare.transform.position += velocity * Time.deltaTime;
             }
-            if (newSquare.transform.position.y < 1 && !squareAnimFinished)
+            if (newSquare.transform.position.y < 1 && !squareAnimFinished && photonView.isMine)
             {
-                newSquare.GetComponent<Renderer>().enabled = false;
+                //if (doubleSquare)
+                //newSquare.GetComponent<Renderer>().enabled = false;
+                newSquare.transform.rotation = Quaternion.identity;
                 photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
                 CmdNextTurn();
                 squareAnimFinished = true;
