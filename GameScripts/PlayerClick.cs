@@ -697,8 +697,6 @@ public class PlayerClick : PunBehaviour
             }
             if (newSquare.transform.position.y < 1 && !squareAnimFinished && photonView.isMine)
             {
-                //if (doubleSquare)
-                //newSquare.GetComponent<Renderer>().enabled = false;
                 newSquare.transform.rotation = Quaternion.identity;
                 photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
                 CmdNextTurn();

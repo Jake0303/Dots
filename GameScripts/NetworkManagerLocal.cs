@@ -51,7 +51,8 @@ public class NetworkManagerLocal : PunBehaviour
         base.OnFailedToConnectToPhoton(cause);
         string conn = "There is a Network Issue, please check your Internet connection.";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
-        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
+        //TODO Fix button
+        //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
         GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
@@ -60,7 +61,7 @@ public class NetworkManagerLocal : PunBehaviour
         base.OnConnectionFail(cause);
         string conn = "Our servers are full! Please try again later.";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
-        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
+        //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
         GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
