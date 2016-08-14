@@ -154,11 +154,14 @@ public class UIManager : PunBehaviour
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 EscapeMenu = GameObject.Find("EscapeMenu");
+                GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
+                GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
                 EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
                 if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0)
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
                     EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                    GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
                     if (NetworkServer.connections.Count < 2)
                     {
                         if (GLOBALS.ISNETWORKLOCAL)
@@ -172,9 +175,17 @@ public class UIManager : PunBehaviour
                 else
                 {
                     EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
+                    GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
                 }
             }
         }
+    }
+    //Update the volume when the slider has changed
+    public void OnVolumeSliderChanged(float value)
+    {
+        GLOBALS.Volume = value;
+        GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
+        GameObject.Find("AudioManager").GetComponent<Sound>().fxSound.volume = (GLOBALS.Volume / 100);
     }
     //Dynamic period animation
     IEnumerator DynamicPeriods()
