@@ -13,6 +13,7 @@ public class UIManager : PunBehaviour
     // On Start show the Waiting for Player text
     void Start()
     {
+        GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         StartCoroutine(DynamicPeriods());
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
     }
@@ -148,6 +149,7 @@ public class UIManager : PunBehaviour
     }
     void Update()
     {
+        Debug.Log(GLOBALS.Volume);
         //Escape menu
         if (photonView.isMine)
         {
@@ -155,7 +157,7 @@ public class UIManager : PunBehaviour
             {
                 EscapeMenu = GameObject.Find("EscapeMenu");
                 GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-                GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
+                GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
                 EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
                 if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0)
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
