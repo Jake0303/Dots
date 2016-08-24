@@ -110,6 +110,8 @@ public class NetworkManagerLocal : PunBehaviour
         {
             GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
+            GameObject.Find("VolumeText").GetComponent<Text>().text = "";
+            GameObject.Find("VolumeLevel").GetComponent<Text>().text = "";
             GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
         }
     }

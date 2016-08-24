@@ -214,6 +214,8 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
+        GameObject.Find(obj).GetComponent<AudioSource>().volume = (GLOBALS.Volume / 100);
+        GameObject.Find(obj).GetComponent<AudioSource>().Play();
         if (obj.Contains("Vertical"))
         {
             //Play Effect
