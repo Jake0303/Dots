@@ -149,7 +149,6 @@ public class UIManager : PunBehaviour
     }
     void Update()
     {
-        Debug.Log(GLOBALS.Volume);
         //Escape menu
         if (photonView.isMine)
         {
