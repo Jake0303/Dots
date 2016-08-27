@@ -8,6 +8,10 @@ public class DotID : PunBehaviour {
 
 	public string dotID;
 	private Transform myTransform;
+    void Start()
+    {
+        GetComponent<AudioSource>().volume = GLOBALS.Volume / 100;
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
