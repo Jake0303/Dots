@@ -86,6 +86,7 @@ public class MenuManager : MonoBehaviour {
     }
     public void TransitionToLobby()
     {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         GameObject.Find("GameName").GetComponent<Text>().text = "";
         GameObject.Find("PlayButton").GetComponent<Button>().enabled = false;
         GameObject.Find("PlayButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
@@ -109,10 +110,12 @@ public class MenuManager : MonoBehaviour {
     public void Instructions()
     {
         SceneManager.LoadScene("Instructions");
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
     //Quit the game
     public void ExitGame()
     {
         Application.Quit();
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
 }

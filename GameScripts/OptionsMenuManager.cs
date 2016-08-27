@@ -16,11 +16,13 @@ public class OptionsMenuManager : MonoBehaviour {
     {
         GLOBALS.Volume = value;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        GameObject.Find("AudioManager").GetComponent<Sound>().fxSound.volume = (GLOBALS.Volume/100);
+        GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume/100);
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
     //Go back to the main menu
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
 }

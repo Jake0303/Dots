@@ -10,5 +10,6 @@ public class InstructionsMenuManager : MonoBehaviour {
     public void MainMenu()
     {
         SceneManager.LoadScene("MainMenu");
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
 }

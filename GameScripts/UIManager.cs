@@ -115,6 +115,7 @@ public class UIManager : PunBehaviour
     //Set the playername over the server 
     public void SetPlayerName(InputField tempField, GameObject panel, Text errorMsg)
     {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         bool aError = false;
         //If there is an error display a error message
         if (tempField.GetComponent<InputField>().text == "")
@@ -186,7 +187,8 @@ public class UIManager : PunBehaviour
     {
         GLOBALS.Volume = value;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        GameObject.Find("AudioManager").GetComponent<Sound>().fxSound.volume = (GLOBALS.Volume / 100);
+        GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 100);
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
     //Dynamic period animation
     IEnumerator DynamicPeriods()
@@ -283,6 +285,7 @@ public class UIManager : PunBehaviour
     {
         if (photonView.isMine)
         {
+            GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
             //Remove player from player list
             for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
             {
