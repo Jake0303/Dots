@@ -11,7 +11,7 @@ using Photon;
 public class GameOver : PunBehaviour
 {
     public bool gameOver = false;
-    public string winner = "";
+    public string winner = "", loser = "";
     private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -35,6 +35,7 @@ public class GameOver : PunBehaviour
     {
         if (gameOver)
         {
+            Debug.Log("Game Over!");
             DisplayWinner();
             GetComponent<GameState>().gameState = GameState.State.GameOver;
             StartCoroutine("DelayBeforeRestart");
@@ -67,20 +68,12 @@ public class GameOver : PunBehaviour
             }
             else
             {
+                loser = player.name;
                 player.GetComponent<PlayerID>().winner = false;
             }
         }
-        foreach (var player in players)
-        {
-            if (player.GetComponent<PlayerID>().winner)
-            {
-                player.GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
-            }
-            else
-            {
-                player.GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
-            }
-        }
+        GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
+        GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
     }
     IEnumerator DelayBeforeRestart()
     {
@@ -92,7 +85,7 @@ public class GameOver : PunBehaviour
     //Reset the game
     void ResetGame()
     {
-        foreach(var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
+        foreach (var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
         {
             tempObj.GetComponent<Renderer>().enabled = false;
         }

@@ -93,6 +93,7 @@ public class PlayerID : PunBehaviour
             //Syncing players UI panel
             stream.SendNext(playersPanel);
             stream.SendNext(playerScore);
+            stream.SendNext(winner);
         }
         else
         {
@@ -101,6 +102,7 @@ public class PlayerID : PunBehaviour
             this.nameSet = (bool)stream.ReceiveNext();
             this.playersPanel = (string)stream.ReceiveNext();
             this.playerScore = (int)stream.ReceiveNext();
+            this.winner = (bool)stream.ReceiveNext();
         }
     }
 
@@ -158,6 +160,12 @@ public class PlayerID : PunBehaviour
             {
                 errorMsg.text = "";
             }
+        }
+        if (photonView.isMine && winner)
+        {
+            GetComponent<AudioSource>().volume = GLOBALS.Volume / 100;
+            GetComponent<AudioSource>().Play();
+            winner = false;
         }
     }
 

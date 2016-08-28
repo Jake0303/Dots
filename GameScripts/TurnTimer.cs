@@ -93,31 +93,6 @@ public class TurnTimer : PunBehaviour
             //End game if the majority of possible squares are made
             foreach (var player in players)
             {
-                if (player.GetComponent<PlayerID>().isPlayersTurn)
-                {
-                    for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-                    {
-                        if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
-                        {
-                            foreach (var timerText in timerTexts)
-                            {
-                                if (timerText.name.Contains((i + 1).ToString()))
-                                {
-                                    //Update UI with the time left
-                                    //timerText.GetComponent<Text>().text = "Time left: " + Mathf.Round(timer);
-                                }
-                            }
-                        }
-                    }
-                }
-                if (player.GetComponent<PlayerID>().playerScore >= CalculateMajorityPoints())
-                {
-                    isGameOver = true;
-                    break;
-                }
-            }
-            foreach (var player in players)
-            {
                 if (isGameOver)
                 {
                     GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
@@ -194,12 +169,10 @@ public class TurnTimer : PunBehaviour
                     break;
                 }
             }
-            foreach (var player in players)
+            if (isGameOver)
             {
-                if (isGameOver)
-                {
-                    GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
-                }
+                GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
+                isGameOver = false;
             }
         }
     }

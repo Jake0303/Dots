@@ -10,14 +10,14 @@ public class BackgroundManager : MonoBehaviour
     {
         while (true)
         {
-            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 335), Random.Range(265, 335), Random.Range(40, 70)), square.transform.rotation) as GameObject;
+            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 335), Random.Range(265, 335), Random.Range(20, 70)), square.transform.rotation) as GameObject;
             StartCoroutine(fadeIn(newSquare));
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
             newSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
             newSquare.GetComponent<Renderer>().material.SetColor("_TintColor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
             newSquare.GetComponent<Renderer>().material.SetColor("_detailcolor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
-            yield return new WaitForSeconds(Random.Range(1f, 1.5f));
+            yield return new WaitForSeconds(Random.Range(1f, 1.2f));
         }
     }
     void Start()
