@@ -35,10 +35,10 @@ public class GameOver : PunBehaviour
     {
         if (gameOver)
         {
-            Debug.Log("Game Over!");
             DisplayWinner();
             GetComponent<GameState>().gameState = GameState.State.GameOver;
             StartCoroutine("DelayBeforeRestart");
+            PhotonNetwork.RaiseEvent(2, null, true, null);
             gameOver = false;
         }
     }

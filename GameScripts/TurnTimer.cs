@@ -93,11 +93,6 @@ public class TurnTimer : PunBehaviour
             //End game if the majority of possible squares are made
             foreach (var player in players)
             {
-                if (isGameOver)
-                {
-                    GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
-                    break;
-                }
                 //The current players turn when the timer has ended
                 if (player.GetComponent<PlayerID>().isPlayersTurn)
                 {
@@ -166,13 +161,9 @@ public class TurnTimer : PunBehaviour
                 if (player.GetComponent<PlayerID>().playerScore >= CalculateMajorityPoints())
                 {
                     isGameOver = true;
+                    GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
                     break;
                 }
-            }
-            if (isGameOver)
-            {
-                GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
-                isGameOver = false;
             }
         }
     }

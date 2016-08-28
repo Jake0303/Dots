@@ -76,6 +76,22 @@ public class PlayerID : PunBehaviour
         {
             this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
         }
+        //Game over
+        else if (eventcode == 2 && this != null)
+        {
+            //Play victory sound
+            if (photonView.isMine && winner)
+            {
+                GetComponents<AudioSource>()[0].volume = GLOBALS.Volume / 100;
+                GetComponents<AudioSource>()[0].Play();
+            }
+            else if (photonView.isMine && !winner)
+            {
+                //Play defeat sound
+                GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 100;
+                GetComponents<AudioSource>()[1].Play();
+            }
+        }
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -160,12 +176,6 @@ public class PlayerID : PunBehaviour
             {
                 errorMsg.text = "";
             }
-        }
-        if (photonView.isMine && winner)
-        {
-            GetComponent<AudioSource>().volume = GLOBALS.Volume / 100;
-            GetComponent<AudioSource>().Play();
-            winner = false;
         }
     }
 

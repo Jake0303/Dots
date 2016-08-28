@@ -17,8 +17,8 @@ public class GLOBALS : MonoBehaviour {
     //Name of the game
     public static string GameName = "Squarz";
     //Points to win game
-    //(((GameStart.gridWidth - 1) * (GameStart.gridHeight - 1) / 2)+1)
-    public const  int POINTSTOWIN = 3;
+    //(((GRIDWIDTH - 1) * (GRIDHEIGHT - 1) / 2) + 1)
+    public const int POINTSTOWIN = (((GRIDWIDTH - 1) * (GRIDHEIGHT - 1) / 2) + 1);
     //GridWidth
     public const int GRIDWIDTH = 4;
     //GridHeight
