@@ -24,9 +24,16 @@ public class LineHover : PunBehaviour
             //Raycast from the mouse to the level
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.name.Contains("line")
+                if (hit.collider.GetComponent<LinePlaced>() != null
+                    && hit.collider.GetComponent<LinePlaced>().linePlaced == true
+                    && hit.collider.GetComponent<Renderer>().material.name.Contains("glow"))
+                {
+                    hit.collider.GetComponent<Renderer>().enabled = false;
+                }
+                else if (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>() != null
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    && !GetComponent<PlayerClick>().playingAnim
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
@@ -34,10 +41,6 @@ public class LineHover : PunBehaviour
                     hit.collider.GetComponent<Renderer>().material = hoverMat;
                     hit.collider.GetComponent<Renderer>().material.SetColor("_TintColor", GetComponent<PlayerColor>().playerColor);
                     hit.collider.GetComponent<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
-                }
-                else if (hit.collider.GetComponent<LinePlaced>() != null && hit.collider.GetComponent<LinePlaced>().linePlaced && hit.collider.name.Contains("line") && hit.collider.material == hoverMat)
-                {
-                    hit.collider.GetComponent<Renderer>().enabled = false;
                 }
             }
         }
