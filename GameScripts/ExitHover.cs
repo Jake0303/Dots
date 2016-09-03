@@ -10,11 +10,4 @@ public class ExitHover : MonoBehaviour {
         if (GetComponent<LinePlaced>().linePlaced == false && name.Contains("line"))
             GetComponent<Renderer>().enabled = false;
     }
-    void OnMouseOver()
-    {
-        if (GetComponent<LinePlaced>().linePlaced == true && name.Contains("line"))
-        {
-            //GetComponent<Renderer>().enabled = false;
-        }
-    }
 }

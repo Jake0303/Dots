@@ -31,7 +31,7 @@ public class GameState : PunBehaviour
         {
             
             // We own this player: send the others our data
-            stream.SendNext(gameState);
+            //stream.SendNext(gameState);
             /*
             switch (gameState)
             {

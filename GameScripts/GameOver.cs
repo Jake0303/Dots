@@ -10,7 +10,7 @@ using Photon;
 
 public class GameOver : PunBehaviour
 {
-    public bool gameOver = false;
+    public bool gameOver = false, gameDone = false;
     public string winner = "", loser = "";
     private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
 
@@ -19,13 +19,13 @@ public class GameOver : PunBehaviour
         if (stream.isWriting)
         {
             // We own this player: send the others our data
-            stream.SendNext(gameOver);
+            //stream.SendNext(gameOver);
             stream.SendNext(winner);
         }
         else
         {
             // Network player, receive data
-            this.gameOver = (bool)stream.ReceiveNext();
+            //this.gameOver = (bool)stream.ReceiveNext();
             this.winner = (string)stream.ReceiveNext();
         }
     }
@@ -33,13 +33,14 @@ public class GameOver : PunBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameOver)
+        if (gameOver && !gameDone)
         {
             DisplayWinner();
             GetComponent<GameState>().gameState = GameState.State.GameOver;
             StartCoroutine("DelayBeforeRestart");
             PhotonNetwork.RaiseEvent(2, null, true, null);
             gameOver = false;
+            gameDone = true;
         }
     }
     void OnWinnerChanged(string theWinner)
@@ -103,6 +104,8 @@ public class GameOver : PunBehaviour
         {
             player.GetComponent<PlayerID>().isPlayersTurn = false;
             player.GetComponent<PlayerID>().winner = false;
+            player.GetComponent<PlayerClick>().playingAnim = false;
+            player.GetComponent<PlayerClick>().playingSquareAnim = false;
             player.GetComponent<PlayerID>().playerScore = 0;
             player.GetComponent<PlayerID>().playerTurnOrder = 0;
             player.GetComponent<PlayerID>().showWinner = true;
@@ -132,6 +135,7 @@ public class GameOver : PunBehaviour
         gameObject.GetComponent<TurnTimer>().enabled = false;
         StopAllCoroutines();
         gameOver = false;
+        gameDone = false;
     }
 
 }

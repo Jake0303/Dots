@@ -161,10 +161,13 @@ public class TurnTimer : PunBehaviour
                 if (player.GetComponent<PlayerID>().playerScore >= CalculateMajorityPoints())
                 {
                     isGameOver = true;
-                    GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
                     break;
                 }
             }
+        }
+        if(isGameOver)
+        {
+            GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
         }
     }
 }

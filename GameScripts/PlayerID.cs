@@ -80,12 +80,12 @@ public class PlayerID : PunBehaviour
         else if (eventcode == 2 && this != null)
         {
             //Play victory sound
-            if (photonView.isMine && winner)
+            if (photonView.isMine && winner && !GetComponents<AudioSource>()[0].isPlaying)
             {
                 GetComponents<AudioSource>()[0].volume = GLOBALS.Volume / 100;
                 GetComponents<AudioSource>()[0].Play();
             }
-            else if (photonView.isMine && !winner)
+            else if (photonView.isMine && !winner && !GetComponents<AudioSource>()[0].isPlaying)
             {
                 //Play defeat sound
                 GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 100;
