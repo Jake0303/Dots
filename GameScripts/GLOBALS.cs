@@ -13,9 +13,9 @@ public class GLOBALS : MonoBehaviour {
     //Global variable to determine the timer duration
     public const float MAXTURNTIME = 30.0f;
     //Volume of the game
-    public static float Volume = 0;
+    public static float Volume = 10;
     //Name of the game
-    public static string GameName = "Squarz";
+    public static string GameName = "Squarez";
     //Points to win game
     //(((GRIDWIDTH - 1) * (GRIDHEIGHT - 1) / 2) + 1)
     public const int POINTSTOWIN = 3;

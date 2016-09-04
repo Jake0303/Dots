@@ -229,8 +229,8 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
-        GameObject.Find(obj).GetComponent<AudioSource>().volume = (GLOBALS.Volume / 175);
-        GameObject.Find(obj).GetComponent<AudioSource>().Play();
+        GameObject.Find(obj).GetComponents<AudioSource>()[0].volume = (GLOBALS.Volume / 175);
+        GameObject.Find(obj).GetComponents<AudioSource>()[0].Play();
         if (obj.Contains("Vertical"))
         {
             //Play Effect
@@ -517,6 +517,8 @@ public class PlayerClick : PunBehaviour
                     hit.collider.GetComponent<Renderer>().enabled = false;
                     objectColor = GetComponent<PlayerColor>().playerColor;
                     GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
+                    GameObject.Find(objectID).GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 125; ;
+                    GameObject.Find(objectID).GetComponents<AudioSource>()[1].Play();
                     photonView.RPC("CmdSelectObject", PhotonTargets.AllBuffered, hit.collider.name);
                     photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, hit.collider.name);
                 }
