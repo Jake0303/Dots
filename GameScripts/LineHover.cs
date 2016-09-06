@@ -26,9 +26,9 @@ public class LineHover : PunBehaviour
             {
                 if (hit.collider.GetComponent<LinePlaced>() != null
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == true
-                    && hit.collider.GetComponent<Renderer>().material.name.Contains("glow"))
+                    && hit.collider.GetComponentInChildren<Renderer>().material.name.Contains("glow"))
                 {
-                    hit.collider.GetComponent<Renderer>().enabled = false;
+                    hit.collider.GetComponentInChildren<Renderer>().enabled = false;
                 }
                 else if (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>() != null
@@ -37,10 +37,10 @@ public class LineHover : PunBehaviour
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
-                    hit.collider.GetComponent<Renderer>().enabled = true;
-                    hit.collider.GetComponent<Renderer>().material = hoverMat;
-                    hit.collider.GetComponent<Renderer>().material.SetColor("_TintColor", GetComponent<PlayerColor>().playerColor);
-                    hit.collider.GetComponent<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponentInChildren<Renderer>().enabled = true;
+                    hit.collider.GetComponentInChildren<Renderer>().material = hoverMat;
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
                 }
             }
         }

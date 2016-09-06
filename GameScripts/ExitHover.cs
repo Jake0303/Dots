@@ -8,6 +8,6 @@ public class ExitHover : MonoBehaviour {
     void OnMouseExit()
     {
         if (GetComponent<LinePlaced>().linePlaced == false && name.Contains("line"))
-            GetComponent<Renderer>().enabled = false;
+            GetComponentInChildren<Renderer>().enabled = false;
     }
 }

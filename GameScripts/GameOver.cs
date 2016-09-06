@@ -74,7 +74,8 @@ public class GameOver : PunBehaviour
             }
         }
         GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
-        GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
+        //TODO
+        //GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
     }
     IEnumerator DelayBeforeRestart()
     {

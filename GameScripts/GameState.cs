@@ -75,7 +75,6 @@ public class GameState : PunBehaviour
         else
         {
             // Network player, receive data
-            this.gameState = (State)stream.ReceiveNext();
         }
     }
     public override void OnConnectedToMaster()
