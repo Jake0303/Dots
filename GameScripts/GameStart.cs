@@ -69,7 +69,8 @@ public class GameStart : PunBehaviour
     }
     void Update()
     {
-        if (startGame && PhotonNetwork.isMasterClient)
+        //if (startGame && PhotonNetwork.isMasterClient)
+        if (startGame)
         {
             photonView.RPC("BuildGridText", PhotonTargets.AllBuffered);
             PhotonNetwork.RaiseEvent(1, null, true, null);
@@ -77,8 +78,8 @@ public class GameStart : PunBehaviour
             StartCoroutine(StartGame());
             //Build the grid of dots
             //Hide temporary lines
-            lineHor.GetComponent<Renderer>().enabled = false;
-            lineVert.GetComponent<Renderer>().enabled = false;
+            lineHor.GetComponentInChildren<Renderer>().enabled = false;
+            lineVert.GetComponentInChildren<Renderer>().enabled = false;
             //centerSquareuare.GetComponent<Renderer>().enabled = false;
             startGame = false;
         }
@@ -123,7 +124,7 @@ public class GameStart : PunBehaviour
         switch(objName)
         {
             case "dot":
-                newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot,0);
+                newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot, 0);
                 newObj.GetComponent<DotID>().CmdSetName(name);
                 break;
             case "lineHor":
@@ -157,48 +158,53 @@ public class GameStart : PunBehaviour
                 {
                     yield return new WaitForSeconds(spawnSpeed);
                     //Spawn dot
-                    dots.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, z * GLOBALS.DOTDISTANCE);
-                    dots.transform.localScale = new Vector3(3, 3, 3);
-                    dots.name = "Dot " + x.ToString() + "," + z.ToString();
-                    dots.GetComponent<DotID>().dotID = dots.name;
-                    listOfDots[index] = dots;
-                    index++;
+                        dots.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, z * GLOBALS.DOTDISTANCE);
+                        dots.transform.localScale = new Vector3(3, 3, 3);
+                        dots.name = "Dot " + x.ToString() + "," + z.ToString();
+                        dots.GetComponentInChildren<DotID>().dotID = dots.name;
+                        listOfDots[index] = dots;
+                        index++;
+                    //    dots = Instantiate(dots, dots.transform.localPosition, Quaternion.Euler(90, 0, 0)) as GameObject;
+                      //  objectsToDelete.Add(dots);
                     SpawnOnNetwork("dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0),dots.name);
-                    //This if statement stops from building extra unnecessary lines
-                    if (z < GLOBALS.GRIDHEIGHT - 1)
+                    if (PhotonNetwork.isMasterClient)
                     {
-                        //Spawn line in between dots horizontally
-                        lineHor.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
-                        lineHorScale = new Vector3(3, 3, GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f);
-                        lineHorRot = Quaternion.Euler(0, 0, 0);
-                        lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
-                        lineHor.GetComponent<LineID>().lineID = lineHor.name;
-                        lineHor.transform.localScale = lineHorScale;
-                        lineHor.transform.rotation = lineHorRot;
-                        SpawnOnNetwork("lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0),lineHor.name);
-                    }
-                    if (x < GLOBALS.GRIDWIDTH - 1)
-                    {
-                        //Spawn line in between dots vertically
-                        lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, z * GLOBALS.DOTDISTANCE);
-                        lineVertScale = new Vector3(GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f, 3, 3);
-                        lineVertRot = Quaternion.Euler(0, 0, 0);
-                        lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
-                        lineVert.GetComponent<LineID>().lineID = lineVert.name;
-                        lineVert.transform.localScale = lineVertScale;
-                        lineVert.transform.rotation = lineVertRot;
-                        SpawnOnNetwork("lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0),lineVert.name);
-                    }
-                    //Spawn the center of a square
-                    if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
-                    {
-                        centerSquare.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
-                        squareScale = new Vector3(8.5f, 2f, 8.5f);
-                        centerSquare.transform.localScale = squareScale;
-                        centerSquare.name = "Centre " + x.ToString() + "," + z.ToString();
-                        centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
-                        centerSquare.GetComponent<Renderer>().enabled = false;
-                        SpawnOnNetwork("centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation,centerSquare.name);
+                        //This if statement stops from building extra unnecessary lines
+                        if (z < GLOBALS.GRIDHEIGHT - 1)
+                        {
+                            //Spawn line in between dots horizontally
+                            lineHor.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
+                            lineHorScale = new Vector3(3, 3, GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f);
+                            lineHorRot = Quaternion.Euler(0, 0, 0);
+                            lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
+                            lineHor.GetComponent<LineID>().lineID = lineHor.name;
+                            lineHor.transform.localScale = lineHorScale;
+                            lineHor.transform.rotation = lineHorRot;
+                            SpawnOnNetwork("lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0), lineHor.name);
+                        }
+                        if (x < GLOBALS.GRIDWIDTH - 1)
+                        {
+                            //Spawn line in between dots vertically
+                            lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, z * GLOBALS.DOTDISTANCE);
+                            lineVertScale = new Vector3(GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f, 3, 3);
+                            lineVertRot = Quaternion.Euler(0, 0, 0);
+                            lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
+                            lineVert.GetComponent<LineID>().lineID = lineVert.name;
+                            lineVert.transform.localScale = lineVertScale;
+                            lineVert.transform.rotation = lineVertRot;
+                            SpawnOnNetwork("lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0), lineVert.name);
+                        }
+                        //Spawn the center of a square
+                        if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
+                        {
+                            centerSquare.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
+                            squareScale = new Vector3(8.5f, 2f, 8.5f);
+                            centerSquare.transform.localScale = squareScale;
+                            centerSquare.name = "Centre " + x.ToString() + "," + z.ToString();
+                            centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
+                            centerSquare.GetComponent<Renderer>().enabled = false;
+                            SpawnOnNetwork("centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation, centerSquare.name);
+                        }
                     }
                 }
             }

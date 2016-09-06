@@ -131,20 +131,20 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void RpcPaint(string obj, string col)
     {
-        GameObject.Find(obj).GetComponent<Renderer>().enabled = true;
-        GameObject.Find(obj).GetComponent<Renderer>().material = lineMat;
-        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
-        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
     }
 
     [PunRPC]
     void RpcPaintSameTurn(string obj, string col)
     {
-        GameObject.Find(obj).GetComponent<Renderer>().enabled = true;
-        GameObject.Find(obj).GetComponent<Renderer>().material = lineMat;
-        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
-        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
         GetComponent<PlayerID>().isPlayersTurn = true;
@@ -178,10 +178,10 @@ public class PlayerClick : PunBehaviour
             square.transform.position = new Vector3(square.transform.position.x, 0, square.transform.position.z);
         }
 
-        GameObject.Find(squareID).GetComponent<Renderer>().enabled = true;// get the object's network ID
-        GameObject.Find(squareID).GetComponent<Renderer>().material = lineMat;
-        GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-        GameObject.Find(squareID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(squareID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+        GameObject.Find(squareID).GetComponentInChildren<Renderer>().material = lineMat;
+        GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume/10);
         GameObject.Find(squareID).GetComponent<AudioSource>().Play();
         //Play Effect
@@ -224,10 +224,10 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdPlaceLine(string obj, string col)
     {
-        GameObject.Find(obj).GetComponent<Renderer>().enabled = true;// get the object's network ID
-        GameObject.Find(obj).GetComponent<Renderer>().material = lineMat;
-        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
-        GameObject.Find(obj).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find(obj).GetComponents<AudioSource>()[0].volume = (GLOBALS.Volume / 175);
         GameObject.Find(obj).GetComponents<AudioSource>()[0].Play();
@@ -290,7 +290,7 @@ public class PlayerClick : PunBehaviour
     {
         //Check if square is made
         //Check horizontal line hitboxes
-        if (hit.collider.name.Contains("linesHorizontal") && hit.collider.GetComponent<Renderer>().enabled)
+        if (hit.collider.name.Contains("linesHorizontal") && hit.collider.GetComponentInChildren<Renderer>().enabled)
         {
 
             Vector3 centerOfSquareRight = new Vector3(hit.collider.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
@@ -300,7 +300,7 @@ public class PlayerClick : PunBehaviour
             //In the hitbox, check how many lines
             while (i < hitCollidersRight.Length)
             {
-                if (hitCollidersRight[i].name.Contains("lines") && hitCollidersRight[i].GetComponent<Renderer>().enabled
+                if (hitCollidersRight[i].name.Contains("lines") && hitCollidersRight[i].GetComponentInChildren<Renderer>().enabled
                     && hitCollidersRight[i].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersRight[i].name.Contains("square"))
                 {
@@ -327,7 +327,7 @@ public class PlayerClick : PunBehaviour
             howManyLines = 0;
             while (j < hitCollidersLeft.Length)
             {
-                if (hitCollidersLeft[j].name.Contains("lines") && hitCollidersLeft[j].GetComponent<Renderer>().enabled
+                if (hitCollidersLeft[j].name.Contains("lines") && hitCollidersLeft[j].GetComponentInChildren<Renderer>().enabled
                     && hitCollidersLeft[j].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersLeft[j].name.Contains("square"))
                 {
@@ -347,7 +347,7 @@ public class PlayerClick : PunBehaviour
             }
         }
         //Same as above just for vertical lines
-        if (hit.collider.name.Contains("linesVertical") && hit.collider.GetComponent<Renderer>().enabled)
+        if (hit.collider.name.Contains("linesVertical") && hit.collider.GetComponentInChildren<Renderer>().enabled)
         {
 
             Vector3 centerOfSquareBottom = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2));
@@ -356,7 +356,7 @@ public class PlayerClick : PunBehaviour
             int howManyLines = 0;
             while (i < hitCollidersBottom.Length)
             {
-                if (hitCollidersBottom[i].name.Contains("lines") && hitCollidersBottom[i].GetComponent<Renderer>().enabled
+                if (hitCollidersBottom[i].name.Contains("lines") && hitCollidersBottom[i].GetComponentInChildren<Renderer>().enabled
                     && hitCollidersBottom[i].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersBottom[i].name.Contains("square"))
                 {
@@ -380,7 +380,7 @@ public class PlayerClick : PunBehaviour
             howManyLines = 0;
             while (j < hitCollidersTop.Length)
             {
-                if (hitCollidersTop[j].name.Contains("lines") && hitCollidersTop[j].GetComponent<Renderer>().enabled
+                if (hitCollidersTop[j].name.Contains("lines") && hitCollidersTop[j].GetComponentInChildren<Renderer>().enabled
                     && hitCollidersTop[j].GetComponent<LinePlaced>().linePlaced
                    || hitCollidersTop[j].name.Contains("square"))
                 {
@@ -409,8 +409,8 @@ public class PlayerClick : PunBehaviour
         while (i < squareLines.Length)
         {
             line = squareLines[i].gameObject;
-            squareLines[i].GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-            squareLines[i].GetComponent<Renderer>().material.SetColor("_MKTexColor", GetComponent<PlayerColor>().playerColor);
+            squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+            squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_MKTexColor", GetComponent<PlayerColor>().playerColor);
             if (squareFound == null)
             {
                 foreach (var aSquare in squares)
@@ -430,7 +430,7 @@ public class PlayerClick : PunBehaviour
                 photonView.RPC("CmdPaintLines", PhotonTargets.AllBuffered, line.name);
             else if (line.name.Contains("temp"))
             {
-                line.GetComponent<Renderer>().enabled = false;
+                line.GetComponentInChildren<Renderer>().enabled = false;
             }
             i++;
         }
@@ -445,9 +445,9 @@ public class PlayerClick : PunBehaviour
             square = GameObject.Find(aSquare);
             squareID = GameObject.Find(aSquare).name;
             squareColor = GetComponent<PlayerColor>().playerColor;
-            square.GetComponent<Renderer>().material = lineMat;
-            square.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-            square.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+            square.GetComponentInChildren<Renderer>().material = lineMat;
+            square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+            square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             //Determine if double square
             if (pointScored)
             {
@@ -465,9 +465,9 @@ public class PlayerClick : PunBehaviour
             square = GameObject.Find(aSquare);
             squareID = GameObject.Find(aSquare).name;
             squareColor = GetComponent<PlayerColor>().playerColor;
-            square.GetComponent<Renderer>().material = lineMat;
-            square.GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-            square.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+            square.GetComponentInChildren<Renderer>().material = lineMat;
+            square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+            square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             pointScored = true;
         }
     }
@@ -476,8 +476,8 @@ public class PlayerClick : PunBehaviour
     void CmdPaintLines(string line)
     {
 
-        GameObject.Find(line).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-        GameObject.Find(line).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
         //RpcPaintLine(line);
     }
 
@@ -485,8 +485,8 @@ public class PlayerClick : PunBehaviour
     void RpcPaintLine(string line)
     {
 
-        GameObject.Find(line).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-        GameObject.Find(line).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
     }
 
     // Update is called once per frame
@@ -508,13 +508,13 @@ public class PlayerClick : PunBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
-                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    && !playingAnim
+                    //&& hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    //&& !playingAnim
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
                     objectID = hit.collider.name;// this gets the object that is hit
-                    hit.collider.GetComponent<Renderer>().enabled = false;
+                    hit.collider.GetComponentInChildren<Renderer>().enabled = false;
                     objectColor = GetComponent<PlayerColor>().playerColor;
                     GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                     GameObject.Find(objectID).GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 125; ;
@@ -541,10 +541,11 @@ public class PlayerClick : PunBehaviour
             newLineHorizontal.name = "temp";
             newLineHorizontal.transform.position = new Vector3(GameObject.Find(line).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(line).transform.position.z);
             newLineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
-            newLineHorizontal.GetComponent<Renderer>().enabled = true;
-            newLineHorizontal.GetComponent<Renderer>().material = lineMat;
-            newLineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
-            newLineHorizontal.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineHorizontal.GetComponentInChildren<Renderer>().enabled = true;
+            newLineHorizontal.GetComponentInChildren<Renderer>().material = lineMat;
+            newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
+            newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineHorizontal.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineHorizontal);
         }
         else
@@ -553,10 +554,11 @@ public class PlayerClick : PunBehaviour
             newLineVertical.name = "temp";
             newLineVertical.transform.position = new Vector3(GameObject.Find(line).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(line).transform.position.z);
             newLineVertical.transform.rotation = GameObject.Find(line).transform.rotation;
-            newLineVertical.GetComponent<Renderer>().enabled = true;
-            newLineVertical.GetComponent<Renderer>().material = lineMat;
-            newLineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowColor", objectColor);
-            newLineVertical.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineVertical.GetComponentInChildren<Renderer>().enabled = true;
+            newLineVertical.GetComponentInChildren<Renderer>().material = lineMat;
+            newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
+            newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineVertical.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineVertical);
         }
     }
@@ -590,14 +592,14 @@ public class PlayerClick : PunBehaviour
                     if (photonView.isMine)
                     {
                         if (newLineHorizontal != null)
-                            newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                            newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
                         if (newLineVertical != null)
-                            newLineVertical.GetComponent<Renderer>().enabled = false;
+                            newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
 
-                        GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
-                        GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
-                        GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-                        GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
+                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                         photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                         animFinished = true;
@@ -616,10 +618,10 @@ public class PlayerClick : PunBehaviour
                 if (animFinished)
                 {
                     if (newLineHorizontal != null)
-                        newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                        newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
                     if (newLineVertical != null)
-                        newLineVertical.GetComponent<Renderer>().enabled = false;
-                    GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
+                        newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
+                    GameObject.Find("temp").GetComponentInChildren<Renderer>().enabled = false;
                 }
             }
             //Lerp vertical line 
@@ -639,14 +641,14 @@ public class PlayerClick : PunBehaviour
                         if (photonView.isMine)
                         {
                             if (newLineHorizontal != null)
-                                newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                                newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
                             if (newLineVertical != null)
-                                newLineVertical.GetComponent<Renderer>().enabled = false;
+                                newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
 
-                            GameObject.Find(objectID).GetComponent<Renderer>().enabled = true;// get the object's network ID
-                            GameObject.Find(objectID).GetComponent<Renderer>().material = lineMat;
-                            GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-                            GameObject.Find(objectID).GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
+                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                             photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                             animFinished = true;
@@ -668,20 +670,20 @@ public class PlayerClick : PunBehaviour
             if (animFinished)
             {
                 if (newLineHorizontal != null)
-                    newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                    newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
                 if (newLineVertical != null)
-                    newLineVertical.GetComponent<Renderer>().enabled = false;
-                GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
+                    newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
+                GameObject.Find("temp").GetComponentInChildren<Renderer>().enabled = false;
             }
             yield return new WaitForSeconds(0.01f);
         }
         if (animFinished)
         {
             if (newLineHorizontal != null)
-                newLineHorizontal.GetComponent<Renderer>().enabled = false;
+                newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
             if (newLineVertical != null)
-                newLineVertical.GetComponent<Renderer>().enabled = false;
-            GameObject.Find("temp").GetComponent<Renderer>().enabled = false;
+                newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
+            GameObject.Find("temp").GetComponentInChildren<Renderer>().enabled = false;
         }
     }
     //Spawn a temporary square for an animation
@@ -691,10 +693,12 @@ public class PlayerClick : PunBehaviour
         newSquare.name = "tempSquare" + GameObject.Find(square).transform.position.x + "" + GameObject.Find(square).transform.position.z;
         newSquare.transform.position = new Vector3(GameObject.Find(square).transform.position.x, GLOBALS.LINEHEIGHT, GameObject.Find(square).transform.position.z);
         newSquare.transform.rotation = GameObject.Find(square).transform.rotation;
-        newSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
-        newSquare.GetComponent<Renderer>().material = lineMat;
-        newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowColor", squareColor);
-        newSquare.GetComponent<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
+        newSquare.GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+        newSquare.GetComponentInChildren<Renderer>().material = lineMat;
+        newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", squareColor);
+        newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
+        newSquare.GetComponent<Light>().color = objectColor;
+
         return newSquare;
     }
     //Play the square animation of falling from the sky and rotating
@@ -714,7 +718,7 @@ public class PlayerClick : PunBehaviour
             {
                 newSquare.transform.position += velocity * Time.deltaTime;
             }
-            if (newSquare.transform.position.y < 1 && !squareAnimFinished && photonView.isMine)
+            if (newSquare.transform.position.y < 0.01 && !squareAnimFinished && photonView.isMine)
             {
                 newSquare.transform.rotation = Quaternion.identity;
                 photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
