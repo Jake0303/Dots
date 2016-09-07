@@ -164,8 +164,6 @@ public class GameStart : PunBehaviour
                         dots.GetComponentInChildren<DotID>().dotID = dots.name;
                         listOfDots[index] = dots;
                         index++;
-                    //    dots = Instantiate(dots, dots.transform.localPosition, Quaternion.Euler(90, 0, 0)) as GameObject;
-                      //  objectsToDelete.Add(dots);
                     SpawnOnNetwork("dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0),dots.name);
                     if (PhotonNetwork.isMasterClient)
                     {
@@ -198,11 +196,11 @@ public class GameStart : PunBehaviour
                         if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
                         {
                             centerSquare.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
-                            squareScale = new Vector3(8.5f, 2f, 8.5f);
+                            squareScale = new Vector3(1f, 1f, 1f);
                             centerSquare.transform.localScale = squareScale;
-                            centerSquare.name = "Centre " + x.ToString() + "," + z.ToString();
+                            centerSquare.name = "CentreSquare " + x.ToString() + "," + z.ToString();
                             centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
-                            centerSquare.GetComponent<Renderer>().enabled = false;
+                            centerSquare.GetComponentInChildren<Renderer>().enabled = false;
                             SpawnOnNetwork("centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation, centerSquare.name);
                         }
                     }

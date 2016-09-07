@@ -79,7 +79,7 @@ public class TurnTimer : PunBehaviour
             var allLines = GameObject.FindGameObjectsWithTag("Line");
             foreach (var line in allLines)
             {
-                if (line.GetComponent<Renderer>().enabled == false)
+                if (line.GetComponentInChildren<Renderer>().enabled == false)
                 {
                     isGameOver = false;
                     break;
