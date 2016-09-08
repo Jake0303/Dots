@@ -126,6 +126,7 @@ public class GameStart : PunBehaviour
             case "dot":
                 newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot, 0);
                 newObj.GetComponent<DotID>().CmdSetName(name);
+                newObj.GetComponent<Light>().enabled = true;
                 break;
             case "lineHor":
                 newObj = PhotonNetwork.Instantiate("Prefabs/LineHor", pos, rot, 0);

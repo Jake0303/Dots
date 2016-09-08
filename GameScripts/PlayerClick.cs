@@ -182,7 +182,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
-        GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume/10);
+        GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume / 10);
         GameObject.Find(squareID).GetComponent<AudioSource>().Play();
         //Play Effect
         GameObject squareEffectLeftTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
@@ -426,7 +426,7 @@ public class PlayerClick : PunBehaviour
                     }
                 }
             }
-            if (!line.name.Contains("temp") && !line.name.Contains("Centre"))
+            if (!line.name.Contains("temp") && !line.name.Contains("Centre") && !line.name.Contains("Cube"))
                 photonView.RPC("CmdPaintLines", PhotonTargets.AllBuffered, line.name);
             else if (line.name.Contains("temp"))
             {
@@ -446,6 +446,8 @@ public class PlayerClick : PunBehaviour
             squareID = GameObject.Find(aSquare).name;
             squareColor = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material = lineMat;
+            square.GetComponent<Light>().enabled = true;
+            square.GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             //Determine if double square
@@ -456,35 +458,15 @@ public class PlayerClick : PunBehaviour
             pointScored = true;
         }
     }
-    //Tell the clients to paint the square
-    [PunRPC]
-    void RpcPaintSquare(string aSquare)
-    {
-        if (aSquare != null)
-        {
-            square = GameObject.Find(aSquare);
-            squareID = GameObject.Find(aSquare).name;
-            squareColor = GetComponent<PlayerColor>().playerColor;
-            square.GetComponentInChildren<Renderer>().material = lineMat;
-            square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-            square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
-            pointScored = true;
-        }
-    }
     //Paint the square the player made
     [PunRPC]
     void CmdPaintLines(string line)
     {
-
-        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
-        //RpcPaintLine(line);
-    }
-
-    [PunRPC]
-    void RpcPaintLine(string line)
-    {
-
+        if (GameObject.Find(line).GetComponent<Light>() != null)
+        {
+            GameObject.Find(line).GetComponent<Light>().enabled = true;
+            GameObject.Find(line).GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
+        }
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
     }
@@ -545,6 +527,7 @@ public class PlayerClick : PunBehaviour
             newLineHorizontal.GetComponentInChildren<Renderer>().material = lineMat;
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineHorizontal.GetComponent<Light>().enabled = true;
             newLineHorizontal.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineHorizontal);
         }
@@ -558,6 +541,7 @@ public class PlayerClick : PunBehaviour
             newLineVertical.GetComponentInChildren<Renderer>().material = lineMat;
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineVertical.GetComponent<Light>().enabled = true;
             newLineVertical.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineVertical);
         }
@@ -592,10 +576,15 @@ public class PlayerClick : PunBehaviour
                     if (photonView.isMine)
                     {
                         if (newLineHorizontal != null)
+                        {
+                            newLineHorizontal.GetComponent<Light>().enabled = false;
                             newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
+                        }
                         if (newLineVertical != null)
+                        {
+                            newLineVertical.GetComponent<Light>().enabled = false;
                             newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
-
+                        }
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -641,10 +630,15 @@ public class PlayerClick : PunBehaviour
                         if (photonView.isMine)
                         {
                             if (newLineHorizontal != null)
+                            {
+                                newLineHorizontal.GetComponent<Light>().enabled = false;
                                 newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
+                            }
                             if (newLineVertical != null)
+                            {
+                                newLineVertical.GetComponent<Light>().enabled = false;
                                 newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
-
+                            }
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -697,6 +691,7 @@ public class PlayerClick : PunBehaviour
         newSquare.GetComponentInChildren<Renderer>().material = lineMat;
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
+        newSquare.GetComponent<Light>().enabled = true;
         newSquare.GetComponent<Light>().color = objectColor;
 
         return newSquare;
@@ -718,10 +713,11 @@ public class PlayerClick : PunBehaviour
             {
                 newSquare.transform.position += velocity * Time.deltaTime;
             }
-            if (newSquare.transform.position.y < 0.01 && !squareAnimFinished && photonView.isMine)
+            if (newSquare.transform.position.y < 0.001 && !squareAnimFinished && photonView.isMine)
             {
                 newSquare.transform.rotation = Quaternion.identity;
                 photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
+                newSquare.GetComponent<Light>().enabled = false;
                 CmdNextTurn();
                 squareAnimFinished = true;
             }
