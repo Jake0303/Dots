@@ -225,6 +225,8 @@ public class PlayerClick : PunBehaviour
     void CmdPlaceLine(string obj, string col)
     {
         GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+        GameObject.Find(obj).GetComponentInParent<Light>().enabled = true;
+        GameObject.Find(obj).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
@@ -462,11 +464,8 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdPaintLines(string line)
     {
-        if (GameObject.Find(line).GetComponent<Light>() != null)
-        {
-            GameObject.Find(line).GetComponent<Light>().enabled = true;
-            GameObject.Find(line).GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
-        }
+        GameObject.Find(line).GetComponentInParent<Light>().enabled = true;
+        GameObject.Find(line).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
     }
@@ -575,16 +574,6 @@ public class PlayerClick : PunBehaviour
                 {
                     if (photonView.isMine)
                     {
-                        if (newLineHorizontal != null)
-                        {
-                            newLineHorizontal.GetComponent<Light>().enabled = false;
-                            newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
-                        }
-                        if (newLineVertical != null)
-                        {
-                            newLineVertical.GetComponent<Light>().enabled = false;
-                            newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
-                        }
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -604,14 +593,6 @@ public class PlayerClick : PunBehaviour
                         }
                     }
                 }
-                if (animFinished)
-                {
-                    if (newLineHorizontal != null)
-                        newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
-                    if (newLineVertical != null)
-                        newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
-                    GameObject.Find("temp").GetComponentInChildren<Renderer>().enabled = false;
-                }
             }
             //Lerp vertical line 
             else
@@ -626,19 +607,8 @@ public class PlayerClick : PunBehaviour
                     }
                     if (newLineVertical.transform.position.y < 0.001 && !animFinished)
                     {
-
                         if (photonView.isMine)
                         {
-                            if (newLineHorizontal != null)
-                            {
-                                newLineHorizontal.GetComponent<Light>().enabled = false;
-                                newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
-                            }
-                            if (newLineVertical != null)
-                            {
-                                newLineVertical.GetComponent<Light>().enabled = false;
-                                newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
-                            }
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -661,23 +631,20 @@ public class PlayerClick : PunBehaviour
 
                 }
             }
-            if (animFinished)
-            {
-                if (newLineHorizontal != null)
-                    newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
-                if (newLineVertical != null)
-                    newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
-                GameObject.Find("temp").GetComponentInChildren<Renderer>().enabled = false;
-            }
             yield return new WaitForSeconds(0.01f);
         }
         if (animFinished)
         {
             if (newLineHorizontal != null)
+            {
+                newLineHorizontal.GetComponent<Light>().enabled = false;
                 newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
+            }
             if (newLineVertical != null)
+            {
+                newLineVertical.GetComponent<Light>().enabled = false;
                 newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
-            GameObject.Find("temp").GetComponentInChildren<Renderer>().enabled = false;
+            }
         }
     }
     //Spawn a temporary square for an animation

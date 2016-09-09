@@ -75,7 +75,7 @@ public class GameOver : PunBehaviour
         }
         GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
         //TODO
-        //GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
+        GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
     }
     IEnumerator DelayBeforeRestart()
     {
@@ -89,11 +89,19 @@ public class GameOver : PunBehaviour
     {
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
         {
-            tempObj.GetComponent<Renderer>().enabled = false;
+            if (tempObj.GetComponent<Light>() != null)
+                tempObj.GetComponent<Light>().enabled = false;
+            else if (tempObj.GetComponentInParent<Light>() != null)
+                tempObj.GetComponentInParent<Light>().enabled = false;
+            tempObj.GetComponentInChildren<Renderer>().enabled = false;
         }
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("Line"))
         {
-            tempObj.GetComponent<Renderer>().enabled = false;
+            if (tempObj.GetComponent<Light>() != null)
+                tempObj.GetComponent<Light>().enabled = false;
+            else if (tempObj.GetComponentInParent<Light>() != null)
+                tempObj.GetComponentInParent<Light>().enabled = false;
+            tempObj.GetComponentInChildren<Renderer>().enabled = false;
         }
         GameObject.Find("GameManager").GetComponent<GameStart>().DestroyGrid();
         var players = GameObject.FindGameObjectsWithTag("Player");
