@@ -14,9 +14,10 @@ public class BackgroundManager : MonoBehaviour
             StartCoroutine(fadeIn(newSquare));
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
-            newSquare.GetComponent<Renderer>().enabled = true;// get the object's network ID
-            newSquare.GetComponent<Renderer>().material.SetColor("_TintColor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
-            newSquare.GetComponent<Renderer>().material.SetColor("_detailcolor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
+            newSquare.GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
+            newSquare.GetComponent<Light>().intensity = 0;
             yield return new WaitForSeconds(Random.Range(1f, 1.2f));
         }
     }
@@ -33,16 +34,19 @@ public class BackgroundManager : MonoBehaviour
             //Transparency.
             if (newSquare != null)
             {
-                alpha = newSquare.GetComponent<Renderer>().material.GetFloat("_detailpower");
+                alpha = newSquare.GetComponentInChildren<Renderer>().material.GetFloat("_detailpower");
                 alpha += 2f;
-                newSquare.GetComponent<Renderer>().material.SetFloat("_detailpower", alpha);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_detailpower", alpha);
                 power += 0.05f;
-                newSquare.GetComponent<Renderer>().material.SetFloat("_power", power);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_power", power);
 
-                fade = newSquare.GetComponent<Renderer>().material.GetColor("_TintColor");
+                newSquare.GetComponent<Light>().intensity++;
+                newSquare.GetComponent<Light>().enabled = true;
+
+                fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_TintColor");
                 fade.a += 2f;
-                newSquare.GetComponent<Renderer>().material.SetColor("_TintColor", fade);
-                newSquare.GetComponent<Renderer>().material.SetColor("_detailcolor", fade);
+                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", fade);
+                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", fade);
             }
             yield return new WaitForSeconds(0.1f);
         }
@@ -51,20 +55,23 @@ public class BackgroundManager : MonoBehaviour
             //Transparency.
             if (newSquare != null)
             {
-                alpha = newSquare.GetComponent<Renderer>().material.GetFloat("_detailpower");
+                alpha = newSquare.GetComponentInChildren<Renderer>().material.GetFloat("_detailpower");
                 alpha -= 2f;
-                newSquare.GetComponent<Renderer>().material.SetFloat("_detailpower", alpha);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_detailpower", alpha);
                 power -= 0.02f;
-                newSquare.GetComponent<Renderer>().material.SetFloat("_power", power);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_power", power);
 
-                fade = newSquare.GetComponent<Renderer>().material.GetColor("_TintColor");
+                fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_TintColor");
                 fade.a -= 2f;
-                newSquare.GetComponent<Renderer>().material.SetColor("_TintColor", fade);
-                newSquare.GetComponent<Renderer>().material.SetColor("_detailcolor", fade);
+                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", fade);
+                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", fade);
+                newSquare.GetComponent<Light>().intensity--;
+
             }
             //kill when faded
             if (power <= 0)
             {
+                newSquare.GetComponent<Light>().enabled = false;
                 Destroy(newSquare);
                 break;
             }
