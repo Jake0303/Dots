@@ -40,6 +40,7 @@ public class BackgroundManager : MonoBehaviour
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_power", power);
 
                 newSquare.GetComponent<Light>().intensity++;
+                newSquare.GetComponent<Light>().range++;
                 newSquare.GetComponent<Light>().enabled = true;
                 newSquare.GetComponent<Light>().color = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_TintColor");
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_TintColor");
@@ -65,7 +66,7 @@ public class BackgroundManager : MonoBehaviour
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", fade);
                 newSquare.GetComponent<Light>().intensity--;
-
+                newSquare.GetComponent<Light>().range--;
             }
             //kill when faded
             if (power <= 0)
