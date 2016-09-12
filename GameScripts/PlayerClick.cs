@@ -182,7 +182,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
-        GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume / 10);
+        GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume);
         GameObject.Find(squareID).GetComponent<AudioSource>().Play();
         //Play Effect
         GameObject squareEffectLeftTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
@@ -464,8 +464,11 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdPaintLines(string line)
     {
-        GameObject.Find(line).GetComponentInParent<Light>().enabled = true;
-        GameObject.Find(line).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
+        if (GameObject.Find(line).GetComponentInParent<Light>() != null)
+        {
+            GameObject.Find(line).GetComponentInParent<Light>().enabled = true;
+            GameObject.Find(line).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
+        }
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
     }

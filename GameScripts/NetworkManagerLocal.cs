@@ -53,7 +53,7 @@ public class NetworkManagerLocal : PunBehaviour
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         //TODO Fix button
         //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
-        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+        //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
     public override void OnConnectionFail(DisconnectCause cause)
@@ -62,7 +62,7 @@ public class NetworkManagerLocal : PunBehaviour
         string conn = "Our servers are full! Please try again later.";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
-        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+        //ameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
     public override void OnJoinedRoom()

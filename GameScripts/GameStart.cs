@@ -126,7 +126,7 @@ public class GameStart : PunBehaviour
             case "dot":
                 newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot, 0);
                 newObj.GetComponent<DotID>().CmdSetName(name);
-                newObj.GetComponent<Light>().enabled = true;
+                photonView.RPC("EnableDotLight", PhotonTargets.AllBuffered, newObj.name);
                 break;
             case "lineHor":
                 newObj = PhotonNetwork.Instantiate("Prefabs/LineHor", pos, rot, 0);
@@ -147,10 +147,17 @@ public class GameStart : PunBehaviour
             objectsToDelete.Add(newObj);
         }
     }
+    [PunRPC]
+    void EnableDotLight(string dot)
+    {
+        GameObject.Find(dot).GetComponent<Light>().enabled = true;
+    }
     //Build the grid
     IEnumerator CreateGrid()
     {
         int index = 0;
+        if (PhotonNetwork.isMasterClient)
+        {
             for (int x = 0; x < GLOBALS.GRIDWIDTH; x++)
             {
                 yield return new WaitForSeconds(spawnSpeed);
@@ -159,56 +166,57 @@ public class GameStart : PunBehaviour
                 {
                     yield return new WaitForSeconds(spawnSpeed);
                     //Spawn dot
+                    if (photonView.isMine)
+                    {
                         dots.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, z * GLOBALS.DOTDISTANCE);
                         dots.transform.localScale = new Vector3(3, 3, 3);
                         dots.name = "Dot " + x.ToString() + "," + z.ToString();
                         dots.GetComponentInChildren<DotID>().dotID = dots.name;
                         listOfDots[index] = dots;
                         index++;
-                    SpawnOnNetwork("dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0),dots.name);
-                    if (PhotonNetwork.isMasterClient)
+                        SpawnOnNetwork("dot", dots.transform.localPosition, Quaternion.Euler(90, 0, 0), dots.name);
+                    }
+                    //This if statement stops from building extra unnecessary lines
+                    if (z < GLOBALS.GRIDHEIGHT - 1)
                     {
-                        //This if statement stops from building extra unnecessary lines
-                        if (z < GLOBALS.GRIDHEIGHT - 1)
-                        {
-                            //Spawn line in between dots horizontally
-                            lineHor.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
-                            lineHorScale = new Vector3(3, 3, GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f);
-                            lineHorRot = Quaternion.Euler(0, 0, 0);
-                            lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
-                            lineHor.GetComponent<LineID>().lineID = lineHor.name;
-                            lineHor.transform.localScale = lineHorScale;
-                            lineHor.transform.rotation = lineHorRot;
-                            SpawnOnNetwork("lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0), lineHor.name);
-                        }
-                        if (x < GLOBALS.GRIDWIDTH - 1)
-                        {
-                            //Spawn line in between dots vertically
-                            lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, z * GLOBALS.DOTDISTANCE);
-                            lineVertScale = new Vector3(GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f, 3, 3);
-                            lineVertRot = Quaternion.Euler(0, 0, 0);
-                            lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
-                            lineVert.GetComponent<LineID>().lineID = lineVert.name;
-                            lineVert.transform.localScale = lineVertScale;
-                            lineVert.transform.rotation = lineVertRot;
-                            SpawnOnNetwork("lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0), lineVert.name);
-                        }
-                        //Spawn the center of a square
-                        if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
-                        {
-                            centerSquare.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
-                            squareScale = new Vector3(1f, 1f, 1f);
-                            centerSquare.transform.localScale = squareScale;
-                            centerSquare.name = "CentreSquare " + x.ToString() + "," + z.ToString();
-                            centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
-                            centerSquare.GetComponentInChildren<Renderer>().enabled = false;
-                            SpawnOnNetwork("centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation, centerSquare.name);
-                        }
+                        //Spawn line in between dots horizontally
+                        lineHor.transform.localPosition = new Vector3(x * GLOBALS.DOTDISTANCE, 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
+                        lineHorScale = new Vector3(3, 3, GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f);
+                        lineHorRot = Quaternion.Euler(0, 0, 0);
+                        lineHor.name = "linesHorizontal " + x.ToString() + "," + z.ToString();
+                        lineHor.GetComponent<LineID>().lineID = lineHor.name;
+                        lineHor.transform.localScale = lineHorScale;
+                        lineHor.transform.rotation = lineHorRot;
+                        SpawnOnNetwork("lineHor", lineHor.transform.localPosition, Quaternion.Euler(0, 0, 0), lineHor.name);
+                    }
+                    if (x < GLOBALS.GRIDWIDTH - 1)
+                    {
+                        //Spawn line in between dots vertically
+                        lineVert.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, z * GLOBALS.DOTDISTANCE);
+                        lineVertScale = new Vector3(GLOBALS.DOTDISTANCE - dots.transform.localScale.z + 0.5f, 3, 3);
+                        lineVertRot = Quaternion.Euler(0, 0, 0);
+                        lineVert.name = "linesVertical " + x.ToString() + "," + z.ToString();
+                        lineVert.GetComponent<LineID>().lineID = lineVert.name;
+                        lineVert.transform.localScale = lineVertScale;
+                        lineVert.transform.rotation = lineVertRot;
+                        SpawnOnNetwork("lineVert", lineVert.transform.localPosition, Quaternion.Euler(0, 0, 0), lineVert.name);
+                    }
+                    //Spawn the center of a square
+                    if (x < GLOBALS.GRIDWIDTH - 1 && z < GLOBALS.GRIDHEIGHT - 1)
+                    {
+                        centerSquare.transform.localPosition = new Vector3(dots.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2.0f), 0, dots.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2.0f));
+                        squareScale = new Vector3(1f, 1f, 1f);
+                        centerSquare.transform.localScale = squareScale;
+                        centerSquare.name = "CentreSquare " + x.ToString() + "," + z.ToString();
+                        centerSquare.GetComponent<SquareID>().squareID = centerSquare.name;
+                        centerSquare.GetComponentInChildren<Renderer>().enabled = false;
+                        SpawnOnNetwork("centerSquare", centerSquare.transform.localPosition, centerSquare.transform.localRotation, centerSquare.name);
                     }
                 }
             }
+
             GameObject.Find("Camera").transform.position = new Vector3(
-                (listOfDots[listOfDots.Length-1].transform.position.x)/2,
+                (listOfDots[listOfDots.Length - 1].transform.position.x) / 2,
         GameObject.Find("Camera").transform.position.y,
         GameObject.Find("Camera").transform.position.z);
             //Start the timer after the grid has been built
@@ -217,6 +225,7 @@ public class GameStart : PunBehaviour
             AssignTurnsAndColors();
             GetComponent<GameState>().gameState = GameState.State.InProgress;
             photonView.RPC("GridCompleted", PhotonTargets.AllBuffered);
+        }
     }
 
     //Destroy the grid
