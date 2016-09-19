@@ -1,3 +1,6 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
 Shader "High Quality Glass/Refraction" {
     Properties {
         _RefractionIntensity ("Refraction Intensity", Range(0, 1)) = 1
@@ -62,8 +65,8 @@ Shader "High Quality Glass/Refraction" {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
-                float3 recipObjScale = float3( length(_World2Object[0].xyz), length(_World2Object[1].xyz), length(_World2Object[2].xyz) );
-                o.posWorld = mul(_Object2World, v.vertex);
+                float3 recipObjScale = float3( length(unity_WorldToObject[0].xyz), length(unity_WorldToObject[1].xyz), length(unity_WorldToObject[2].xyz) );
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 o.screenPos = o.pos;
@@ -71,7 +74,7 @@ Shader "High Quality Glass/Refraction" {
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
-                float3 recipObjScale = float3( length(_World2Object[0].xyz), length(_World2Object[1].xyz), length(_World2Object[2].xyz) );
+                float3 recipObjScale = float3( length(unity_WorldToObject[0].xyz), length(unity_WorldToObject[1].xyz), length(unity_WorldToObject[2].xyz) );
                 #if UNITY_UV_STARTS_AT_TOP
                     float grabSign = -_ProjectionParams.x;
                 #else
@@ -83,7 +86,7 @@ Shader "High Quality Glass/Refraction" {
                 float2 node_27 = (i.uv0*1.0);
                 float3 _Refraction_var = UnpackNormal(tex2D(_Refraction,TRANSFORM_TEX(node_27, _Refraction)));
                 float3 normalLocal = lerp(float3(0,0,1),_Refraction_var.rgb,_RefractionIntensity);
-                float3 normalDirection = mul( _World2Object, float4(normalLocal,0)) / recipObjScale;
+                float3 normalDirection = mul( unity_WorldToObject, float4(normalLocal,0)) / recipObjScale;
                 float3 viewReflectDirection = reflect( -viewDirection, normalDirection );
                 float2 sceneUVs = float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + (_Refraction_var.rgb.rg*(_RefractionIntensity*0.2));
                 float4 sceneColor = tex2D(_GrabTexture, sceneUVs);
@@ -212,8 +215,8 @@ Shader "High Quality Glass/Refraction" {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 o.normalDir = UnityObjectToWorldNormal(v.normal);
-                float3 recipObjScale = float3( length(_World2Object[0].xyz), length(_World2Object[1].xyz), length(_World2Object[2].xyz) );
-                o.posWorld = mul(_Object2World, v.vertex);
+                float3 recipObjScale = float3( length(unity_WorldToObject[0].xyz), length(unity_WorldToObject[1].xyz), length(unity_WorldToObject[2].xyz) );
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex );
                 o.screenPos = o.pos;
@@ -221,7 +224,7 @@ Shader "High Quality Glass/Refraction" {
                 return o;
             }
             float4 frag(VertexOutput i) : COLOR {
-                float3 recipObjScale = float3( length(_World2Object[0].xyz), length(_World2Object[1].xyz), length(_World2Object[2].xyz) );
+                float3 recipObjScale = float3( length(unity_WorldToObject[0].xyz), length(unity_WorldToObject[1].xyz), length(unity_WorldToObject[2].xyz) );
                 #if UNITY_UV_STARTS_AT_TOP
                     float grabSign = -_ProjectionParams.x;
                 #else
@@ -233,7 +236,7 @@ Shader "High Quality Glass/Refraction" {
                 float2 node_27 = (i.uv0*1.0);
                 float3 _Refraction_var = UnpackNormal(tex2D(_Refraction,TRANSFORM_TEX(node_27, _Refraction)));
                 float3 normalLocal = lerp(float3(0,0,1),_Refraction_var.rgb,_RefractionIntensity);
-                float3 normalDirection = mul( _World2Object, float4(normalLocal,0)) / recipObjScale;
+                float3 normalDirection = mul( unity_WorldToObject, float4(normalLocal,0)) / recipObjScale;
                 float2 sceneUVs = float2(1,grabSign)*i.screenPos.xy*0.5+0.5 + (_Refraction_var.rgb.rg*(_RefractionIntensity*0.2));
                 float4 sceneColor = tex2D(_GrabTexture, sceneUVs);
                 float3 lightDirection = normalize(lerp(_WorldSpaceLightPos0.xyz, _WorldSpaceLightPos0.xyz - i.posWorld.xyz,_WorldSpaceLightPos0.w));

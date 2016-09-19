@@ -40,6 +40,7 @@ public class PlayerClick : PunBehaviour
     public GameObject line, square;
     [SerializeField]
     private GameObject linePlaceEffect, squarePlaceEffect;
+    private GameObject leftLineEffect, rightLineEffect, squareEffectLeftTop, squareEffectRightTop, squareEffectLeftBot, squareEffectRightBot;
     /*
      * Sync Line position
      */
@@ -69,6 +70,30 @@ public class PlayerClick : PunBehaviour
     {
         lerpRate = normalLerpRate;
         photonView = this.GetComponent<PhotonView>();
+
+        leftLineEffect = Instantiate(linePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
+        leftLineEffect.GetComponent<Renderer>().enabled = false;
+        rightLineEffect = Instantiate(linePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
+        rightLineEffect.GetComponent<Renderer>().enabled = false;
+
+        squareEffectLeftTop = Instantiate(squarePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
+        squareEffectLeftTop.GetComponent<Renderer>().enabled = false;
+
+        squareEffectRightTop = Instantiate(squarePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
+        squareEffectRightTop.GetComponent<Renderer>().enabled = false;
+
+        squareEffectRightBot = Instantiate(squarePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
+        squareEffectRightBot.GetComponent<Renderer>().enabled = false;
+
+        squareEffectLeftBot = Instantiate(squarePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
+        squareEffectLeftBot.GetComponent<Renderer>().enabled = false;
+
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(leftLineEffect);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(rightLineEffect);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftTop);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftBot);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightTop);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightBot);
     }
     public override void OnConnectedToMaster()
     {
@@ -185,31 +210,26 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume);
         GameObject.Find(squareID).GetComponent<AudioSource>().Play();
         //Play Effect
-        GameObject squareEffectLeftTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectLeftTop.GetComponent<Renderer>().enabled = true;
+        squareEffectLeftTop.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2));
         squareEffectLeftTop.GetComponent<ParticleSystem>().startColor = squareColor;
-        GameObject squareEffectLeftBot = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectLeftTop.GetComponent<ParticleSystem>().Play();
+
+        squareEffectLeftBot.GetComponent<Renderer>().enabled = true;
+        squareEffectLeftBot.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2));
         squareEffectLeftBot.GetComponent<ParticleSystem>().startColor = squareColor;
-        GameObject squareEffectRightTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectLeftBot.GetComponent<ParticleSystem>().Play();
+
+        squareEffectRightTop.GetComponent<Renderer>().enabled = true;
+        squareEffectRightTop.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2));
         squareEffectRightTop.GetComponent<ParticleSystem>().startColor = squareColor;
-        GameObject squareEffectRightBot = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(squareID).transform.rotation) as GameObject;
+        squareEffectRightTop.GetComponent<ParticleSystem>().Play();
+
+        squareEffectRightBot.GetComponent<Renderer>().enabled = true;
+        squareEffectRightBot.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2));
         squareEffectRightBot.GetComponent<ParticleSystem>().startColor = squareColor;
+        squareEffectRightBot.GetComponent<ParticleSystem>().Play();
 
-
-        GameObject tempEffectLeftTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(tempSquare).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(tempSquare).transform.position.y * 5f), GameObject.Find(tempSquare).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(tempSquare).transform.rotation) as GameObject;
-        tempEffectLeftTop.GetComponent<ParticleSystem>().startColor = squareColor;
-        GameObject tempEffectLeftBot = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(tempSquare).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(tempSquare).transform.position.y * 5f), GameObject.Find(tempSquare).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(tempSquare).transform.rotation) as GameObject;
-        tempEffectLeftBot.GetComponent<ParticleSystem>().startColor = squareColor;
-        GameObject tempEffectRightTop = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(tempSquare).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(tempSquare).transform.position.y * 5f), GameObject.Find(tempSquare).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(tempSquare).transform.rotation) as GameObject;
-        tempEffectRightTop.GetComponent<ParticleSystem>().startColor = squareColor;
-        GameObject tempEffectRightBot = Instantiate(squarePlaceEffect, new Vector3(GameObject.Find(tempSquare).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(tempSquare).transform.position.y * 5f), GameObject.Find(tempSquare).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(tempSquare).transform.rotation) as GameObject;
-        tempEffectRightBot.GetComponent<ParticleSystem>().startColor = squareColor;
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftTop);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftBot);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightTop);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightBot); GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(tempEffectLeftTop);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(tempEffectLeftBot);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(tempEffectRightTop);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(tempEffectRightBot);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(GameObject.Find(tempSquare));
 
         squareAnimFinished = true;
@@ -233,35 +253,31 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find(obj).GetComponents<AudioSource>()[0].volume = (GLOBALS.Volume / 175);
         GameObject.Find(obj).GetComponents<AudioSource>()[0].Play();
+        leftLineEffect.GetComponent<Renderer>().enabled = true;
+        rightLineEffect.GetComponent<Renderer>().enabled = true;
         if (obj.Contains("Vertical"))
         {
-            //Play Effect
-            GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z), GameObject.Find(obj).transform.rotation) as GameObject;
-            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
 
-            GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x - (GLOBALS.DOTDISTANCE / 2), GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z), GameObject.Find(obj).transform.rotation) as GameObject;
+            //Play Effect
+            leftLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z);
+            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            leftLineEffect.GetComponent<ParticleSystem>().Play();
+
+            rightLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x - (GLOBALS.DOTDISTANCE / 2), GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z);
             rightLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
-            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(leftLineEffect);
-            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(rightLineEffect);
+            rightLineEffect.GetComponent<ParticleSystem>().Play();
         }
         else
         {
-            //Play Effect
-            GameObject leftLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x, (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z + (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(obj).transform.rotation) as GameObject;
-            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
 
-            GameObject rightLineEffect = Instantiate(linePlaceEffect, new Vector3(GameObject.Find(obj).transform.position.x, GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z - (GLOBALS.DOTDISTANCE / 2)), GameObject.Find(obj).transform.rotation) as GameObject;
+            //Play Effect
+            leftLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x, (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z + (GLOBALS.DOTDISTANCE / 2));
+            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            leftLineEffect.GetComponent<ParticleSystem>().Play();
+
+            rightLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x, GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z - (GLOBALS.DOTDISTANCE / 2));
             rightLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
-            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(leftLineEffect);
-            GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(rightLineEffect);
-        }
-        if (!pointScored)
-        {
-            photonView.RPC("RpcPaint", PhotonTargets.AllBuffered, obj, col);// use a Client RPC function to "paint" the object on all clients
-        }
-        else
-        {
-            photonView.RPC("RpcPaintSameTurn", PhotonTargets.AllBuffered, obj, col);// use a Client RPC function to "paint" the 
+            rightLineEffect.GetComponent<ParticleSystem>().Play();
         }
     }
 
@@ -577,11 +593,14 @@ public class PlayerClick : PunBehaviour
                 {
                     if (photonView.isMine)
                     {
+                        /*
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
                         GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
+                         * */
                         photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                         animFinished = true;
                         CheckIfSquareIsMade(hit);
@@ -612,11 +631,14 @@ public class PlayerClick : PunBehaviour
                     {
                         if (photonView.isMine)
                         {
+                            /*
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
                             GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                             GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
+                             */
                             photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                             animFinished = true;
                             CheckIfSquareIsMade(hit);

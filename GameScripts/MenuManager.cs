@@ -10,9 +10,6 @@ public class MenuManager : MonoBehaviour {
     {
         GameObject.Find("GameName").GetComponent<Text>().text = GLOBALS.GameName;
         backButton = GameObject.Find("BackToMenuButton");
-        backButton.SetActive(false);
-        //GameObject.Find("BackToMenuButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        //GameObject.Find("BackToMenuButton").GetComponentInChildren<Text>().color = Color.clear;
     }
     //Dynamic period animation
     IEnumerator DynamicPeriods(Text text)

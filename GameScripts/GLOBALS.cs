@@ -11,11 +11,11 @@ public class GLOBALS : MonoBehaviour {
     //Global variable to determine the height of a line before being place
     public const int LINEHEIGHT = 37;
     //Global variable to determine the timer duration
-    public const float MAXTURNTIME = 30.0f;
+    public const float MAXTURNTIME = 20.0f;
     //Volume of the game
     public static float Volume = 5;
     //Name of the game
-    public static string GameName = "Squarez";
+    public static string GameName = "Squarz";
     //Points to win game
     //(((GRIDWIDTH - 1) * (GRIDHEIGHT - 1) / 2) + 1)
     public const int POINTSTOWIN = 3;

@@ -52,8 +52,8 @@ public class NetworkManagerLocal : PunBehaviour
         string conn = "There is a Network Issue, please check your Internet connection.";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         //TODO Fix button
-        //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
-        //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.transform.localScale = new Vector3(1, 1, 1);
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
     public override void OnConnectionFail(DisconnectCause cause)
@@ -61,8 +61,8 @@ public class NetworkManagerLocal : PunBehaviour
         base.OnConnectionFail(cause);
         string conn = "Our servers are full! Please try again later.";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
-        //GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.SetActive(true);
-        //ameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.transform.localScale = new Vector3(1, 1, 1);
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().backButton.GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
     }
 
     public override void OnJoinedRoom()
