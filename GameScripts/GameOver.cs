@@ -87,6 +87,9 @@ public class GameOver : PunBehaviour
     //Reset the game
     void ResetGame()
     {
+        GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("Restarting game...", true);
+        if (GameObject.Find(loser) != null)
+            GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText("Restarting game...", true);
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
         {
             if (tempObj.GetComponent<Light>() != null)

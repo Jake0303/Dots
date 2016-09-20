@@ -87,13 +87,13 @@ public class PlayerClick : PunBehaviour
 
         squareEffectLeftBot = Instantiate(squarePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
         squareEffectLeftBot.GetComponent<Renderer>().enabled = false;
-
+        /*
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(leftLineEffect);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(rightLineEffect);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftTop);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftBot);
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightTop);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightBot);
+        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightBot);*/
     }
     public override void OnConnectedToMaster()
     {

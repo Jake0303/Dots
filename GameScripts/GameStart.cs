@@ -73,7 +73,6 @@ public class GameStart : PunBehaviour
         if (startGame)
         {
             photonView.RPC("BuildGridText", PhotonTargets.AllBuffered);
-            PhotonNetwork.RaiseEvent(1, null, true, null);
             GetComponent<GameState>().gameState = GameState.State.BuildingGrid;
             StartCoroutine(StartGame());
             //Build the grid of dots

@@ -88,13 +88,6 @@ public class GameState : PunBehaviour
                     player.GetComponent<UIManager>().DisplayPopupText("Waiting for players", false);
                 }
                 break;
-            case State.BuildingGrid:
-                DisplayServerMessage("Building grid", false);
-                foreach (var player in players)
-                {
-                    player.GetComponent<UIManager>().DisplayPopupText("Building grid", false);
-                }
-                break;
         }
     }
 

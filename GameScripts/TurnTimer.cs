@@ -165,7 +165,7 @@ public class TurnTimer : PunBehaviour
                 }
             }
         }
-        if(isGameOver)
+        if (isGameOver)
         {
             GameObject.Find("GameManager").GetComponent<GameOver>().gameOver = isGameOver;
         }
