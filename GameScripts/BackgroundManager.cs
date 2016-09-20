@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class BackgroundManager : MonoBehaviour
 {
@@ -8,9 +9,9 @@ public class BackgroundManager : MonoBehaviour
     float alpha = 0;
     IEnumerator ShowSquare()
     {
-        while (true)
+        while (true && SceneManager.GetActiveScene().name != "Game")
         {
-            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 335), Random.Range(265, 335), Random.Range(41, 42)), square.transform.rotation) as GameObject;
+            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 355), Random.Range(265, 335), Random.Range(41, 42)), square.transform.rotation) as GameObject;
             StartCoroutine(fadeIn(newSquare));
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
@@ -22,7 +23,9 @@ public class BackgroundManager : MonoBehaviour
     }
     void Start()
     {
-        StartCoroutine(ShowSquare());
+        DontDestroyOnLoad(this.transform);
+        if(SceneManager.GetActiveScene().name != "Game")
+            StartCoroutine(ShowSquare());
     }
 
     IEnumerator fadeIn(GameObject newSquare)
