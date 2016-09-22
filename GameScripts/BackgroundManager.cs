@@ -18,13 +18,13 @@ public class BackgroundManager : MonoBehaviour
             newSquare.GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
-            yield return new WaitForSeconds(Random.Range(1f, 1.2f));
+            yield return new WaitForSeconds(Random.Range(1.3f, 1.5f));
         }
     }
     void Start()
     {
         DontDestroyOnLoad(this.transform);
-        if(SceneManager.GetActiveScene().name != "Game")
+        if (SceneManager.GetActiveScene().name != "Game")
             StartCoroutine(ShowSquare());
     }
 
@@ -39,7 +39,7 @@ public class BackgroundManager : MonoBehaviour
                 alpha = newSquare.GetComponentInChildren<Renderer>().material.GetFloat("_detailpower");
                 alpha += 2f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_detailpower", alpha);
-                power += 0.05f;
+                power += 0.07f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_power", power);
 
                 newSquare.GetComponent<Light>().intensity++;
@@ -59,20 +59,20 @@ public class BackgroundManager : MonoBehaviour
             if (newSquare != null)
             {
                 alpha = newSquare.GetComponentInChildren<Renderer>().material.GetFloat("_detailpower");
-                alpha -= 2f;
+                alpha -= 1f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_detailpower", alpha);
-                power -= 0.02f;
+                power -= 0.04f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_power", power);
 
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_TintColor");
-                fade.a -= 2f;
+                fade.a -= 4f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", fade);
                 newSquare.GetComponent<Light>().intensity--;
                 newSquare.GetComponent<Light>().range--;
             }
             //kill when faded
-            if (power <= 0)
+            if (power < 0)
             {
                 newSquare.GetComponent<Light>().enabled = false;
                 Destroy(newSquare);
@@ -84,4 +84,12 @@ public class BackgroundManager : MonoBehaviour
 
     }
 
+    void OnLevelWasLoaded(int level)
+    {
+        foreach (GameObject square in GameObject.FindGameObjectsWithTag("FadedSquare"))
+        {
+            Debug.Log("Deleted square");
+            Destroy(square);
+        }
+    }
 }

@@ -87,13 +87,6 @@ public class PlayerClick : PunBehaviour
 
         squareEffectLeftBot = Instantiate(squarePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
         squareEffectLeftBot.GetComponent<Renderer>().enabled = false;
-        /*
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(leftLineEffect);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(rightLineEffect);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftTop);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectLeftBot);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightTop);
-        GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(squareEffectRightBot);*/
     }
     public override void OnConnectedToMaster()
     {
@@ -238,6 +231,7 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdStopAnim()
     {
+        playingAnim = false;
         animFinished = true;
     }
     //On click place a line at the mouse location
@@ -589,30 +583,16 @@ public class PlayerClick : PunBehaviour
                     newLineHorizontal.transform.position += velocity * Time.deltaTime;
                 }
 
-                if (newLineHorizontal.transform.position.y < 0.001 && !animFinished)
+                if (newLineHorizontal.transform.position.y < 0.1 && !animFinished)
                 {
                     if (photonView.isMine)
                     {
-                        /*
-                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
-
-                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
-                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-                        GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
-                        GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
-                         * */
                         photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                         animFinished = true;
                         CheckIfSquareIsMade(hit);
                         if (!pointScored)
-                        {
                             CmdNextTurn();
-                            photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
-                        }
-                        else
-                        {
-                            photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
-                        }
+                        photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                     }
                 }
             }
@@ -631,26 +611,12 @@ public class PlayerClick : PunBehaviour
                     {
                         if (photonView.isMine)
                         {
-                            /*
-                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
-
-                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().material = lineMat;
-                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
-                            GameObject.Find(objectID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
-                            GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
-                             */
                             photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                             animFinished = true;
                             CheckIfSquareIsMade(hit);
                             if (!pointScored)
-                            {
                                 CmdNextTurn();
-                                photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
-                            }
-                            else
-                            {
-                                photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
-                            }
+                            photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                         }
                     }
 

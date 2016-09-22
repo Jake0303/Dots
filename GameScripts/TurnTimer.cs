@@ -44,13 +44,14 @@ public class TurnTimer : PunBehaviour
     //Player timer functionality
     public void StartTimer()
     {
-        timer -= Time.deltaTime;
         var players = GameObject.FindGameObjectsWithTag("Player");
         //Update timer
         foreach (var player in players)
         {
             if (player.GetComponent<PlayerID>().isPlayersTurn)
             {
+                if(!player.GetComponent<PlayerClick>().playingAnim && !player.GetComponent<PlayerClick>().playingSquareAnim)
+                    timer -= Time.deltaTime;
                 for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
                 {
                     if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)

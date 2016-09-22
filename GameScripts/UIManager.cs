@@ -145,7 +145,7 @@ public class UIManager : PunBehaviour
         {
             if (name.GetComponent<Text>().text == tempField.GetComponent<InputField>().text)
             {
-                errorMsg.text = "Someone already has that name!";
+                errorMsg.text = "That name is taken!";
                 aError = true;
                 return;
             }

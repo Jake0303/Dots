@@ -75,9 +75,12 @@ public class MenuManager : MonoBehaviour {
         GameObject.Find("OptionsButton").GetComponent<Button>().enabled = false;
         GameObject.Find("OptionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("OptionsButton").GetComponentInChildren<Text>().color = Color.clear;
-        GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
+        if (GameObject.Find("ExitButton"))
+        {
+            GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
+            GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+            GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
+        }
         GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
     }
@@ -91,9 +94,12 @@ public class MenuManager : MonoBehaviour {
         GameObject.Find("OptionsButton").GetComponent<Button>().enabled = false;
         GameObject.Find("OptionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("OptionsButton").GetComponentInChildren<Text>().color = Color.clear;
-        GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
+        if (GameObject.Find("ExitButton"))
+        {
+            GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
+            GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
+            GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
+        }
         GameObject.Find("InstructionsButton").GetComponent<Button>().enabled = false;
         GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
