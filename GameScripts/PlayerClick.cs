@@ -502,8 +502,8 @@ public class PlayerClick : PunBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
-                    //&& hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    //&& !playingAnim
+                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    && !playingAnim
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
                 {
@@ -583,17 +583,14 @@ public class PlayerClick : PunBehaviour
                     newLineHorizontal.transform.position += velocity * Time.deltaTime;
                 }
 
-                if (newLineHorizontal.transform.position.y < 0.1 && !animFinished)
+                if (newLineHorizontal.transform.position.y < 0.0001 && !animFinished)
                 {
-                    if (photonView.isMine)
-                    {
                         photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                         animFinished = true;
                         CheckIfSquareIsMade(hit);
                         if (!pointScored)
                             CmdNextTurn();
                         photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
-                    }
                 }
             }
             //Lerp vertical line 
@@ -607,22 +604,19 @@ public class PlayerClick : PunBehaviour
                     {
                         newLineVertical.transform.position += velocity * Time.deltaTime;
                     }
-                    if (newLineVertical.transform.position.y < 0.001 && !animFinished)
+                    if (newLineVertical.transform.position.y < 0.0001 && !animFinished)
                     {
-                        if (photonView.isMine)
-                        {
                             photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                             animFinished = true;
                             CheckIfSquareIsMade(hit);
                             if (!pointScored)
                                 CmdNextTurn();
                             photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
-                        }
                     }
 
                 }
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.0001f);
         }
         if (animFinished)
         {
@@ -671,7 +665,7 @@ public class PlayerClick : PunBehaviour
             {
                 newSquare.transform.position += velocity * Time.deltaTime;
             }
-            if (newSquare.transform.position.y < 0.001 && !squareAnimFinished && photonView.isMine)
+            if (newSquare.transform.position.y < 0.0001 && !squareAnimFinished && photonView.isMine)
             {
                 newSquare.transform.rotation = Quaternion.identity;
                 photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
@@ -679,7 +673,7 @@ public class PlayerClick : PunBehaviour
                 CmdNextTurn();
                 squareAnimFinished = true;
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.0001f);
         }
     }
 }
