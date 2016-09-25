@@ -7,25 +7,24 @@ public class BackgroundManager : MonoBehaviour
     public GameObject square;
     Color fade;
     float alpha = 0;
-    IEnumerator ShowSquare()
+    public IEnumerator ShowSquare()
     {
-        while (true && SceneManager.GetActiveScene().name != "Game")
+        while (true)
         {
             GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 355), Random.Range(265, 335), Random.Range(41, 42)), square.transform.rotation) as GameObject;
             StartCoroutine(fadeIn(newSquare));
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
-            newSquare.GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 0));
-            yield return new WaitForSeconds(Random.Range(1.3f, 1.5f));
+            newSquare.GetComponentInChildren<Renderer>().enabled = true;
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1));
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1));
+            yield return new WaitForSeconds(Random.Range(1.0f, 1.5f));
         }
     }
     void Start()
     {
         DontDestroyOnLoad(this.transform);
-        if (SceneManager.GetActiveScene().name != "Game")
-            StartCoroutine(ShowSquare());
+        StartCoroutine(ShowSquare());
     }
 
     IEnumerator fadeIn(GameObject newSquare)
@@ -86,9 +85,18 @@ public class BackgroundManager : MonoBehaviour
 
     void OnLevelWasLoaded(int level)
     {
+        
+        if(level == 1)
+        {
+            StopAllCoroutines();
+        }
+        else
+        {
+            StopAllCoroutines();
+            StartCoroutine(ShowSquare());
+        }
         foreach (GameObject square in GameObject.FindGameObjectsWithTag("FadedSquare"))
         {
-            Debug.Log("Deleted square");
             Destroy(square);
         }
     }

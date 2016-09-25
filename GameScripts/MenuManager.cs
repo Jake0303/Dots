@@ -11,37 +11,7 @@ public class MenuManager : MonoBehaviour {
         GameObject.Find("GameName").GetComponent<Text>().text = GLOBALS.GameName;
         backButton = GameObject.Find("BackToMenuButton");
     }
-    //Dynamic period animation
-    IEnumerator DynamicPeriods(Text text)
-    {
-       
-        transitionText = text.text;
-        string period = ".";
-        yield return new WaitForSeconds(0.25f);
-        /*
-        for (; ; )
-        {
-            if (text != null)
-            {
-                text.text = transitionText;
-            }
-            if (text != null)
-            {
-                text.text = transitionText + period;
-                yield return new WaitForSeconds(0.25f);
-            }
-            if (text != null)
-            {
-                text.text = transitionText + period + period;
-                yield return new WaitForSeconds(0.25f);
-            }
-            if (text != null)
-            {
-                text.text = transitionText + period + period + period;
-                yield return new WaitForSeconds(0.25f);
-            }
-        }*/
-    }
+
 
     //Fade text animation for the connecting text
     IEnumerator FadeTextToFullAlpha(float t, Text i)
@@ -64,7 +34,6 @@ public class MenuManager : MonoBehaviour {
         {
             GameObject.Find("transitionText").GetComponent<Text>().text = text;
             StartCoroutine(FadeTextToFullAlpha(2f, GameObject.Find("transitionText").GetComponent<Text>()));
-            StartCoroutine(DynamicPeriods(GameObject.Find("transitionText").GetComponent<Text>()));
         }
     }
     public void TransitionToEnterNameScreen()
@@ -88,6 +57,7 @@ public class MenuManager : MonoBehaviour {
     {
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         GameObject.Find("GameName").GetComponent<Text>().text = "";
+        GameObject.Find("VersionText").GetComponent<Text>().text = "";
         GameObject.Find("PlayButton").GetComponent<Button>().enabled = false;
         GameObject.Find("PlayButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("PlayButton").GetComponentInChildren<Text>().color = Color.clear;
