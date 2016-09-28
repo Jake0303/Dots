@@ -139,14 +139,15 @@ public class TurnTimer : PunBehaviour
     {
         PhotonNetwork.RaiseEvent(0, null, true, null);
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
-        GameObject.Find(nextPlayer).GetComponent<PlayerClick>().playingAnim = false;
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
         GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("It's your turn, place a line!", true);
+        GameObject.Find(nextPlayer).GetComponent<PlayerClick>().playingAnim = false;
 
-        GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
+
         GameObject.Find(GameObject.Find(lastPlayer).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
         GameObject.Find(lastPlayer).GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
+        GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
     }
     //Reset the turn timer
     public void ResetTimer()

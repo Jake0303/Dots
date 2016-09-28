@@ -100,8 +100,8 @@ public class PlayerClick : PunBehaviour
         {
             // We own this player: send the others our data
             stream.SendNext(pointScored);
-            stream.SendNext(playingSquareAnim);
-            stream.SendNext(animFinished);
+            //stream.SendNext(playingSquareAnim);
+            //stream.SendNext(animFinished);
             stream.SendNext(squareID);
 
         }
@@ -109,8 +109,8 @@ public class PlayerClick : PunBehaviour
         {
             // Network player, receive data
             this.pointScored = (bool)stream.ReceiveNext();
-            this.playingSquareAnim = (bool)stream.ReceiveNext();
-            this.animFinished = (bool)stream.ReceiveNext();
+            //this.playingSquareAnim = (bool)stream.ReceiveNext();
+            //this.animFinished = (bool)stream.ReceiveNext();
             this.squareID = (string)stream.ReceiveNext();
         }
     }
@@ -238,7 +238,7 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdPlaceLine(string obj, string col)
     {
-        GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
         GameObject.Find(obj).GetComponentInParent<Light>().enabled = true;
         GameObject.Find(obj).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
@@ -302,112 +302,117 @@ public class PlayerClick : PunBehaviour
     {
         //Check if square is made
         //Check horizontal line hitboxes
-        if (hit.collider.name.Contains("linesHorizontal") && hit.collider.GetComponentInChildren<Renderer>().enabled)
+        if (hit.collider
+            && hit.collider.GetComponentInChildren<Renderer>())
         {
-
-            Vector3 centerOfSquareRight = new Vector3(hit.collider.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
-            hitCollidersRight = Physics.OverlapSphere(centerOfSquareRight, squareRadius);
-            int i = 0;
-            int howManyLines = 0;
-            //In the hitbox, check how many lines
-            while (i < hitCollidersRight.Length)
+            if (hit.collider.name.Contains("linesHorizontal")
+            && hit.collider.GetComponentInChildren<Renderer>().enabled)
             {
-                if (hitCollidersRight[i].name.Contains("lines") && hitCollidersRight[i].GetComponentInChildren<Renderer>().enabled
-                    && hitCollidersRight[i].GetComponent<LinePlaced>().linePlaced
-                   || hitCollidersRight[i].name.Contains("square"))
+
+                Vector3 centerOfSquareRight = new Vector3(hit.collider.transform.localPosition.x + (GLOBALS.DOTDISTANCE / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
+                hitCollidersRight = Physics.OverlapSphere(centerOfSquareRight, squareRadius);
+                int i = 0;
+                int howManyLines = 0;
+                //In the hitbox, check how many lines
+                while (i < hitCollidersRight.Length)
                 {
-                    hitCollidersRight[i].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                    howManyLines++;
+                    if (hitCollidersRight[i].name.Contains("lines") && hitCollidersRight[i].GetComponentInChildren<Renderer>().enabled
+                        && hitCollidersRight[i].GetComponent<LinePlaced>().linePlaced
+                       || hitCollidersRight[i].name.Contains("square"))
+                    {
+                        hitCollidersRight[i].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                        howManyLines++;
+                    }
+                    i++;
                 }
-                i++;
-            }
 
-            //If there is a 4 lines in the hitbox a square is made and the player gets a point.
-            if (howManyLines == 4)
-            {
-                GetComponent<PlayerID>().playerScore += 1;
-                photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
-                hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                PaintSquare(hitCollidersRight);
-                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
-            }
-
-            //Left hitbox
-            Vector3 centerOfSquareLeft = new Vector3(hit.collider.transform.localPosition.x - (GLOBALS.DOTDISTANCE / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
-            hitCollidersLeft = Physics.OverlapSphere(centerOfSquareLeft, squareRadius);
-            int j = 0;
-            howManyLines = 0;
-            while (j < hitCollidersLeft.Length)
-            {
-                if (hitCollidersLeft[j].name.Contains("lines") && hitCollidersLeft[j].GetComponentInChildren<Renderer>().enabled
-                    && hitCollidersLeft[j].GetComponent<LinePlaced>().linePlaced
-                   || hitCollidersLeft[j].name.Contains("square"))
+                //If there is a 4 lines in the hitbox a square is made and the player gets a point.
+                if (howManyLines == 4)
                 {
-                    hitCollidersLeft[j].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                    howManyLines++;
+                    GetComponent<PlayerID>().playerScore += 1;
+                    photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
+                    hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                    PaintSquare(hitCollidersRight);
+                    GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
                 }
-                j++;
-            }
-            if (howManyLines == 4)
-            {
-                GetComponent<PlayerID>().playerScore += 1;
-                photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
-                hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                PaintSquare(hitCollidersLeft);
-                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
 
-            }
-        }
-        //Same as above just for vertical lines
-        if (hit.collider.name.Contains("linesVertical") && hit.collider.GetComponentInChildren<Renderer>().enabled)
-        {
-
-            Vector3 centerOfSquareBottom = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2));
-            hitCollidersBottom = Physics.OverlapSphere(centerOfSquareBottom, squareRadius);
-            int i = 0;
-            int howManyLines = 0;
-            while (i < hitCollidersBottom.Length)
-            {
-                if (hitCollidersBottom[i].name.Contains("lines") && hitCollidersBottom[i].GetComponentInChildren<Renderer>().enabled
-                    && hitCollidersBottom[i].GetComponent<LinePlaced>().linePlaced
-                   || hitCollidersBottom[i].name.Contains("square"))
+                //Left hitbox
+                Vector3 centerOfSquareLeft = new Vector3(hit.collider.transform.localPosition.x - (GLOBALS.DOTDISTANCE / 2), hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z);
+                hitCollidersLeft = Physics.OverlapSphere(centerOfSquareLeft, squareRadius);
+                int j = 0;
+                howManyLines = 0;
+                while (j < hitCollidersLeft.Length)
                 {
-                    hitCollidersBottom[i].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                    howManyLines++;
+                    if (hitCollidersLeft[j].name.Contains("lines") && hitCollidersLeft[j].GetComponentInChildren<Renderer>().enabled
+                        && hitCollidersLeft[j].GetComponent<LinePlaced>().linePlaced
+                       || hitCollidersLeft[j].name.Contains("square"))
+                    {
+                        hitCollidersLeft[j].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                        howManyLines++;
+                    }
+                    j++;
                 }
-                i++;
-            }
-            if (howManyLines == 4)
-            {
-                GetComponent<PlayerID>().playerScore += 1;
-                photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
-                hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                PaintSquare(hitCollidersBottom);
-                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
-
-            }
-            Vector3 centerOfSquareTop = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z - (GLOBALS.DOTDISTANCE / 2));
-            hitCollidersTop = Physics.OverlapSphere(centerOfSquareTop, squareRadius);
-            int j = 0;
-            howManyLines = 0;
-            while (j < hitCollidersTop.Length)
-            {
-                if (hitCollidersTop[j].name.Contains("lines") && hitCollidersTop[j].GetComponentInChildren<Renderer>().enabled
-                    && hitCollidersTop[j].GetComponent<LinePlaced>().linePlaced
-                   || hitCollidersTop[j].name.Contains("square"))
+                if (howManyLines == 4)
                 {
-                    hitCollidersTop[j].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                    howManyLines++;
+                    GetComponent<PlayerID>().playerScore += 1;
+                    photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
+                    hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                    PaintSquare(hitCollidersLeft);
+                    GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+
                 }
-                j++;
             }
-            if (howManyLines == 4)
+            //Same as above just for vertical lines
+            if (hit.collider.name.Contains("linesVertical") && hit.collider.GetComponentInChildren<Renderer>().enabled)
             {
-                GetComponent<PlayerID>().playerScore += 1;
-                photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
-                hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
-                PaintSquare(hitCollidersTop);
-                GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+
+                Vector3 centerOfSquareBottom = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z + (GLOBALS.DOTDISTANCE / 2));
+                hitCollidersBottom = Physics.OverlapSphere(centerOfSquareBottom, squareRadius);
+                int i = 0;
+                int howManyLines = 0;
+                while (i < hitCollidersBottom.Length)
+                {
+                    if (hitCollidersBottom[i].name.Contains("lines") && hitCollidersBottom[i].GetComponentInChildren<Renderer>().enabled
+                        && hitCollidersBottom[i].GetComponent<LinePlaced>().linePlaced
+                       || hitCollidersBottom[i].name.Contains("square"))
+                    {
+                        hitCollidersBottom[i].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                        howManyLines++;
+                    }
+                    i++;
+                }
+                if (howManyLines == 4)
+                {
+                    GetComponent<PlayerID>().playerScore += 1;
+                    photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
+                    hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                    PaintSquare(hitCollidersBottom);
+                    GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+
+                }
+                Vector3 centerOfSquareTop = new Vector3(hit.collider.transform.localPosition.x, hit.collider.transform.localPosition.y, hit.collider.transform.localPosition.z - (GLOBALS.DOTDISTANCE / 2));
+                hitCollidersTop = Physics.OverlapSphere(centerOfSquareTop, squareRadius);
+                int j = 0;
+                howManyLines = 0;
+                while (j < hitCollidersTop.Length)
+                {
+                    if (hitCollidersTop[j].name.Contains("lines") && hitCollidersTop[j].GetComponentInChildren<Renderer>().enabled
+                        && hitCollidersTop[j].GetComponent<LinePlaced>().linePlaced
+                       || hitCollidersTop[j].name.Contains("square"))
+                    {
+                        hitCollidersTop[j].GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                        howManyLines++;
+                    }
+                    j++;
+                }
+                if (howManyLines == 4)
+                {
+                    GetComponent<PlayerID>().playerScore += 1;
+                    photonView.RPC("CmdTellServerYourScore", PhotonTargets.AllBuffered, GetComponent<PlayerID>().playerScore);//Update the player's UI with their score
+                    hit.collider.GetComponent<LineID>().lineID = "square " + hit.collider.transform.localPosition;
+                    PaintSquare(hitCollidersTop);
+                    GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
+                }
             }
         }
 
@@ -585,12 +590,16 @@ public class PlayerClick : PunBehaviour
 
                 if (newLineHorizontal.transform.position.y < 0.0001 && !animFinished)
                 {
+                    if (photonView.isMine)
+                    {
                         photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
-                        animFinished = true;
                         CheckIfSquareIsMade(hit);
+                        // photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                         if (!pointScored)
                             CmdNextTurn();
-                        photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
+                    }
+                        animFinished = true;
+                    
                 }
             }
             //Lerp vertical line 
@@ -606,12 +615,16 @@ public class PlayerClick : PunBehaviour
                     }
                     if (newLineVertical.transform.position.y < 0.0001 && !animFinished)
                     {
+                        if (photonView.isMine)
+                        {
                             photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
-                            animFinished = true;
                             CheckIfSquareIsMade(hit);
+                            //   photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                             if (!pointScored)
                                 CmdNextTurn();
-                            photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
+                        }
+                            animFinished = true;
+                        
                     }
 
                 }
@@ -622,13 +635,13 @@ public class PlayerClick : PunBehaviour
         {
             if (newLineHorizontal != null)
             {
-                newLineHorizontal.GetComponent<Light>().enabled = false;
-                newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
+               newLineHorizontal.GetComponent<Light>().enabled = false;
+               newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
             }
             if (newLineVertical != null)
             {
-                newLineVertical.GetComponent<Light>().enabled = false;
-                newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
+               newLineVertical.GetComponent<Light>().enabled = false;
+               newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
             }
         }
     }
@@ -667,11 +680,14 @@ public class PlayerClick : PunBehaviour
             }
             if (newSquare.transform.position.y < 0.0001 && !squareAnimFinished && photonView.isMine)
             {
-                newSquare.transform.rotation = Quaternion.identity;
-                photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
-                newSquare.GetComponent<Light>().enabled = false;
-                CmdNextTurn();
-                squareAnimFinished = true;
+                if (photonView.isMine)
+                {
+                    newSquare.transform.rotation = Quaternion.identity;
+                    newSquare.GetComponent<Light>().enabled = false;
+                    photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
+                    squareAnimFinished = true;
+                    CmdNextTurn();
+                }
             }
             yield return new WaitForSeconds(0.0001f);
         }
