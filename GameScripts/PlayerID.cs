@@ -36,10 +36,11 @@ public class PlayerID : PunBehaviour
             goPanel.transform.localScale = new Vector3(0.25f, 1f, 0.25f);
 
             GameObject goText = (GameObject)Instantiate(infoText);
-            goText.transform.localScale = new Vector3(5, 2, 3);
+            goText.transform.localScale = new Vector3(4, 1, 1);
+            goText.GetComponent<Text>().fontSize = 18;
 
             GameObject errorTxt = (GameObject)Instantiate(errorText);
-            errorTxt.transform.localScale = new Vector3(5, 2, 3);
+            errorTxt.transform.localScale = new Vector3(4, 1, 1);
 
             Text tempText = goText.GetComponent<Text>();
             tempText.transform.SetParent(goPanel.transform, false);
@@ -49,10 +50,10 @@ public class PlayerID : PunBehaviour
             errorMsg.transform.position = new Vector3(errorMsg.transform.position.x, 40, errorMsg.transform.position.z);
 
             GameObject goInputField = (GameObject)Instantiate(userinputField);
-            goInputField.transform.localScale = new Vector3(6, 2, 3);
+            goInputField.transform.localScale = new Vector3(4, 1, 1);
 
             GameObject goButton = (GameObject)Instantiate(prefabButton);
-            goButton.transform.localScale = new Vector3(5, 2, 3);
+            goButton.transform.localScale = new Vector3(3, 1, 1);
 
             goPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
 
