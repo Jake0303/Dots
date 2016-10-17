@@ -111,6 +111,7 @@ public class GameOver : PunBehaviour
         var timerTexts = GameObject.FindGameObjectsWithTag("TimerText");
         GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid = true;
         GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
+        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
         //Update timer
         foreach (var player in players)
         {

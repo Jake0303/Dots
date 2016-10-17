@@ -33,7 +33,7 @@ public class PlayerID : PunBehaviour
         if (photonView.isMine)
         {
             goPanel = (GameObject)Instantiate(panel);
-            goPanel.transform.localScale = new Vector3(0.25f, 1f, 0.25f);
+            goPanel.transform.localScale = new Vector3(0.25f, 1f, 1f);
 
             GameObject goText = (GameObject)Instantiate(infoText);
             goText.transform.localScale = new Vector3(4, 1, 1);
@@ -168,7 +168,7 @@ public class PlayerID : PunBehaviour
         {
             if (tempButton != null && goPanel.activeSelf)
             {
-                this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg);
+                GameObject.Find("LetsPlayButton(Clone)").GetComponent<Button>().onClick.Invoke();
             }
         }
         if (tempField != null && photonView.isMine)

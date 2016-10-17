@@ -90,14 +90,21 @@ public class NetworkManagerLocal : PunBehaviour
         //Mainmenu
         if (level == 0)
         {
-            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TransitionToLobby()));
+            
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
-            GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Options()));
+            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("InstructionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("OptionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnVolumeSliderChanged);
+
+            /*
             if (GameObject.Find("ExitButton"))
             {
                 GameObject.Find("ExitButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().ExitGame()));
-            }
-            GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().Instructions()));
+            }*/
         }
         //Game
         else if (level == 1)
@@ -120,8 +127,7 @@ public class NetworkManagerLocal : PunBehaviour
         {
             GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("EscapeMenuText").GetComponent<Text>().text = "Your opponent has left!";
-            GameObject.Find("VolumeText").GetComponent<Text>().text = "";
-            GameObject.Find("VolumeLevel").GetComponent<Text>().text = "";
+            GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
         }
     }

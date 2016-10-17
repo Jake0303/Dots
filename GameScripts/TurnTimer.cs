@@ -17,6 +17,7 @@ public class TurnTimer : PunBehaviour
     void Start()
     {
         timerTexts = GameObject.FindGameObjectsWithTag("TimerText");
+        timerTexts[0].GetComponent<AudioSource>().volume = GLOBALS.Volume / 50;
     }
     //Algorithm to check the majority points
     int CalculateMajorityPoints()
@@ -45,13 +46,23 @@ public class TurnTimer : PunBehaviour
     public void StartTimer()
     {
         var players = GameObject.FindGameObjectsWithTag("Player");
+        if (timer <= 5 && !timerTexts[0].GetComponent<AudioSource>().isPlaying)
+            timerTexts[0].GetComponent<AudioSource>().Play();
         //Update timer
         foreach (var player in players)
         {
             if (player.GetComponent<PlayerID>().isPlayersTurn)
             {
-                if(!player.GetComponent<PlayerClick>().playingAnim && !player.GetComponent<PlayerClick>().playingSquareAnim)
+                if (!player.GetComponent<PlayerClick>().playingAnim && !player.GetComponent<PlayerClick>().playingSquareAnim)
+                {
                     timer -= Time.deltaTime;
+                    if (timer < 18)
+                        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
+                }
+                else
+                {
+                    timer = GLOBALS.MAXTURNTIME;
+                }
                 for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
                 {
                     if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
@@ -62,6 +73,12 @@ public class TurnTimer : PunBehaviour
                             {
                                 //Update UI with the time left
                                 timerText.GetComponent<Text>().text = "Time left: " + Mathf.Round(timer);
+                                if (timer <= 5)
+                                {
+                                    timerText.GetComponent<Text>().color = Color.red;
+                                }
+                                else
+                                    timerText.GetComponent<Text>().color = Color.white;
                             }
                             else
                             {
@@ -156,16 +173,6 @@ public class TurnTimer : PunBehaviour
         {
             timer = GLOBALS.MAXTURNTIME;
             nextTurn = false;
-            //End game if the majority of possible squares are made
-            var players = GameObject.FindGameObjectsWithTag("Player");
-            foreach (var player in players)
-            {
-                if (player.GetComponent<PlayerID>().playerScore >= CalculateMajorityPoints())
-                {
-                    isGameOver = true;
-                    break;
-                }
-            }
         }
         if (isGameOver)
         {

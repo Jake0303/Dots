@@ -154,7 +154,6 @@ public class UIManager : PunBehaviour
         if (photonView.isMine && !aError)
         {
             photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, tempField.GetComponent<InputField>().text);
-            panel.SetActive(false);
             PhotonNetwork.player.name = tempField.GetComponent<InputField>().text;
             GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
         }
@@ -172,6 +171,7 @@ public class UIManager : PunBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
                 EscapeMenu = GameObject.Find("EscapeMenu");
                 GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
                 GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
@@ -205,7 +205,7 @@ public class UIManager : PunBehaviour
         GLOBALS.Volume = value;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
         GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 100);
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
     }
     //Dynamic period animation
     IEnumerator DynamicPeriods()
@@ -340,6 +340,15 @@ public class UIManager : PunBehaviour
                 GameObject.Find("PopupText").GetComponent<Text>().text = text;
                 routine = StartCoroutine(FadeTextToFullAlpha(1f, GameObject.Find("PopupText").GetComponent<Text>(), fadeOutMessage));
             }
+        }
+    }
+    //Display popup box for the player
+    public void DisplayPopupBox(string text)
+    {
+        if (photonView.isMine)
+        {
+            GameObject.Find("EventText").GetComponent<Text>().text = text;
+            GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
         }
     }
 

@@ -11,7 +11,8 @@ public class BackgroundManager : MonoBehaviour
     {
         while (true)
         {
-            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 355), Random.Range(265, 335), Random.Range(41, 42)), square.transform.rotation) as GameObject;
+            //GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 355), Random.Range(265, 335), Random.Range(41, 42)), square.transform.rotation) as GameObject;
+            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(-20, 20), Random.Range(-20, 20), Random.Range(40, 41)), square.transform.rotation) as GameObject;
             StartCoroutine(fadeIn(newSquare));
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
@@ -72,11 +73,11 @@ public class BackgroundManager : MonoBehaviour
             }
             //kill when faded
             if (power < 0)
-            {
+           {
                 newSquare.GetComponent<Light>().enabled = false;
                 Destroy(newSquare);
                 break;
-            }
+           }
             yield return new WaitForSeconds(0.1f);
         }
         StopCoroutine(fadeIn(newSquare));

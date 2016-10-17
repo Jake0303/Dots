@@ -13,14 +13,14 @@ using System.Text;
 public class GameStart : PunBehaviour
 {
     [SerializeField]
-    public GameObject dots, lineHor, lineVert,centerSquare;
-    public GameObject[] listOfDots = new GameObject[GLOBALS.GRIDHEIGHT*GLOBALS.GRIDWIDTH];
+    public GameObject dots, lineHor, lineVert, centerSquare;
+    public GameObject[] listOfDots = new GameObject[GLOBALS.GRIDHEIGHT * GLOBALS.GRIDWIDTH];
     public GameObject hoverLineHor, hoverLineVert;
     public List<string> playerNames = new List<string>();
     //The speed at which each dot in the grid spawns
-    
+
     public float spawnSpeed = 0.1f;
-    
+
     public bool buildGrid = false;
     public bool startGame = false;
     //Sync the rotation and scale,PhotonNetwork.Spawn only sync position
@@ -117,10 +117,10 @@ public class GameStart : PunBehaviour
         }
     }
     //Tell the server that we spawned a line or dot
-    void SpawnOnNetwork(string objName,Vector3 pos, Quaternion rot, string name)
+    void SpawnOnNetwork(string objName, Vector3 pos, Quaternion rot, string name)
     {
         GameObject newObj = null;
-        switch(objName)
+        switch (objName)
         {
             case "dot":
                 newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot, 0);
@@ -246,7 +246,6 @@ public class GameStart : PunBehaviour
     void RpcDisableTurn(string playerID)
     {
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = false;
-        GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = false;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
         GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
     }
@@ -260,6 +259,7 @@ public class GameStart : PunBehaviour
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
         GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("It's your turn, place a line!", true);
+        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupBox("It's your turn first, place a line!");
     }
     [PunRPC]
     //Tell the server the timer has started
