@@ -50,12 +50,15 @@ public class NetworkManagerLocal : PunBehaviour
     {
         base.OnFailedToConnectToPhoton(cause);
         string conn = "There is a Network Issue, please check your Internet connection.";
+        //Make transition text fit the screen
+        GameObject.Find("transitionText").GetComponent<Text>().fontSize = 35;
+        GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         if (GameObject.Find("BackToMenuButton"))
         {
             GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
-            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
         }
     }
 
@@ -63,12 +66,15 @@ public class NetworkManagerLocal : PunBehaviour
     {
         base.OnConnectionFail(cause);
         string conn = "Our servers are full! Please try again later.";
+        //Make transition text fit the screen
+        GameObject.Find("transitionText").GetComponent<Text>().fontSize = 35;
+        GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         if (GameObject.Find("BackToMenuButton"))
         {
             GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
-            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => SceneManager.LoadScene("MainMenu"));
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
         }
     }
 
@@ -99,7 +105,6 @@ public class NetworkManagerLocal : PunBehaviour
             GameObject.Find("OptionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnVolumeSliderChanged);
-
             /*
             if (GameObject.Find("ExitButton"))
             {
@@ -118,6 +123,15 @@ public class NetworkManagerLocal : PunBehaviour
     public void LoadLevel()
     {
         PhotonNetwork.LoadLevel("Game");
+    }
+
+    public void ShowMainMenu()
+    {
+        //Make transition text fit the screen
+        GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Hide(true);
+        GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Show(false);
+        GameObject.Find("transitionText").GetComponent<Text>().fontSize = 56;
+        GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
     }
     //Let the player know if the opponent disconnected
     public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
