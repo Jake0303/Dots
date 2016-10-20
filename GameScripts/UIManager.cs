@@ -204,7 +204,7 @@ public class UIManager : PunBehaviour
     {
         GLOBALS.Volume = value;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 100);
+        GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 50);
         GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
     }
     //Dynamic period animation

@@ -1,4 +1,5 @@
-﻿Shader "MK/MKGlow/Normal/ParallaxDiffuse" 
+﻿#pragma exclude_renderers d3d11_9x
+Shader "MK/MKGlow/Normal/ParallaxDiffuse" 
 {
 	Properties 
 	{

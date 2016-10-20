@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 
 public class BackgroundManager : MonoBehaviour
 {
+    //Good looking colors for menu background
+    private Color[] sexyColors = {Color.magenta, Color.cyan, Color.green, Color.yellow, new Color(0.4f, 0.2f, 0.6f), Color.red};
+    private Color randomColor;
     public GameObject square;
     Color fade;
     float alpha = 0;
@@ -11,15 +14,18 @@ public class BackgroundManager : MonoBehaviour
     {
         while (true)
         {
-            //GameObject newSquare = Instantiate(square, new Vector3(Random.Range(265, 355), Random.Range(265, 335), Random.Range(41, 42)), square.transform.rotation) as GameObject;
             GameObject newSquare = Instantiate(square, new Vector3(Random.Range(-20, 20), Random.Range(-20, 20), Random.Range(40, 41)), square.transform.rotation) as GameObject;
             StartCoroutine(fadeIn(newSquare));
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
             newSquare.GetComponentInChildren<Renderer>().enabled = true;
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1));
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", new Color(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 1));
-            yield return new WaitForSeconds(Random.Range(1.0f, 1.5f));
+            if(randomColor == sexyColors[Mathf.CeilToInt(Random.Range(0, 5))])
+                randomColor = sexyColors[Mathf.CeilToInt(Random.Range(0, 5))];
+            else
+                randomColor = sexyColors[Mathf.CeilToInt(Random.Range(0, 5))];
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", randomColor);
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", randomColor);
+            yield return new WaitForSeconds(Random.Range(0.9f, 1.1f));
         }
     }
     void Start()
@@ -39,11 +45,11 @@ public class BackgroundManager : MonoBehaviour
                 alpha = newSquare.GetComponentInChildren<Renderer>().material.GetFloat("_detailpower");
                 alpha += 2f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_detailpower", alpha);
-                power += 0.07f;
+                power += 0.1f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_power", power);
 
-                newSquare.GetComponent<Light>().intensity++;
-                newSquare.GetComponent<Light>().range++;
+                newSquare.GetComponent<Light>().intensity+= 2;
+                newSquare.GetComponent<Light>().range+= 2;
                 newSquare.GetComponent<Light>().enabled = true;
                 newSquare.GetComponent<Light>().color = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_TintColor");
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_TintColor");

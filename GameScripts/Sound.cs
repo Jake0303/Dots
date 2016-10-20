@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Sound : MonoBehaviour
 {
+    public AudioClip music;
     public AudioSource bgMusic,buttonClick,sliderChanged;
     void Start()
     {
@@ -11,7 +12,7 @@ public class Sound : MonoBehaviour
         bgMusic = GetComponents<AudioSource>()[0];
         buttonClick = GetComponents<AudioSource>()[1];
         sliderChanged = GetComponents<AudioSource>()[2];
-        bgMusic.volume = (GLOBALS.Volume / 100);
+        bgMusic.volume = (GLOBALS.Volume / 50);
         bgMusic.Play();
     }
     //Play button click sound

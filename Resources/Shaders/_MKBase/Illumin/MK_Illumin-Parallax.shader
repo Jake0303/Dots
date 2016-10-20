@@ -1,4 +1,5 @@
-﻿Shader "MK/MKGlow/Illumin/Parallax" {
+﻿#pragma exclude_renderers d3d11_9x
+Shader "MK/MKGlow/Illumin/Parallax" {
 Properties {
 	_Color ("Main Color", Color) = (1,1,1,1)
 	_Parallax ("Height", Range (0.005, 0.08)) = 0.02

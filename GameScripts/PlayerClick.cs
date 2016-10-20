@@ -100,8 +100,6 @@ public class PlayerClick : PunBehaviour
         {
             // We own this player: send the others our data
             stream.SendNext(pointScored);
-            //stream.SendNext(playingSquareAnim);
-            //stream.SendNext(animFinished);
             stream.SendNext(squareID);
 
         }
@@ -109,8 +107,6 @@ public class PlayerClick : PunBehaviour
         {
             // Network player, receive data
             this.pointScored = (bool)stream.ReceiveNext();
-            //this.playingSquareAnim = (bool)stream.ReceiveNext();
-            //this.animFinished = (bool)stream.ReceiveNext();
             this.squareID = (string)stream.ReceiveNext();
         }
     }
@@ -518,7 +514,6 @@ public class PlayerClick : PunBehaviour
             //Escape Menu not open
             && GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0))
         {
-            GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
             //empty RaycastHit object which raycast puts the hit details into
             hit = new RaycastHit();
             //ray shooting out of the camera from where the mouse is
@@ -530,8 +525,9 @@ public class PlayerClick : PunBehaviour
                 if (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == false
                     && !playingAnim
-                    && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
-                    && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
+                    //&& !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
+                    //&& !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid
+                    && !GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().isVisible)
                 {
                     objectID = hit.collider.name;// this gets the object that is hit
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
@@ -543,6 +539,7 @@ public class PlayerClick : PunBehaviour
                     photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, hit.collider.name);
                 }
             }
+            GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
         }
     }
     [PunRPC]

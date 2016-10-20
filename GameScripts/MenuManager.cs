@@ -234,7 +234,8 @@ public class MenuManager : MonoBehaviour
     {
         GLOBALS.Volume = value;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 50);
+        if(GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic != null)
+            GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 50);
         GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
     }
 
