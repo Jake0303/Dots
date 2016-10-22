@@ -302,6 +302,15 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
         */
     }
+    public void ReloadLeaderBoard()
+    {
+        if(LeaderbordController.leaderBoardError)
+        {
+            StartCoroutine(GameObject.Find("scores").GetComponent<LeaderbordController>().GetScores());
+        }
+    }
+
+
     //Quit the game
     public void ExitGame()
     {
