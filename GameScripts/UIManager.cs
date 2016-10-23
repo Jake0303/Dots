@@ -155,6 +155,7 @@ public class UIManager : PunBehaviour
         {
             photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, tempField.GetComponent<InputField>().text);
             PhotonNetwork.player.name = tempField.GetComponent<InputField>().text;
+            GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().Hide(false);
             GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
         }
     }

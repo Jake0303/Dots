@@ -34,6 +34,7 @@ public class PlayerID : PunBehaviour
         {
             goPanel = (GameObject)Instantiate(panel);
             goPanel.transform.localScale = new Vector3(0.25f, 1f, 1f);
+            goPanel.name = "EnterNamePanel";
 
             GameObject goText = (GameObject)Instantiate(infoText);
             goText.transform.localScale = new Vector3(4, 1, 1);
@@ -69,6 +70,7 @@ public class PlayerID : PunBehaviour
         }
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
+        //TODO: Get Player Wins & Losses
     }
     private void OnEvent(byte eventcode, object content, int senderid)
     {

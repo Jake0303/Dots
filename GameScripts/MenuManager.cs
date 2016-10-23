@@ -306,7 +306,7 @@ public class MenuManager : MonoBehaviour
     {
         if(LeaderbordController.leaderBoardError)
         {
-            StartCoroutine(GameObject.Find("scores").GetComponent<LeaderbordController>().GetScores());
+            //StartCoroutine(GameObject.Find("scores").GetComponent<LeaderbordController>().GetScores());
         }
     }
 
