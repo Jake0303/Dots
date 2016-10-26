@@ -74,11 +74,41 @@ public class GameOver : PunBehaviour
             }
         }
         GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
-        StartCoroutine(LeaderbordController.PostScores(winner, 1, 0));
+        GameObject.Find(winner).GetComponent<PlayerID>().playersWins += 1;
         if (GameObject.Find(loser) != null)
         {
             GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
-            StartCoroutine(LeaderbordController.PostScores(loser, 0, 1));
+            GameObject.Find(loser).GetComponent<PlayerID>().playerLosses += 1;
+            StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses));
+        }
+        StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses));
+        //Update player win loss UI
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+        {
+            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GameObject.Find(winner).GetComponent<PlayerID>().playerID)
+            {
+                foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+                {
+                    if (stats.name.Contains((i + 1).ToString()))
+                    {
+                        //Update UI with Wins and Losses
+                        stats.GetComponent<Text>().text = GameObject.Find(winner).GetComponent<PlayerID>().playersWins + " W "
+                            + GameObject.Find(winner).GetComponent<PlayerID>().playerLosses + " L ";
+                    }
+                }
+            }
+            else if (GameObject.Find(loser) != null && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GameObject.Find(loser).GetComponent<PlayerID>().playerID)
+            {
+                foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+                {
+                    if (stats.name.Contains((i + 1).ToString()))
+                    {
+                        //Update UI with Wins and Losses
+                        stats.GetComponent<Text>().text = GameObject.Find(loser).GetComponent<PlayerID>().playersWins + " W "
+                            + GameObject.Find(loser).GetComponent<PlayerID>().playerLosses + " L ";
+                    }
+                }
+            }
         }
     }
     IEnumerator DelayBeforeRestart()

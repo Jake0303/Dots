@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using Photon;
 using UnityEngine.SceneManagement;
-
+using System;
 
 public class UIManager : PunBehaviour
 {
@@ -44,6 +44,15 @@ public class UIManager : PunBehaviour
         GetComponent<PlayerID>().nameSet = true;
         name = val;
         GetComponent<PlayerID>().playerID = val;
+        //Get Player Wins & Losses
+        foreach (var aData in LeaderbordController.data.list)
+        {
+            if (aData["Username"].str == GetComponent<PlayerID>().playerID)
+            {
+                GetComponent<PlayerID>().playersWins = Int32.Parse(aData["Wins"].str);
+                GetComponent<PlayerID>().playerLosses = Int32.Parse(aData["Losses"].str);
+            }
+        }
         GetComponent<PlayerID>().playerScore = 0;
         GetComponent<PlayerID>().CmdTellServerMyName(val);
         var names = GameObject.FindGameObjectsWithTag("NameText");
@@ -74,22 +83,16 @@ public class UIManager : PunBehaviour
                             scores.GetComponent<Text>().text = player.GetComponent<PlayerID>().playerScore.ToString();
                         }
                     }
-                }
-            }
-        }
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-        {
-            foreach (var Apanel in panels)
-            {
-                if (Apanel.name.Contains((i + 1).ToString()))
-                {
-                    if (Apanel.transform.localScale != new Vector3(0.2f, 0.2f, 0.2f))
+                    foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
                     {
-                        Apanel.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-                        break;
+                        if (stats.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with Wins and Losses
+                            stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
+                                + player.GetComponent<PlayerID>().playerLosses + " L ";
+                        }
                     }
                 }
-
             }
         }
         //Start game

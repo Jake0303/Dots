@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using Photon;
-
+using System;
 
 public class PlayerID : PunBehaviour
 {
@@ -13,6 +13,8 @@ public class PlayerID : PunBehaviour
 
     public int playerTurnOrder = 0;
     public int playerScore = 0;
+    public int playersWins;
+    public int playerLosses;
     private Transform myTransform;
     private GameObject[] names;
     public bool nameSet = false;
@@ -70,7 +72,6 @@ public class PlayerID : PunBehaviour
         }
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
-        //TODO: Get Player Wins & Losses
     }
     private void OnEvent(byte eventcode, object content, int senderid)
     {

@@ -45,6 +45,12 @@ public class NetworkManagerLocal : PunBehaviour
         //Tries to join any random game:
         PhotonNetwork.JoinRandomRoom();
         //Fails if there are no matching games: OnPhotonRandomJoinFailed
+        if (GameObject.Find("BackToMenuButton"))
+        {
+            GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
+        }
     }
     public override void OnFailedToConnectToPhoton(DisconnectCause cause)
     {
@@ -127,11 +133,14 @@ public class NetworkManagerLocal : PunBehaviour
 
     public void ShowMainMenu()
     {
+        ConnectInUpdate = false;
+        PhotonNetwork.Disconnect();
         //Make transition text fit the screen
         GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Hide(true);
         GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         GameObject.Find("transitionText").GetComponent<Text>().fontSize = 56;
         GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
+
     }
     //Let the player know if the opponent disconnected
     public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
