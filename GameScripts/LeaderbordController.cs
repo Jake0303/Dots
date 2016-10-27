@@ -10,6 +10,9 @@ public class LeaderbordController : MonoBehaviour
     private static string secretKey = "89oN04ydon854CBm9XTG4Tt6YcAKEAqA"; // Edit this value and make sure it's the same as the one stored on the server
     public static string addScoreURL = "https://squarz.io/Scripts/AddToLeaderboard.php?"; //be sure to add a ? to your url
     public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php";
+    private float defaultScrollPos = 3.2f;
+    private float howFarCanWeScroll; // default
+
 
     void Start()
     {
@@ -69,7 +72,6 @@ public class LeaderbordController : MonoBehaviour
     {
         if (gameObject.GetComponent<Text>())
         {
-            gameObject.GetComponent<Text>().fontSize = 40;
             gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         }
         //gameObject.GetComponent<Text>().text = "Loading Scores...";
@@ -91,17 +93,35 @@ public class LeaderbordController : MonoBehaviour
             if (hs_get.isDone)
             {
                 data = new JSONObject(hs_get.text);
+                int position = 1;
+                howFarCanWeScroll = defaultScrollPos;
                 foreach (var aData in data.list)
                 {
                     if (GameObject.Find("wins"))
                     {
+                        GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".  \n";
                         GetComponent<Text>().text += aData["Username"].str + "\n";
-                        GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + "\n";
-                        GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "\n";
+                        GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + "W \n";
+                        GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "L \n";
+                        position++;
+                        howFarCanWeScroll += 0.2f;
                     }
                 }
                 leaderBoardError = false;
             }
+        }
+    }
+    //Restrict the scroll to the min and max
+    public void OnScrollChanged(Vector2 value)
+    {
+        if (GameObject.Find("Content").transform.position.y >= howFarCanWeScroll)
+        {
+            //The -4.5 Centers it in the middle
+            GameObject.Find("Content").transform.position = new Vector3(-4.5f, howFarCanWeScroll, 1);
+        }
+        else if (GameObject.Find("Content").transform.position.y <= defaultScrollPos)
+        {
+            GameObject.Find("Content").transform.position = new Vector3(-4.5f, defaultScrollPos, 1);
         }
     }
 }
