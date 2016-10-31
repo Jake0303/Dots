@@ -44,26 +44,18 @@ public class LeaderbordController : MonoBehaviour
     {
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
-        foreach (var aData in data.list)
+        string hash = Md5Sum(name + wins.ToString() + losses.ToString() + secretKey);
+        string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&hash=" + hash;
+        // Post the URL to the site and create a download object to get the result.
+        WWW hs_post = new WWW(post_url);
+        yield return hs_post; // Wait until the download is done
+
+        if (hs_post.error != null)
         {
-            if (aData["Username"].str == name)
-            {
-                //wins += Int32.Parse(aData["Wins"].str);
-                //losses += Int32.Parse(aData["Losses"].str);
-            }
+            print("There was an error posting the high score: " + hs_post.error);
         }
-            string hash = Md5Sum(name + wins.ToString() + losses.ToString() + secretKey);
-            string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&hash=" + hash;
-            // Post the URL to the site and create a download object to get the result.
-            WWW hs_post = new WWW(post_url);
-            yield return hs_post; // Wait until the download is done
 
-            if (hs_post.error != null)
-            {
-                print("There was an error posting the high score: " + hs_post.error);
-            }
 
-        
     }
 
     // Get the scores from the MySQL DB to display in a GUIText.
@@ -104,7 +96,7 @@ public class LeaderbordController : MonoBehaviour
                         GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + "W \n";
                         GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "L \n";
                         position++;
-                        howFarCanWeScroll += 0.2f;
+                        howFarCanWeScroll += 0.3f;
                     }
                 }
                 leaderBoardError = false;

@@ -73,8 +73,11 @@ public class NetworkManagerLocal : PunBehaviour
         base.OnConnectionFail(cause);
         string conn = "Our servers are full! Please try again later.";
         //Make transition text fit the screen
-        GameObject.Find("transitionText").GetComponent<Text>().fontSize = 35;
-        GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
+        if (GameObject.Find("trainsitionText"))
+        {
+            GameObject.Find("transitionText").GetComponent<Text>().fontSize = 35;
+            GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
+        }
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         if (GameObject.Find("BackToMenuButton"))
         {
@@ -102,10 +105,14 @@ public class NetworkManagerLocal : PunBehaviour
         //Mainmenu
         if (level == 0)
         {
-            
-            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
+
+            GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("LeaderboardsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("LBackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("LoginBackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("InstructionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("OptionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
