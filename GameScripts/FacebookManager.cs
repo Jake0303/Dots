@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class FacebookManager : MonoBehaviour
 {
     List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
-    //TODO: Login with Facebook API
 
     // Awake function from Unity's MonoBehavior
     void Awake()
@@ -65,6 +64,7 @@ public class FacebookManager : MonoBehaviour
             {
                 Debug.Log(perm);
             }
+            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
         }
         else
         {
