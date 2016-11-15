@@ -102,7 +102,7 @@ namespace DoozyUI
             {
                 if (async.isDone)
                 {
-                   DoozyUI.UIManager.SendGameEvent("LevelLoaded");
+                    UIManager.SendGameEvent("LevelLoaded");
                     async = null;
                 }
             }
@@ -128,22 +128,22 @@ namespace DoozyUI
         #region Register and Unregister SceneLoader
         void RegisterSceneLoader()
         {
-            if (DoozyUI.UIManager.sceneLoader == null)
+            if (UIManager.sceneLoader == null)
             {
-               DoozyUI.UIManager.sceneLoader = this;
+                UIManager.sceneLoader = this;
             }
             else
             {
                 gameObject.name = "SceneLoader_DUPLICATE";
-                Debug.LogWarning("[DoozyUI] An instance of a SceneLoader is already registared to theDoozyUI.UIManager. There should never be more than 1 SceneLoader in the Hierarcy! This gameObject has been renamed to 'SceneLoader_DUPLICATE'. Look for it in the Hierarchy, while 'Play Mode', then select it, exit 'Play Mode' and then delete it.");
+                Debug.LogWarning("[DoozyUI] An instance of a SceneLoader is already registared to the UIManager. There should never be more than 1 SceneLoader in the Hierarcy! This gameObject has been renamed to 'SceneLoader_DUPLICATE'. Look for it in the Hierarchy, while 'Play Mode', then select it, exit 'Play Mode' and then delete it.");
             }
         }
 
         void UnregisterSceneLoader()
         {
-            if (DoozyUI.UIManager.sceneLoader != null)
+            if (UIManager.sceneLoader != null)
             {
-               DoozyUI.UIManager.sceneLoader = null;
+                UIManager.sceneLoader = null;
             }
         }
         #endregion

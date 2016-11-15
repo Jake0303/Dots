@@ -29,7 +29,7 @@ namespace HutongGames.PlayMaker.Actions
             //GameEventMessage m = new GameEventMessage();
             //m.command = gameEvent.Value;
             //Message.Send<GameEventMessage>(m);
-           DoozyUI.UIManager.SendGameEvent(gameEvent.Value);
+            UIManager.SendGameEvent(gameEvent.Value);
 
             if (debugThis)
                 Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Sent game event message - [" + gameEvent.Value + "]");

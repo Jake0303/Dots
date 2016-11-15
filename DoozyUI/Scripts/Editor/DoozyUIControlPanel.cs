@@ -119,7 +119,7 @@ namespace DoozyUI
 
         void OnEnable()
         {
-            DoozyUI.UIManager.InitDoozyUIData();
+            UIManager.InitDoozyUIData();
 
             UpdateViewableDatabaseArrays();
 
@@ -170,7 +170,7 @@ namespace DoozyUI
             {
                 if (GUILayout.Button(DoozyUIResources.WindowMessageAddDoozy, GUIStyle.none, GUILayout.Height(535), GUILayout.Width(600)))
                 {
-                    var go = DoozyUI.UIManager.CreateDoozyUI();
+                    var go = UIManager.CreateDoozyUI();
                     Undo.RegisterCreatedObjectUndo(go, "Create DoozyUI prefab");
                     Selection.activeObject = go;
                     Repaint();
@@ -208,10 +208,10 @@ namespace DoozyUI
         #region Update viewable database arrays
         private void UpdateViewableDatabaseArrays()
         {
-            elementNames = DoozyUI.UIManager.GetElementNames();
-            elementSounds = DoozyUI.UIManager.GetElementSounds();
-            buttonNames = DoozyUI.UIManager.GetButtonNames();
-            buttonSounds = DoozyUI.UIManager.GetButtonSounds();
+            elementNames = UIManager.GetElementNames();
+            elementSounds = UIManager.GetElementSounds();
+            buttonNames = UIManager.GetButtonNames();
+            buttonSounds = UIManager.GetButtonSounds();
         }
         #endregion
 
@@ -812,7 +812,7 @@ namespace DoozyUI
             {
                 if (GUILayout.Button(DoozyUIResources.WindowButtonResetElementNames, GUIStyle.none, GUILayout.Height(48), GUILayout.Width(134)))
                 {
-                    DoozyUI.UIManager.ResetDoozyUIDataElementNames();
+                    UIManager.ResetDoozyUIDataElementNames();
                     resetElementNames = false;
                 }
                 GUILayout.Space(4);
@@ -844,7 +844,7 @@ namespace DoozyUI
             {
                 if (GUILayout.Button(DoozyUIResources.WindowButtonResetElementsounds, GUIStyle.none, GUILayout.Height(48), GUILayout.Width(134)))
                 {
-                    DoozyUI.UIManager.ResetDoozyUIDataElementSounds();
+                    UIManager.ResetDoozyUIDataElementSounds();
                     resetElementSounds = false;
                 }
                 GUILayout.Space(4);
@@ -876,7 +876,7 @@ namespace DoozyUI
             {
                 if (GUILayout.Button(DoozyUIResources.WindowButtonResetButtonNames, GUIStyle.none, GUILayout.Height(48), GUILayout.Width(134)))
                 {
-                    DoozyUI.UIManager.ResetDoozyUIDataButtonNames();
+                    UIManager.ResetDoozyUIDataButtonNames();
                     resetButtonNames = false;
                 }
                 GUILayout.Space(4);
@@ -908,7 +908,7 @@ namespace DoozyUI
             {
                 if (GUILayout.Button(DoozyUIResources.WindowButtonResetButtonSounds, GUIStyle.none, GUILayout.Height(48), GUILayout.Width(134)))
                 {
-                    DoozyUI.UIManager.ResetDoozyUIDataButtonSounds();
+                    UIManager.ResetDoozyUIDataButtonSounds();
                     resetButtonSounds = false;
                 }
                 GUILayout.Space(4);
@@ -977,12 +977,12 @@ namespace DoozyUI
             EditorGUILayout.BeginVertical();
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            EditorGUILayout.LabelField("DoozyUI " + DoozyUI.UIManager.VERSION, DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.Doozy, TextAnchor.MiddleCenter, FontStyle.Italic, 12), GUILayout.Width(600));
+            EditorGUILayout.LabelField("DoozyUI " + UIManager.VERSION, DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.Doozy, TextAnchor.MiddleCenter, FontStyle.Italic, 12), GUILayout.Width(600));
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            EditorGUILayout.LabelField(DoozyUI.UIManager.COPYRIGHT, DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.Doozy, TextAnchor.MiddleCenter, FontStyle.BoldAndItalic, 8), GUILayout.Width(600));
+            EditorGUILayout.LabelField(UIManager.COPYRIGHT, DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.Doozy, TextAnchor.MiddleCenter, FontStyle.BoldAndItalic, 8), GUILayout.Width(600));
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.EndVertical();
@@ -1013,10 +1013,10 @@ namespace DoozyUI
                 if (GUILayout.Button("create", GUILayout.Height(18), GUILayout.Width(56))) //we add a rename button for each list entry
                 {
                     if (elementNamesNewString.Equals(string.Empty) == false
-                        && elementNamesNewString.Equals(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME) == false)
+                        && elementNamesNewString.Equals(UIManager.DEFAULT_ELEMENT_NAME) == false)
                     {
-                        DoozyUI.UIManager.NewElementName(elementNamesNewString);
-                        elementNames = DoozyUI.UIManager.GetElementNames();
+                        UIManager.NewElementName(elementNamesNewString);
+                        elementNames = UIManager.GetElementNames();
                         DoozyUIRedundancyCheck.CheckAllTheUIElements();
                     }
                     elementNamesNewString = string.Empty;
@@ -1082,7 +1082,7 @@ namespace DoozyUI
                 DoozyUIHelper.ResetColors();
                 //Index
                 EditorGUILayout.LabelField(i.ToString(), DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.LightGrey, TextAnchor.MiddleCenter, FontStyle.Normal), GUILayout.Height(18), GUILayout.Width(60));
-                if (elementNames[i].Equals(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME)) //no options for the default element name
+                if (elementNames[i].Equals(UIManager.DEFAULT_ELEMENT_NAME)) //no options for the default element name
                 {
                     //Element Name
                     EditorGUILayout.LabelField(elementNames[i], DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.LightGrey, TextAnchor.MiddleLeft, FontStyle.Normal), GUILayout.Height(18), GUILayout.Width(330));
@@ -1117,13 +1117,13 @@ namespace DoozyUI
                             //Options
                             if (GUILayout.Button("rename", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.TrimStartAndEndSpaces(elementNamesRenameString);
+                                UIManager.TrimStartAndEndSpaces(elementNamesRenameString);
                                 if (elementNamesRenameString.Equals(string.Empty) == false                      //we make sure the new name is not empty
-                                    && elementNamesRenameString.Equals(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME) == false //we check that is not the default name
-                                    && DoozyUI.UIManager.GetIndexForElementName(elementNamesRenameString) == -1)         //we make sure there are no duplicates
+                                    && elementNamesRenameString.Equals(UIManager.DEFAULT_ELEMENT_NAME) == false //we check that is not the default name
+                                    && UIManager.GetIndexForElementName(elementNamesRenameString) == -1)         //we make sure there are no duplicates
                                 {
-                                    DoozyUI.UIManager.RenameElementName(elementNamesRenameIndex, elementNamesRenameString); //we rename the element name
-                                    elementNames = DoozyUI.UIManager.GetElementNames(); //we update the string array for this list
+                                    UIManager.RenameElementName(elementNamesRenameIndex, elementNamesRenameString); //we rename the element name
+                                    elementNames = UIManager.GetElementNames(); //we update the string array for this list
                                     DoozyUIRedundancyCheck.CheckAllTheUIElements();
                                 }
                                 elementNamesRenameString = string.Empty; //we clear the temp string
@@ -1158,8 +1158,8 @@ namespace DoozyUI
                             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightRed);
                             if (GUILayout.Button("delete", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.DeleteElementName(elementNamesDeleteIndex); //we delete the list entry
-                                elementNames = DoozyUI.UIManager.GetElementNames(); //we update the string array for this list
+                                UIManager.DeleteElementName(elementNamesDeleteIndex); //we delete the list entry
+                                elementNames = UIManager.GetElementNames(); //we update the string array for this list
                                 DoozyUIRedundancyCheck.CheckAllTheUIElements();
                                 elementNamesDeleteIndex = -1; //we set the rename index to the default value
                                 elementNamesFinderIndex = 0; //we reset the finder filter in case we are deleting the currently selected entry
@@ -1267,10 +1267,10 @@ namespace DoozyUI
                 if (GUILayout.Button("create", GUILayout.Height(18), GUILayout.Width(56))) //we add a rename button for each list entry
                 {
                     if (elementSoundsNewString.Equals(string.Empty) == false
-                        && elementSoundsNewString.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME) == false)
+                        && elementSoundsNewString.Equals(UIManager.DEFAULT_SOUND_NAME) == false)
                     {
-                        DoozyUI.UIManager.NewElementSound(elementSoundsNewString);
-                        elementSounds = DoozyUI.UIManager.GetElementSounds();
+                        UIManager.NewElementSound(elementSoundsNewString);
+                        elementSounds = UIManager.GetElementSounds();
                         DoozyUIRedundancyCheck.CheckAllTheUIElements();
                     }
                     elementSoundsNewString = string.Empty;
@@ -1336,7 +1336,7 @@ namespace DoozyUI
                 DoozyUIHelper.ResetColors();
                 //Index
                 EditorGUILayout.LabelField(i.ToString(), DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.LightGrey, TextAnchor.MiddleCenter, FontStyle.Normal), GUILayout.Height(18), GUILayout.Width(60));
-                if (elementSounds[i].Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME)) //no options for the default element sound
+                if (elementSounds[i].Equals(UIManager.DEFAULT_SOUND_NAME)) //no options for the default element sound
                 {
                     //Element Sound
                     EditorGUILayout.LabelField(elementSounds[i], DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.LightGrey, TextAnchor.MiddleLeft, FontStyle.Normal), GUILayout.Height(18), GUILayout.Width(330));
@@ -1371,13 +1371,13 @@ namespace DoozyUI
                             //Options
                             if (GUILayout.Button("rename", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.TrimStartAndEndSpaces(elementSoundsRenameString);
+                                UIManager.TrimStartAndEndSpaces(elementSoundsRenameString);
                                 if (elementSoundsRenameString.Equals(string.Empty) == false                      //we make sure the new name is not empty
-                                    && elementSoundsRenameString.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME) == false //we check that is not the default name
-                                    && DoozyUI.UIManager.GetIndexForElementSound(elementSoundsRenameString) == -1)         //we make sure there are no duplicates
+                                    && elementSoundsRenameString.Equals(UIManager.DEFAULT_SOUND_NAME) == false //we check that is not the default name
+                                    && UIManager.GetIndexForElementSound(elementSoundsRenameString) == -1)         //we make sure there are no duplicates
                                 {
-                                    DoozyUI.UIManager.RenameElementSound(elementSoundsRenameIndex, elementSoundsRenameString); //we rename the element name
-                                    elementSounds = DoozyUI.UIManager.GetElementSounds(); //we update the string array for this list
+                                    UIManager.RenameElementSound(elementSoundsRenameIndex, elementSoundsRenameString); //we rename the element name
+                                    elementSounds = UIManager.GetElementSounds(); //we update the string array for this list
                                     DoozyUIRedundancyCheck.CheckAllTheUIElements();
                                 }
                                 elementSoundsRenameString = string.Empty; //we clear the temp string
@@ -1412,8 +1412,8 @@ namespace DoozyUI
                             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightRed);
                             if (GUILayout.Button("delete", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.DeleteElementSound(elementSoundsDeleteIndex); //we delete the list entry
-                                elementSounds = DoozyUI.UIManager.GetElementSounds(); //we update the string array for this 
+                                UIManager.DeleteElementSound(elementSoundsDeleteIndex); //we delete the list entry
+                                elementSounds = UIManager.GetElementSounds(); //we update the string array for this 
                                 DoozyUIRedundancyCheck.CheckAllTheUIElements();
                                 elementSoundsDeleteIndex = -1; //we set the rename index to the default value
                                 elementSoundsFinderIndex = 0; //we reset the finder filter in case we are deleting the currently selected entry
@@ -1521,12 +1521,12 @@ namespace DoozyUI
                 if (GUILayout.Button("create", GUILayout.Height(18), GUILayout.Width(56))) //we add a rename button for each list entry
                 {
                     if (buttonNamesNewString.Equals(string.Empty) == false
-                        && buttonNamesNewString.Equals(DoozyUI.UIManager.DEFAULT_BUTTON_NAME) == false
+                        && buttonNamesNewString.Equals(UIManager.DEFAULT_BUTTON_NAME) == false
                         && buttonNamesNewString.Equals("Back") == false
-                        && DoozyUI.UIManager.GetIndexForButtonName(buttonNamesNewString) == -1)
+                        && UIManager.GetIndexForButtonName(buttonNamesNewString) == -1)
                     {
-                        DoozyUI.UIManager.NewButtonName(buttonNamesNewString);
-                        buttonNames = DoozyUI.UIManager.GetButtonNames();
+                        UIManager.NewButtonName(buttonNamesNewString);
+                        buttonNames = UIManager.GetButtonNames();
                         DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                     }
                     buttonNamesNewString = string.Empty;
@@ -1592,7 +1592,7 @@ namespace DoozyUI
                 DoozyUIHelper.ResetColors();
                 //Index
                 EditorGUILayout.LabelField(i.ToString(), DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.LightGrey, TextAnchor.MiddleCenter, FontStyle.Normal), GUILayout.Height(18), GUILayout.Width(60));
-                if (buttonNames[i].Equals(DoozyUI.UIManager.DEFAULT_BUTTON_NAME) //no options for the default button name
+                if (buttonNames[i].Equals(UIManager.DEFAULT_BUTTON_NAME) //no options for the default button name
                     || buttonNames[i].Equals("Back") //no options for the the 'Back' button
                     || buttonNames[i].Equals("ToggleSound") //no options for the the 'ToggleSound' button
                     || buttonNames[i].Equals("ToggleMusic") //no options for the the 'ToggleMusic' button
@@ -1632,14 +1632,14 @@ namespace DoozyUI
                             //Options
                             if (GUILayout.Button("rename", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.TrimStartAndEndSpaces(buttonNamesRenameString);
+                                UIManager.TrimStartAndEndSpaces(buttonNamesRenameString);
                                 if (buttonNamesRenameString.Equals(string.Empty) == false                      //we make sure the new name is not empty
-                                    && buttonNamesRenameString.Equals(DoozyUI.UIManager.DEFAULT_BUTTON_NAME) == false //we check that is not the default name
+                                    && buttonNamesRenameString.Equals(UIManager.DEFAULT_BUTTON_NAME) == false //we check that is not the default name
                                     && buttonNamesRenameString.Equals("Back") == false
-                                    && DoozyUI.UIManager.GetIndexForButtonName(buttonNamesRenameString) == -1)         //we make sure there are no duplicates
+                                    && UIManager.GetIndexForButtonName(buttonNamesRenameString) == -1)         //we make sure there are no duplicates
                                 {
-                                    DoozyUI.UIManager.RenameButtonName(buttonNamesRenameIndex, buttonNamesRenameString); //we rename the button name
-                                    buttonNames = DoozyUI.UIManager.GetButtonNames(); //we update the string array for this list
+                                    UIManager.RenameButtonName(buttonNamesRenameIndex, buttonNamesRenameString); //we rename the button name
+                                    buttonNames = UIManager.GetButtonNames(); //we update the string array for this list
                                     DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                                 }
                                 buttonNamesRenameString = string.Empty; //we clear the temp string
@@ -1674,8 +1674,8 @@ namespace DoozyUI
                             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightRed);
                             if (GUILayout.Button("delete", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.DeleteButtonName(buttonNamesDeleteIndex); //we delete the list entry
-                                buttonNames = DoozyUI.UIManager.GetButtonNames(); //we update the string array for this list
+                                UIManager.DeleteButtonName(buttonNamesDeleteIndex); //we delete the list entry
+                                buttonNames = UIManager.GetButtonNames(); //we update the string array for this list
                                 buttonNamesDeleteIndex = -1; //we set the rename index to the default value
                                 buttonNamesFinderIndex = 0; //we reset the finder filter in case we are deleting the currently selected entry
                                 UpdateUIButtonsArray();
@@ -1783,10 +1783,10 @@ namespace DoozyUI
                 if (GUILayout.Button("create", GUILayout.Height(18), GUILayout.Width(56))) //we add a rename button for each list entry
                 {
                     if (buttonSoundsNewString.Equals(string.Empty) == false
-                        && buttonSoundsNewString.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME) == false)
+                        && buttonSoundsNewString.Equals(UIManager.DEFAULT_SOUND_NAME) == false)
                     {
-                        DoozyUI.UIManager.NewButtonSound(buttonSoundsNewString);
-                        buttonSounds = DoozyUI.UIManager.GetButtonSounds();
+                        UIManager.NewButtonSound(buttonSoundsNewString);
+                        buttonSounds = UIManager.GetButtonSounds();
                         DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                     }
                     buttonSoundsNewString = string.Empty;
@@ -1852,7 +1852,7 @@ namespace DoozyUI
                 DoozyUIHelper.ResetColors();
                 //Index
                 EditorGUILayout.LabelField(i.ToString(), DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.LightGrey, TextAnchor.MiddleCenter, FontStyle.Normal), GUILayout.Height(18), GUILayout.Width(60));
-                if (buttonSounds[i].Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME)) //no options for the default button sound
+                if (buttonSounds[i].Equals(UIManager.DEFAULT_SOUND_NAME)) //no options for the default button sound
                 {
                     //Button Sound
                     EditorGUILayout.LabelField(buttonSounds[i], DoozyUIHelper.CreateTextStyle(DoozyUIHelper.DoozyColor.LightGrey, TextAnchor.MiddleLeft, FontStyle.Normal), GUILayout.Height(18), GUILayout.Width(330));
@@ -1887,13 +1887,13 @@ namespace DoozyUI
                             //Options
                             if (GUILayout.Button("rename", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.TrimStartAndEndSpaces(buttonSoundsRenameString);
+                                UIManager.TrimStartAndEndSpaces(buttonSoundsRenameString);
                                 if (buttonSoundsRenameString.Equals(string.Empty) == false                      //we make sure the new name is not empty
-                                    && buttonSoundsRenameString.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME) == false //we check that is not the default name
-                                    && DoozyUI.UIManager.GetIndexForButtonName(buttonSoundsRenameString) == -1)         //we make sure there are no duplicates
+                                    && buttonSoundsRenameString.Equals(UIManager.DEFAULT_SOUND_NAME) == false //we check that is not the default name
+                                    && UIManager.GetIndexForButtonName(buttonSoundsRenameString) == -1)         //we make sure there are no duplicates
                                 {
-                                    DoozyUI.UIManager.RenameButtonSound(buttonSoundsRenameIndex, buttonSoundsRenameString); //we rename the button sound
-                                    buttonSounds = DoozyUI.UIManager.GetButtonSounds(); //we update the string array for this list
+                                    UIManager.RenameButtonSound(buttonSoundsRenameIndex, buttonSoundsRenameString); //we rename the button sound
+                                    buttonSounds = UIManager.GetButtonSounds(); //we update the string array for this list
                                     DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                                 }
                                 buttonSoundsRenameString = string.Empty; //we clear the temp string
@@ -1928,8 +1928,8 @@ namespace DoozyUI
                             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightRed);
                             if (GUILayout.Button("delete", GUILayout.Height(18), GUILayout.Width(56)))
                             {
-                                DoozyUI.UIManager.DeleteButtonSound(buttonSoundsDeleteIndex); //we delete the list entry
-                                buttonSounds = DoozyUI.UIManager.GetButtonSounds(); //we update the string array for this list
+                                UIManager.DeleteButtonSound(buttonSoundsDeleteIndex); //we delete the list entry
+                                buttonSounds = UIManager.GetButtonSounds(); //we update the string array for this list
                                 buttonSoundsDeleteIndex = -1; //we set the rename index to the default value
                                 buttonSoundsFinderIndex = 0; //we reset the finder filter in case we are deleting the currently selected entry
                                 UpdateUIButtonsArray();
@@ -2211,11 +2211,11 @@ namespace DoozyUI
         void UpgradeCurentScene()
         {
             Debug.Log("[DoozyUI] Upgrading current scene...");
-            DoozyUI.UIManager.ResetDoozyUIData();
+            UIManager.ResetDoozyUIData();
             UpgradeElements();
             UpgradeButtons();
             RemoveDuplicatesFromDoozyUIDataLists();
-            EditorUtility.SetDirty(DoozyUI.UIManager.GetDoozyUIData);
+            EditorUtility.SetDirty(UIManager.GetDoozyUIData);
             Debug.Log("[DoozyUI] Upgrade finished!");
         }
 
@@ -2250,17 +2250,17 @@ namespace DoozyUI
                     if (elements[i].elementName != null) //if this value is not null or empty, then it must have been set by DoozyUI 1.2d
                     {
                         if (elements[i].elementName.Equals(string.Empty) == false                         //we make sure the new name is not empty
-                            && elements[i].elementName.Equals(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME) == false    //we check that is not the default name
-                            && DoozyUI.UIManager.GetIndexForElementName(elements[i].elementName) == -1)            //we make sure there are no duplicates
+                            && elements[i].elementName.Equals(UIManager.DEFAULT_ELEMENT_NAME) == false    //we check that is not the default name
+                            && UIManager.GetIndexForElementName(elements[i].elementName) == -1)            //we make sure there are no duplicates
                         {
-                            DoozyUI.UIManager.NewElementName(elements[i].elementName);
+                            UIManager.NewElementName(elements[i].elementName);
                             elements[i].elementNameReference.elementName = elements[i].elementName;       //we set the value for the reference
                         }
                         elements[i].elementName = string.Empty;                                                 //we clear the old element name string
                     }
                     else if (string.IsNullOrEmpty(elements[i].elementNameReference.elementName))
                     {
-                        elements[i].elementNameReference = new UIElement.ElementName { elementName = DoozyUI.UIManager.DEFAULT_ELEMENT_NAME };
+                        elements[i].elementNameReference = new UIElement.ElementName { elementName = UIManager.DEFAULT_ELEMENT_NAME };
                     }
                     #endregion
 
@@ -2473,10 +2473,10 @@ namespace DoozyUI
         void UpdateElementSounds(string eSound)
         {
             if (eSound.Equals(string.Empty) == false                        //we make sure the sound name is not empty
-                && eSound.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME) == false     //we make sure this is not the default name
-                && DoozyUI.UIManager.GetIndexForElementSound(eSound) == -1)          //we make sure there are no duplicates
+                && eSound.Equals(UIManager.DEFAULT_SOUND_NAME) == false     //we make sure this is not the default name
+                && UIManager.GetIndexForElementSound(eSound) == -1)          //we make sure there are no duplicates
             {
-                DoozyUI.UIManager.NewElementSound(eSound);
+                UIManager.NewElementSound(eSound);
                 DoozyUIRedundancyCheck.CheckAllTheUIElements();
             }
         }
@@ -2499,22 +2499,22 @@ namespace DoozyUI
                     {
 
                         if (buttons[i].buttonName.Equals(string.Empty) == false                         //we make sure the new name is not empty
-                           && buttons[i].buttonName.Equals(DoozyUI.UIManager.DEFAULT_BUTTON_NAME) == false      //we check that is not the default name
-                           && DoozyUI.UIManager.GetIndexForButtonName(buttons[i].buttonName) == -1)              //we make sure there are no duplicates
+                           && buttons[i].buttonName.Equals(UIManager.DEFAULT_BUTTON_NAME) == false      //we check that is not the default name
+                           && UIManager.GetIndexForButtonName(buttons[i].buttonName) == -1)              //we make sure there are no duplicates
                         {
                             if (buttons[i].buttonName.Equals("Back"))
                             {
                                 buttons[i].backButton = true;
                             }
 
-                            DoozyUI.UIManager.NewButtonName(buttons[i].buttonName);
+                            UIManager.NewButtonName(buttons[i].buttonName);
                             buttons[i].buttonNameReference.buttonName = buttons[i].buttonName;              //we set the value for the reference
                         }
                         buttons[i].buttonName = string.Empty;                                           //we clear the old button name string
                     }
                     else if (string.IsNullOrEmpty(buttons[i].buttonNameReference.buttonName))
                     {
-                        buttons[i].buttonNameReference = new UIButton.ButtonName { buttonName = DoozyUI.UIManager.DEFAULT_BUTTON_NAME };
+                        buttons[i].buttonNameReference = new UIButton.ButtonName { buttonName = UIManager.DEFAULT_BUTTON_NAME };
                     }
                     #endregion
 
@@ -2522,17 +2522,17 @@ namespace DoozyUI
                     if (string.IsNullOrEmpty((buttons[i].onClickSound)) == false)  //if this value is not null or empty, then it must have been set by DoozyUI 1.2d
                     {
                         if (buttons[i].onClickSound.Equals(string.Empty) == false                       //we make sure the new name is not empty
-                            && buttons[i].onClickSound.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME) == false    //we check that is not the default name
-                            && DoozyUI.UIManager.GetIndexForButtonSound(buttons[i].onClickSound) == -1)          //we make sure there are no duplicates
+                            && buttons[i].onClickSound.Equals(UIManager.DEFAULT_SOUND_NAME) == false    //we check that is not the default name
+                            && UIManager.GetIndexForButtonSound(buttons[i].onClickSound) == -1)          //we make sure there are no duplicates
                         {
-                            DoozyUI.UIManager.NewButtonSound(buttons[i].onClickSound);
+                            UIManager.NewButtonSound(buttons[i].onClickSound);
                             buttons[i].onClickSoundReference.onClickSound = buttons[i].onClickSound;        //we set the value for the reference
                         }
                         buttons[i].onClickSound = string.Empty;                                         //we clear the old onClickSound string
                     }
                     else if (string.IsNullOrEmpty(buttons[i].onClickSoundReference.onClickSound))
                     {
-                        buttons[i].onClickSoundReference = new UIButton.ButtonSound { onClickSound = DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+                        buttons[i].onClickSoundReference = new UIButton.ButtonSound { onClickSound = UIManager.DEFAULT_SOUND_NAME };
                     }
                     #endregion
                 }
@@ -2543,7 +2543,7 @@ namespace DoozyUI
 
         void RemoveDuplicatesFromDoozyUIDataLists()
         {
-            DoozyUI.UIManager.RemoveDuplicatesFromTheDatabase();
+            UIManager.RemoveDuplicatesFromTheDatabase();
         }
         #endregion
 

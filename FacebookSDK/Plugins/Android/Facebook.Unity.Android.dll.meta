@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 0221af791bab543de83adf81353552b5
-timeCreated: 1468882736
+guid: c8606992c0d3d4cb197947e2812b2296
+timeCreated: 1472847769
 licenseType: Pro
 PluginImporter:
   serializedVersion: 1
@@ -13,7 +13,7 @@ PluginImporter:
       settings:
         CPU: AnyCPU
     Any:
-      enabled: 0
+      enabled: 1
       settings: {}
     Editor:
       enabled: 0
@@ -29,6 +29,10 @@ PluginImporter:
       enabled: 0
       settings:
         CPU: x86_64
+    LinuxUniversal:
+      enabled: 0
+      settings:
+        CPU: None
     OSXIntel:
       enabled: 0
       settings:
@@ -37,12 +41,19 @@ PluginImporter:
       enabled: 0
       settings:
         CPU: AnyCPU
-    Win:
+    OSXUniversal:
       enabled: 0
+      settings:
+        CPU: None
+    WebGL:
+      enabled: 1
+      settings: {}
+    Win:
+      enabled: 1
       settings:
         CPU: AnyCPU
     Win64:
-      enabled: 0
+      enabled: 1
       settings:
         CPU: AnyCPU
     WindowsStoreApps:

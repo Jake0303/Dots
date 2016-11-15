@@ -25,14 +25,14 @@ namespace HutongGames.PlayMaker.Actions
         {
             if(forceEnable.Value)
             {
-               DoozyUI.UIManager.EnableBackButtonByForce();
+                UIManager.EnableBackButtonByForce();
 
                 if (debugThis.Value)
                     Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Enable Back Button - with Forced Enable");
             }
             else
             {
-               DoozyUI.UIManager.EnableBackButton();
+                UIManager.EnableBackButton();
 
                 if (debugThis.Value)
                     Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Enable Back Button");

@@ -32,7 +32,7 @@ namespace DoozyUI
             notification.AddComponent<RectTransform>();
             if (notification.transform.parent == null)
             {
-                notification.transform.SetParent(DoozyUI.UIManager.GetUiContainer);
+                notification.transform.SetParent(UIManager.GetUiContainer);
             }
             notification.GetComponent<RectTransform>().localScale = Vector3.one;
             notification.AddComponent<UINotification>();
@@ -146,7 +146,7 @@ namespace DoozyUI
                 return;
             }
 
-            gameObject.layer =DoozyUI.UIManager.GetUiContainer.gameObject.layer;
+            gameObject.layer = UIManager.GetUiContainer.gameObject.layer;
 
             notificationName = "Notification" + " [" + gameObject.GetInstanceID() + "]";    //we generate a unique name for this notification UIElement (we need it to be able to hide it when we press one of it's buttons)
             notificationContainer.elementNameReference.elementName = notificationName;
@@ -186,7 +186,7 @@ namespace DoozyUI
             notificationData = new NotificationData();
 
             //New back button disable (replaces the method used above)
-           DoozyUI.UIManager.DisableBackButton(); //we disable the 'Back' button
+            UIManager.DisableBackButton(); //we disable the 'Back' button
         }
 
         void OnEnable()
@@ -220,12 +220,12 @@ namespace DoozyUI
              *OLD METHOD TO DISABLE THE BACK BUTTON (before the additive bool method)
             if (didThisNotificationDisableTheBackButton) //if we disabled the 'Back' button on Awake, we enable it back, now that this notification is closing
             {
-               DoozyUI.UIManager.EnableBackButton();
+                UIManager.EnableBackButton();
             }
             */
 
             //New back button disable (replaces the method used above)
-           DoozyUI.UIManager.EnableBackButton();
+            UIManager.EnableBackButton();
 
             UnregisterFromNotificationQueue(notificationData);
             UnregisterFromUIManager();
@@ -274,7 +274,7 @@ namespace DoozyUI
                 Destroy(gameObject, GetInAnimationsTimeAndDelay() + ndata.lifetime + GetOutAnimationsTimeAndDelay()); //We wait for the in animations + the specified lifetime + the out animations and then we destroy the object
             }
 
-            if (DoozyUI.UIManager.usesTMPro) //If we are using the TextMeshPro plugin we will look for TextMeshProUGUI component otherwise we look for the native Text component
+            if (UIManager.usesTMPro) //If we are using the TextMeshPro plugin we will look for TextMeshProUGUI component otherwise we look for the native Text component
             {
 #if dUI_TextMeshPro
                 if (this.title != null)
@@ -311,7 +311,7 @@ namespace DoozyUI
                         {
                             if (ndata.buttonTexts.Length > i && !string.IsNullOrEmpty(ndata.buttonTexts[i]))
                             {
-                                if (DoozyUI.UIManager.usesTMPro)
+                                if (UIManager.usesTMPro)
                                 {
 #if dUI_TextMeshPro
                                     if (buttons[i].GetComponentInChildren<TMPro.TextMeshProUGUI>() != null)
@@ -333,7 +333,7 @@ namespace DoozyUI
                     }
                 }
             }
-           DoozyUI.UIManager.ShowUiElement(notificationName);
+            UIManager.ShowUiElement(notificationName);
         }
         #endregion
 
@@ -345,7 +345,7 @@ namespace DoozyUI
 #else
             yield return new WaitForSecondsRealtime(delay);
 #endif
-           DoozyUI.UIManager.HideUiElement(notificationName, false, false);
+            UIManager.HideUiElement(notificationName, false, false);
         }
 #endregion
 
@@ -358,12 +358,12 @@ namespace DoozyUI
             }
             else
             {
-               DoozyUI.UIManager.RegisterUiElement(notificationContainer);
+                UIManager.RegisterUiElement(notificationContainer);
             }
 
             if (overlay != null)
             {
-               DoozyUI.UIManager.RegisterUiElement(overlay);
+                UIManager.RegisterUiElement(overlay);
             }
 
             if (specialElements != null && specialElements.Length > 0)
@@ -372,7 +372,7 @@ namespace DoozyUI
                 {
                     if (specialElements[i] != null)
                     {
-                       DoozyUI.UIManager.RegisterUiElement(specialElements[i]);
+                        UIManager.RegisterUiElement(specialElements[i]);
                     }
                     else
                     {
@@ -389,7 +389,7 @@ namespace DoozyUI
                     {
                         if (effects[i].targetUIElement != null)
                         {
-                           DoozyUI.UIManager.RegisterUiEffect(effects[i]);
+                            UIManager.RegisterUiEffect(effects[i]);
                         }
                     }
                     else
@@ -411,12 +411,12 @@ namespace DoozyUI
             }
             else
             {
-               DoozyUI.UIManager.UnregisterUiElement(notificationContainer);
+                UIManager.UnregisterUiElement(notificationContainer);
             }
 
             if (overlay != null)
             {
-               DoozyUI.UIManager.UnregisterUiElement(overlay);
+                UIManager.UnregisterUiElement(overlay);
             }
 
             if (specialElements != null && specialElements.Length > 0)
@@ -425,7 +425,7 @@ namespace DoozyUI
                 {
                     if (specialElements[i] != null)
                     {
-                       DoozyUI.UIManager.UnregisterUiElement(specialElements[i]);
+                        UIManager.UnregisterUiElement(specialElements[i]);
                     }
                 }
             }
@@ -438,7 +438,7 @@ namespace DoozyUI
                     {
                         if (effects[i].targetUIElement != null)
                         {
-                           DoozyUI.UIManager.UnregisterUiEffect(effects[i]);
+                            UIManager.UnregisterUiEffect(effects[i]);
                         }
                     }
                 }
@@ -451,7 +451,7 @@ namespace DoozyUI
         {
             if (nData.addToNotificationQueue)
             {
-               DoozyUI.UIManager.UnregisterFromNotificationQueue(nData);
+                UIManager.UnregisterFromNotificationQueue(nData);
             }
         }
 #endregion

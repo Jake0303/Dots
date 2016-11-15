@@ -21,7 +21,7 @@ namespace HutongGames.PlayMaker.Actions
 
         public override void OnEnter()
         {
-           DoozyUI.UIManager.TogglePause();
+            UIManager.TogglePause();
 
             if (debugThis.Value)
                 Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Toggle Pause");

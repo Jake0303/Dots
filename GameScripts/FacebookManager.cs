@@ -1,79 +1,138 @@
 ﻿using UnityEngine;
 using Facebook.Unity;
 using System.Collections.Generic;
+using System;
 
 public class FacebookManager : MonoBehaviour
 {
-    List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
-
-    // Awake function from Unity's MonoBehavior
-    void Awake()
+    #region Notes
+    // Singleton is nice here 
+    // you can then simply use FacebookManager.instance.WhatEverMethodYouWant()
+    private static FacebookManager _instance;
+    public static FacebookManager instance
     {
-        if (!FB.IsInitialized)
+        get
         {
-            // Initialize the Facebook SDK
-            FB.Init(InitCallback, OnHideUnity);
-        }
-        else
-        {
-            // Already initialized, signal an app activation App Event
-            FB.ActivateApp();
+            if (!_instance)
+            {
+                _instance = FindObjectOfType(typeof(FacebookManager)) as FacebookManager;
+
+                if (!_instance)
+                {
+                    Debug.LogError("There needs to be one active FacebookManager script on a GameObject in your scene.");
+                }
+            }
+
+            return _instance;
         }
     }
 
-    private void InitCallback()
+    void Start()
+    {
+        // Initialized the singleton if no other component has accessed the singleton yet
+        
+    }
+
+    void Init()
+    {
+        FB.Init(FBInit, FBOnHideUnity);
+    }
+
+    void FBInit()
+    {
+        FBLogin();
+    }
+
+    public void FBLogin()
+    {
+        FBUpdateLoginStatus(FB.IsLoggedIn);
+        if (FB.IsLoggedIn)
+        {
+            return;
+        }
+
+        if (!FB.IsInitialized)
+        {
+            FB.Init(FBInitCallback, FBOnHideUnity);
+        }
+        else
+        {
+            FB.ActivateApp();
+            FBGetPerms();
+        }
+        Debug.Log(FB.AppId);
+    }
+
+    private void FBInitCallback()
     {
         if (FB.IsInitialized)
         {
-            // Signal an app activation App Event
             FB.ActivateApp();
-            // Continue with Facebook SDK
-            // ...
+            FBGetPerms();
         }
         else
         {
             Debug.Log("Failed to Initialize the Facebook SDK");
         }
     }
+    public void FBButtonClick()
+    {
+        if (_instance == null)
+        {
+            instance.Init();
+        }
+    }
+    void FBGetPerms()
+    {
 
-    private void OnHideUnity(bool isGameShown)
+        List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
+        FB.LogInWithReadPermissions(perms, FBAuthCallback);
+    }
+
+    private void FBOnHideUnity(bool isGameShown)
     {
         if (!isGameShown)
         {
-            // Pause the game - we will need to hide
             Time.timeScale = 0;
         }
         else
         {
-            // Resume the game - we're getting focus again
             Time.timeScale = 1;
         }
     }
 
-
-    private void AuthCallback(ILoginResult result)
+    private void FBAuthCallback(ILoginResult result)
     {
+        // return focus to your game after facebook login completes
+        // include this function on your unity index.html page
+        /* <script type='text/javascript'>
+                function recuperaFocus() {
+                    this.focus();
+                }
+          </ script >
+        */
+        Application.ExternalCall("recuperaFocus");
         if (FB.IsLoggedIn)
         {
-            // AccessToken class will have session details
-            var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
-            // Print current access token's User ID
-            Debug.Log(aToken.UserId);
-            // Print current access token's granted permissions
-            foreach (string perm in aToken.Permissions)
-            {
-                Debug.Log(perm);
-            }
-            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
+            AccessToken accessToken = AccessToken.CurrentAccessToken;
+            Debug.Log("Get Short Lived Access token: " + accessToken.UserId + ", " + accessToken.ExpirationTime + ", " + accessToken.Permissions);
         }
         else
         {
             Debug.Log("User cancelled login");
         }
+
+        FBUpdateLoginStatus(FB.IsLoggedIn);
     }
-    
-    public void FBLogin()
+
+    void FBUpdateLoginStatus(bool isLoggedIn)
     {
-        FB.LogInWithReadPermissions(perms, AuthCallback);
+        if (isLoggedIn)
+        {
+            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
+            GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
+            GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
+        }
     }
+    #endregion
 }

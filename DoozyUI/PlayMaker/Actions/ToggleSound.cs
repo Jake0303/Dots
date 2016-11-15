@@ -21,7 +21,7 @@ namespace HutongGames.PlayMaker.Actions
 
         public override void OnEnter()
         {
-           DoozyUI.UIManager.ToggleSound();
+            UIManager.ToggleSound();
 
             if (debugThis.Value)
                 Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Toggle Sound");

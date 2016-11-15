@@ -14,7 +14,7 @@ namespace HutongGames.PlayMaker.Actions
     {
         public override void OnEnter()
         {
-           DoozyUI.UIManager.ApplicationQuit();
+            UIManager.ApplicationQuit();
 
             Finish();
         }

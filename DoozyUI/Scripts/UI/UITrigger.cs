@@ -66,26 +66,26 @@ namespace DoozyUI
             {
                 if (dispatchAll)
                 {
-                    gameEvent =DoozyUI.UIManager.DISPATCH_ALL;
+                    gameEvent = UIManager.DISPATCH_ALL;
                 }
                 else if (string.IsNullOrEmpty(gameEvent))
                 {
                     Debug.Log("[DoozyUI] The UITrigger on [" + gameObject.name + "] gameObject is disabled. It will not trigger anything because you didn't enter a game event for it to listen for.");
                 }
 
-               DoozyUI.UIManager.RegisterUiTrigger(this,DoozyUI.UIManager.EventType.GameEvent);
+                UIManager.RegisterUiTrigger(this, UIManager.EventType.GameEvent);
             }
             else if (triggerOnButtonClick)
             {
                 if (dispatchAll)
                 {
-                    buttonName =DoozyUI.UIManager.DISPATCH_ALL;
+                    buttonName = UIManager.DISPATCH_ALL;
                 }
-                else if (buttonName.Equals(DoozyUI.UIManager.DEFAULT_BUTTON_NAME))
+                else if (buttonName.Equals(UIManager.DEFAULT_BUTTON_NAME))
                 {
                     Debug.Log("[DoozyUI] The UITrigger on [" + gameObject.name + "] gameObject is disabled. It will not trigger anything because you didn't select a button name for it to listen for.");
                 }
-               DoozyUI.UIManager.RegisterUiTrigger(this,DoozyUI.UIManager.EventType.ButtonClick);
+                UIManager.RegisterUiTrigger(this, UIManager.EventType.ButtonClick);
             }
             else
             {
@@ -99,17 +99,17 @@ namespace DoozyUI
             {
                 if (dispatchAll)
                 {
-                    gameEvent =DoozyUI.UIManager.DISPATCH_ALL;
+                    gameEvent = UIManager.DISPATCH_ALL;
                 }
-               DoozyUI.UIManager.UnregisterUiTrigger(this,DoozyUI.UIManager.EventType.GameEvent);
+                UIManager.UnregisterUiTrigger(this, UIManager.EventType.GameEvent);
             }
             else
             {
                 if (dispatchAll)
                 {
-                    buttonName =DoozyUI.UIManager.DISPATCH_ALL;
+                    buttonName = UIManager.DISPATCH_ALL;
                 }
-               DoozyUI.UIManager.UnregisterUiTrigger(this,DoozyUI.UIManager.EventType.ButtonClick);
+                UIManager.UnregisterUiTrigger(this, UIManager.EventType.ButtonClick);
             }
         }
 
@@ -125,7 +125,7 @@ namespace DoozyUI
                     onTriggerEvent.Invoke(triggerValue);
 
                     if (gameEvents != null && gameEvents.Count > 0)
-                       DoozyUI.UIManager.SendGameEvents(gameEvents);
+                        UIManager.SendGameEvents(gameEvents);
                 }
             }
             else if (triggerOnButtonClick)
@@ -135,7 +135,7 @@ namespace DoozyUI
                     onTriggerEvent.Invoke(triggerValue);
 
                     if (gameEvents != null && gameEvents.Count > 0)
-                       DoozyUI.UIManager.SendGameEvents(gameEvents);
+                        UIManager.SendGameEvents(gameEvents);
                 }
             }
         }

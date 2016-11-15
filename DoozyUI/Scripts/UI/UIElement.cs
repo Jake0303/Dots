@@ -44,7 +44,7 @@ namespace DoozyUI
             }
             if (go.transform.parent == null)
             {
-                go.transform.SetParent(DoozyUI.UIManager.GetUiContainer);
+                go.transform.SetParent(UIManager.GetUiContainer);
             }
             go.GetComponent<RectTransform>().localScale = Vector3.one;
             go.AddComponent<UIElement>();
@@ -57,7 +57,7 @@ namespace DoozyUI
         [Serializable]
         public class ElementName
         {
-            public string elementName =DoozyUI.UIManager.DEFAULT_ELEMENT_NAME;
+            public string elementName = UIManager.DEFAULT_ELEMENT_NAME;
         }
 
         [Serializable]
@@ -65,34 +65,34 @@ namespace DoozyUI
         #endregion
 
         #region BACKUP VARIABLES
-        public string elementName =DoozyUI.UIManager.DEFAULT_ELEMENT_NAME;
+        public string elementName = UIManager.DEFAULT_ELEMENT_NAME;
 
-        public string moveInSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string moveInSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string rotationInSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string rotationInSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string scaleInSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string scaleInSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string fadeInSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string fadeInSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
+        public string moveInSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string moveInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string rotationInSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string rotationInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string scaleInSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string scaleInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string fadeInSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string fadeInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
 
-        public string moveLoopSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string moveLoopSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string rotationLoopSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string rotationLoopSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string scaleLoopSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string scaleLoopSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string fadeLoopSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string fadeLoopSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
+        public string moveLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string moveLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string rotationLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string rotationLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string scaleLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string scaleLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string fadeLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string fadeLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
 
-        public string moveOutSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string moveOutSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string rotationOutSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string rotationOutSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string scaleOutSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string scaleOutSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string fadeOutSoundAtStart =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
-        public string fadeOutSoundAtFinish =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
+        public string moveOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string moveOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string rotationOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string rotationOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string scaleOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string scaleOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
+        public string fadeOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME;
+        public string fadeOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME;
         #endregion
 
         #region Public Variables
@@ -308,7 +308,7 @@ namespace DoozyUI
                 initialData.startRotation = startRotation;
                 initialData.startScale = startScale;
                 initialData.startFadeAlpha = 1f;
-                initialData.soundOn =DoozyUI.UIManager.isSoundOn;
+                initialData.soundOn = UIManager.isSoundOn;
 
                 return initialData;
             }
@@ -387,7 +387,7 @@ namespace DoozyUI
             }
 
             if (autoRegister)
-               DoozyUI.UIManager.RegisterUiElement(this);
+                UIManager.RegisterUiElement(this);
 
             if (useCustomStartAnchoredPosition)
             {
@@ -402,7 +402,7 @@ namespace DoozyUI
         void OnEnable()
         {
             //if (autoRegister)
-            //   DoozyUI.UIManager.RegisterUiElement(this);
+            //    UIManager.RegisterUiElement(this);
         }
 
         void Start()
@@ -413,7 +413,7 @@ namespace DoozyUI
 
         void OnDestroy()
         {
-           DoozyUI.UIManager.UnregisterUiElement(this);
+            UIManager.UnregisterUiElement(this);
         }
 
         #region Setup Element Methods
@@ -431,36 +431,36 @@ namespace DoozyUI
                 }
                 else
                 {
-                    if (DoozyUI.UIManager.useOrientationManager)
+                    if (UIManager.useOrientationManager)
                     {
-                        if (DoozyUI.UIManager.currentOrientation ==DoozyUI.UIManager.Orientation.Unknown)
+                        if (UIManager.currentOrientation == UIManager.Orientation.Unknown)
                         {
                             StartCoroutine(GetOrientation());
                         }
                         else
                         {
-                            if (LANDSCAPE &&DoozyUI.UIManager.currentOrientation ==DoozyUI.UIManager.Orientation.Landscape)
+                            if (LANDSCAPE && UIManager.currentOrientation == UIManager.Orientation.Landscape)
                             {
-                               DoozyUI.UIManager.HideUiElement(elementName, true, disableWhenHidden);
-                               DoozyUI.UIManager.ShowUiElement(elementName, false);
+                                UIManager.HideUiElement(elementName, true, disableWhenHidden);
+                                UIManager.ShowUiElement(elementName, false);
                             }
-                            else if (PORTRAIT &&DoozyUI.UIManager.currentOrientation ==DoozyUI.UIManager.Orientation.Portrait)
+                            else if (PORTRAIT && UIManager.currentOrientation == UIManager.Orientation.Portrait)
                             {
-                               DoozyUI.UIManager.HideUiElement(elementName, true, disableWhenHidden);
-                               DoozyUI.UIManager.ShowUiElement(elementName, false);
+                                UIManager.HideUiElement(elementName, true, disableWhenHidden);
+                                UIManager.ShowUiElement(elementName, false);
                             }
                         }
                     }
                     else
                     {
-                       DoozyUI.UIManager.HideUiElement(elementName, true, disableWhenHidden);
-                       DoozyUI.UIManager.ShowUiElement(elementName, false);
+                        UIManager.HideUiElement(elementName, true, disableWhenHidden);
+                        UIManager.ShowUiElement(elementName, false);
                     }
                 }
             }
             else if (startHidden)
             {
-               DoozyUI.UIManager.HideUiElement(elementName, true, disableWhenHidden);
+                UIManager.HideUiElement(elementName, true, disableWhenHidden);
             }
         }
         #endregion
@@ -500,7 +500,7 @@ namespace DoozyUI
         {
             int infiniteLoopCount = 0;
 
-            while (DoozyUI.UIManager.GetEventSystem == null)
+            while (UIManager.GetEventSystem == null)
             {
                 yield return new WaitForEndOfFrame();
 
@@ -509,12 +509,12 @@ namespace DoozyUI
                     break;
             }
 
-           DoozyUI.UIManager.GetEventSystem.SetSelectedGameObject(selectedButton);
+            UIManager.GetEventSystem.SetSelectedGameObject(selectedButton);
         }
 
         IEnumerator InAnimationsEnumerator(bool instantAction)
         {
-            //if (DoozyUI.UIManager.firstPass)
+            //if (UIManager.firstPass)
             //{
             //    //We need this WaitForEndOfFrame so that the UIManager gets on the first frame the UIScreenRect size and position
             //    yield return new WaitForEndOfFrame();
@@ -603,7 +603,7 @@ namespace DoozyUI
 
         IEnumerator OutAnimationsEnumerator(bool instantAction, bool shouldDisable = true)
         {
-            //if (DoozyUI.UIManager.firstPass)
+            //if (UIManager.firstPass)
             //{
             //    //We need this WaitForEndOfFrame so that the UIManager gets after the first frame the UIScreenRect size and position
             //    yield return new WaitForEndOfFrame();
@@ -829,24 +829,24 @@ namespace DoozyUI
 
         IEnumerator GetOrientation()
         {
-            while (DoozyUI.UIManager.currentOrientation ==DoozyUI.UIManager.Orientation.Unknown)
+            while (UIManager.currentOrientation == UIManager.Orientation.Unknown)
             {
-               DoozyUI.UIManager.CheckDeviceOrientation();
-                if (DoozyUI.UIManager.currentOrientation !=DoozyUI.UIManager.Orientation.Unknown)
+                UIManager.CheckDeviceOrientation();
+                if (UIManager.currentOrientation != UIManager.Orientation.Unknown)
                     break;
 
                 yield return new WaitForEndOfFrame();
             }
 
-            if (LANDSCAPE &&DoozyUI.UIManager.currentOrientation ==DoozyUI.UIManager.Orientation.Landscape)
+            if (LANDSCAPE && UIManager.currentOrientation == UIManager.Orientation.Landscape)
             {
-               DoozyUI.UIManager.HideUiElement(elementName, true, disableWhenHidden);
-               DoozyUI.UIManager.ShowUiElement(elementNameReference.elementName, false);
+                UIManager.HideUiElement(elementName, true, disableWhenHidden);
+                UIManager.ShowUiElement(elementNameReference.elementName, false);
             }
-            else if (PORTRAIT &&DoozyUI.UIManager.currentOrientation ==DoozyUI.UIManager.Orientation.Portrait)
+            else if (PORTRAIT && UIManager.currentOrientation == UIManager.Orientation.Portrait)
             {
-               DoozyUI.UIManager.HideUiElement(elementName, true, disableWhenHidden);
-               DoozyUI.UIManager.ShowUiElement(elementNameReference.elementName, false);
+                UIManager.HideUiElement(elementName, true, disableWhenHidden);
+                UIManager.ShowUiElement(elementNameReference.elementName, false);
             }
 
         }

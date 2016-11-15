@@ -29,7 +29,7 @@ namespace HutongGames.PlayMaker.Actions
             //UIButtonMessage m = new UIButtonMessage();
             //m.buttonName = buttonName.Value;
             //Message.Send<UIButtonMessage>(m);
-           DoozyUI.UIManager.SendButtonClick(buttonName.Value);
+            UIManager.SendButtonClick(buttonName.Value);
 
             if (debugThis)
                 Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Simulated button click event - [" + buttonName + "]");

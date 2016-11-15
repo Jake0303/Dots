@@ -252,7 +252,7 @@ namespace DoozyUI
 #else
                   if (doozyUIData == null)
                 {
-                    doozyUIData = (DoozyUI_Data) Resources.Load(DoozyUI.UIManager.GetDataObjectPath, typeof(DoozyUI_Data));
+                    doozyUIData = (DoozyUI_Data) Resources.Load(UIManager.GetDataObjectPath, typeof(DoozyUI_Data));
                 }
 #endif
                 return doozyUIData;
@@ -1321,11 +1321,11 @@ namespace DoozyUI
         /// </summary>
         public static void SortElementNames()
         {
-            DoozyUI.UIManager.GetDoozyUIData.elementNames.Sort(
-                 delegate (UIElement.ElementName element_1, UIElement.ElementName element_2)
-                 {
-                     return element_1.elementName.CompareTo(element_2.elementName);
-                 });
+            UIManager.GetDoozyUIData.elementNames.Sort(
+                delegate (UIElement.ElementName element_1, UIElement.ElementName element_2)
+                {
+                    return element_1.elementName.CompareTo(element_2.elementName);
+                });
         }
 
         /// <summary>
@@ -1333,11 +1333,11 @@ namespace DoozyUI
         /// </summary>
         public static void SortElementSounds()
         {
-            DoozyUI.UIManager.GetDoozyUIData.elementSounds.Sort(
-               delegate (UIAnimator.SoundDetails element_1, UIAnimator.SoundDetails element_2)
-               {
-                   return element_1.soundName.CompareTo(element_2.soundName);
-               });
+            UIManager.GetDoozyUIData.elementSounds.Sort(
+              delegate (UIAnimator.SoundDetails element_1, UIAnimator.SoundDetails element_2)
+              {
+                  return element_1.soundName.CompareTo(element_2.soundName);
+              });
         }
 
         /// <summary>
@@ -1345,11 +1345,11 @@ namespace DoozyUI
         /// </summary>
         public static void SortButtonNames()
         {
-            DoozyUI.UIManager.GetDoozyUIData.buttonNames.Sort(
-                 delegate (UIButton.ButtonName element_1, UIButton.ButtonName element_2)
-                 {
-                     return element_1.buttonName.CompareTo(element_2.buttonName);
-                 });
+            UIManager.GetDoozyUIData.buttonNames.Sort(
+                delegate (UIButton.ButtonName element_1, UIButton.ButtonName element_2)
+                {
+                    return element_1.buttonName.CompareTo(element_2.buttonName);
+                });
         }
 
         /// <summary>
@@ -1357,11 +1357,11 @@ namespace DoozyUI
         /// </summary>
         public static void SortButtonSounds()
         {
-            DoozyUI.UIManager.GetDoozyUIData.buttonSounds.Sort(
-                 delegate (UIButton.ButtonSound element_1, UIButton.ButtonSound element_2)
-                 {
-                     return element_1.onClickSound.CompareTo(element_2.onClickSound);
-                 });
+            UIManager.GetDoozyUIData.buttonSounds.Sort(
+                delegate (UIButton.ButtonSound element_1, UIButton.ButtonSound element_2)
+                {
+                    return element_1.onClickSound.CompareTo(element_2.onClickSound);
+                });
         }
         #endregion
 
@@ -1373,9 +1373,9 @@ namespace DoozyUI
         /// <returns></returns>
         public static int GetIndexForElementName(string s)
         {
-            for (int i = 0; i < DoozyUI.UIManager.GetDoozyUIData.elementNames.Count; i++)
+            for (int i = 0; i < UIManager.GetDoozyUIData.elementNames.Count; i++)
             {
-                if (DoozyUI.UIManager.GetDoozyUIData.elementNames[i].elementName.Equals(s))   //we found a duplicate
+                if (UIManager.GetDoozyUIData.elementNames[i].elementName.Equals(s))   //we found a duplicate
                 {
                     return i;   //we return the index while stopping this iteration
                 }
@@ -1390,9 +1390,9 @@ namespace DoozyUI
         /// <returns></returns>
         public static int GetIndexForElementSound(string s)
         {
-            for (int i = 0; i < DoozyUI.UIManager.GetDoozyUIData.elementSounds.Count; i++)
+            for (int i = 0; i < UIManager.GetDoozyUIData.elementSounds.Count; i++)
             {
-                if (DoozyUI.UIManager.GetDoozyUIData.elementSounds[i].soundName.Equals(s))   //we found a duplicate
+                if (UIManager.GetDoozyUIData.elementSounds[i].soundName.Equals(s))   //we found a duplicate
                 {
                     return i;   //we return the index while stopping this iteration
                 }
@@ -1407,9 +1407,9 @@ namespace DoozyUI
         /// <returns></returns>
         public static int GetIndexForButtonName(string s)
         {
-            for (int i = 0; i < DoozyUI.UIManager.GetDoozyUIData.buttonNames.Count; i++)
+            for (int i = 0; i < UIManager.GetDoozyUIData.buttonNames.Count; i++)
             {
-                if (DoozyUI.UIManager.GetDoozyUIData.buttonNames[i].buttonName.Equals(s))   //we found a duplicate
+                if (UIManager.GetDoozyUIData.buttonNames[i].buttonName.Equals(s))   //we found a duplicate
                 {
                     return i;   //we return the index while stopping this iteration
                 }
@@ -1424,9 +1424,9 @@ namespace DoozyUI
         /// <returns></returns>
         public static int GetIndexForButtonSound(string s)
         {
-            for (int i = 0; i < DoozyUI.UIManager.GetDoozyUIData.buttonSounds.Count; i++)
+            for (int i = 0; i < UIManager.GetDoozyUIData.buttonSounds.Count; i++)
             {
-                if (DoozyUI.UIManager.GetDoozyUIData.buttonSounds[i].onClickSound.Equals(s))   //we found a duplicate
+                if (UIManager.GetDoozyUIData.buttonSounds[i].onClickSound.Equals(s))   //we found a duplicate
                 {
                     return i;   //we return the index while stopping this iteration
                 }
@@ -1438,10 +1438,10 @@ namespace DoozyUI
         #region Remove Duplicates
         public static void RemoveDuplicatesFromTheDatabase()
         {
-            DoozyUI.UIManager.GetDoozyUIData.elementNames = DoozyUI.UIManager.GetDoozyUIData.elementNames.Distinct().ToList();
-            DoozyUI.UIManager.GetDoozyUIData.elementSounds = DoozyUI.UIManager.GetDoozyUIData.elementSounds.Distinct().ToList();
-            DoozyUI.UIManager.GetDoozyUIData.buttonNames = DoozyUI.UIManager.GetDoozyUIData.buttonNames.Distinct().ToList();
-            DoozyUI.UIManager.GetDoozyUIData.buttonSounds = DoozyUI.UIManager.GetDoozyUIData.buttonSounds.Distinct().ToList();
+            UIManager.GetDoozyUIData.elementNames = UIManager.GetDoozyUIData.elementNames.Distinct().ToList();
+            UIManager.GetDoozyUIData.elementSounds = UIManager.GetDoozyUIData.elementSounds.Distinct().ToList();
+            UIManager.GetDoozyUIData.buttonNames = UIManager.GetDoozyUIData.buttonNames.Distinct().ToList();
+            UIManager.GetDoozyUIData.buttonSounds = UIManager.GetDoozyUIData.buttonSounds.Distinct().ToList();
         }
         #endregion
 
@@ -2956,9 +2956,9 @@ namespace DoozyUI
         }
 
         /// <summary>
+        /// Updates the Navigation History while showing and hiding the relevant UIElements. 
         /// </summary>
         /// <param name="showElements"></param>
-        /// Updates the Navigation History while showing and hiding the relevant UIElements. 
         /// <param name="hideElements"></param>
         /// <param name="addToNavigationHistory"></param>
         private static void UpdateTheNavigationHistory(List<string> showElements, List<string> hideElements, bool addToNavigationHistory)
@@ -3240,7 +3240,7 @@ namespace DoozyUI
                 gameEvents = _gameEvents
             };
             //Message.Send<UIButtonMessage>(m);
-            DoozyUI.UIManager.OnButtonClick(m);
+            UIManager.OnButtonClick(m);
         }
         #endregion
 

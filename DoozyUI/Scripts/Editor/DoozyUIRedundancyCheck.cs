@@ -120,11 +120,11 @@ namespace DoozyUI
         {
             if (string.IsNullOrEmpty(s)) //check if the string is null or empty
             {
-                s = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //set default value
+                s = UIManager.DEFAULT_SOUND_NAME; //set default value
             }
-            else if (DoozyUI.UIManager.GetIndexForElementSound(s) == -1) //the sound name does not exist in the database it got corrupted; we reset it to the default value
+            else if (UIManager.GetIndexForElementSound(s) == -1) //the sound name does not exist in the database it got corrupted; we reset it to the default value
             {
-                s = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //set default value
+                s = UIManager.DEFAULT_SOUND_NAME; //set default value
             }
             return s;
         }
@@ -149,30 +149,30 @@ namespace DoozyUI
             #region ELEMENT NAME
             if (string.IsNullOrEmpty(uiElement.elementName))
             {
-                uiElement.elementName = DoozyUI.UIManager.DEFAULT_ELEMENT_NAME;
+                uiElement.elementName = UIManager.DEFAULT_ELEMENT_NAME;
             }
-            else if (DoozyUI.UIManager.GetIndexForElementName(uiElement.elementName) == -1) //the backup name does not exist in the database it got corrupted; we reset it to the default value
+            else if (UIManager.GetIndexForElementName(uiElement.elementName) == -1) //the backup name does not exist in the database it got corrupted; we reset it to the default value
             {
-                uiElement.elementName = DoozyUI.UIManager.DEFAULT_ELEMENT_NAME;
+                uiElement.elementName = UIManager.DEFAULT_ELEMENT_NAME;
             }
 
             if (uiElement.elementNameReference == null)
             {
-                uiElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[DoozyUI.UIManager.GetIndexForElementName(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME)];
+                uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(UIManager.DEFAULT_ELEMENT_NAME)];
             }
 
             if (uiElement.elementName.Equals(uiElement.elementNameReference.elementName) == false) //the referenced name is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) == -1) //if TRUE, the referenced name does not exist in the database or it's the default value (we might have an error); we need to check that the backup name is not corrupted as well
+                if (UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) == -1) //if TRUE, the referenced name does not exist in the database or it's the default value (we might have an error); we need to check that the backup name is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementName(uiElement.elementName) == -1) //the backup name does not exist in the database; we perform the rollback
+                    if (UIManager.GetIndexForElementName(uiElement.elementName) == -1) //the backup name does not exist in the database; we perform the rollback
                     {
-                        uiElement.elementName = DoozyUI.UIManager.DEFAULT_ELEMENT_NAME; //we set the backup name as the default name
-                        uiElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[DoozyUI.UIManager.GetIndexForElementName(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME)]; //we reference the default name from the database
+                        uiElement.elementName = UIManager.DEFAULT_ELEMENT_NAME; //we set the backup name as the default name
+                        uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(UIManager.DEFAULT_ELEMENT_NAME)]; //we reference the default name from the database
                     }
                     else //the referenced name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[DoozyUI.UIManager.GetIndexForElementName(uiElement.elementName)]; //we update the reference from the database
+                        uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(uiElement.elementName)]; //we update the reference from the database
                     }
                 }
                 else //the referenced name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
@@ -184,7 +184,7 @@ namespace DoozyUI
             {
                 if (debugThis)
                 {
-                    Debug.Log("eName [" + uiElement.elementName + "] | eNameRef [" + uiElement.elementNameReference.elementName + "] | index [" + DoozyUI.UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) + "]");
+                    Debug.Log("eName [" + uiElement.elementName + "] | eNameRef [" + uiElement.elementNameReference.elementName + "] | index [" + UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) + "]");
                 }
             }
             #endregion
@@ -193,16 +193,16 @@ namespace DoozyUI
             uiElement.moveInSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.moveInSoundAtStart);
             if (uiElement.moveInSoundAtStart.Equals(uiElement.moveIn.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.moveIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.moveInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.moveInSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.moveIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.moveInSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.moveIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.moveIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveInSoundAtStart)]; //we update the reference from the database
+                        uiElement.moveIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.moveInSoundAtStart)]; //we update the reference from the database
                     }
 
                 }
@@ -217,16 +217,16 @@ namespace DoozyUI
             uiElement.moveInSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.moveInSoundAtFinish);
             if (uiElement.moveInSoundAtFinish.Equals(uiElement.moveIn.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.moveIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.moveInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.moveInSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.moveIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.moveInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.moveIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.moveIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveInSoundAtFinish)]; //we update the reference from the database
+                        uiElement.moveIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.moveInSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -241,16 +241,16 @@ namespace DoozyUI
             uiElement.rotationInSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.rotationInSoundAtStart);
             if (uiElement.rotationInSoundAtStart.Equals(uiElement.rotationIn.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.rotationIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.rotationInSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.rotationIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.rotationInSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.rotationIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.rotationIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtStart)]; //we update the reference from the database
+                        uiElement.rotationIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -264,16 +264,16 @@ namespace DoozyUI
             uiElement.rotationInSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.rotationInSoundAtFinish);
             if (uiElement.rotationInSoundAtFinish.Equals(uiElement.rotationIn.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.rotationIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.rotationInSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.rotationIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.rotationInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.rotationIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.rotationIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtFinish)]; //we update the reference from the database
+                        uiElement.rotationIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.rotationInSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -288,16 +288,16 @@ namespace DoozyUI
             uiElement.scaleInSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.scaleInSoundAtStart);
             if (uiElement.scaleInSoundAtStart.Equals(uiElement.scaleIn.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.scaleIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.scaleInSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.scaleIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.scaleInSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.scaleIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.scaleIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtStart)]; //we update the reference from the database
+                        uiElement.scaleIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -311,16 +311,16 @@ namespace DoozyUI
             uiElement.scaleInSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.scaleInSoundAtFinish);
             if (uiElement.scaleInSoundAtFinish.Equals(uiElement.scaleIn.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.scaleIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.scaleInSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.scaleIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.scaleInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.scaleIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.scaleIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtFinish)]; //we update the reference from the database
+                        uiElement.scaleIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.scaleInSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -335,16 +335,16 @@ namespace DoozyUI
             uiElement.fadeInSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.fadeInSoundAtStart);
             if (uiElement.fadeInSoundAtStart.Equals(uiElement.fadeIn.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.fadeIn.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.fadeInSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.fadeIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.fadeInSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.fadeIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.fadeIn.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtStart)]; //we update the reference from the database
+                        uiElement.fadeIn.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -358,16 +358,16 @@ namespace DoozyUI
             uiElement.fadeInSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.fadeInSoundAtFinish);
             if (uiElement.fadeInSoundAtFinish.Equals(uiElement.fadeIn.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.fadeIn.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.fadeInSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.fadeIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.fadeInSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.fadeIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.fadeIn.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtFinish)]; //we update the reference from the database
+                        uiElement.fadeIn.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.fadeInSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -382,16 +382,16 @@ namespace DoozyUI
             uiElement.moveLoopSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.moveLoopSoundAtStart);
             if (uiElement.moveLoopSoundAtStart.Equals(uiElement.moveLoop.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.moveLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.moveLoopSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.moveLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.moveLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.moveLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.moveLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtStart)]; //we update the reference from the database
+                        uiElement.moveLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -405,16 +405,16 @@ namespace DoozyUI
             uiElement.moveLoopSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.moveLoopSoundAtFinish);
             if (uiElement.moveLoopSoundAtFinish.Equals(uiElement.moveLoop.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.moveLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.moveLoopSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.moveLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.moveLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.moveLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.moveLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtFinish)]; //we update the reference from the database
+                        uiElement.moveLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.moveLoopSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -429,16 +429,16 @@ namespace DoozyUI
             uiElement.rotationLoopSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.rotationLoopSoundAtStart);
             if (uiElement.rotationLoopSoundAtStart.Equals(uiElement.rotationLoop.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.rotationLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.rotationLoopSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.rotationLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.rotationLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.rotationLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.rotationLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtStart)]; //we update the reference from the database
+                        uiElement.rotationLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -452,16 +452,16 @@ namespace DoozyUI
             uiElement.rotationLoopSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.rotationLoopSoundAtFinish);
             if (uiElement.rotationLoopSoundAtFinish.Equals(uiElement.rotationLoop.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.rotationLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.rotationLoopSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.rotationLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.rotationLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.rotationLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.rotationLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtFinish)]; //we update the reference from the database
+                        uiElement.rotationLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.rotationLoopSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -476,16 +476,16 @@ namespace DoozyUI
             uiElement.scaleLoopSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.scaleLoopSoundAtStart);
             if (uiElement.scaleLoopSoundAtStart.Equals(uiElement.scaleLoop.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.scaleLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.scaleLoopSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.scaleLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.scaleLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.scaleLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.scaleLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtStart)]; //we update the reference from the database
+                        uiElement.scaleLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -499,16 +499,16 @@ namespace DoozyUI
             uiElement.scaleLoopSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.scaleLoopSoundAtFinish);
             if (uiElement.scaleLoopSoundAtFinish.Equals(uiElement.scaleLoop.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.scaleLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.scaleLoopSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.scaleLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.scaleLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.scaleLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.scaleLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtFinish)]; //we update the reference from the database
+                        uiElement.scaleLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.scaleLoopSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -523,16 +523,16 @@ namespace DoozyUI
             uiElement.fadeLoopSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.fadeLoopSoundAtStart);
             if (uiElement.fadeLoopSoundAtStart.Equals(uiElement.fadeLoop.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.fadeLoop.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.fadeLoopSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.fadeLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.fadeLoopSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.fadeLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.fadeLoop.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtStart)]; //we update the reference from the database
+                        uiElement.fadeLoop.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -546,16 +546,16 @@ namespace DoozyUI
             uiElement.fadeLoopSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.fadeLoopSoundAtFinish);
             if (uiElement.fadeLoopSoundAtFinish.Equals(uiElement.fadeLoop.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.fadeLoop.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.fadeLoopSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.fadeLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.fadeLoopSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.fadeLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.fadeLoop.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtFinish)]; //we update the reference from the database
+                        uiElement.fadeLoop.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.fadeLoopSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -570,16 +570,16 @@ namespace DoozyUI
             uiElement.moveOutSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.moveOutSoundAtStart);
             if (uiElement.moveOutSoundAtStart.Equals(uiElement.moveOut.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.moveOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.moveOutSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.moveOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.moveOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.moveOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.moveOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtStart)]; //we update the reference from the database
+                        uiElement.moveOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -593,16 +593,16 @@ namespace DoozyUI
             uiElement.moveOutSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.moveOutSoundAtFinish);
             if (uiElement.moveOutSoundAtFinish.Equals(uiElement.moveOut.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.moveOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.moveOutSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.moveOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.moveOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.moveOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.moveOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtFinish)]; //we update the reference from the database
+                        uiElement.moveOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.moveOutSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -617,16 +617,16 @@ namespace DoozyUI
             uiElement.rotationOutSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.rotationOutSoundAtStart);
             if (uiElement.rotationOutSoundAtStart.Equals(uiElement.rotationOut.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.rotationOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.rotationOutSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.rotationOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.rotationOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.rotationOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.rotationOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtStart)]; //we update the reference from the database
+                        uiElement.rotationOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -640,16 +640,16 @@ namespace DoozyUI
             uiElement.rotationOutSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.rotationOutSoundAtFinish);
             if (uiElement.rotationOutSoundAtFinish.Equals(uiElement.rotationOut.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.rotationOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.rotationOutSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.rotationOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.rotationOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.rotationOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.rotationOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtFinish)]; //we update the reference from the database
+                        uiElement.rotationOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.rotationOutSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -664,16 +664,16 @@ namespace DoozyUI
             uiElement.scaleOutSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.scaleOutSoundAtStart);
             if (uiElement.scaleOutSoundAtStart.Equals(uiElement.scaleOut.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.scaleOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.scaleOutSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.scaleOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.scaleOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.scaleOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.scaleOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtStart)]; //we update the reference from the database
+                        uiElement.scaleOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -687,16 +687,16 @@ namespace DoozyUI
             uiElement.scaleOutSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.scaleOutSoundAtFinish);
             if (uiElement.scaleOutSoundAtFinish.Equals(uiElement.scaleOut.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.scaleOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.scaleOutSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.scaleOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.scaleOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.scaleOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.scaleOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtFinish)]; //we update the reference from the database
+                        uiElement.scaleOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.scaleOutSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -711,16 +711,16 @@ namespace DoozyUI
             uiElement.fadeOutSoundAtStart = CheckIfElementSoundIsInDatabase(uiElement.fadeOutSoundAtStart);
             if (uiElement.fadeOutSoundAtStart.Equals(uiElement.fadeOut.soundAtStartReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.fadeOut.soundAtStartReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtStart) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.fadeOutSoundAtStart = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.fadeOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.fadeOutSoundAtStart = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.fadeOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.fadeOut.soundAtStartReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtStart)]; //we update the reference from the database
+                        uiElement.fadeOut.soundAtStartReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtStart)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -734,16 +734,16 @@ namespace DoozyUI
             uiElement.fadeOutSoundAtFinish = CheckIfElementSoundIsInDatabase(uiElement.fadeOutSoundAtFinish);
             if (uiElement.fadeOutSoundAtFinish.Equals(uiElement.fadeOut.soundAtFinishReference.soundName) == false) //the referenced sound is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
+                if (UIManager.GetIndexForElementSound(uiElement.fadeOut.soundAtFinishReference.soundName) == -1) //if TRUE, the referenced sound does not exist in the database (we might have an error); we need to check that the backup sound is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
+                    if (UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtFinish) == -1) //the backup sound does not exist in the database or it is the default sound; we perform the rollback
                     {
-                        uiElement.fadeOutSoundAtFinish = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
-                        uiElement.fadeOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
+                        uiElement.fadeOutSoundAtFinish = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound as the default sound
+                        uiElement.fadeOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(UIManager.DEFAULT_SOUND_NAME)];  //we reference the default sound from the database
                     }
                     else //the referenced sound does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiElement.fadeOut.soundAtFinishReference = DoozyUI.UIManager.GetDoozyUIData.elementSounds[DoozyUI.UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtFinish)]; //we update the reference from the database
+                        uiElement.fadeOut.soundAtFinishReference = UIManager.GetDoozyUIData.elementSounds[UIManager.GetIndexForElementSound(uiElement.fadeOutSoundAtFinish)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup sound)
@@ -786,30 +786,30 @@ namespace DoozyUI
             #region BUTTON NAME
             if (string.IsNullOrEmpty(uiButton.buttonName))
             {
-                uiButton.buttonName = DoozyUI.UIManager.DEFAULT_BUTTON_NAME;
+                uiButton.buttonName = UIManager.DEFAULT_BUTTON_NAME;
             }
-            else if (DoozyUI.UIManager.GetIndexForButtonName(uiButton.buttonName) == -1) //the backup name does not exist in the database it got corrupted; we reset it to the default value
+            else if (UIManager.GetIndexForButtonName(uiButton.buttonName) == -1) //the backup name does not exist in the database it got corrupted; we reset it to the default value
             {
-                uiButton.buttonName = DoozyUI.UIManager.DEFAULT_BUTTON_NAME;
+                uiButton.buttonName = UIManager.DEFAULT_BUTTON_NAME;
             }
 
             if (uiButton.buttonNameReference == null)
             {
-                uiButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName(DoozyUI.UIManager.DEFAULT_BUTTON_NAME)];
+                uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(UIManager.DEFAULT_BUTTON_NAME)];
             }
 
             if (uiButton.buttonName.Equals(uiButton.buttonNameReference.buttonName) == false) //the referenced name is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) == -1) //if TRUE, the referenced name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
+                if (UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) == -1) //if TRUE, the referenced name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForButtonName(uiButton.buttonName) == -1) //the backup name does not exist in the database; we perform the rollback
+                    if (UIManager.GetIndexForButtonName(uiButton.buttonName) == -1) //the backup name does not exist in the database; we perform the rollback
                     {
-                        uiButton.buttonName = DoozyUI.UIManager.DEFAULT_BUTTON_NAME; //we set the backup name as the default name
-                        uiButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName(DoozyUI.UIManager.DEFAULT_BUTTON_NAME)]; //we reference the default name from the database
+                        uiButton.buttonName = UIManager.DEFAULT_BUTTON_NAME; //we set the backup name as the default name
+                        uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(UIManager.DEFAULT_BUTTON_NAME)]; //we reference the default name from the database
                     }
                     else //the referenced name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName(uiButton.buttonName)]; //we update the reference from the database
+                        uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(uiButton.buttonName)]; //we update the reference from the database
                     }
                 }
                 else //the referenced name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
@@ -821,7 +821,7 @@ namespace DoozyUI
             {
                 if (debugThis)
                 {
-                    Debug.Log("bName [" + uiButton.buttonName + "] | bNameRef [" + uiButton.buttonNameReference.buttonName + "] | index [" + DoozyUI.UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) + "]");
+                    Debug.Log("bName [" + uiButton.buttonName + "] | bNameRef [" + uiButton.buttonNameReference.buttonName + "] | index [" + UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) + "]");
                 }
             }
             #endregion
@@ -829,30 +829,30 @@ namespace DoozyUI
             #region OnClick Sound
             if (string.IsNullOrEmpty(uiButton.onClickSound))
             {
-                uiButton.onClickSound = DoozyUI.UIManager.DEFAULT_SOUND_NAME;
+                uiButton.onClickSound = UIManager.DEFAULT_SOUND_NAME;
             }
-            else if (DoozyUI.UIManager.GetIndexForButtonSound(uiButton.onClickSound) == -1) //the backup sound name does not exist in the database it got corrupted; we reset it to the default value
+            else if (UIManager.GetIndexForButtonSound(uiButton.onClickSound) == -1) //the backup sound name does not exist in the database it got corrupted; we reset it to the default value
             {
-                uiButton.onClickSound = DoozyUI.UIManager.DEFAULT_SOUND_NAME;
+                uiButton.onClickSound = UIManager.DEFAULT_SOUND_NAME;
             }
 
             if (uiButton.onClickSoundReference == null)
             {
-                uiButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[DoozyUI.UIManager.GetIndexForButtonSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)];
+                uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(UIManager.DEFAULT_SOUND_NAME)];
             }
 
             if (uiButton.onClickSound.Equals(uiButton.onClickSoundReference.onClickSound) == false) //the referenced sound name is not the same as the backup name, we check if a rollbakck is needed
             {
-                if (DoozyUI.UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) == -1) //if TRUE, the referenced button name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
+                if (UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) == -1) //if TRUE, the referenced button name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
                 {
-                    if (DoozyUI.UIManager.GetIndexForButtonSound(uiButton.onClickSound) == -1) //the backup sound name does not exist in the database; we perform the rollback
+                    if (UIManager.GetIndexForButtonSound(uiButton.onClickSound) == -1) //the backup sound name does not exist in the database; we perform the rollback
                     {
-                        uiButton.onClickSound = DoozyUI.UIManager.DEFAULT_SOUND_NAME; //we set the backup sound name as the default name
-                        uiButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[DoozyUI.UIManager.GetIndexForButtonSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME)]; //we reference the default sound name from the database
+                        uiButton.onClickSound = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound name as the default name
+                        uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(UIManager.DEFAULT_SOUND_NAME)]; //we reference the default sound name from the database
                     }
                     else //the referenced sound name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
                     {
-                        uiButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[DoozyUI.UIManager.GetIndexForButtonSound(uiButton.onClickSound)]; //we update the reference from the database
+                        uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(uiButton.onClickSound)]; //we update the reference from the database
                     }
                 }
                 else //the referenced sound name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
@@ -864,7 +864,7 @@ namespace DoozyUI
             {
                 if (debugThis)
                 {
-                    Debug.Log("onClickSound [" + uiButton.onClickSound + "] | onClickSoundRef [" + uiButton.onClickSoundReference.onClickSound + "] | index [" + DoozyUI.UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) + "]");
+                    Debug.Log("onClickSound [" + uiButton.onClickSound + "] | onClickSoundRef [" + uiButton.onClickSoundReference.onClickSound + "] | index [" + UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) + "]");
                 }
             }
             #endregion
@@ -934,9 +934,9 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiButton.showElements.Count; i++)
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementName(uiButton.showElements[i]) == -1) //something went wrong a we are asking to show an element name that is not in the database
+                    if (UIManager.GetIndexForElementName(uiButton.showElements[i]) == -1) //something went wrong a we are asking to show an element name that is not in the database
                     {
-                        uiButton.showElements[i] = DoozyUI.UIManager.DEFAULT_ELEMENT_NAME;
+                        uiButton.showElements[i] = UIManager.DEFAULT_ELEMENT_NAME;
                     }
                 }
             }
@@ -947,9 +947,9 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiButton.hideElements.Count; i++)
                 {
-                    if (DoozyUI.UIManager.GetIndexForElementName(uiButton.hideElements[i]) == -1) //something went wrong a we are asking to hide an element name that is not in the database
+                    if (UIManager.GetIndexForElementName(uiButton.hideElements[i]) == -1) //something went wrong a we are asking to hide an element name that is not in the database
                     {
-                        uiButton.hideElements[i] = DoozyUI.UIManager.DEFAULT_ELEMENT_NAME;
+                        uiButton.hideElements[i] = UIManager.DEFAULT_ELEMENT_NAME;
                     }
                 }
             }

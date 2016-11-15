@@ -27,7 +27,7 @@ namespace HutongGames.PlayMaker.Actions
             {
                 for (int i = 0; i < showElements.Length; i++)
                 {
-                   DoozyUI.UIManager.ShowUiElement(showElements[i]);
+                    UIManager.ShowUiElement(showElements[i]);
 
                     if (debugThis)
                         Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Show^" + showElements[i]);
@@ -38,7 +38,7 @@ namespace HutongGames.PlayMaker.Actions
             {
                 for (int i = 0; i < hideElements.Length; i++)
                 {
-                   DoozyUI.UIManager.HideUiElement(hideElements[i]);
+                    UIManager.HideUiElement(hideElements[i]);
 
                     if (debugThis)
                         Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Hide^" + hideElements[i]);

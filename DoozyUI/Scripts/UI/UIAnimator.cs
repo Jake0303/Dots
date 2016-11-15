@@ -6,7 +6,7 @@ using UnityEngine;
 using DG.Tweening;
 
 #if dUI_MasterAudio
-//using DarkTonic.MasterAudio;
+using DarkTonic.MasterAudio;
 #endif
 
 namespace DoozyUI
@@ -79,7 +79,7 @@ namespace DoozyUI
         [System.Serializable]
         public class SoundDetails
         {
-            public string soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
+            public string soundName = UIManager.DEFAULT_SOUND_NAME;
         }
         #endregion
 
@@ -103,8 +103,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -123,8 +123,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -144,8 +144,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -163,8 +163,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -193,8 +193,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -220,8 +220,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -249,8 +249,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -278,8 +278,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -305,8 +305,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -325,8 +325,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -346,8 +346,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -366,8 +366,8 @@ namespace DoozyUI
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
             public float delay = 0;
             //[Tooltip("Sends trigger sounds")]
-            public SoundDetails soundAtStartReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
-            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName =DoozyUI.UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtStartReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
+            public SoundDetails soundAtFinishReference = new SoundDetails() { soundName = UIManager.DEFAULT_SOUND_NAME };
             //DoozyUI 1.2d old sounds - used for upgrade purposes only
             public string soundAtStart;
             public string soundAtFinish;
@@ -388,7 +388,7 @@ namespace DoozyUI
             var aSource = tempGO.AddComponent<AudioSource>(); ; // add an audio source
             aSource.clip = clip; // define the clip
                                  // set other aSource properties here, if desired - custom volume, custom pitch, etc...
-            aSource.volume = GLOBALS.Volume / 100;
+            aSource.volume = GLOBALS.Volume / 50;
             aSource.Play(); // start the sound
             Destroy(tempGO, clip.length); // destroy object after clip duration
             return aSource; // return the AudioSource reference
@@ -396,8 +396,8 @@ namespace DoozyUI
 
         /// <summary>
         /// Plays a sound with an AudioSource or with Master Audio. If the string is empty or null this function does nothing.
-        /// This function will play a sound regardless if the sound is off inDoozyUI.UIManager.
-        /// To play a sound and check if the sound is on in UIManager call UIAnimator.PlaySound(soundName,DoozyUI.UIManager.Instance.soundOn);
+        /// This function will play a sound regardless if the sound is off in UIManager.
+        /// To play a sound and check if the sound is on in UIManager call UIAnimator.PlaySound(soundName, UIManager.Instance.soundOn);
         /// </summary>
         /// <param name="soundName"></param>
         public static void PlaySound(string soundName)
@@ -412,16 +412,16 @@ namespace DoozyUI
         /// <param name="soundName">Sound name.</param>
         public static void PlaySound(string soundName, bool soundOn)
         {
-            if (string.IsNullOrEmpty(soundName) || soundOn == false || soundName.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME))
+            if (string.IsNullOrEmpty(soundName) || soundOn == false || soundName.Equals(UIManager.DEFAULT_SOUND_NAME))
                 return;
 
             SoundOutput soundOutput = SoundOutput.AudioSource;
-            
-            if (DoozyUI.UIManager.usesMA_FireCustomEvent)
+
+            if (UIManager.usesMA_FireCustomEvent)
             {
                 soundOutput = SoundOutput.MasterAudioFireCustomEvent;
             }
-            else if (DoozyUI.UIManager.usesMA_PlaySoundAndForget)
+            else if (UIManager.usesMA_PlaySoundAndForget)
             {
                 soundOutput = SoundOutput.MasterAudioPlaySoundAndForget;
             }
@@ -441,7 +441,7 @@ namespace DoozyUI
 
                 case SoundOutput.MasterAudioPlaySoundAndForget:
 #if dUI_MasterAudio
-                  //  MasterAudio.PlaySoundAndForget(soundName);
+                    MasterAudio.PlaySoundAndForget(soundName);
 #else
                     Debug.Log("[DoozyUI] You are trying to use MasterAudio by calling the PlaySoundAndForget method, but you don't have it enabled. Please check if the 'dUI_MasterAudio' symbol is defined in 'Scripting Define Symbol'. You can find it by going to [Edit] -> [Project Settings] -> [Player] -> look at the inspector -> [Other Settings] -> look for [Scripting Define Symbols] => if you do not see 'dUI_MasterAudio' there, please add it.");
 #endif
@@ -449,7 +449,7 @@ namespace DoozyUI
 
                 case SoundOutput.MasterAudioFireCustomEvent:
 #if dUI_MasterAudio
-                  //  MasterAudio.FireCustomEvent(soundName, Vector3.zero);
+                    MasterAudio.FireCustomEvent(soundName, Vector3.zero);
 #else
                     Debug.Log("[DoozyUI] You are trying to use MasterAudio by calling the FireCustomEvent method, but you don't have it enabled. Please check if the 'dUI_MasterAudio' symbol is defined in 'Scripting Define Symbol'. You can find it by going to [Edit] -> [Project Settings] -> [Player] -> look at the inspector -> [Other Settings] -> look for [Scripting Define Symbols] => if you do not see 'dUI_MasterAudio' there, please add it.");
 #endif
@@ -536,7 +536,7 @@ namespace DoozyUI
 
             RectTransform parent = rectTransform.parent.GetComponent<RectTransform>();  //We need to do this check because when we Instantiate a notification we need to use the uiContainer if the parent is null.
             if (parent == null)
-                parent =DoozyUI.UIManager.GetUiContainer.GetComponent<RectTransform>();
+                parent = UIManager.GetUiContainer.GetComponent<RectTransform>();
 
             Vector3 targetPosition = initialData.startAnchoredPosition3D;
 #if UNITY_5_3 == false
@@ -667,11 +667,12 @@ namespace DoozyUI
             {
                 string tweenID = rectTransform.GetInstanceID() + "_DoMoveIn";
                 rectTransform.anchoredPosition = position;
-                rectTransform.DOAnchorPos3D(initialData.startAnchoredPosition3D, time, false)
+                rectTransform
+                    .DOAnchorPos3D(initialData.startAnchoredPosition3D, time, false)
                         .SetDelay(delay)
                         .SetEase(moveIn.easeType)
                         .SetId(tweenID)
-                        .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnStart(() =>
                         {
                             if (!instantAction)
@@ -726,7 +727,7 @@ namespace DoozyUI
                     .SetDelay(delay)
                     .SetEase(rotationIn.easeType)
                     .SetId(tweenID)
-                    .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                    .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnStart(() =>
                     {
                         if (!instantAction)
@@ -781,7 +782,7 @@ namespace DoozyUI
                     .SetDelay(delay)
                     .SetEase(scaleIn.easeType)
                     .SetId(tweenID)
-                    .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                    .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnStart(() =>
                     {
                         if (!instantAction)
@@ -845,7 +846,7 @@ namespace DoozyUI
                     .SetDelay(delay)
                     .SetEase(fadeIn.easeType)
                     .SetId(tweenID)
-                    .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                    .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnStart(() =>
                     {
                         if (!instantAction)
@@ -924,7 +925,7 @@ namespace DoozyUI
                     .SetDelay(moveLoop.delay)
                     .SetEase(moveLoop.easeType)
                     .SetId(tweenID)
-                    .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                    .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnStart(() =>
                     {
                         if (initialData.soundOn)
@@ -938,7 +939,7 @@ namespace DoozyUI
                             .SetEase(moveLoop.easeType)
                             .SetLoops(moveLoop.loops, moveLoop.loopType)
                             .SetId(tweenID)
-                            .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                            .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                             .OnComplete(() =>
                             {
                                 if (initialData.soundOn)
@@ -957,7 +958,7 @@ namespace DoozyUI
                     .SetLoops(moveLoop.loops, moveLoop.loopType)
                     .SetEase(moveLoop.easeType)
                     .SetId(tweenID)
-                    .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                    .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnStart(() =>
                     {
                         if (initialData.soundOn)
@@ -1004,7 +1005,7 @@ namespace DoozyUI
                    .SetDelay(rotationLoop.delay)
                    .SetEase(rotationLoop.easeType)
                    .SetId(tweenID)
-                   .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                   .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                    .OnStart(() =>
                    {
                        if (initialData.soundOn)
@@ -1016,7 +1017,7 @@ namespace DoozyUI
                                .SetEase(rotationLoop.easeType)
                                .SetLoops(rotationLoop.loops, rotationLoop.loopType)
                                .SetId(tweenID)
-                               .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                               .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                                .OnComplete(() =>
                                {
                                    if (initialData.soundOn)
@@ -1034,7 +1035,7 @@ namespace DoozyUI
                   .SetLoops(rotationLoop.loops, rotationLoop.loopType)
                   .SetEase(rotationLoop.easeType)
                   .SetId(tweenID)
-                  .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                  .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                   .OnStart(() =>
                   {
                       if (initialData.soundOn)
@@ -1076,7 +1077,7 @@ namespace DoozyUI
                 .SetEase(scaleLoop.easeType)
                 .SetLoops(scaleLoop.loops, scaleLoop.loopType)
                 .SetId(tweenID)
-                .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                .OnStart(() =>
                {
                    if (initialData.soundOn)
@@ -1133,7 +1134,7 @@ namespace DoozyUI
                     .SetEase(fadeLoop.easeType)
                     .SetLoops(fadeLoop.loops, fadeLoop.loopType)
                     .SetId(tweenID)
-                    .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                    .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnStart(() =>
                     {
                         if (initialData.soundOn)
@@ -1240,7 +1241,7 @@ namespace DoozyUI
 
             RectTransform parent = rectTransform.parent.GetComponent<RectTransform>();  //We need to do this check because when we Instantiate a notification we need to use the uiContainer if the parent is null.
             if (parent == null)
-                parent =DoozyUI.UIManager.GetUiContainer.GetComponent<RectTransform>();
+                parent = UIManager.GetUiContainer.GetComponent<RectTransform>();
 
             Vector2 targetPosition = Vector2.zero;
 #if UNITY_5_3 == false
@@ -1375,7 +1376,7 @@ namespace DoozyUI
                         .SetDelay(delay)
                         .SetEase(moveOut.easeType)
                         .SetId(tweenID)
-                        .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnStart(() =>
                         {
                             if (!instantAction)
@@ -1426,7 +1427,7 @@ namespace DoozyUI
                         .SetDelay(delay)
                         .SetEase(rotationOut.easeType)
                         .SetId(tweenID)
-                        .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnStart(() =>
                         {
                             if (!instantAction)
@@ -1477,7 +1478,7 @@ namespace DoozyUI
                         .SetDelay(delay)
                         .SetEase(scaleOut.easeType)
                         .SetId(tweenID)
-                        .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnStart(() =>
                         {
                             if (!instantAction)
@@ -1541,7 +1542,7 @@ namespace DoozyUI
                         .SetDelay(delay)
                         .SetEase(fadeOut.easeType)
                         .SetId(tweenID)
-                        .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnStart(() =>
                         {
                             if (!instantAction)
@@ -1594,7 +1595,7 @@ namespace DoozyUI
             {
                 rectTransform.DOPunchAnchorPos(onClickAnimSettings.punchPositionPunch, onClickAnimSettings.punchPositionDuration, onClickAnimSettings.punchPositionVibrato, onClickAnimSettings.punchPositionElasticity, onClickAnimSettings.punchPositionSnapping)
                     .SetDelay(onClickAnimSettings.punchPositionDelay)
-                    .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                    .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnComplete(() =>
                     {
                         rectTransform.DOAnchorPos3D(initialData.startAnchoredPosition3D, 0.1f).Play();
@@ -1606,7 +1607,7 @@ namespace DoozyUI
             {
                 rectTransform.DOPunchRotation(onClickAnimSettings.punchRotationPunch, onClickAnimSettings.punchRotationDuration, onClickAnimSettings.punchRotationVibrato, onClickAnimSettings.punchPositionElasticity)
                         .SetDelay(onClickAnimSettings.punchRotationDelay)
-                        .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnComplete(() =>
                         {
                             rectTransform.DORotate(initialData.startRotation, 0.1f).Play();
@@ -1618,7 +1619,7 @@ namespace DoozyUI
             {
                 rectTransform.DOPunchScale(onClickAnimSettings.punchScalePunch, onClickAnimSettings.punchScaleDuration, onClickAnimSettings.punchScaleVibrato, onClickAnimSettings.punchScaleElasticity)
                         .SetDelay(onClickAnimSettings.punchScaleDelay)
-                        .SetUpdate(UpdateType.Normal,DoozyUI.UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnComplete(() =>
                         {
                             rectTransform.DOScale(initialData.startScale, 0.1f).Play();

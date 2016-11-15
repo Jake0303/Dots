@@ -60,12 +60,12 @@ namespace DoozyUI
 
         void OnEnable()
         {
-           DoozyUI.UIManager.RegisterPlaymakerEventDispatcher(this);
+            UIManager.RegisterPlaymakerEventDispatcher(this);
         }
 
         void OnDisable()
         {
-           DoozyUI.UIManager.UnregisterPlaymakerEventDispatcher(this);
+            UIManager.UnregisterPlaymakerEventDispatcher(this);
         }
 
         #region Update TargetFSM
@@ -79,18 +79,18 @@ namespace DoozyUI
         #endregion
 
         #region Dispatch Event
-        public void DispatchEvent(string eventValue,DoozyUI.UIManager.EventType eventType)
+        public void DispatchEvent(string eventValue, UIManager.EventType eventType)
         {
             switch (eventType)
             {
-                caseDoozyUI.UIManager.EventType.GameEvent:
+                case UIManager.EventType.GameEvent:
                     if (dispatchGameEvents)
                     {
                         StartCoroutine(WaitAndSendEvent(eventValue));
                     }
                     break;
 
-                caseDoozyUI.UIManager.EventType.ButtonClick:
+                case UIManager.EventType.ButtonClick:
                     if (dispatchButtonClicks)
                     {
                         StartCoroutine(WaitAndSendEvent(eventValue));

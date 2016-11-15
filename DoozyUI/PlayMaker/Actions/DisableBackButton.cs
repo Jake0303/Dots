@@ -21,7 +21,7 @@ namespace HutongGames.PlayMaker.Actions
 
         public override void OnEnter()
         {
-           DoozyUI.UIManager.DisableBackButton();
+            UIManager.DisableBackButton();
 
             if (debugThis.Value)
                 Debug.Log("[DoozyUI] - Playmaker - State Name [" + State.Name + "] - Disable Back Button");

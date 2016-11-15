@@ -41,12 +41,12 @@ namespace DoozyUI
             }
             if (go.transform.parent == null)
             {
-                go.transform.SetParent(DoozyUI.UIManager.GetUiContainer);
+                go.transform.SetParent(UIManager.GetUiContainer);
             }
             go.GetComponent<RectTransform>().localScale = Vector3.one;
             go.AddComponent<Image>();
             UIButton uiButton = go.AddComponent<UIButton>();
-            uiButton.buttonNameReference = new ButtonName { buttonName =DoozyUI.UIManager.DEFAULT_BUTTON_NAME };
+            uiButton.buttonNameReference = new ButtonName { buttonName = UIManager.DEFAULT_BUTTON_NAME };
             Selection.activeObject = go;
         }
 #endif
@@ -68,8 +68,8 @@ namespace DoozyUI
         #endregion
 
         #region BACKUP VARIABLES
-        public string buttonName =DoozyUI.UIManager.DEFAULT_BUTTON_NAME;
-        public string onClickSound =DoozyUI.UIManager.DEFAULT_SOUND_NAME;
+        public string buttonName = UIManager.DEFAULT_BUTTON_NAME;
+        public string onClickSound = UIManager.DEFAULT_SOUND_NAME;
         #endregion
 
         #region Public Variables
@@ -155,7 +155,7 @@ namespace DoozyUI
                 initialData.startRotation = startRotation;
                 initialData.startScale = startScale;
                 initialData.startFadeAlpha = 1f;
-                initialData.soundOn =DoozyUI.UIManager.isSoundOn;
+                initialData.soundOn = UIManager.isSoundOn;
                 return initialData;
             }
         }
@@ -324,7 +324,7 @@ namespace DoozyUI
         #region Play Sound
         void PlaySound()
         {
-            UIAnimator.PlaySound(onClickSoundReference.onClickSound,DoozyUI.UIManager.isSoundOn);
+            UIAnimator.PlaySound(onClickSoundReference.onClickSound, UIManager.isSoundOn);
         }
         #endregion
 
@@ -390,7 +390,7 @@ namespace DoozyUI
                 gameEvents = gameEvents
             };
             //Message.Send<UIButtonMessage>(m);
-           DoozyUI.UIManager.SendButtonClick(m.buttonName, m.addToNavigationHistory, m.backButton, m.gameObject, m.showElements, m.hideElements, m.gameEvents);
+            UIManager.SendButtonClick(m.buttonName, m.addToNavigationHistory, m.backButton, m.gameObject, m.showElements, m.hideElements, m.gameEvents);
         }
         #endregion
 
@@ -408,7 +408,7 @@ namespace DoozyUI
                 for (int i = 0; i < gameEvents.Count; i++)
                 {
                     yield return new WaitForEndOfFrame();
-                   DoozyUI.UIManager.SendGameEvent(gameEvents[i]);
+                    UIManager.SendGameEvent(gameEvents[i]);
                 }
             }
         }

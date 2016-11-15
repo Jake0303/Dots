@@ -36,7 +36,7 @@ namespace DoozyUI
             }
             if (go.transform.parent == null)
             {
-                go.transform.SetParent(DoozyUI.UIManager.GetUiContainer);
+                go.transform.SetParent(UIManager.GetUiContainer);
             }
             go.GetComponent<RectTransform>().localScale = Vector3.one;
             go.AddComponent<UIEffect>();
@@ -109,7 +109,7 @@ namespace DoozyUI
 
             if (autoRegister)
             {
-               DoozyUI.UIManager.RegisterUiEffect(this);
+                UIManager.RegisterUiEffect(this);
             }
 
             masterPS.Stop(true);
@@ -128,7 +128,7 @@ namespace DoozyUI
             if (targetUIElement == null)
                 return;
 
-           DoozyUI.UIManager.UnregisterUiEffect(this);
+            UIManager.UnregisterUiEffect(this);
         }
 
         void Start()

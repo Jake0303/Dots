@@ -8,7 +8,7 @@ public class UpdateSortingLayerName : MonoBehaviour
 
     public void UpdateCanvases()
     {
-        DoozyUI.UIManager.UpdateCanvases(gameObject, newLayerName);
+          DoozyUI.UIManager.UpdateCanvases(gameObject, newLayerName);
     }
 
     public void UpdateRenderers()

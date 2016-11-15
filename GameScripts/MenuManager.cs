@@ -233,10 +233,16 @@ public class MenuManager : MonoBehaviour
     public void OnVolumeSliderChanged(float value)
     {
         GLOBALS.Volume = value;
+        GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
         if(GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic != null)
             GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 50);
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
+        if (value != 0)
+        {
+            GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
+            GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(false);
+            GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
+        }
     }
 
     //Fade text animation for the connecting text
@@ -279,34 +285,12 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
     }
-    public void TransitionToLobby()
-    {
-        /*
-        //GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        GameObject.Find("GameName").GetComponent<Text>().text = "";
-        GameObject.Find("VersionText").GetComponent<Text>().text = "";
-        GameObject.Find("PlayButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("PlayButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("PlayButton").GetComponentInChildren<Text>().color = Color.clear;
-        GameObject.Find("OptionsButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("OptionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("OptionsButton").GetComponentInChildren<Text>().color = Color.clear;
-        if (GameObject.Find("ExitButton"))
-        {
-            GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
-            GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-            GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
-        }
-        GameObject.Find("InstructionsButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
-        */
-    }
+
     public void ReloadLeaderBoard()
     {
         if(LeaderbordController.leaderBoardError)
         {
-            //StartCoroutine(GameObject.Find("scores").GetComponent<LeaderbordController>().GetScores());
+            StartCoroutine(GameObject.Find("scores").GetComponent<LeaderbordController>().GetScores());
         }
     }
 
