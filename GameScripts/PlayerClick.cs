@@ -524,9 +524,9 @@ public class PlayerClick : PunBehaviour
             {
                 if (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    //&& !playingAnim
-                    //&& !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
-                    //&& !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid
+                    && !playingAnim
+                    && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
+                    && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid
                     && !GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().isVisible)
                 {
                     objectID = hit.collider.name;// this gets the object that is hit

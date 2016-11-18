@@ -46,11 +46,6 @@ public class FacebookManager : MonoBehaviour
     public void FBLogin()
     {
         FBUpdateLoginStatus(FB.IsLoggedIn);
-        if (FB.IsLoggedIn)
-        {
-            return;
-        }
-
         if (!FB.IsInitialized)
         {
             FB.Init(FBInitCallback, FBOnHideUnity);
@@ -60,7 +55,6 @@ public class FacebookManager : MonoBehaviour
             FB.ActivateApp();
             FBGetPerms();
         }
-        Debug.Log(FB.AppId);
     }
 
     private void FBInitCallback()
@@ -81,11 +75,15 @@ public class FacebookManager : MonoBehaviour
         {
             instance.Init();
         }
+        else
+        {
+            Init();
+        }
     }
     void FBGetPerms()
     {
-
         List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
+        //Application.ExternalCall("FB.login");
         FB.LogInWithReadPermissions(perms, FBAuthCallback);
     }
 
@@ -103,19 +101,12 @@ public class FacebookManager : MonoBehaviour
 
     private void FBAuthCallback(ILoginResult result)
     {
-        // return focus to your game after facebook login completes
-        // include this function on your unity index.html page
-        /* <script type='text/javascript'>
-                function recuperaFocus() {
-                    this.focus();
-                }
-          </ script >
-        */
-        Application.ExternalCall("recuperaFocus");
         if (FB.IsLoggedIn)
         {
             AccessToken accessToken = AccessToken.CurrentAccessToken;
-            Debug.Log("Get Short Lived Access token: " + accessToken.UserId + ", " + accessToken.ExpirationTime + ", " + accessToken.Permissions);
+            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
+            GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
+            GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         }
         else
         {
@@ -129,9 +120,10 @@ public class FacebookManager : MonoBehaviour
     {
         if (isLoggedIn)
         {
+            /*
             GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
             GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
-            GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
+            GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);*/
         }
     }
     #endregion
