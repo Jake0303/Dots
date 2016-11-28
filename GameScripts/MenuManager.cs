@@ -187,7 +187,7 @@ public class MenuManager : MonoBehaviour
                 var tempGO = new GameObject("Music - " + clip.name); // create the temp object
                 tempGO.transform.position = Vector3.zero; // set its position
                 var aSource = tempGO.AddComponent<AudioSource>(); ; // add an audio source
-                aSource.mute = !DoozyUI.UIManager.isMusicOn;  //we check if the music is on or off
+                //aSource.mute = !DoozyUI.UIManager.isMusicOn;  //we check if the music is on or off
                 aSource.clip = clip; // define the clip
                 aSource.loop = true;
                 return aSource; // return the AudioSource reference
@@ -216,12 +216,13 @@ public class MenuManager : MonoBehaviour
 
         if (DoozyUI.UIManager.isMusicOn == menuMusicAudioSource.mute)
         {
-            menuMusicAudioSource.mute = !DoozyUI.UIManager.isMusicOn;
+           // menuMusicAudioSource.mute = !DoozyUI.UIManager.isMusicOn;
         }
     }
 
     void Start()
     {
+        //DontDestroyOnLoad(this.transform);
         GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
         backButton = GameObject.Find("BackToMenuButton");
         // Initialize volume slider
@@ -240,8 +241,8 @@ public class MenuManager : MonoBehaviour
         if (value != 0)
         {
             GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
-            GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(false);
-            GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
+            //GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(false);
+            //GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
         }
     }
 

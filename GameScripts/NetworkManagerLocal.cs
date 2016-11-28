@@ -8,17 +8,15 @@ using UnityEngine.SceneManagement;
 
 public class NetworkManagerLocal : PunBehaviour
 {
-    [SerializeField]
-    private GameObject _playerPrefab = null;
     public bool AutoConnect = true;
-
+    private GameObject newPlayer;
     private bool ConnectInUpdate = false;
 
     void Start()
     {
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
         PhotonNetwork.automaticallySyncScene = true;
-
+        SceneManager.sceneLoaded += SceneLoaded;
     }
     void Update()
     {
@@ -91,7 +89,9 @@ public class NetworkManagerLocal : PunBehaviour
     {
         base.OnJoinedRoom();
         if (PhotonNetwork.isMasterClient)
+        {
             LoadLevel();
+        }
     }
     //If joining a match failed, create one
     void OnPhotonRandomJoinFailed()
@@ -100,15 +100,16 @@ public class NetworkManagerLocal : PunBehaviour
     }
 
     //When the main menu is loaded add the listeners for each button
-    void OnLevelWasLoaded(int level)
+    void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
         //Mainmenu
-        if (level == 0)
+        if (scene.buildIndex == 0)
         {
 
             GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+            GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<FacebookManager>().FBButtonClick()));
             GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("LeaderboardsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("LBackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
@@ -125,8 +126,8 @@ public class NetworkManagerLocal : PunBehaviour
             }*/
         }
         //Game
-        else if (level == 1)
-        {
+        else
+        { 
             GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
             SpawnPlayer();
         }
@@ -175,6 +176,6 @@ public class NetworkManagerLocal : PunBehaviour
 
     void SpawnOnNetwork(Vector3 pos, Quaternion rot)
     {
-        GameObject newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", pos, rot, 0);
+     newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", pos, rot, 0);
     }
 }

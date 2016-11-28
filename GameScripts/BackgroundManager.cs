@@ -10,6 +10,7 @@ public class BackgroundManager : MonoBehaviour
     public GameObject square;
     Color fade;
     float alpha = 0;
+
     public IEnumerator ShowSquare()
     {
         while (true)
@@ -32,6 +33,7 @@ public class BackgroundManager : MonoBehaviour
     {
         DontDestroyOnLoad(this.transform);
         StartCoroutine(ShowSquare());
+        SceneManager.sceneLoaded += SceneLoaded;
     }
 
     IEnumerator fadeIn(GameObject newSquare)
@@ -90,10 +92,10 @@ public class BackgroundManager : MonoBehaviour
 
     }
 
-    void OnLevelWasLoaded(int level)
+    void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
         
-        if(level == 1)
+        if(scene.buildIndex == 1)
         {
             StopAllCoroutines();
         }

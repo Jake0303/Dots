@@ -31,7 +31,6 @@ public class PlayerClick : PunBehaviour
     private Collider[] hitCollidersBottom;
     private GameObject[] scores;
     public bool pointScored = false;
-    private bool isPointScored = false;
     private bool doubleSquare = false;
     [SerializeField]
     public GameObject lineHorizontal, lineVertical, centerSquare;
@@ -44,31 +43,20 @@ public class PlayerClick : PunBehaviour
     /*
      * Sync Line position
      */
-    private float lerpRate;
-    private float normalLerpRate = 6;
-    private float fasterLerpRate = 9;
 
-    private float threshold = 0.5f;
     public bool animFinished = false;
     public bool squareAnimFinished = false;
     public bool playingAnim = false;
     public bool playingSquareAnim = false;
-    private float closeEnough = 1f;
     float gravity = 39.2f;//x4 gravity
     /*
      * Sync Line rotation
      */
-    private float rotLerpRate = 6;
-
     private float lastLineRot;
-    private float rotThreshold = 0.01f;
 
-    private float rotCloseEnough = 0.1f;
-
-    private PhotonView photonView;
+    private new PhotonView photonView;
     void Start()
     {
-        lerpRate = normalLerpRate;
         photonView = this.GetComponent<PhotonView>();
 
         leftLineEffect = Instantiate(linePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;

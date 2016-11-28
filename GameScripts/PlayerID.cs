@@ -7,7 +7,7 @@ using System;
 
 public class PlayerID : PunBehaviour
 {
-    public string playerID;
+    public string playerID, fbToken;
     public bool isPlayersTurn = false;
     public bool winner = false;
 
@@ -31,44 +31,56 @@ public class PlayerID : PunBehaviour
     void Start()
     {
         PhotonNetwork.OnEventCall += this.OnEvent;
+        bool fbInfoFound = false;
         //Setup the enter username panel UI locally
         if (photonView.isMine)
         {
-            goPanel = (GameObject)Instantiate(panel);
-            goPanel.transform.localScale = new Vector3(0.25f, 1f, 1f);
-            goPanel.name = "EnterNamePanel";
+            foreach (var aData in LeaderbordController.data.list)
+            {
+                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
+                {
+                    fbInfoFound = true;
+                    this.GetComponent<UIManager>().fbAuthenticated(aData["Username"].str);
+                }
+            }
+            if (!fbInfoFound)
+            {
+                goPanel = (GameObject)Instantiate(panel);
+                goPanel.transform.localScale = new Vector3(0.25f, 1f, 1f);
+                goPanel.name = "EnterNamePanel";
 
-            GameObject goText = (GameObject)Instantiate(infoText);
-            goText.transform.localScale = new Vector3(4, 1, 1);
-            goText.GetComponent<Text>().fontSize = 18;
+                GameObject goText = (GameObject)Instantiate(infoText);
+                goText.transform.localScale = new Vector3(4, 1, 1);
+                goText.GetComponent<Text>().fontSize = 18;
 
-            GameObject errorTxt = (GameObject)Instantiate(errorText);
-            errorTxt.transform.localScale = new Vector3(4, 1, 1);
+                GameObject errorTxt = (GameObject)Instantiate(errorText);
+                errorTxt.transform.localScale = new Vector3(4, 1, 1);
 
-            Text tempText = goText.GetComponent<Text>();
-            tempText.transform.SetParent(goPanel.transform, false);
+                Text tempText = goText.GetComponent<Text>();
+                tempText.transform.SetParent(goPanel.transform, false);
 
-            errorMsg = errorTxt.GetComponent<Text>();
-            errorMsg.transform.SetParent(goPanel.transform, false);
-            errorMsg.transform.position = new Vector3(errorMsg.transform.position.x, 40, errorMsg.transform.position.z);
+                errorMsg = errorTxt.GetComponent<Text>();
+                errorMsg.transform.SetParent(goPanel.transform, false);
+                errorMsg.transform.position = new Vector3(errorMsg.transform.position.x, 40, errorMsg.transform.position.z);
 
-            GameObject goInputField = (GameObject)Instantiate(userinputField);
-            goInputField.transform.localScale = new Vector3(4, 1, 1);
+                GameObject goInputField = (GameObject)Instantiate(userinputField);
+                goInputField.transform.localScale = new Vector3(4, 1, 1);
 
-            GameObject goButton = (GameObject)Instantiate(prefabButton);
-            goButton.transform.localScale = new Vector3(3, 1, 1);
+                GameObject goButton = (GameObject)Instantiate(prefabButton);
+                goButton.transform.localScale = new Vector3(3, 1, 1);
 
-            goPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
+                goPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
 
-            tempField = goInputField.GetComponent<InputField>();
-            tempField.transform.SetParent(goPanel.transform, false);
-            tempField.characterLimit = 12;
-            tempField.characterValidation = InputField.CharacterValidation.Alphanumeric;
-            tempField.ActivateInputField();
+                tempField = goInputField.GetComponent<InputField>();
+                tempField.transform.SetParent(goPanel.transform, false);
+                tempField.characterLimit = 12;
+                tempField.characterValidation = InputField.CharacterValidation.Alphanumeric;
+                tempField.ActivateInputField();
 
-            tempButton = goButton.GetComponent<Button>();
-            tempButton.transform.SetParent(goPanel.transform, false);
-            tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg));
+                tempButton = goButton.GetComponent<Button>();
+                tempButton.transform.SetParent(goPanel.transform, false);
+                tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg));
+            }
         }
         myTransform = transform;
         names = GameObject.FindGameObjectsWithTag("NameText");
@@ -114,6 +126,8 @@ public class PlayerID : PunBehaviour
             stream.SendNext(playersPanel);
             stream.SendNext(playerScore);
             stream.SendNext(winner);
+            stream.SendNext(playersWins);
+            stream.SendNext(playerLosses);
         }
         else
         {
@@ -123,6 +137,8 @@ public class PlayerID : PunBehaviour
             this.playersPanel = (string)stream.ReceiveNext();
             this.playerScore = (int)stream.ReceiveNext();
             this.winner = (bool)stream.ReceiveNext();
+            this.playersWins = (int)stream.ReceiveNext();
+            this.playerLosses = (int)stream.ReceiveNext();
         }
     }
 

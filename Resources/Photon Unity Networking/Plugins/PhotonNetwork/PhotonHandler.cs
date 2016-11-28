@@ -12,7 +12,7 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using SupportClassPun = ExitGames.Client.Photon.SupportClass;
-
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Internal Monobehaviour that allows Photon to run an Update loop.
@@ -39,6 +39,8 @@ internal class PhotonHandler : Photon.MonoBehaviour
 
     protected void Awake()
     {
+        SceneManager.sceneLoaded += SceneLoaded;
+
         if (SP != null && SP != this && SP.gameObject != null)
         {
             GameObject.DestroyImmediate(SP.gameObject);
@@ -151,7 +153,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
     }
 
     /// <summary>Called by Unity after a new level was loaded.</summary>
-    protected void OnLevelWasLoaded(int level)
+    protected void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
         PhotonNetwork.networkingPeer.NewSceneLoaded();
         PhotonNetwork.networkingPeer.SetLevelInPropsIfSynced(SceneManagerHelper.ActiveSceneName);

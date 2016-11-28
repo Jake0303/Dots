@@ -5,6 +5,7 @@ using System;
 
 public class FacebookManager : MonoBehaviour
 {
+    public string accessToken = "";
     #region Notes
     // Singleton is nice here 
     // you can then simply use FacebookManager.instance.WhatEverMethodYouWant()
@@ -30,7 +31,7 @@ public class FacebookManager : MonoBehaviour
     void Start()
     {
         // Initialized the singleton if no other component has accessed the singleton yet
-        
+
     }
 
     void Init()
@@ -77,13 +78,14 @@ public class FacebookManager : MonoBehaviour
         }
         else
         {
-            Init();
+            FB.ActivateApp();
+            FBGetPerms();
         }
     }
     void FBGetPerms()
     {
         List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
-        //Application.ExternalCall("FB.login");
+        //Application.ExternalCall("loginWithFB");
         FB.LogInWithReadPermissions(perms, FBAuthCallback);
     }
 
@@ -101,18 +103,10 @@ public class FacebookManager : MonoBehaviour
 
     private void FBAuthCallback(ILoginResult result)
     {
-        if (FB.IsLoggedIn)
-        {
-            AccessToken accessToken = AccessToken.CurrentAccessToken;
-            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
-            GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
-            GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
-        }
-        else
-        {
-            Debug.Log("User cancelled login");
-        }
-
+        accessToken = AccessToken.CurrentAccessToken.UserId;
+        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
+        GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
+        GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         FBUpdateLoginStatus(FB.IsLoggedIn);
     }
 

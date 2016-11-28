@@ -47,7 +47,8 @@ public class UIManager : PunBehaviour
         //Get Player Wins & Losses
         foreach (var aData in LeaderbordController.data.list)
         {
-            if (aData["Username"].str == GetComponent<PlayerID>().playerID)
+            if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken
+                && aData["Username"].str == GetComponent<PlayerID>().playerID)
             {
                 GetComponent<PlayerID>().playersWins = Int32.Parse(aData["Wins"].str);
                 GetComponent<PlayerID>().playerLosses = Int32.Parse(aData["Losses"].str);
@@ -162,6 +163,11 @@ public class UIManager : PunBehaviour
             GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
         }
     }
+
+    public void fbAuthenticated(string name)
+    {
+        photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, name);
+    }
     //Update the name text
     public void UpdateUI(Text textToUpdate, string text, GameObject player)
     {
@@ -222,7 +228,6 @@ public class UIManager : PunBehaviour
                 StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>(), false));
             origTexts[i] = names[i].GetComponent<Text>().text;
         }
-        string period = ".";
         for (;;)
         {
             if (NetworkServer.connections.Count > 3)

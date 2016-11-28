@@ -30,7 +30,7 @@ public class GameStart : PunBehaviour
     public Vector3 lineHorScale;
     public Vector3 squareScale;
     public List<GameObject> objectsToDelete = new List<GameObject>();
-    private PhotonView photonView;
+    private new PhotonView photonView;
     private int viewID;
     private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
 
@@ -254,7 +254,6 @@ public class GameStart : PunBehaviour
     [PunRPC]
     void RpcSetFirstTurn(string playerID)
     {
-        GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;

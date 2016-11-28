@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine.EventSystems;
+using System;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -2174,7 +2175,7 @@ namespace DoozyUI
             }
             else if (string.IsNullOrEmpty(nData.prefabName) == false)//we don't have a prefab reference and we check if we have a prefabName we should be looking for in Resources
             {
-                Object notificationPrefab = null;
+                UnityEngine.Object notificationPrefab = null;
                 try
                 {
                     notificationPrefab = Resources.Load(nData.prefabName); //we look for the notification prefab; we do this in a 'try catch' just in case the name was mispelled or the prefab does not exist
@@ -2965,33 +2966,36 @@ namespace DoozyUI
         {
             visibleHideElementsList = new List<string>();
             hideElements = hideElements.Where(s => s.Equals(DEFAULT_ELEMENT_NAME) == false).ToList(); //we remove any default element name values (just in case) | FIXED
-            visibleHideElementsList = hideElements.Where(s => GetUiElements(s).Any(element => element.isVisible)).ToList(); //v2.6 fix generously provided by [bomberest] Andrew AnF Shut
-
-            if (showElements != null && showElements.Count > 0)
+            try
             {
-                for (int i = 0; i < showElements.Count; i++)
+                visibleHideElementsList = hideElements.Where(s => GetUiElements(s).Any(element => element.isVisible)).ToList(); //v2.6 fix generously provided by [bomberest] Andrew AnF Shut
+
+                if (showElements != null && showElements.Count > 0)
                 {
-                    ShowUiElement(showElements[i]);
+                    for (int i = 0; i < showElements.Count; i++)
+                    {
+                        ShowUiElement(showElements[i]);
+                    }
                 }
-            }
 
-            if (hideElements != null && hideElements.Count > 0)
-            {
-                for (int i = 0; i < hideElements.Count; i++)
+                if (hideElements != null && hideElements.Count > 0)
                 {
-                    HideUiElement(hideElements[i]);
+                    for (int i = 0; i < hideElements.Count; i++)
+                    {
+                        HideUiElement(hideElements[i]);
+                    }
                 }
-            }
 
-            if (addToNavigationHistory)
-            {
-                Navigation navItem = new Navigation();
-                navItem.showElements = new List<string>();
-                navItem.showElements = visibleHideElementsList;
-                navItem.hideElements = new List<string>();
-                navItem.hideElements = showElements;
-                navStack.Push(navItem);
-            }
+                if (addToNavigationHistory)
+                {
+                    Navigation navItem = new Navigation();
+                    navItem.showElements = new List<string>();
+                    navItem.showElements = visibleHideElementsList;
+                    navItem.hideElements = new List<string>();
+                    navItem.hideElements = showElements;
+                    navStack.Push(navItem);
+                }
+            } catch (Exception ex) { Debug.Log(ex.Message); }
         }
 
         /// <summary>

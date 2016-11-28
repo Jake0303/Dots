@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+
 //This class removes duplicate objects if attached
 public class BackgroundSingleton : MonoBehaviour
 {
@@ -9,7 +11,7 @@ public class BackgroundSingleton : MonoBehaviour
     {
         get { return instance; }
     }
-    void OnLevelWasLoaded(int level)
+    void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
         foreach (GameObject square in GameObject.FindGameObjectsWithTag("FadedSquare"))
         {
@@ -18,6 +20,7 @@ public class BackgroundSingleton : MonoBehaviour
     }
     void Start()
     {
+        SceneManager.sceneLoaded += SceneLoaded;
         foreach (GameObject square in GameObject.FindGameObjectsWithTag("FadedSquare"))
         {
             Destroy(square);
