@@ -85,7 +85,7 @@ public class UIManagerInspector : Editor
 
         #region Show Help
         DoozyUIHelper.ResetColors();
-        uiManager.showHelp = EditorGUILayout.ToggleLeft("Show Help", uiManager.showHelp, GUILayout.Width(80));
+      //  uiManager.showHelp = EditorGUILayout.ToggleLeft("Show Help", uiManager.showHelp, GUILayout.Width(80));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 

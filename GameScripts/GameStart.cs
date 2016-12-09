@@ -15,7 +15,6 @@ public class GameStart : PunBehaviour
     [SerializeField]
     public GameObject dots, lineHor, lineVert, centerSquare;
     public GameObject[] listOfDots = new GameObject[GLOBALS.GRIDHEIGHT * GLOBALS.GRIDWIDTH];
-    public GameObject hoverLineHor, hoverLineVert;
     public List<string> playerNames = new List<string>();
     //The speed at which each dot in the grid spawns
 

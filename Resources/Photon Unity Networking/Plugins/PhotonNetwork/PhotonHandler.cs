@@ -7,12 +7,10 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
-using ExitGames.Client.Photon;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
-using Hashtable = ExitGames.Client.Photon.Hashtable;
-using SupportClassPun = ExitGames.Client.Photon.SupportClass;
 using UnityEngine.SceneManagement;
+using UnityEngine.Profiling;
 
 /// <summary>
 /// Internal Monobehaviour that allows Photon to run an Update loop.
@@ -178,7 +176,7 @@ internal class PhotonHandler : Photon.MonoBehaviour
         }
 
         sendThreadShouldRun = true;
-        SupportClassPun.CallInBackground(FallbackSendAckThread);   // thread will call this every 100ms until method returns false
+        //SupportClassPun.CallInBackground(FallbackSendAckThread);   // thread will call this every 100ms until method returns false
 #endif
     }
 

@@ -41,6 +41,7 @@ public class PlayerID : PunBehaviour
                 {
                     fbInfoFound = true;
                     this.GetComponent<UIManager>().fbAuthenticated(aData["Username"].str);
+                    break;
                 }
             }
             if (!fbInfoFound)

@@ -166,6 +166,7 @@ public class UIManager : PunBehaviour
 
     public void fbAuthenticated(string name)
     {
+        GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
         photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, name);
     }
     //Update the name text

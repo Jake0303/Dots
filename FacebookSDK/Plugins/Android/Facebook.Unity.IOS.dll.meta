@@ -13,7 +13,7 @@ PluginImporter:
       settings:
         CPU: AnyCPU
     Any:
-      enabled: 1
+      enabled: 0
       settings: {}
     Editor:
       enabled: 0
@@ -37,9 +37,6 @@ PluginImporter:
       enabled: 0
       settings:
         CPU: AnyCPU
-    WebGL:
-      enabled: 1
-      settings: {}
     Win:
       enabled: 0
       settings:
