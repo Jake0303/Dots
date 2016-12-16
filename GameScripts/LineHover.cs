@@ -29,6 +29,7 @@ public class LineHover : PunBehaviour
                     && hit.collider.GetComponentInChildren<Renderer>().material.name.Contains("glow"))
                 {
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
+                    hit.collider.GetComponentInParent<Light>().enabled = false;
                 }
                 else if (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>() != null
@@ -39,6 +40,8 @@ public class LineHover : PunBehaviour
                 {
                     hit.collider.GetComponentInChildren<Renderer>().enabled = true;
                     hit.collider.GetComponentInChildren<Renderer>().material = hoverMat;
+                    hit.collider.GetComponentInParent<Light>().enabled = true;
+                    hit.collider.GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
                     hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", GetComponent<PlayerColor>().playerColor);
                     hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
                 }

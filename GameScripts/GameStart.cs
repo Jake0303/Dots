@@ -78,7 +78,7 @@ public class GameStart : PunBehaviour
             //Hide temporary lines
             lineHor.GetComponentInChildren<Renderer>().enabled = false;
             lineVert.GetComponentInChildren<Renderer>().enabled = false;
-            //centerSquareuare.GetComponent<Renderer>().enabled = false;
+            centerSquare.GetComponent<Renderer>().enabled = false;
             startGame = false;
         }
     }
@@ -148,7 +148,7 @@ public class GameStart : PunBehaviour
     [PunRPC]
     void EnableDotLight(string dot)
     {
-        GameObject.Find(dot).GetComponent<Light>().enabled = true;
+        //GameObject.Find(dot).GetComponent<Light>().enabled = true;
     }
     //Build the grid
     IEnumerator CreateGrid()
