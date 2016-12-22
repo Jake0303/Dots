@@ -21,7 +21,7 @@ public class UINotificationInspector : Editor
     SerializedProperty sp_effects;
     #endregion
 
-    #region Updete Serialized Properties
+    #region Update Serialized Properties
     void UpdateSerializedProperties()
     {
         sp_notificationContainer = serializedObject.FindProperty("notificationContainer");
@@ -72,11 +72,19 @@ public class UINotificationInspector : Editor
             DoozyUIHelper.DrawTexture(DoozyUIResources.BarDisabled);
         }
         DoozyUIHelper.VerticalSpace(8);
-        #region Show Help
-        DoozyUIHelper.ResetColors();
-        uiNotification.showHelp = EditorGUILayout.ToggleLeft("Show Help", uiNotification.showHelp, GUILayout.Width(160));
-        DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
-        #endregion
+        EditorGUILayout.BeginHorizontal();
+        {
+            #region Show Help
+            DoozyUIHelper.ResetColors();
+            uiNotification.showHelp = EditorGUILayout.ToggleLeft("Show Help", uiNotification.showHelp, GUILayout.Width(80));
+            DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
+            #endregion
+            #region Listen for Back Button
+            uiNotification.listenForBackButton = EditorGUILayout.ToggleLeft("Listen for Back Button", uiNotification.listenForBackButton);
+            #endregion
+            GUILayout.FlexibleSpace();
+        }
+        EditorGUILayout.EndHorizontal();
         DoozyUIHelper.VerticalSpace(8);
         #region Notification Container
         if (uiNotification.notificationContainer != null)
@@ -103,7 +111,7 @@ public class UINotificationInspector : Editor
         }
         #endregion
         DoozyUIHelper.VerticalSpace(8);
-        if(uiNotification.notificationContainer != null)
+        if (uiNotification.notificationContainer != null)
         {
             #region Overlay
             EditorGUILayout.BeginHorizontal();
@@ -121,7 +129,7 @@ public class UINotificationInspector : Editor
             #endregion
         }
         DoozyUIHelper.VerticalSpace(8);
-        if(uiNotification.notificationContainer != null)
+        if (uiNotification.notificationContainer != null)
         {
             #region Title
             EditorGUILayout.BeginHorizontal();
@@ -259,7 +267,7 @@ public class UINotificationInspector : Editor
     void LinkChildUIElementsToNotification()
     {
         UIElement[] childUIElements = uiNotification.GetComponentsInChildren<UIElement>(true);
-        if(childUIElements != null && childUIElements.Length > 0)
+        if (childUIElements != null && childUIElements.Length > 0)
         {
             for (int i = 0; i < childUIElements.Length; i++)
             {

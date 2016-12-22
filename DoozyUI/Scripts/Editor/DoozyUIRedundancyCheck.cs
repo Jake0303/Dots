@@ -156,37 +156,37 @@ namespace DoozyUI
                 uiElement.elementName = UIManager.DEFAULT_ELEMENT_NAME;
             }
 
-            if (uiElement.elementNameReference == null)
-            {
-                uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(UIManager.DEFAULT_ELEMENT_NAME)];
-            }
+            //if (uiElement.elementNameReference == null)
+            //{
+            //    uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(UIManager.DEFAULT_ELEMENT_NAME)];
+            //}
 
-            if (uiElement.elementName.Equals(uiElement.elementNameReference.elementName) == false) //the referenced name is not the same as the backup name, we check if a rollbakck is needed
-            {
-                if (UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) == -1) //if TRUE, the referenced name does not exist in the database or it's the default value (we might have an error); we need to check that the backup name is not corrupted as well
-                {
-                    if (UIManager.GetIndexForElementName(uiElement.elementName) == -1) //the backup name does not exist in the database; we perform the rollback
-                    {
-                        uiElement.elementName = UIManager.DEFAULT_ELEMENT_NAME; //we set the backup name as the default name
-                        uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(UIManager.DEFAULT_ELEMENT_NAME)]; //we reference the default name from the database
-                    }
-                    else //the referenced name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
-                    {
-                        uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(uiElement.elementName)]; //we update the reference from the database
-                    }
-                }
-                else //the referenced name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
-                {
-                    uiElement.elementName = uiElement.elementNameReference.elementName; //we update the backup name to the referenced name
-                }
-            }
-            else
-            {
-                if (debugThis)
-                {
-                    Debug.Log("eName [" + uiElement.elementName + "] | eNameRef [" + uiElement.elementNameReference.elementName + "] | index [" + UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) + "]");
-                }
-            }
+            //if (uiElement.elementName.Equals(uiElement.elementNameReference.elementName) == false) //the referenced name is not the same as the backup name, we check if a rollbakck is needed
+            //{
+            //    if (UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) == -1) //if TRUE, the referenced name does not exist in the database or it's the default value (we might have an error); we need to check that the backup name is not corrupted as well
+            //    {
+            //        if (UIManager.GetIndexForElementName(uiElement.elementName) == -1) //the backup name does not exist in the database; we perform the rollback
+            //        {
+            //            uiElement.elementName = UIManager.DEFAULT_ELEMENT_NAME; //we set the backup name as the default name
+            //            uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(UIManager.DEFAULT_ELEMENT_NAME)]; //we reference the default name from the database
+            //        }
+            //        else //the referenced name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
+            //        {
+            //            uiElement.elementNameReference = UIManager.GetDoozyUIData.elementNames[UIManager.GetIndexForElementName(uiElement.elementName)]; //we update the reference from the database
+            //        }
+            //    }
+            //    else //the referenced name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
+            //    {
+            //        uiElement.elementName = uiElement.elementNameReference.elementName; //we update the backup name to the referenced name
+            //    }
+            //}
+            //else
+            //{
+            //    if (debugThis)
+            //    {
+            //        Debug.Log("eName [" + uiElement.elementName + "] | eNameRef [" + uiElement.elementNameReference.elementName + "] | index [" + UIManager.GetIndexForElementName(uiElement.elementNameReference.elementName) + "]");
+            //    }
+            //}
             #endregion
 
             #region  MOVE IN @START
@@ -793,37 +793,37 @@ namespace DoozyUI
                 uiButton.buttonName = UIManager.DEFAULT_BUTTON_NAME;
             }
 
-            if (uiButton.buttonNameReference == null)
-            {
-                uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(UIManager.DEFAULT_BUTTON_NAME)];
-            }
+            //if (uiButton.buttonNameReference == null)
+            //{
+            //    uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(UIManager.DEFAULT_BUTTON_NAME)];
+            //}
 
-            if (uiButton.buttonName.Equals(uiButton.buttonNameReference.buttonName) == false) //the referenced name is not the same as the backup name, we check if a rollbakck is needed
-            {
-                if (UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) == -1) //if TRUE, the referenced name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
-                {
-                    if (UIManager.GetIndexForButtonName(uiButton.buttonName) == -1) //the backup name does not exist in the database; we perform the rollback
-                    {
-                        uiButton.buttonName = UIManager.DEFAULT_BUTTON_NAME; //we set the backup name as the default name
-                        uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(UIManager.DEFAULT_BUTTON_NAME)]; //we reference the default name from the database
-                    }
-                    else //the referenced name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
-                    {
-                        uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(uiButton.buttonName)]; //we update the reference from the database
-                    }
-                }
-                else //the referenced name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
-                {
-                    uiButton.buttonName = uiButton.buttonNameReference.buttonName; //we update the backup name to the referenced name
-                }
-            }
-            else
-            {
-                if (debugThis)
-                {
-                    Debug.Log("bName [" + uiButton.buttonName + "] | bNameRef [" + uiButton.buttonNameReference.buttonName + "] | index [" + UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) + "]");
-                }
-            }
+            //if (uiButton.buttonName.Equals(uiButton.buttonNameReference.buttonName) == false) //the referenced name is not the same as the backup name, we check if a rollbakck is needed
+            //{
+            //    if (UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) == -1) //if TRUE, the referenced name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
+            //    {
+            //        if (UIManager.GetIndexForButtonName(uiButton.buttonName) == -1) //the backup name does not exist in the database; we perform the rollback
+            //        {
+            //            uiButton.buttonName = UIManager.DEFAULT_BUTTON_NAME; //we set the backup name as the default name
+            //            uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(UIManager.DEFAULT_BUTTON_NAME)]; //we reference the default name from the database
+            //        }
+            //        else //the referenced name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
+            //        {
+            //            uiButton.buttonNameReference = UIManager.GetDoozyUIData.buttonNames[UIManager.GetIndexForButtonName(uiButton.buttonName)]; //we update the reference from the database
+            //        }
+            //    }
+            //    else //the referenced name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
+            //    {
+            //        uiButton.buttonName = uiButton.buttonNameReference.buttonName; //we update the backup name to the referenced name
+            //    }
+            //}
+            //else
+            //{
+            //    if (debugThis)
+            //    {
+            //        Debug.Log("bName [" + uiButton.buttonName + "] | bNameRef [" + uiButton.buttonNameReference.buttonName + "] | index [" + UIManager.GetIndexForButtonName(uiButton.buttonNameReference.buttonName) + "]");
+            //    }
+            //}
             #endregion
 
             #region OnClick Sound
@@ -836,37 +836,37 @@ namespace DoozyUI
                 uiButton.onClickSound = UIManager.DEFAULT_SOUND_NAME;
             }
 
-            if (uiButton.onClickSoundReference == null)
-            {
-                uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(UIManager.DEFAULT_SOUND_NAME)];
-            }
+            //if (uiButton.onClickSoundReference == null)
+            //{
+            //    uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(UIManager.DEFAULT_SOUND_NAME)];
+            //}
 
-            if (uiButton.onClickSound.Equals(uiButton.onClickSoundReference.onClickSound) == false) //the referenced sound name is not the same as the backup name, we check if a rollbakck is needed
-            {
-                if (UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) == -1) //if TRUE, the referenced button name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
-                {
-                    if (UIManager.GetIndexForButtonSound(uiButton.onClickSound) == -1) //the backup sound name does not exist in the database; we perform the rollback
-                    {
-                        uiButton.onClickSound = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound name as the default name
-                        uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(UIManager.DEFAULT_SOUND_NAME)]; //we reference the default sound name from the database
-                    }
-                    else //the referenced sound name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
-                    {
-                        uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(uiButton.onClickSound)]; //we update the reference from the database
-                    }
-                }
-                else //the referenced sound name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
-                {
-                    uiButton.onClickSound = uiButton.onClickSoundReference.onClickSound; //we update the backup sound name to the referenced name
-                }
-            }
-            else
-            {
-                if (debugThis)
-                {
-                    Debug.Log("onClickSound [" + uiButton.onClickSound + "] | onClickSoundRef [" + uiButton.onClickSoundReference.onClickSound + "] | index [" + UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) + "]");
-                }
-            }
+            //if (uiButton.onClickSound.Equals(uiButton.onClickSoundReference.onClickSound) == false) //the referenced sound name is not the same as the backup name, we check if a rollbakck is needed
+            //{
+            //    if (UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) == -1) //if TRUE, the referenced button name does not exist in the database (we might have an error); we need to check that the backup name is not corrupted as well
+            //    {
+            //        if (UIManager.GetIndexForButtonSound(uiButton.onClickSound) == -1) //the backup sound name does not exist in the database; we perform the rollback
+            //        {
+            //            uiButton.onClickSound = UIManager.DEFAULT_SOUND_NAME; //we set the backup sound name as the default name
+            //            uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(UIManager.DEFAULT_SOUND_NAME)]; //we reference the default sound name from the database
+            //        }
+            //        else //the referenced sound name does not exit (we had a serialization error), but the backup is fine (we found it in the database) --> we update the reference
+            //        {
+            //            uiButton.onClickSoundReference = UIManager.GetDoozyUIData.buttonSounds[UIManager.GetIndexForButtonSound(uiButton.onClickSound)]; //we update the reference from the database
+            //        }
+            //    }
+            //    else //the referenced sound name exists in the database, so we update the backup (this is for upgrade purposes, so that we get the proper backup name)
+            //    {
+            //        uiButton.onClickSound = uiButton.onClickSoundReference.onClickSound; //we update the backup sound name to the referenced name
+            //    }
+            //}
+            //else
+            //{
+            //    if (debugThis)
+            //    {
+            //        Debug.Log("onClickSound [" + uiButton.onClickSound + "] | onClickSoundRef [" + uiButton.onClickSoundReference.onClickSound + "] | index [" + UIManager.GetIndexForButtonSound(uiButton.onClickSoundReference.onClickSound) + "]");
+            //    }
+            //}
             #endregion
 
             #region NORMAL ANIMATIONS
@@ -929,31 +929,31 @@ namespace DoozyUI
             uiButton.highlightedAnimationSettings.fadeLoop.soundAtFinish = string.Empty;
             #endregion
 
-            #region SHOW ELEMENTS
-            if (uiButton.showElements != null && uiButton.showElements.Count > 0)
-            {
-                for (int i = 0; i < uiButton.showElements.Count; i++)
-                {
-                    if (UIManager.GetIndexForElementName(uiButton.showElements[i]) == -1) //something went wrong a we are asking to show an element name that is not in the database
-                    {
-                        uiButton.showElements[i] = UIManager.DEFAULT_ELEMENT_NAME;
-                    }
-                }
-            }
-            #endregion
+            //#region SHOW ELEMENTS
+            //if (uiButton.showElements != null && uiButton.showElements.Count > 0)
+            //{
+            //    for (int i = 0; i < uiButton.showElements.Count; i++)
+            //    {
+            //        if (UIManager.GetIndexForElementName(uiButton.showElements[i]) == -1) //something went wrong a we are asking to show an element name that is not in the database
+            //        {
+            //            uiButton.showElements[i] = UIManager.DEFAULT_ELEMENT_NAME;
+            //        }
+            //    }
+            //}
+            //#endregion
 
-            #region HIDE ELEMENTS
-            if (uiButton.hideElements != null && uiButton.hideElements.Count > 0)
-            {
-                for (int i = 0; i < uiButton.hideElements.Count; i++)
-                {
-                    if (UIManager.GetIndexForElementName(uiButton.hideElements[i]) == -1) //something went wrong a we are asking to hide an element name that is not in the database
-                    {
-                        uiButton.hideElements[i] = UIManager.DEFAULT_ELEMENT_NAME;
-                    }
-                }
-            }
-            #endregion
+            //#region HIDE ELEMENTS
+            //if (uiButton.hideElements != null && uiButton.hideElements.Count > 0)
+            //{
+            //    for (int i = 0; i < uiButton.hideElements.Count; i++)
+            //    {
+            //        if (UIManager.GetIndexForElementName(uiButton.hideElements[i]) == -1) //something went wrong a we are asking to hide an element name that is not in the database
+            //        {
+            //            uiButton.hideElements[i] = UIManager.DEFAULT_ELEMENT_NAME;
+            //        }
+            //    }
+            //}
+            //#endregion
 
             if (debugThis)
             {

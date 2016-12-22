@@ -1,13 +1,22 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
+using DG.Tweening;
+using DoozyUI;
 
-public class MenuManager : MonoBehaviour
+public class GameManagerExample : MonoBehaviour
 {
-    string transitionText;
-    public GameObject backButton;
+
+    // You will find below code examples of how to interact with the UI
+
     #region Public Variables
+    public ParticleSystem shield;          //We use this to demonstrate the Pause/Unpause Game feature. We activate it when we enter play mode (when we show the InGameHud)
+    public ParticleSystem sparklyFade;     //This is also used to better see the Pause/Unpause Game feature, but you can start or stop it by pressing the DoozyUI logo (on the bottom of the MainMenu screen)
+
+    [Space(10)]
+    public string menuMusic;                //the sound filename we want to use as menu music
+    [Range(0, 1)]
+    public float musicVolume = 0.5f;        //the preset music volume
+
     [Space(20)]
     public Sprite[] icons;
     public string[] iconNames;
@@ -19,6 +28,10 @@ public class MenuManager : MonoBehaviour
     private int randomIconIndex = 0;
     #endregion
 
+    void Start()
+    {
+        InitMusic();
+    }
 
     //For this method to work we have an UITrigger attached to this gameObject and it is set to listen for All Game Events.
     //Also the method selected in the trigger is from the 'Dynamic string' section and NOT from the 'Static parameter' list. (this is important)
@@ -27,7 +40,7 @@ public class MenuManager : MonoBehaviour
         switch (gameEvent)
         {
             case "Notification_DoozyUI": //shows the DoozyUI notification
-                                         //DoozyUI.UIManager.ShowNotification("Notification_DoozyUI", 5f, false);
+                DoozyUI.UIManager.ShowNotification("Notification_DoozyUI", 5f, false);
                 break;
 
             case "UpdateSoundSettings":
@@ -157,14 +170,38 @@ public class MenuManager : MonoBehaviour
     //Also the method selected in the trigger is from the 'Dynamic string' section and NOT from the 'Static parameter' section. (this is important)
     public void OnButtonClick(string buttonName)
     {
-        if (GameObject.Find("MainMenu") && GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().GetInAnimations.moveIn.delay != 0.25f)
-            GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().GetInAnimations.moveIn.delay = 0.25f;
-
         switch (buttonName)
         {
+            case "GoToInGameHud":
+                if (shield != null)
+                    shield.Play(true);
+                break;
+
+            case "GoToMainMenu":
+                if (shield != null)
+                    shield.Stop(true);
+                break;
+
             case "ToggleMusic":
                 UpdateMusicState();
                 break;
+        }
+    }
+
+    #region Music methods - InitMusic, SetupMusic | IEnumerators - CheckMusicState
+    /// <summary>
+    /// Initializes the music settings.
+    /// </summary>
+    private void InitMusic()
+    {
+        menuMusicAudioSource = SetupMusic(menuMusic); //we check if the menuMusic filename exists in a Resources folder; if it does we create a new gameObject with an AudioSource attached and we return the reference to it
+
+        if (menuMusicAudioSource != null)
+        {
+            menuMusicAudioSource.volume = musicVolume; //we set the volume to the value set in the inspector
+            menuMusicAudioSource.mute = DoozyUI.UIManager.isMusicOn;  //we check if the music is on or off
+            menuMusicAudioSource.Play(); //we start the music (even if the volume is 0)
+            StartCoroutine(CheckMusicState()); //we activate a listerer for the music on/off toggle; it will check the music state every 0.5 seconds (more efficeint than in the Update method)
         }
     }
 
@@ -187,7 +224,7 @@ public class MenuManager : MonoBehaviour
                 var tempGO = new GameObject("Music - " + clip.name); // create the temp object
                 tempGO.transform.position = Vector3.zero; // set its position
                 var aSource = tempGO.AddComponent<AudioSource>(); ; // add an audio source
-                //aSource.mute = !DoozyUI.UIManager.isMusicOn;  //we check if the music is on or off
+                aSource.mute = !DoozyUI.UIManager.isMusicOn;  //we check if the music is on or off
                 aSource.clip = clip; // define the clip
                 aSource.loop = true;
                 return aSource; // return the AudioSource reference
@@ -216,109 +253,9 @@ public class MenuManager : MonoBehaviour
 
         if (DoozyUI.UIManager.isMusicOn == menuMusicAudioSource.mute)
         {
-            // menuMusicAudioSource.mute = !DoozyUI.UIManager.isMusicOn;
+            menuMusicAudioSource.mute = !DoozyUI.UIManager.isMusicOn;
         }
     }
+    #endregion
 
-    void Start()
-    {
-        //DontDestroyOnLoad(this.transform);
-        GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
-        backButton = GameObject.Find("BackToMenuButton");
-        // Initialize volume slider
-        if (GameObject.Find("VolumeSlider") != null)
-            GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-        //TurnOnSound();
-    }
-
-    //Update the volume when the slider has changed
-    public void OnVolumeSliderChanged(float value)
-    {
-        GLOBALS.Volume = value;
-        GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-        GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        if (GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic != null)
-            GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 50);
-        if (value > 0)
-        {
-            GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(true);
-            GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
-        }
-        else
-        {
-            GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
-            GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Hide(false);
-        }
-    }
-
-    public void TurnOnSound()
-    {
-        OnVolumeSliderChanged(25);
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
-        GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(true);
-        GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
-    }
-
-    public void TurnOffSound()
-    {
-        OnVolumeSliderChanged(0);
-        GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
-        GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Hide(false);
-    }
-    //Fade text animation for the connecting text
-    IEnumerator FadeTextToFullAlpha(float t, Text i)
-    {
-        i.color = new Color(i.color.r, i.color.g, i.color.b, 0);
-        while (i.color.a < 1.0f)
-        {
-            if (i != null)
-            {
-                i.color = new Color(i.color.r, i.color.g, i.color.b, i.color.a + (Time.deltaTime / t));
-            }
-            yield return null;
-        }
-    }
-
-    //Show text while we connect to the matchmaking service
-    public void DisplayLoadingText(string text)
-    {
-        if (GameObject.Find("transitionText") != null)
-        {
-            GameObject.Find("transitionText").GetComponent<Text>().text = text;
-            StartCoroutine(FadeTextToFullAlpha(2f, GameObject.Find("transitionText").GetComponent<Text>()));
-        }
-    }
-    public void TransitionToEnterNameScreen()
-    {
-        GameObject.Find("PlayButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("PlayButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("PlayButton").GetComponentInChildren<Text>().color = Color.clear;
-        GameObject.Find("OptionsButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("OptionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("OptionsButton").GetComponentInChildren<Text>().color = Color.clear;
-        if (GameObject.Find("ExitButton"))
-        {
-            GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
-            GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-            GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
-        }
-        GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
-    }
-
-    public void ReloadLeaderBoard()
-    {
-        if (LeaderbordController.leaderBoardError)
-        {
-            StartCoroutine(GameObject.Find("scores").GetComponent<LeaderbordController>().GetScores());
-        }
-    }
-
-
-    //Quit the game
-    public void ExitGame()
-    {
-        Application.Quit();
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-    }
 }

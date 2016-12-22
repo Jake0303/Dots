@@ -255,7 +255,11 @@ namespace DoozyUI
             else if (m.command.Contains(command_UnloadLevel))    ///SHORTCUT VARIANT - we just call UnloadLevel_{LevelNumber} and we unload the level data
             {
                 sceneName = levelSceneName + m.command.Split('_')[1];
+#if UNITY_5_5_OR_NEWER
+                SceneManager.UnloadSceneAsync(sceneName);
+#else
                 SceneManager.UnloadScene(sceneName);
+#endif
             }
         }
 
@@ -281,12 +285,20 @@ namespace DoozyUI
 
         public void UnloadScene(string sceneName)
         {
-            SceneManager.UnloadScene(sceneName);
+#if UNITY_5_5_OR_NEWER
+            SceneManager.UnloadSceneAsync(sceneName);
+#else
+                SceneManager.UnloadScene(sceneName);
+#endif
         }
 
         public void UnloadScene(int sceneBuildIndex)
         {
-            SceneManager.UnloadScene(sceneBuildIndex);
+#if UNITY_5_5_OR_NEWER
+            SceneManager.UnloadSceneAsync(sceneBuildIndex);
+#else
+                SceneManager.UnloadScene(sceneBuildIndex);
+#endif
         }
 
         public void LoadLevel(int levelNumber)
@@ -298,7 +310,11 @@ namespace DoozyUI
         public void UnloadLevel(int levelNumber)
         {
             sceneName = levelSceneName + levelNumber;
-            SceneManager.UnloadScene(sceneName);
+#if UNITY_5_5_OR_NEWER
+            SceneManager.UnloadSceneAsync(sceneName);
+#else
+                SceneManager.UnloadScene(sceneName);
+#endif
         }
 
         #endregion

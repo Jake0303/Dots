@@ -12,6 +12,8 @@ using System.Collections.Generic;
 public class UIManagerInspector : Editor
 {
     #region SerializedProperties
+    private SerializedProperty sp_autoDisableButtonClicks;
+
 #if dUI_MasterAudio
     private SerializedProperty sp_useMasterAudio_PlaySoundAndForget;
     private SerializedProperty sp_useMasterAudio_FireCustomEvent;
@@ -25,6 +27,8 @@ public class UIManagerInspector : Editor
     #region Update Serialized Properties
     void UpdateSerializedProperties()
     {
+        sp_autoDisableButtonClicks = serializedObject.FindProperty("_autoDisableButtonClicks");
+
 #if dUI_MasterAudio
         sp_useMasterAudio_PlaySoundAndForget = serializedObject.FindProperty("useMasterAudio_PlaySoundAndForget");
         sp_useMasterAudio_FireCustomEvent = serializedObject.FindProperty("useMasterAudio_FireCustomEvent");
@@ -37,7 +41,7 @@ public class UIManagerInspector : Editor
     #endregion
 
     #region Variables
-    private DoozyUI.UIManager uiManager;
+    private DoozyUI.UIManager UIManager;
     #endregion
 
     public override bool RequiresConstantRepaint()
@@ -47,7 +51,7 @@ public class UIManagerInspector : Editor
 
     void OnEnable()
     {
-        uiManager = (DoozyUI.UIManager)target;
+        UIManager = (DoozyUI.UIManager)target;
     }
 
     public override void OnInspectorGUI()
@@ -56,7 +60,7 @@ public class UIManagerInspector : Editor
 
         UpdateSerializedProperties();
 
-        uiManager = target as DoozyUI.UIManager;
+        UIManager = target as DoozyUI.UIManager;
 
         serializedObject.Update();
 
@@ -85,25 +89,25 @@ public class UIManagerInspector : Editor
 
         #region Show Help
         DoozyUIHelper.ResetColors();
-      //  uiManager.showHelp = EditorGUILayout.ToggleLeft("Show Help", uiManager.showHelp, GUILayout.Width(80));
+        UIManager.showHelp = EditorGUILayout.ToggleLeft("Show Help", UIManager.showHelp, GUILayout.Width(80));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 
         #region Debug Events
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightOranage);
-        uiManager._debugEvents = EditorGUILayout.ToggleLeft("Debug Events", uiManager._debugEvents, GUILayout.Width(90));
+        UIManager._debugEvents = EditorGUILayout.ToggleLeft("Debug Events", UIManager._debugEvents, GUILayout.Width(90));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 
         #region Debug Buttons
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightOranage);
-        uiManager._debugButtons = EditorGUILayout.ToggleLeft("Debug Buttons", uiManager._debugButtons, GUILayout.Width(100));
+        UIManager._debugButtons = EditorGUILayout.ToggleLeft("Debug Buttons", UIManager._debugButtons, GUILayout.Width(100));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 
         #region Debug Notifications
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightOranage);
-        uiManager._debugNotifications = EditorGUILayout.ToggleLeft("Debug Notifications", uiManager._debugNotifications, GUILayout.Width(130));
+        UIManager._debugNotifications = EditorGUILayout.ToggleLeft("Debug Notifications", UIManager._debugNotifications, GUILayout.Width(130));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 
@@ -113,6 +117,10 @@ public class UIManagerInspector : Editor
         DoozyUIHelper.VerticalSpace(8);
 
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
+
+        sp_autoDisableButtonClicks.boolValue = EditorGUILayout.ToggleLeft("Auto disable Button Clicks when an UIElement is in trasition", sp_autoDisableButtonClicks.boolValue);
+
+        DoozyUIHelper.VerticalSpace(8);
 
         #region MasterAudio Settings
 #if dUI_MasterAudio
@@ -126,7 +134,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If disabled, it removes 'dUI_MasterAudio' from PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -151,7 +159,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If enabled, it adds 'dUI_MasterAudio' to PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -175,7 +183,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If disabled, it removes 'dUI_TextMeshPro' from PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -193,7 +201,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If enabled, it adds 'dUI_TextMeshPro' to PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -216,7 +224,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If disabled, it removes 'dUI_EnergyBarToolkit' from PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -233,7 +241,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If enabled, it adds 'dUI_EnergyBarToolkit' to PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -256,7 +264,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If disabled, it removes 'dUI_PlayMaker' from PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -273,7 +281,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If enabled, it adds 'dUI_PlayMaker' to PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -296,7 +304,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If enabled, it removes 'dUI_NavigationDisabled' from PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -314,7 +322,7 @@ public class UIManagerInspector : Editor
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
 #endif
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If enabled, it adds 'dUI_UseOrientationManager' to PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -335,7 +343,7 @@ public class UIManagerInspector : Editor
         }
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If enabled, it removes 'dUI_NavigationDisabled' from PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);
@@ -353,7 +361,7 @@ public class UIManagerInspector : Editor
         GUILayout.FlexibleSpace();
         EditorGUILayout.EndHorizontal();
 #endif
-        if (uiManager.showHelp)
+        if (UIManager.showHelp)
         {
             DoozyUIHelper.ResetColors();
             EditorGUILayout.HelpBox("If disabled, it adds 'dUI_NavigationDisabled' to PlayerSettings --> Scripting Define Symbols. It takes a few seconds to update.", MessageType.None);

@@ -22,7 +22,6 @@ namespace DoozyUI
     [DisallowMultipleComponent]
     public class UIElement : MonoBehaviour
     {
-
         #region Context Menu Methods
 
 #if UNITY_EDITOR
@@ -47,7 +46,9 @@ namespace DoozyUI
                 go.transform.SetParent(UIManager.GetUiContainer);
             }
             go.GetComponent<RectTransform>().localScale = Vector3.one;
-            go.AddComponent<UIElement>();
+            UIElement uiElement = go.AddComponent<UIElement>();
+            uiElement.elementNameReference = new ElementName { elementName = UIManager.DEFAULT_ELEMENT_NAME };
+            uiElement.elementName = UIManager.DEFAULT_ELEMENT_NAME;
             Selection.activeObject = go;
         }
 #endif
@@ -173,10 +174,14 @@ namespace DoozyUI
 
 
         private float disableTimeBuffer = 0.1f;
-        private WaitForSeconds outAnimationsDisableBuffer; //this is the default buffer (even for instant actions)
         private WaitForSeconds outAnimationsDDisableDelay; //this will be the max time+delay for animations delay before the disable
         private Coroutine inAnimationsCoroutine;
         private Coroutine outAnimationsCoroutine;
+
+        private bool inTransition = false; //if this UIElement is running DisableButtonClicksForTime and we disable it before it needs to finish, we trigger EnableButtonClicks OnDisable
+        private Coroutine disableButtonClicksForTime;
+
+        private Canvas[] childCanvas;
         #endregion
 
         #region Properties
@@ -372,43 +377,28 @@ namespace DoozyUI
 
         void Awake()
         {
-            outAnimationsDisableBuffer = new WaitForSeconds(disableTimeBuffer);
             Canvas = GetComponent<Canvas>();
-            if (Canvas == null)
-            {
-                Canvas = gameObject.AddComponent<Canvas>();
-                Debug.Log("[DoozyUI] Adding the missing component <Canvas> to [" + name + "]. The UIElements needs to have a <Canvas> component attached and it might not be visible because of this.");
-            }
+            if (Canvas == null) { Canvas = gameObject.AddComponent<Canvas>(); }
             GraphicRaycaster = GetComponent<GraphicRaycaster>();
-            if (GraphicRaycaster == null)
-            {
-                GraphicRaycaster = gameObject.AddComponent<GraphicRaycaster>();
-                Debug.Log("[DoozyUI] Adding the missing component <GraphicRaycaster> to [" + name + "]. The UIElements needs to have a <GraphicRaycaster> component attached and it might not receive clicks because of this.");
-            }
-
-            if (autoRegister)
-                UIManager.RegisterUiElement(this);
-
-            if (useCustomStartAnchoredPosition)
-            {
-                GetRectTransform.anchoredPosition3D = customStartAnchoredPosition;
-            }
-
+            if (GraphicRaycaster == null) { GraphicRaycaster = gameObject.AddComponent<GraphicRaycaster>(); }
+            if (useCustomStartAnchoredPosition) { GetRectTransform.anchoredPosition3D = customStartAnchoredPosition; }
             startAnchoredPosition3D = GetRectTransform.anchoredPosition3D;
             startRotation = GetRectTransform.localRotation.eulerAngles;
             startScale = GetRectTransform.localScale;
         }
 
-        void OnEnable()
-        {
-            //if (autoRegister)
-            //    UIManager.RegisterUiElement(this);
-        }
-
         void Start()
         {
+            if (autoRegister)
+                UIManager.RegisterUiElement(this);
             SetupElement();
             InitLoopAnimations();
+            ExecuteFixForLayouts();
+        }
+
+        void OnDisable()
+        {
+            if (UIManager.autoDisableButtonClicks) { if (inTransition) { EnableButtonClicks(); } }
         }
 
         void OnDestroy()
@@ -449,6 +439,10 @@ namespace DoozyUI
                                 UIManager.HideUiElement(elementName, true, disableWhenHidden);
                                 UIManager.ShowUiElement(elementName, false);
                             }
+                            else
+                            {
+                                Hide(true, disableWhenHidden);
+                            }
                         }
                     }
                     else
@@ -488,6 +482,7 @@ namespace DoozyUI
                     UIAnimator.StopOutAnimations(GetRectTransform, GetInitialData);
                     inAnimationsCoroutine = StartCoroutine(InAnimationsEnumerator(instantAction));
                     isVisible = true;
+                    if (instantAction == false) { DisableButtonClicks(GetInAnimationsFinishTime()); }
                 }
             }
             else if (AreInAnimationsEnabled == false)
@@ -502,7 +497,7 @@ namespace DoozyUI
 
             while (UIManager.GetEventSystem == null)
             {
-                yield return new WaitForEndOfFrame();
+                yield return null;
 
                 infiniteLoopCount++;
                 if (infiniteLoopCount > 1000)
@@ -520,7 +515,7 @@ namespace DoozyUI
             //    yield return new WaitForEndOfFrame();
             //}
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
 
             UIAnimator.StopLoopAnimations(GetRectTransform, GetInitialData);
 
@@ -552,8 +547,7 @@ namespace DoozyUI
 
         IEnumerator LoopAnimationsEnumerator()
         {
-            //We need this WaitForEndOfFrame so that the UIManager gets on the first frame the UIScreenRect size and position
-            yield return new WaitForEndOfFrame();
+            yield return null;
             UIAnimator.DoMoveLoop(moveLoop, GetRectTransform, GetInitialData);
             UIAnimator.DoRotationLoop(rotationLoop, GetRectTransform, GetInitialData);
             UIAnimator.DoScaleLoop(scaleLoop, GetRectTransform, GetInitialData);
@@ -593,6 +587,7 @@ namespace DoozyUI
                     UIAnimator.StopInAnimations(GetRectTransform, GetInitialData);
                     outAnimationsCoroutine = StartCoroutine(OutAnimationsEnumerator(instantAction, shouldDisable));
                     isVisible = false;
+                    if (instantAction == false) { DisableButtonClicks(GetOutAnimationsFinishTime()); }
                 }
             }
             else if (AreOutAnimationsEnabled == false)
@@ -603,11 +598,7 @@ namespace DoozyUI
 
         IEnumerator OutAnimationsEnumerator(bool instantAction, bool shouldDisable = true)
         {
-            //if (UIManager.firstPass)
-            //{
-            //    //We need this WaitForEndOfFrame so that the UIManager gets after the first frame the UIScreenRect size and position
-            //    yield return new WaitForEndOfFrame();
-            //}
+            float start = Time.realtimeSinceStartup;
 
             UIAnimator.StopLoopAnimations(GetRectTransform, GetInitialData);
 
@@ -620,11 +611,15 @@ namespace DoozyUI
             {
                 if (shouldDisable) //should this ui element get disabled?
                 {
-                    yield return outAnimationsDisableBuffer; //default wait time before the disable
+                    //yield return outAnimationsDisableBuffer; //default wait time before the disable
+                    while (Time.realtimeSinceStartup < start + disableTimeBuffer) //added in 2.7
+                        yield return null;
                     if (instantAction == false) //is this an instant animation
                     {
-                        outAnimationsDDisableDelay = new WaitForSeconds(GetOutAnimationsFinishTime()); //we get the max wait time
-                        yield return outAnimationsDDisableDelay; //we wait
+                        //outAnimationsDDisableDelay = new WaitForSeconds(GetOutAnimationsFinishTime()); //we get the max wait time
+                        //yield return outAnimationsDDisableDelay; //we wait
+                        while (Time.realtimeSinceStartup < start + GetOutAnimationsFinishTime()) //added in 2.7
+                            yield return null;
                     }
 
                     ToggleCanvasAndGraphicRaycaster(false);
@@ -635,8 +630,10 @@ namespace DoozyUI
             {
                 if (instantAction == false) //is this an instant animation
                 {
-                    outAnimationsDDisableDelay = new WaitForSeconds(GetOutAnimationsFinishTime()); //we get the max wait time
-                    yield return outAnimationsDDisableDelay; //we wait
+                    //outAnimationsDDisableDelay = new WaitForSeconds(GetOutAnimationsFinishTime()); //we get the max wait time
+                    //yield return outAnimationsDDisableDelay; //we wait
+                    while (Time.realtimeSinceStartup < start + GetOutAnimationsFinishTime()) //added in 2.7
+                        yield return null;
                 }
 
                 ToggleCanvasAndGraphicRaycaster(false);
@@ -741,7 +738,7 @@ namespace DoozyUI
             {
                 if (GetInAnimationsStartTime() == -1)
                 {
-                    Debug.Log("[DoozyUI] You have activated IN Animations Start Events for the " + elementNameReference.elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any IN animations. Nothing happened!");
+                    Debug.Log("[DoozyUI] You have activated IN Animations Start Events for the " + elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any IN animations. Nothing happened!");
                 }
                 else
                 {
@@ -753,7 +750,7 @@ namespace DoozyUI
             {
                 if (GetInAnimationsFinishTime() == -1)
                 {
-                    Debug.Log("[DoozyUI] You have activated IN Animations Finish Events for the " + elementNameReference.elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any IN animations. Nothing happened!");
+                    Debug.Log("[DoozyUI] You have activated IN Animations Finish Events for the " + elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any IN animations. Nothing happened!");
                 }
                 else
                 {
@@ -764,13 +761,17 @@ namespace DoozyUI
 
         IEnumerator TriggerInAnimaionsStartEvents(float delay)
         {
-            yield return new WaitForSeconds(delay);
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + delay) //added in 2.7
+                yield return null;
             onInAnimationsStart.Invoke();
         }
 
         IEnumerator TriggerInAnimaionsFinishEvents(float delay)
         {
-            yield return new WaitForSeconds(delay);
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + delay) //added in 2.7
+                yield return null;
             onInAnimationsFinish.Invoke();
         }
         #endregion
@@ -785,7 +786,7 @@ namespace DoozyUI
             {
                 if (GetOutAnimationsStartTime() == -1)
                 {
-                    Debug.Log("[DoozyUI] You have activated OUT Animations Start Events for the " + elementNameReference.elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any OUT animations. Nothing happened!");
+                    Debug.Log("[DoozyUI] You have activated OUT Animations Start Events for the " + elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any OUT animations. Nothing happened!");
                 }
                 else
                 {
@@ -797,7 +798,7 @@ namespace DoozyUI
             {
                 if (GetOutAnimationsFinishTime() == -1)
                 {
-                    Debug.Log("[DoozyUI] You have activated OUT Animations Finish Events for the " + elementNameReference.elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any OUT animations. Nothing happened!");
+                    Debug.Log("[DoozyUI] You have activated OUT Animations Finish Events for the " + elementName + " UIElement on " + gameObject.name + " gameObject, but you did not enable any OUT animations. Nothing happened!");
                 }
                 else
                 {
@@ -808,18 +809,64 @@ namespace DoozyUI
 
         IEnumerator TriggerOutAnimaionsStartEvents(float delay)
         {
-            yield return new WaitForSeconds(delay);
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + delay) //added in 2.7
+                yield return null;
             onOutAnimationsStart.Invoke();
         }
 
         IEnumerator TriggerOutAnimaionsFinishEvents(float delay)
         {
-            yield return new WaitForSeconds(delay);
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + delay) //added in 2.7
+                yield return null;
             onOutAnimationsFinish.Invoke();
         }
         #endregion
 
         #endregion
+
+        void EnableButtonClicks()
+        {
+            if (!UIManager.autoDisableButtonClicks)
+                return;
+
+            if (inTransition)
+            {
+                inTransition = false;
+                UIManager.EnableButtonClicks();
+            }
+
+            if (disableButtonClicksForTime != null)
+            {
+                StopCoroutine(disableButtonClicksForTime);
+                disableButtonClicksForTime = null;
+            }
+        }
+
+        void DisableButtonClicks(float time)
+        {
+            if (!UIManager.autoDisableButtonClicks)
+                return;
+
+            EnableButtonClicks();
+            disableButtonClicksForTime = StartCoroutine(DisableButtonClicksForTime(time));
+        }
+
+        /// <summary>
+        /// While an IN or an OUT animations is in transition, we disable the button clicks
+        /// </summary>
+        IEnumerator DisableButtonClicksForTime(float delay)
+        {
+            UIManager.DisableButtonClicks();
+            inTransition = true;
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + delay) //added in 2.7
+                yield return null;
+            inTransition = false;
+            UIManager.EnableButtonClicks();
+            disableButtonClicksForTime = null;
+        }
 
         void ToggleCanvasAndGraphicRaycaster(bool isEnabled)
         {
@@ -835,20 +882,36 @@ namespace DoozyUI
                 if (UIManager.currentOrientation != UIManager.Orientation.Unknown)
                     break;
 
-                yield return new WaitForEndOfFrame();
+                yield return null;
             }
 
             if (LANDSCAPE && UIManager.currentOrientation == UIManager.Orientation.Landscape)
             {
                 UIManager.HideUiElement(elementName, true, disableWhenHidden);
-                UIManager.ShowUiElement(elementNameReference.elementName, false);
+                UIManager.ShowUiElement(elementName, false);
             }
             else if (PORTRAIT && UIManager.currentOrientation == UIManager.Orientation.Portrait)
             {
                 UIManager.HideUiElement(elementName, true, disableWhenHidden);
-                UIManager.ShowUiElement(elementNameReference.elementName, false);
+                UIManager.ShowUiElement(elementName, false);
             }
+        }
 
+        /// <summary>
+        /// This fixes a very strange issue inside Unity. When setting a VerticalLayoutGroup or a HorizontalLayoutGroup, the Image bounds get moved (the image appeares in a different place).
+        /// We could not find a better solution, but this should work for now.
+        /// </summary>
+        void ExecuteFixForLayouts()
+        {
+            childCanvas = GetComponentsInChildren<Canvas>();
+            if (childCanvas != null && childCanvas.Length > 0)
+            {
+                for (int i = 0; i < childCanvas.Length; i++)
+                {
+                    childCanvas[i].enabled = false;
+                    childCanvas[i].enabled = true;
+                }
+            }
         }
     }
 }

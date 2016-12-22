@@ -243,7 +243,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiElementsInTheScene.Length; i++)
                 {
-                    if (uiElementsInTheScene[i].linkedToNotification == false && eName.Equals(uiElementsInTheScene[i].elementNameReference.elementName))
+                    if (uiElementsInTheScene[i].linkedToNotification == false && eName.Equals(uiElementsInTheScene[i].elementName))
                     {
                         tempList.Add(uiElementsInTheScene[i]);
                     }
@@ -329,7 +329,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiElementsInTheScene.Length; i++)
                 {
-                    if (uiElementsInTheScene[i].linkedToNotification == false && eName.Equals(uiElementsInTheScene[i].elementNameReference.elementName))
+                    if (uiElementsInTheScene[i].linkedToNotification == false && eName.Equals(uiElementsInTheScene[i].elementName))
                     {
                         count++;
                     }
@@ -417,7 +417,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiButtonsInTheScene.Length; i++)
                 {
-                    if (bName.Equals(uiButtonsInTheScene[i].buttonNameReference.buttonName))
+                    if (bName.Equals(uiButtonsInTheScene[i].buttonName))
                     {
                         tempList.Add(uiButtonsInTheScene[i]);
                     }
@@ -447,7 +447,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiButtonsInTheScene.Length; i++)
                 {
-                    if (bSound.Equals(uiButtonsInTheScene[i].onClickSoundReference.onClickSound))
+                    if (bSound.Equals(uiButtonsInTheScene[i].onClickSound))
                     {
                         tempList.Add(uiButtonsInTheScene[i]);
                     }
@@ -472,7 +472,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiButtonsInTheScene.Length; i++)
                 {
-                    if (bName.Equals(uiButtonsInTheScene[i].buttonNameReference.buttonName))
+                    if (bName.Equals(uiButtonsInTheScene[i].buttonName))
                     {
                         count++;
                     }
@@ -493,7 +493,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < uiButtonsInTheScene.Length; i++)
                 {
-                    if (bSound.Equals(uiButtonsInTheScene[i].onClickSoundReference.onClickSound))
+                    if (bSound.Equals(uiButtonsInTheScene[i].onClickSound))
                     {
                         count++;
                     }
@@ -2203,347 +2203,6 @@ namespace DoozyUI
             object[] parameters = new object[] { filter, filterMode, false };
 
             setSearchType.Invoke(hierarchy, parameters);
-        }
-        #endregion
-
-        #region Upgrade methods (DoozyUI 1.2d --> 2.0)
-
-        void UpgradeCurentScene()
-        {
-            Debug.Log("[DoozyUI] Upgrading current scene...");
-            UIManager.ResetDoozyUIData();
-            UpgradeElements();
-            UpgradeButtons();
-            RemoveDuplicatesFromDoozyUIDataLists();
-            EditorUtility.SetDirty(UIManager.GetDoozyUIData);
-            Debug.Log("[DoozyUI] Upgrade finished!");
-        }
-
-        #region Upgrade Elements Methods
-        /// <summary>
-        /// Looks for all the gameObjects in the scene that have an UIElement component and searches for the old elementNames and all the soundAtStart and soundAtFinish soundNames
-        /// </summary>
-        void UpgradeElements()
-        {
-            Debug.Log("[DoozyUI] Upgrading UIElements...");
-            UIElement[] elements = FindObjectsOfType<UIElement>();
-
-            if (elements != null)
-            {
-                Debug.Log("[DoozyUI] Found " + elements.Length + " UIElements in the scene");
-
-                for (int i = 0; i < elements.Length; i++)
-                {
-                    #region Add Missing Components
-                    if (elements[i].gameObject.GetComponent<Canvas>() == null)
-                    {
-                        elements[i].gameObject.AddComponent<Canvas>();
-                    }
-
-                    if (elements[i].gameObject.GetComponent<GraphicRaycaster>() == null)
-                    {
-                        elements[i].gameObject.AddComponent<GraphicRaycaster>();
-                    }
-                    #endregion
-
-                    #region  Look for ElementNames
-                    if (elements[i].elementName != null) //if this value is not null or empty, then it must have been set by DoozyUI 1.2d
-                    {
-                        if (elements[i].elementName.Equals(string.Empty) == false                         //we make sure the new name is not empty
-                            && elements[i].elementName.Equals(UIManager.DEFAULT_ELEMENT_NAME) == false    //we check that is not the default name
-                            && UIManager.GetIndexForElementName(elements[i].elementName) == -1)            //we make sure there are no duplicates
-                        {
-                            UIManager.NewElementName(elements[i].elementName);
-                            elements[i].elementNameReference.elementName = elements[i].elementName;       //we set the value for the reference
-                        }
-                        elements[i].elementName = string.Empty;                                                 //we clear the old element name string
-                    }
-                    else if (string.IsNullOrEmpty(elements[i].elementNameReference.elementName))
-                    {
-                        elements[i].elementNameReference = new UIElement.ElementName { elementName = UIManager.DEFAULT_ELEMENT_NAME };
-                    }
-                    #endregion
-
-                    #region Look for ElementSounds
-
-                    #region InAnimation Sounds
-                    #region MoveIn
-                    if (string.IsNullOrEmpty(elements[i].moveIn.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].moveIn.soundAtStart);                                   //we add the sound to the elementSounds database if needed
-                        elements[i].moveIn.soundAtStartReference.soundName = elements[i].moveIn.soundAtStart;   //we set the referenced value
-                        elements[i].moveIn.soundAtStart = string.Empty;                                         //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].moveIn.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].moveIn.soundAtFinish);                                  //we add the sound to the elementSounds database if needed
-                        elements[i].moveIn.soundAtFinishReference.soundName = elements[i].moveIn.soundAtFinish; //we set the referenced value
-                        elements[i].moveIn.soundAtFinish = string.Empty;                                        //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region RotateIn
-                    if (string.IsNullOrEmpty(elements[i].rotationIn.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].rotationIn.soundAtStart);                                       //we add the sound to the elementSounds database if needed
-                        elements[i].rotationIn.soundAtStartReference.soundName = elements[i].rotationIn.soundAtStart;   //we set the referenced value
-                        elements[i].rotationIn.soundAtStart = string.Empty;                                             //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].rotationIn.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].rotationIn.soundAtFinish);                                      //we add the sound to the elementSounds database if needed
-                        elements[i].rotationIn.soundAtFinishReference.soundName = elements[i].rotationIn.soundAtFinish; //we set the referenced value
-                        elements[i].rotationIn.soundAtFinish = string.Empty;                                            //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region ScaleIn
-                    if (string.IsNullOrEmpty(elements[i].scaleIn.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].scaleIn.soundAtStart);                                    //we add the sound to the elementSounds database if needed
-                        elements[i].scaleIn.soundAtStartReference.soundName = elements[i].scaleIn.soundAtStart;   //we set the referenced value
-                        elements[i].scaleIn.soundAtStart = string.Empty;                                          //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].scaleIn.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].scaleIn.soundAtFinish);                                     //we add the sound to the elementSounds database if needed
-                        elements[i].scaleIn.soundAtFinishReference.soundName = elements[i].scaleIn.soundAtFinish;   //we set the referenced value
-                        elements[i].scaleIn.soundAtFinish = string.Empty;                                           //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region FadeIn
-                    if (string.IsNullOrEmpty(elements[i].fadeIn.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].fadeIn.soundAtStart);                                       //we add the sound to the elementSounds database if needed
-                        elements[i].fadeIn.soundAtStartReference.soundName = elements[i].fadeIn.soundAtStart;       //we set the referenced value
-                        elements[i].fadeIn.soundAtStart = string.Empty;                                             //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].fadeIn.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].fadeIn.soundAtFinish);                                      //we add the sound to the elementSounds database if needed
-                        elements[i].fadeIn.soundAtFinishReference.soundName = elements[i].fadeIn.soundAtFinish;     //we set the referenced value
-                        elements[i].fadeIn.soundAtFinish = string.Empty;                                            //we clear the old sound element
-                    }
-                    #endregion
-                    #endregion
-
-                    #region LoopAnimation Sounds
-                    #region MoveLoop
-                    if (string.IsNullOrEmpty(elements[i].moveLoop.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].moveLoop.soundAtStart);                                     //we add the sound to the elementSounds database if needed
-                        elements[i].moveLoop.soundAtStartReference.soundName = elements[i].moveLoop.soundAtStart;   //we set the referenced value
-                        elements[i].moveLoop.soundAtStart = string.Empty;                                           //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].moveLoop.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].moveLoop.soundAtFinish);                                        //we add the sound to the elementSounds database if needed
-                        elements[i].moveLoop.soundAtFinishReference.soundName = elements[i].moveLoop.soundAtFinish;     //we set the referenced value
-                        elements[i].moveLoop.soundAtFinish = string.Empty;                                              //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region RotateLoop
-                    if (string.IsNullOrEmpty(elements[i].rotationLoop.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].rotationLoop.soundAtStart);                                         //we add the sound to the elementSounds database if needed
-                        elements[i].rotationLoop.soundAtStartReference.soundName = elements[i].rotationLoop.soundAtStart;   //we set the referenced value
-                        elements[i].rotationLoop.soundAtStart = string.Empty;                                               //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].rotationLoop.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].rotationLoop.soundAtFinish);                                            //we add the sound to the elementSounds database if needed
-                        elements[i].rotationLoop.soundAtFinishReference.soundName = elements[i].rotationLoop.soundAtFinish;     //we set the referenced value
-                        elements[i].rotationLoop.soundAtFinish = string.Empty;                                                  //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region ScaleLoop
-                    if (string.IsNullOrEmpty(elements[i].scaleLoop.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].scaleLoop.soundAtStart);                                        //we add the sound to the elementSounds database if needed
-                        elements[i].scaleLoop.soundAtStartReference.soundName = elements[i].scaleLoop.soundAtStart;     //we set the referenced value
-                        elements[i].scaleLoop.soundAtStart = string.Empty;                                              //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].scaleLoop.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].scaleLoop.soundAtFinish);                                       //we add the sound to the elementSounds database if needed
-                        elements[i].scaleLoop.soundAtFinishReference.soundName = elements[i].scaleLoop.soundAtFinish;   //we set the referenced value
-                        elements[i].scaleLoop.soundAtFinish = string.Empty;                                             //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region FadeLoop
-                    if (string.IsNullOrEmpty(elements[i].fadeLoop.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].fadeLoop.soundAtStart);                                     //we add the sound to the elementSounds database if needed
-                        elements[i].fadeLoop.soundAtStartReference.soundName = elements[i].fadeLoop.soundAtStart;   //we set the referenced value
-                        elements[i].fadeLoop.soundAtStart = string.Empty;                                           //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].fadeLoop.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].fadeLoop.soundAtFinish);                                        //we add the sound to the elementSounds database if needed
-                        elements[i].fadeLoop.soundAtFinishReference.soundName = elements[i].fadeLoop.soundAtFinish;     //we set the referenced value
-                        elements[i].fadeLoop.soundAtFinish = string.Empty;                                              //we clear the old sound element
-                    }
-                    #endregion
-                    #endregion
-
-                    #region OutAnimation Sounds
-                    #region MoveOut
-                    if (string.IsNullOrEmpty(elements[i].moveOut.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].moveOut.soundAtStart);                                      //we add the sound to the elementSounds database if needed
-                        elements[i].moveOut.soundAtStartReference.soundName = elements[i].moveOut.soundAtStart;     //we set the referenced value
-                        elements[i].moveOut.soundAtStart = string.Empty;                                            //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].moveOut.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].moveOut.soundAtFinish);                                     //we add the sound to the elementSounds database if needed
-                        elements[i].moveOut.soundAtFinishReference.soundName = elements[i].moveOut.soundAtFinish;   //we set the referenced value
-                        elements[i].moveOut.soundAtFinish = string.Empty;                                           //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region RotateOut
-                    if (string.IsNullOrEmpty(elements[i].rotationOut.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].rotationOut.soundAtStart);                                          //we add the sound to the elementSounds database if needed
-                        elements[i].rotationOut.soundAtStartReference.soundName = elements[i].rotationOut.soundAtStart;     //we set the referenced value
-                        elements[i].rotationOut.soundAtStart = string.Empty;                                                //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].rotationOut.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].rotationOut.soundAtFinish);                                         //we add the sound to the elementSounds database if needed
-                        elements[i].rotationOut.soundAtFinishReference.soundName = elements[i].rotationOut.soundAtFinish;   //we set the referenced value
-                        elements[i].rotationOut.soundAtFinish = string.Empty;                                               //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region ScaleOut
-                    if (string.IsNullOrEmpty(elements[i].scaleOut.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].scaleOut.soundAtStart);                                     //we add the sound to the elementSounds database if needed
-                        elements[i].scaleOut.soundAtStartReference.soundName = elements[i].scaleOut.soundAtStart;   //we set the referenced value
-                        elements[i].scaleOut.soundAtStart = string.Empty;                                           //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].scaleOut.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].scaleOut.soundAtFinish);                                        //we add the sound to the elementSounds database if needed
-                        elements[i].scaleOut.soundAtFinishReference.soundName = elements[i].scaleOut.soundAtFinish;     //we set the referenced value
-                        elements[i].scaleOut.soundAtFinish = string.Empty;                                              //we clear the old sound element
-                    }
-                    #endregion
-
-                    #region FadeOut
-                    if (string.IsNullOrEmpty(elements[i].fadeOut.soundAtStart) == false)
-                    {
-                        UpdateElementSounds(elements[i].fadeOut.soundAtStart);                                      //we add the sound to the elementSounds database if needed
-                        elements[i].fadeOut.soundAtStartReference.soundName = elements[i].fadeOut.soundAtStart;     //we set the referenced value
-                        elements[i].fadeOut.soundAtStart = string.Empty;                                            //we clear the old sound element
-                    }
-
-                    if (string.IsNullOrEmpty(elements[i].fadeOut.soundAtFinish) == false)
-                    {
-                        UpdateElementSounds(elements[i].fadeOut.soundAtFinish);                                     //we add the sound to the elementSounds database if needed
-                        elements[i].fadeOut.soundAtFinishReference.soundName = elements[i].fadeOut.soundAtFinish;   //we set the referenced value
-                        elements[i].fadeOut.soundAtFinish = string.Empty;                                           //we clear the old sound element
-                    }
-                    #endregion
-                    #endregion
-
-                    #endregion
-                }
-            }
-            Debug.Log("[DoozyUI] UIElements upgrade complete!");
-        }
-
-        void UpdateElementSounds(string eSound)
-        {
-            if (eSound.Equals(string.Empty) == false                        //we make sure the sound name is not empty
-                && eSound.Equals(UIManager.DEFAULT_SOUND_NAME) == false     //we make sure this is not the default name
-                && UIManager.GetIndexForElementSound(eSound) == -1)          //we make sure there are no duplicates
-            {
-                UIManager.NewElementSound(eSound);
-                DoozyUIRedundancyCheck.CheckAllTheUIElements();
-            }
-        }
-        #endregion
-
-        #region Upgrade Buttons Methods
-        void UpgradeButtons()
-        {
-            Debug.Log("[DoozyUI] Upgrading UIButtons...");
-            UIButton[] buttons = FindObjectsOfType<UIButton>();
-
-            if (buttons != null)
-            {
-                Debug.Log("[DoozyUI] Found " + buttons.Length + " UIButtons in the scene");
-
-                for (int i = 0; i < buttons.Length; i++)
-                {
-                    #region Look for ButtonNames
-                    if (buttons[i].buttonName != null)   //if this value is not null or empty, then it must have been set by DoozyUI 1.2d
-                    {
-
-                        if (buttons[i].buttonName.Equals(string.Empty) == false                         //we make sure the new name is not empty
-                           && buttons[i].buttonName.Equals(UIManager.DEFAULT_BUTTON_NAME) == false      //we check that is not the default name
-                           && UIManager.GetIndexForButtonName(buttons[i].buttonName) == -1)              //we make sure there are no duplicates
-                        {
-                            if (buttons[i].buttonName.Equals("Back"))
-                            {
-                                buttons[i].backButton = true;
-                            }
-
-                            UIManager.NewButtonName(buttons[i].buttonName);
-                            buttons[i].buttonNameReference.buttonName = buttons[i].buttonName;              //we set the value for the reference
-                        }
-                        buttons[i].buttonName = string.Empty;                                           //we clear the old button name string
-                    }
-                    else if (string.IsNullOrEmpty(buttons[i].buttonNameReference.buttonName))
-                    {
-                        buttons[i].buttonNameReference = new UIButton.ButtonName { buttonName = UIManager.DEFAULT_BUTTON_NAME };
-                    }
-                    #endregion
-
-                    #region Look for ButtonSounds
-                    if (string.IsNullOrEmpty((buttons[i].onClickSound)) == false)  //if this value is not null or empty, then it must have been set by DoozyUI 1.2d
-                    {
-                        if (buttons[i].onClickSound.Equals(string.Empty) == false                       //we make sure the new name is not empty
-                            && buttons[i].onClickSound.Equals(UIManager.DEFAULT_SOUND_NAME) == false    //we check that is not the default name
-                            && UIManager.GetIndexForButtonSound(buttons[i].onClickSound) == -1)          //we make sure there are no duplicates
-                        {
-                            UIManager.NewButtonSound(buttons[i].onClickSound);
-                            buttons[i].onClickSoundReference.onClickSound = buttons[i].onClickSound;        //we set the value for the reference
-                        }
-                        buttons[i].onClickSound = string.Empty;                                         //we clear the old onClickSound string
-                    }
-                    else if (string.IsNullOrEmpty(buttons[i].onClickSoundReference.onClickSound))
-                    {
-                        buttons[i].onClickSoundReference = new UIButton.ButtonSound { onClickSound = UIManager.DEFAULT_SOUND_NAME };
-                    }
-                    #endregion
-                }
-            }
-            Debug.Log("[DoozyUI] UIButtons upgrade complete!");
-        }
-        #endregion
-
-        void RemoveDuplicatesFromDoozyUIDataLists()
-        {
-            UIManager.RemoveDuplicatesFromTheDatabase();
         }
         #endregion
 

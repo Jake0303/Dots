@@ -547,8 +547,9 @@ public class UIElementInspector : Editor
                     }
                     elementNameCurrentIndex = DoozyUI.UIManager.GetIndexForElementName(GetUIElement.elementName);
                     elementNameCurrentIndex = EditorGUILayout.Popup(elementNameCurrentIndex, elementNames, GUILayout.Width(182));
-                    GetUIElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[elementNameCurrentIndex]; //we reference the class not the value (we need a reference)
-                    GetUIElement.elementName = GetUIElement.elementNameReference.elementName; //we save the backup
+                    //GetUIElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[elementNameCurrentIndex]; //we reference the class not the value (we need a reference)
+                    //GetUIElement.elementName = GetUIElement.elementNameReference.elementName; //we save the backup
+                    GetUIElement.elementName = DoozyUI.UIManager.GetDoozyUIData.elementNames[elementNameCurrentIndex].elementName;
                 }
                 else if (newElementName == true)
                 {
@@ -626,8 +627,9 @@ public class UIElementInspector : Editor
                             DoozyUI.UIManager.NewElementName(tempElementNameString);
                         }
 
-                        GetUIElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[DoozyUI.UIManager.GetIndexForElementName(tempElementNameString)];    //we update the reference
-                        GetUIElement.elementName = GetUIElement.elementNameReference.elementName;
+                        //GetUIElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[DoozyUI.UIManager.GetIndexForElementName(tempElementNameString)];    //we update the reference
+                        //GetUIElement.elementName = GetUIElement.elementNameReference.elementName;
+                        GetUIElement.elementName = DoozyUI.UIManager.GetDoozyUIData.elementNames[DoozyUI.UIManager.GetIndexForElementName(tempElementNameString)].elementName;
                         UpdateElementNamesPopup();                  //we update the string array that shows the list of element names in the inspector
                         tempElementNameString = string.Empty;       //we clear the temporary name holder
                         newElementName = false;                     //we show the initial menu for the element name
@@ -655,7 +657,8 @@ public class UIElementInspector : Editor
                         {
                             DoozyUI.UIManager.RenameElementName(elementNameCurrentIndex, tempElementNameString);
                             UpdateElementNamesPopup();
-                            GetUIElement.elementName = GetUIElement.elementNameReference.elementName; //we save the backup
+                            //GetUIElement.elementName = GetUIElement.elementNameReference.elementName; //we save the backup
+                            GetUIElement.elementName = tempElementNameString;
                             DoozyUIRedundancyCheck.CheckAllTheUIElements();
                         }
 
@@ -678,12 +681,13 @@ public class UIElementInspector : Editor
                     DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightRed);
                     if (GUILayout.Button("yes", GUILayout.Width(89), GUILayout.Height(16)))
                     {
-                        if (GetUIElement.elementNameReference.elementName.Equals(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME) == false)   //we delete the entry only if it's not the first one or the default one, that we are keeping as an empty string entry
+                        if (GetUIElement.elementName.Equals(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME) == false)   //we delete the entry only if it's not the first one or the default one, that we are keeping as an empty string entry
                         {
                             DoozyUI.UIManager.DeleteElementName(elementNameCurrentIndex);   //we remove the entry with the current index
                             elementNameCurrentIndex = DoozyUI.UIManager.GetIndexForElementName(DoozyUI.UIManager.DEFAULT_ELEMENT_NAME); //we set the current index to the default name
-                            GetUIElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[elementNameCurrentIndex]; //we update the elementName reference
-                            GetUIElement.elementName = GetUIElement.elementNameReference.elementName; //we save the backup
+                            //GetUIElement.elementNameReference = DoozyUI.UIManager.GetDoozyUIData.elementNames[elementNameCurrentIndex]; //we update the elementName reference
+                            //GetUIElement.elementName = GetUIElement.elementNameReference.elementName; //we save the backup
+                            GetUIElement.elementName = DoozyUI.UIManager.DEFAULT_ELEMENT_NAME;
                             DoozyUIRedundancyCheck.CheckAllTheUIElements();
                         }
                         else
@@ -1096,12 +1100,12 @@ public class UIElementInspector : Editor
                     }
                     else
                     {
-                        DoozyUI.UIManager.ShowUiElement(GetUIElement.elementNameReference.elementName, false); //we play the IN animations
+                        DoozyUI.UIManager.ShowUiElement(GetUIElement.elementName, false); //we play the IN animations
                     }
                 }
                 else
                 {
-                    Debug.Log("[DoozyUI] There are no IN animations enabled for the '" + GetUIElement.elementNameReference.elementName + "' UIElement. The SHOW method will not work. Enable at least one IN animation to fix this issue.");
+                    Debug.Log("[DoozyUI] There are no IN animations enabled for the '" + GetUIElement.elementName + "' UIElement. The SHOW method will not work. Enable at least one IN animation to fix this issue.");
                 }
             }
             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
@@ -1120,12 +1124,12 @@ public class UIElementInspector : Editor
                     }
                     else
                     {
-                        DoozyUI.UIManager.HideUiElement(GetUIElement.elementNameReference.elementName, false); //we play the OUT animations
+                        DoozyUI.UIManager.HideUiElement(GetUIElement.elementName, false); //we play the OUT animations
                     }
                 }
                 else
                 {
-                    Debug.Log("[DoozyUI] There are no OUT animations enabled for the '" + GetUIElement.elementNameReference.elementName + "' UIElement. The HIDE method will not work. Enable at least one OUT animation to fix this issue.");
+                    Debug.Log("[DoozyUI] There are no OUT animations enabled for the '" + GetUIElement.elementName + "' UIElement. The HIDE method will not work. Enable at least one OUT animation to fix this issue.");
                 }
             }
             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
@@ -1140,7 +1144,7 @@ public class UIElementInspector : Editor
                 selectedButtonName = GetUIElement.selectedButton.name;
             }
             EditorGUILayout.HelpBox(
-               "Element Name: " + GetUIElement.elementNameReference.elementName + "\n" +
+               "Element Name: " + GetUIElement.elementName + "\n" +
                "hide @START: " + GetUIElement.startHidden + "\n" +
                "animate @START: " + GetUIElement.animateAtStart + "\n" +
                "disable when hidden: " + GetUIElement.disableWhenHidden + "\n" +

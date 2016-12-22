@@ -5,6 +5,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -105,6 +106,16 @@ namespace DoozyUI
             /// You can leave this null if your buttons show pre-set icons instead of text.
             /// </summary>
             public string[] buttonTexts = defaultButtonTexts;
+
+            /// <summary>
+            /// Callback action @Hide
+            /// </summary>
+            public UnityAction hideCallback = null;
+
+            /// <summary>
+            /// Callback action for every button
+            /// </summary>
+            public UnityAction[] buttonCallback = null;
         }
         #endregion
 
@@ -121,6 +132,7 @@ namespace DoozyUI
         #region Public Variables
         [HideInInspector]
         public bool showHelp = false;
+        public bool listenForBackButton = true;
 
         public UIElement notificationContainer; //the main UIElement
         public UIElement overlay;               //an overlay to dimm or tint the screen
@@ -149,13 +161,13 @@ namespace DoozyUI
             gameObject.layer = UIManager.GetUiContainer.gameObject.layer;
 
             notificationName = "Notification" + " [" + gameObject.GetInstanceID() + "]";    //we generate a unique name for this notification UIElement (we need it to be able to hide it when we press one of it's buttons)
-            notificationContainer.elementNameReference.elementName = notificationName;
+            notificationContainer.elementName = notificationName;
             notificationContainer.autoRegister = false; //we want to register this element to the registry with the auto generated name (notifiacationName)
             notificationContainer.animateAtStart = true;
 
             if (overlay != null)
             {
-                overlay.elementNameReference.elementName = notificationName;    //we use the same elementName so it will get hidden along with the main uiElement panel
+                overlay.elementName = notificationName;    //we use the same elementName so it will get hidden along with the main uiElement panel
                 overlay.autoRegister = false;   //we want this notification to register this element to the registry with the auto generated name (notifiacationName)
                 overlay.animateAtStart = true;
             }
@@ -164,7 +176,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < specialElements.Length; i++)
                 {
-                    specialElements[i].elementNameReference.elementName = notificationName;   //we use the same elementName so it will get hidden along with the main uiElement panel
+                    specialElements[i].elementName = notificationName;   //we use the same elementName so it will get hidden along with the main uiElement panel
                     specialElements[i].autoRegister = false;    //we want this notification to register this element to the registry with the auto generated name (notifiacationName)
                     specialElements[i].animateAtStart = true;
                 }
@@ -176,7 +188,7 @@ namespace DoozyUI
                 {
                     if (effects[i] != null && effects[i].targetUIElement != null)
                     {
-                        effects[i].targetUIElement.elementNameReference.elementName = notificationName;   //we use the same elementName so it will get hidden along with the main uiElement panel
+                        effects[i].targetUIElement.elementName = notificationName;   //we use the same elementName so it will get hidden along with the main uiElement panel
                         effects[i].autoRegister = false;    //we want this notification to register this effect to the registry with the auto generated name (notifiacationName)
                         effects[i].playOnAwake = true;
                     }
@@ -202,7 +214,7 @@ namespace DoozyUI
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape)) //The listener for the 'Back' button event; we do this because we do not want to change the UI state while a notification is on screen (we disabled the back button from the UI Manager and the UI Notifications needs to listen for it now)
+            if (listenForBackButton && Input.GetKeyDown(KeyCode.Escape)) //The listener for the 'Back' button event; we do this because we do not want to change the UI state while a notification is on screen (we disabled the back button from the UI Manager and the UI Notifications needs to listen for it now)
             {
                 if (closeOnClick) //only if closeOnClick has been enabled (a closeOnClick button has been assigned) we close the notification
                     BackButtonEvent();
@@ -264,14 +276,16 @@ namespace DoozyUI
                 closeButton.onClick.AddListener(() =>
                 {
                     StartCoroutine(HideNotification(onClickDelay));
-                    Destroy(gameObject, GetOutAnimationsTimeAndDelay() + onClickDelay); //we destroy this notification after the Out animation finished
+                    //Destroy(gameObject, GetOutAnimationsTimeAndDelay() + onClickDelay); //we destroy this notification after the Out animation finished
+                    StartCoroutine(DestroyAfterTime(GetOutAnimationsTimeAndDelay() + onClickDelay));
                 });
             }
 
             if (ndata.lifetime > 0)  //We look for the lifetime (if it's -1 we do not auto hide the notification. We wait for the player to hit a button.
             {
                 StartCoroutine(HideNotification(GetInAnimationsTimeAndDelay() + ndata.lifetime));
-                Destroy(gameObject, GetInAnimationsTimeAndDelay() + ndata.lifetime + GetOutAnimationsTimeAndDelay()); //We wait for the in animations + the specified lifetime + the out animations and then we destroy the object
+                //Destroy(gameObject, GetInAnimationsTimeAndDelay() + ndata.lifetime + GetOutAnimationsTimeAndDelay()); //We wait for the in animations + the specified lifetime + the out animations and then we destroy the object
+                StartCoroutine(DestroyAfterTime(GetInAnimationsTimeAndDelay() + ndata.lifetime + GetOutAnimationsTimeAndDelay()));
             }
 
             if (UIManager.usesTMPro) //If we are using the TextMeshPro plugin we will look for TextMeshProUGUI component otherwise we look for the native Text component
@@ -295,17 +309,21 @@ namespace DoozyUI
             {
                 for (int i = 0; i < buttons.Length; i++)
                 {
-                    //buttons[i].hideElements.Add(notificationName);    //We tell it to hide this notification on click
+                    var index = i;
                     buttons[i].GetComponent<Button>().onClick.AddListener(() =>
                     {
+                        if (ndata.buttonCallback != null && index < ndata.buttonCallback.Length && ndata.buttonCallback[index] != null)
+                        {
+                            ndata.buttonCallback[index].Invoke();
+                        }
                         StartCoroutine(HideNotification(0.2f));
-                        Destroy(gameObject, GetOutAnimationsTimeAndDelay() + 0.2f);
-                    }); //We destroy this notification after the Out animation finished
+                        StartCoroutine(DestroyAfterTime(GetOutAnimationsTimeAndDelay() + 0.2f)); //We destroy this notification after the Out animation finished
+                    });
 
                     if (ndata.buttonNames.Length > i && string.IsNullOrEmpty(ndata.buttonNames[i]) == false) //If we have a buttonName we make the button active and set the buttonName to the UIButton compoenent
                     {
                         buttons[i].gameObject.SetActive(true);
-                        buttons[i].buttonNameReference.buttonName = ndata.buttonNames[i];   //We set the buttonName
+                        buttons[i].buttonName = ndata.buttonNames[i];   //We set the buttonName
 
                         if (ndata.buttonTexts != null) //We might not have a text for the button (it might be an image or an icon) so we check if we wanted a text on it
                         {
@@ -337,19 +355,27 @@ namespace DoozyUI
         }
         #endregion
 
-        #region IEnumerator - Hide Notification
+        #region IEnumerator and Method - Hide Notification
         IEnumerator HideNotification(float delay)
         {
-#if UNITY_5_3
-            yield return new WaitForSeconds(delay);
-#else
-            yield return new WaitForSecondsRealtime(delay);
-#endif
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + delay)
+            {
+                yield return null;
+            }
+
             UIManager.HideUiElement(notificationName, false, false);
         }
-#endregion
 
-#region Register to UIManager
+        public void HideNotification(bool hideAndDestroy = true)
+        {
+            UIManager.HideUiElement(notificationName, false, false);
+            if (hideAndDestroy)
+                StartCoroutine(DestroyAfterTime(GetOutAnimationsTimeAndDelay()));
+        }
+        #endregion
+
+        #region Register to UIManager
         void RegisterToUIManager()
         {
             if (notificationContainer == null)
@@ -400,9 +426,9 @@ namespace DoozyUI
                 }
             }
         }
-#endregion
+        #endregion
 
-#region Unregister from UIManager
+        #region Unregister from UIManager
         void UnregisterFromUIManager()
         {
             if (notificationContainer == null)
@@ -444,9 +470,9 @@ namespace DoozyUI
                 }
             }
         }
-#endregion
+        #endregion
 
-#region Unregister from NotificationQueue
+        #region Unregister from NotificationQueue
         void UnregisterFromNotificationQueue(NotificationData nData)
         {
             if (nData.addToNotificationQueue)
@@ -454,9 +480,9 @@ namespace DoozyUI
                 UIManager.UnregisterFromNotificationQueue(nData);
             }
         }
-#endregion
+        #endregion
 
-#region Get IN ANimations Time and Delay
+        #region Get IN ANimations Time and Delay
         private float GetInAnimationsTimeAndDelay()
         {
             float moveInTimeAndDelay = 0;
@@ -487,9 +513,9 @@ namespace DoozyUI
 
             return inAnimationsTimeAndDelay;
         }
-#endregion
+        #endregion
 
-#region Get OUT ANimations Time and Delay
+        #region Get OUT ANimations Time and Delay
         private float GetOutAnimationsTimeAndDelay()
         {
             float moveOutTimeAndDelay = 0;
@@ -520,14 +546,34 @@ namespace DoozyUI
 
             return outAnimationsTimeAndDelay;
         }
-#endregion
+        #endregion
 
-#region Back Button Event
+        #region Back Button Event
         void BackButtonEvent()
         {
             StartCoroutine(HideNotification(0f));
-            Destroy(gameObject, GetOutAnimationsTimeAndDelay()); //we destroy this notification after the Out animation finished
+            StartCoroutine(DestroyAfterTime(GetOutAnimationsTimeAndDelay()));
         }
-#endregion
+        #endregion
+
+        #region DestroyAfterTime
+        IEnumerator DestroyAfterTime(float delay)
+        {
+            float start = Time.realtimeSinceStartup;
+            while (Time.realtimeSinceStartup < start + delay)
+            {
+                yield return null;
+            }
+            UIManager.EnableButtonClicks();
+            if (notificationData.hideCallback != null)
+                notificationData.hideCallback.Invoke();
+            Destory(gameObject);
+        }
+
+        private void Destory(GameObject go)
+        {
+            Destroy(go);
+        }
+        #endregion
     }
 }

@@ -47,6 +47,9 @@ namespace DoozyUI
             go.AddComponent<Image>();
             UIButton uiButton = go.AddComponent<UIButton>();
             uiButton.buttonNameReference = new ButtonName { buttonName = UIManager.DEFAULT_BUTTON_NAME };
+            uiButton.buttonName = UIManager.DEFAULT_BUTTON_NAME;
+            uiButton.onClickSoundReference = new ButtonSound { onClickSound = UIManager.DEFAULT_SOUND_NAME };
+            uiButton.onClickSound = UIManager.DEFAULT_SOUND_NAME;
             Selection.activeObject = go;
         }
 #endif
@@ -324,7 +327,7 @@ namespace DoozyUI
         #region Play Sound
         void PlaySound()
         {
-            UIAnimator.PlaySound(onClickSoundReference.onClickSound, UIManager.isSoundOn);
+            UIAnimator.PlaySound(onClickSound, UIManager.isSoundOn);
         }
         #endregion
 
@@ -381,7 +384,7 @@ namespace DoozyUI
         {
             UIButtonMessage m = new UIButtonMessage()
             {
-                buttonName = buttonNameReference.buttonName,
+                buttonName = buttonName,
                 addToNavigationHistory = addToNavigationHistory,
                 backButton = backButton,
                 gameObject = gameObject,
@@ -402,12 +405,11 @@ namespace DoozyUI
 
         IEnumerator SendGameEventsBetweenFrames()
         {
-
             if (gameEvents != null)
             {
                 for (int i = 0; i < gameEvents.Count; i++)
                 {
-                    yield return new WaitForEndOfFrame();
+                    yield return null;
                     UIManager.SendGameEvent(gameEvents[i]);
                 }
             }
@@ -463,6 +465,9 @@ namespace DoozyUI
         /// </summary>
         public void ExecuteButtonClick()
         {
+            if (UIManager.buttonClicksDisabled)
+                return;
+
             PlaySound();
             StartOnClickAnimations();
 
@@ -476,6 +481,7 @@ namespace DoozyUI
                 DisableButtonForTime();
             }
         }
+
         /// <summary>
         /// Sends the ButtonClick and the GameEvents to the UIManager without starting the OnClick animation (if enabled) and playing the button sound (if set)
         /// </summary>

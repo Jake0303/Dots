@@ -363,14 +363,16 @@ public class UIButtonInspector : Editor
                     }
                 }
 
-                GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName("Back")]; //we reference the class not the value (we need a reference)
-                GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                //GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName("Back")]; //we reference the class not the value (we need a reference)
+                //GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                GetUIButton.buttonName = "Back";
                 DoozyUIRedundancyCheck.CheckAllTheUIButtons();
             }
             else if (sp_backButton.boolValue == false && GetUIButton.buttonName.Equals("Back")) //CASE: we just unticked 'Is Back Button' and the buttonNameCurrentIndes is set to the 'Back' button --> se set the index to the default button name
             {
-                GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName(DoozyUI.UIManager.DEFAULT_BUTTON_NAME)]; //we reference the class not the value (we need a reference)
-                GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                //GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName(DoozyUI.UIManager.DEFAULT_BUTTON_NAME)]; //we reference the class not the value (we need a reference)
+                //GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                GetUIButton.buttonName = DoozyUI.UIManager.DEFAULT_BUTTON_NAME;
             }
 
             if (DoozyUI.UIManager.GetIndexForButtonName(GetUIButton.buttonName) == -1)
@@ -379,9 +381,9 @@ public class UIButtonInspector : Editor
             }
             buttonNameCurrentIndex = DoozyUI.UIManager.GetIndexForButtonName(GetUIButton.buttonName); //we get the index for the current button name (if there is an error, it will be set to the default button name)
             buttonNameCurrentIndex = EditorGUILayout.Popup(buttonNameCurrentIndex, buttonNames, GUILayout.Width(200));
-            GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[buttonNameCurrentIndex]; //we reference the class not the value (we need a reference)
-            GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
-
+            //GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[buttonNameCurrentIndex]; //we reference the class not the value (we need a reference)
+            //GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+            GetUIButton.buttonName = DoozyUI.UIManager.GetDoozyUIData.buttonNames[buttonNameCurrentIndex].buttonName;
             GUILayout.Space(16);
 
             sp_backButton.boolValue = EditorGUILayout.ToggleLeft("Is Back Button", sp_backButton.boolValue, GUILayout.Width(100));
@@ -519,8 +521,9 @@ public class UIButtonInspector : Editor
                     DoozyUI.UIManager.NewButtonName(tempButtonNameString);
                 }
 
-                GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName(tempButtonNameString)]; //we update the reference
-                GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                //GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[DoozyUI.UIManager.GetIndexForButtonName(tempButtonNameString)]; //we update the reference
+                //GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                GetUIButton.buttonName = tempButtonNameString;
                 DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                 UpdateButtonNamesPopup();                   //we update the string array that shows the list of button names in the inspector
                 tempButtonNameString = string.Empty;        //we clear the temporary name holder
@@ -551,7 +554,8 @@ public class UIButtonInspector : Editor
                 {
                     DoozyUI.UIManager.RenameButtonName(buttonNameCurrentIndex, tempButtonNameString);
                     UpdateButtonNamesPopup();
-                    GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                    //GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                    GetUIButton.buttonName = tempButtonNameString;
                     DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                 }
 
@@ -574,11 +578,11 @@ public class UIButtonInspector : Editor
             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightRed);
             if (GUILayout.Button("yes", GUILayout.Width(98), GUILayout.Height(16)))
             {
-                if (GetUIButton.buttonNameReference.buttonName.Equals(DoozyUI.UIManager.DEFAULT_BUTTON_NAME))
+                if (GetUIButton.buttonName.Equals(DoozyUI.UIManager.DEFAULT_BUTTON_NAME))
                 {
                     Debug.Log("[DoozyUI] You cannot (and should not) delete the default button name '" + DoozyUI.UIManager.DEFAULT_BUTTON_NAME + "'.");
                 }
-                else if (GetUIButton.buttonNameReference.buttonName.Equals("Back"))
+                else if (GetUIButton.buttonName.Equals("Back"))
                 {
                     Debug.Log("[DoozyUI] You cannot (and should not) delete the 'Back' button.");
                 }
@@ -586,8 +590,9 @@ public class UIButtonInspector : Editor
                 {
                     DoozyUI.UIManager.DeleteButtonName(buttonNameCurrentIndex); //we remove the entry whith the current index
                     buttonNameCurrentIndex = DoozyUI.UIManager.GetIndexForButtonName(DoozyUI.UIManager.DEFAULT_BUTTON_NAME); //we set the current index to the default value
-                    GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[buttonNameCurrentIndex]; //we update the buttonName reference
-                    GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                    //GetUIButton.buttonNameReference = DoozyUI.UIManager.GetDoozyUIData.buttonNames[buttonNameCurrentIndex]; //we update the buttonName reference
+                    //GetUIButton.buttonName = GetUIButton.buttonNameReference.buttonName;
+                    GetUIButton.buttonName = DoozyUI.UIManager.DEFAULT_BUTTON_NAME;
                     DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                 }
                 UpdateButtonNamesPopup();
@@ -634,8 +639,9 @@ public class UIButtonInspector : Editor
             }
             buttonSoundCurrentIndex = DoozyUI.UIManager.GetIndexForButtonSound(GetUIButton.onClickSound);
             buttonSoundCurrentIndex = EditorGUILayout.Popup(buttonSoundCurrentIndex, buttonSounds, GUILayout.Width(200));
-            GetUIButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[buttonSoundCurrentIndex]; //we reference the class not the value (we need a reference)
-            GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+            //GetUIButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[buttonSoundCurrentIndex]; //we reference the class not the value (we need a reference)
+            //GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+            GetUIButton.onClickSound = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[buttonSoundCurrentIndex].onClickSound;
         }
         else if (newButtonSound == true)
         {
@@ -662,7 +668,7 @@ public class UIButtonInspector : Editor
         EditorGUILayout.BeginHorizontal();
         if (newButtonSound == false && renameButtonSound == false && deleteButtonSound == false)
         {
-            if (GetUIButton.onClickSoundReference.onClickSound.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME))
+            if (GetUIButton.onClickSound.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME))
             {
                 if (GUILayout.Button("new", GUILayout.Width(200), GUILayout.Height(16)))
                 {
@@ -684,7 +690,7 @@ public class UIButtonInspector : Editor
                         Debug.Log("[DoozyUI] You cannot (and should not) rename the default button sound.");
                         return;
                     }
-                    tempButtonSoundString = GetUIButton.onClickSoundReference.onClickSound;
+                    tempButtonSoundString = GetUIButton.onClickSound;
                     renameButtonSound = true;
                 }
                 if (GUILayout.Button("delete", GUILayout.Width(64), GUILayout.Height(16)))
@@ -694,7 +700,7 @@ public class UIButtonInspector : Editor
                         Debug.Log("[DoozyUI] You cannot (and should not) delete the default button sound.");
                         return;
                     }
-                    tempButtonSoundString = GetUIButton.onClickSoundReference.onClickSound;
+                    tempButtonSoundString = GetUIButton.onClickSound;
                     deleteButtonSound = true;
                 }
             }
@@ -713,8 +719,9 @@ public class UIButtonInspector : Editor
                     DoozyUI.UIManager.NewButtonSound(tempButtonSoundString);
                 }
 
-                GetUIButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[DoozyUI.UIManager.GetIndexForButtonSound(tempButtonSoundString)];    //we update the reference
-                GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+                //GetUIButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[DoozyUI.UIManager.GetIndexForButtonSound(tempButtonSoundString)];    //we update the reference
+                //GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+                GetUIButton.onClickSound = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[DoozyUI.UIManager.GetIndexForButtonSound(tempButtonSoundString)].onClickSound;
                 UpdateButtonSoundsPopup();              //we update the string array that shows the list of button sounds in the inspector
                 tempButtonSoundString = string.Empty;   //we clear the temporary name holder
                 newButtonSound = false;                 //we show the initial menu for the element name
@@ -742,7 +749,8 @@ public class UIButtonInspector : Editor
                 {
                     DoozyUI.UIManager.RenameButtonSound(buttonSoundCurrentIndex, tempButtonSoundString);
                     UpdateButtonSoundsPopup();
-                    GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+                    //GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+                    GetUIButton.onClickSound = tempButtonSoundString;
                     DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                 }
 
@@ -765,7 +773,7 @@ public class UIButtonInspector : Editor
             DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightRed);
             if (GUILayout.Button("yes", GUILayout.Width(98), GUILayout.Height(16)))
             {
-                if (GetUIButton.onClickSoundReference.onClickSound.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME))
+                if (GetUIButton.onClickSound.Equals(DoozyUI.UIManager.DEFAULT_SOUND_NAME))
                 {
                     Debug.Log("[DoozyUI] You cannot (and should not) delete the default sound name '" + DoozyUI.UIManager.DEFAULT_SOUND_NAME + "'.");
                 }
@@ -773,8 +781,9 @@ public class UIButtonInspector : Editor
                 {
                     DoozyUI.UIManager.DeleteButtonSound(buttonSoundCurrentIndex); //we remove the entry from the current index
                     buttonSoundCurrentIndex = DoozyUI.UIManager.GetIndexForButtonSound(DoozyUI.UIManager.DEFAULT_SOUND_NAME); //we set the current index to the default value
-                    GetUIButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[buttonSoundCurrentIndex]; //we update the element name reference
-                    GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+                    //GetUIButton.onClickSoundReference = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[buttonSoundCurrentIndex]; //we update the element name reference
+                    //GetUIButton.onClickSound = GetUIButton.onClickSoundReference.onClickSound;
+                    GetUIButton.onClickSound = DoozyUI.UIManager.GetDoozyUIData.buttonSounds[buttonSoundCurrentIndex].onClickSound;
                     DoozyUIRedundancyCheck.CheckAllTheUIButtons();
                 }
                 UpdateButtonSoundsPopup();

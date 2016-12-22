@@ -75,6 +75,9 @@ namespace DoozyUI
 
         #region Private Variables
         private ParticleSystem masterPS;
+#if UNITY_5_5_OR_NEWER
+        private ParticleSystem.MainModule masterPS_MainModule;
+#endif
         private float lifetime;
         private Coroutine resetCoroutine;
         private Coroutine startCoroutine;
@@ -85,13 +88,19 @@ namespace DoozyUI
         //private int targetSortingLayerID;
         private string targetSortingLayerName;
         private int targetSortingOrder;
-        #endregion
+#endregion
 
         void Awake()
         {
             masterPS = GetComponent<ParticleSystem>();
+#if UNITY_5_5_OR_NEWER
+            masterPS_MainModule = masterPS.main;
+            masterPS_MainModule.playOnAwake = playOnAwake;
+            lifetime = masterPS_MainModule.startLifetimeMultiplier;
+#else
             masterPS.playOnAwake = playOnAwake;
             lifetime = masterPS.startLifetime;
+#endif
             resetCoroutine = null;
             startCoroutine = null;
         }
@@ -139,7 +148,7 @@ namespace DoozyUI
             UpdateEffectSortingOrder();
         }
 
-        #region Update UIEffect SortingOrder
+#region Update UIEffect SortingOrder
         public void UpdateEffectSortingOrder()
         {
             allThePS = GetComponentsInChildren<ParticleSystem>(true);
@@ -180,9 +189,9 @@ namespace DoozyUI
                 }
             }
         }
-        #endregion
+#endregion
 
-        #region Show
+#region Show
         /// <summary>
         /// Shows the effect.
         /// </summary>
@@ -203,9 +212,9 @@ namespace DoozyUI
                 startCoroutine = StartCoroutine("StartEffectAfterDelay");
             }
         }
-        #endregion
+#endregion
 
-        #region Hide
+#region Hide
         /// <summary>
         /// Hides the effect.
         /// </summary>
@@ -216,9 +225,9 @@ namespace DoozyUI
                 ResetParticleSystem();
             }
         }
-        #endregion
+#endregion
 
-        #region Reset ParticleSystem
+#region Reset ParticleSystem
         /// <summary>
         /// Resets the particle system instantly
         /// </summary>
@@ -237,9 +246,9 @@ namespace DoozyUI
                 resetCoroutine = StartCoroutine("ResetAndDisableParticleSystemAfterLifetime");
             }
         }
-        #endregion
+#endregion
 
-        #region IEnumerators - ResetAndDisableParticleSystemAfterLifetime, StartEffectAfterDelay
+#region IEnumerators - ResetAndDisableParticleSystemAfterLifetime, StartEffectAfterDelay
         /// <summary>
         /// Resets the particle system after all the particles have dissapeared naturally (after their lifetime)
         /// </summary>
@@ -265,6 +274,6 @@ namespace DoozyUI
 
             startCoroutine = null;
         }
-        #endregion
+#endregion
     }
 }

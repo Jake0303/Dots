@@ -27,7 +27,7 @@ public class BackgroundManager : MonoBehaviour
             randomColor.a = 0;
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
-
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);
             yield return new WaitForSeconds(Random.Range(0.9f, 1.1f));
         }
     }
@@ -57,7 +57,7 @@ public class BackgroundManager : MonoBehaviour
                 fade.a += 0.2f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-
+                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
             yield return new WaitForSeconds(0.1f);
         }
@@ -73,6 +73,7 @@ public class BackgroundManager : MonoBehaviour
                 fade.a -= 0.1f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
+                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
                 newSquare.GetComponent<Light>().intensity--;
                 //newSquare.GetComponent<Light>().range--;
             }
@@ -98,7 +99,7 @@ public class BackgroundManager : MonoBehaviour
         }
         else
         {
-            StopAllCoroutines();
+            //StopAllCoroutines();
             StartCoroutine(ShowSquare());
         }
         foreach (GameObject square in GameObject.FindGameObjectsWithTag("FadedSquare"))

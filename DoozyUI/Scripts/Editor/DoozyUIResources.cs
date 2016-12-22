@@ -16,7 +16,7 @@ public static class DoozyUIResources
         {
             if (string.IsNullOrEmpty(uIImagesFolderPath))
             {
-                uIImagesFolderPath = FileHelper.GetRelativeFolderPath("DoozyUI") + "/Images/";
+                uIImagesFolderPath = DoozyUI.FileHelper.GetRelativeFolderPath("DoozyUI") + "/Images/";
             }
             return uIImagesFolderPath;
         }

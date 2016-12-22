@@ -5,11 +5,10 @@
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 using System.Collections;
 using UnityEngine.EventSystems;
-using System;
+using UnityEngine.Events;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -52,7 +51,7 @@ namespace DoozyUI
         public const string DISPATCH_ALL = "~Dispatch All~";
 
         public const string COPYRIGHT = "Copyright (c) 2015 - 2016 Doozy Entertainment / Marlink Trading SRL. All Rights Reserved.";
-        public const string VERSION = "Version 2.6";
+        public const string VERSION = "Version 2.7p2";
         #endregion
 
         #region Enums - EventType, Orientation
@@ -68,26 +67,31 @@ namespace DoozyUI
 #endif
         public static Orientation currentOrientation = Orientation.Unknown;
 
-        public static EventSystem eventSystem = null;  //Reference to Unity's EventSystem
-        public static GameObject currentlySelectedGameObject = null;  //Reference to the currently selected button in the EventSystem
-        public static Camera uiCamera = null;  //Reference to the UICamera that comes with DoozyUI
+        /// <summary>
+        /// Reference to Unity's EventSystem
+        /// </summary>
+        public static EventSystem eventSystem = null;
+        /// <summary>
+        /// Reference to the currently selected button in the EventSystem
+        /// </summary>
+        public static GameObject currentlySelectedGameObject = null;
+        /// <summary>
+        /// Reference to the UICamera that comes with DoozyUI
+        /// </summary>
+        public static Camera uiCamera = null;
 
         public static bool debugEvents;  //Option to debug GameEvents
         public static bool debugButtons;  //Option to debug ButtonClicks
         public static bool debugNotifications;  //Option to debug Notifications
 
+        public static bool autoDisableButtonClicks = true; //Option to disable button lcick during an UIElement transition (IN/OUT animation) (default: TRUE)
+
         public static bool backButtonDisabled  //There are cases when we want to disable the 'Back' button functionality
         {
             get
             {
-                if (backButtonDisableLevel > 0)
-                {
-                    return true;
-                }
-                else if (backButtonDisableLevel == 0)
-                {
-                    return false;
-                }
+                if (backButtonDisableLevel > 0) { return true; }
+                else if (backButtonDisableLevel == 0) { return false; }
                 else
                 {
                     Debug.LogWarning("[DoozyUI] The backButtonDisableLevel has a negative value. This means that the variable was changed by you in code. This should not happen. You should not handle this variable yourself.");
@@ -96,6 +100,21 @@ namespace DoozyUI
             }
         }
         private static int backButtonDisableLevel = 0;              //if == 0 --> false (the back button is not disabled); if > 0 --> true (back button is disabled); this is used to create an additive bool
+
+        public static bool buttonClicksDisabled        //The buttons will get disabled when an UIElement is in transition
+        {
+            get
+            {
+                if (buttonClicksDisableLevel > 0) { return true; }
+                else if (buttonClicksDisableLevel == 0) { return false; }
+                else
+                {
+                    Debug.LogWarning("[DoozyUI] The buttonClicksDisableLevel has a negative value. This means that the variable was changed by you in code. This should not happen. You should not handle this variable yourself.");
+                    return false;
+                }
+            }
+        }
+        private static int buttonClicksDisableLevel = 0;        //if == 0 --> false (button clicks are not disabled); if > 0 --> true (button clicks are disabled); this is used to create an additive bool
 
         public static bool gamePaused = false;                              //Check if the game is paused or not
         public static float currentGameTimeScale = 1;                      //We presume 1, but we check every time the player presses the pause button
@@ -145,12 +164,11 @@ namespace DoozyUI
         #endregion
 
         #region PublicVariables
-        [HideInInspector]
         public bool showHelp = false;
         public bool _debugEvents = false;
         public bool _debugButtons = false;
         public bool _debugNotifications = false;
-
+        public bool _autoDisableButtonClicks = true;
         public bool useMasterAudio_PlaySoundAndForget = false;      //Used to change in the inspector the settings for the static variable
         public bool useMasterAudio_FireCustomEvent = false;         //Used to change in the inspector the settings for the static variable
         public bool useTextMeshPro = false;                         //Used to change in the inspector the settings for the static variable
@@ -620,7 +638,7 @@ namespace DoozyUI
                 for (int i = 0; i < tempElementsList.Count; i++)
                 {
                     tempElementsList[i].elementName = newName;
-                    tempElementsList[i].elementNameReference.elementName = newName;
+                    //tempElementsList[i].elementNameReference.elementName = newName;
                 }
             }
 
@@ -691,7 +709,7 @@ namespace DoozyUI
                 for (int i = 0; i < tempElementsList.Count; i++)
                 {
                     tempElementsList[i].elementName = DEFAULT_ELEMENT_NAME;
-                    tempElementsList[i].elementNameReference.elementName = DEFAULT_ELEMENT_NAME;
+                    //tempElementsList[i].elementNameReference.elementName = DEFAULT_ELEMENT_NAME;
                 }
             }
 
@@ -1141,7 +1159,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempButtonsArray.Length; i++)
                 {
-                    if (tempButtonsArray[i].buttonNameReference.buttonName.Equals(previousName))
+                    if (tempButtonsArray[i].buttonName.Equals(previousName))
                     {
                         tempButtonsList.Add(tempButtonsArray[i]);
                     }
@@ -1169,7 +1187,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempButtonsList.Count; i++)
                 {
-                    tempButtonsList[i].buttonNameReference.buttonName = newName;
+                    tempButtonsList[i].buttonName = newName;
                 }
             }
 
@@ -1196,7 +1214,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempButtonsArray.Length; i++)
                 {
-                    if (tempButtonsArray[i].buttonNameReference.buttonName.Equals(previousName))
+                    if (tempButtonsArray[i].buttonName.Equals(previousName))
                     {
                         tempButtonsList.Add(tempButtonsArray[i]);
                     }
@@ -1223,7 +1241,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempButtonsList.Count; i++)
                 {
-                    tempButtonsList[i].buttonNameReference.buttonName = DEFAULT_BUTTON_NAME;
+                    tempButtonsList[i].buttonName = DEFAULT_BUTTON_NAME;
                 }
             }
 
@@ -1261,7 +1279,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempArray.Length; i++)
                 {
-                    if (tempArray[i].onClickSoundReference.onClickSound.Equals(GetDoozyUIData.buttonSounds[index].onClickSound))
+                    if (tempArray[i].onClickSound.Equals(GetDoozyUIData.buttonSounds[index].onClickSound))
                     {
                         tempList.Add(tempArray[i]);
                     }
@@ -1275,7 +1293,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempList.Count; i++)
                 {
-                    tempList[i].onClickSoundReference.onClickSound = newName;
+                    tempList[i].onClickSound = newName;
                 }
             }
             SaveDoozyUIData();
@@ -1292,7 +1310,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempArray.Length; i++)
                 {
-                    if (tempArray[i].onClickSoundReference.onClickSound.Equals(GetDoozyUIData.buttonSounds[index].onClickSound))
+                    if (tempArray[i].onClickSound.Equals(GetDoozyUIData.buttonSounds[index].onClickSound))
                     {
                         tempList.Add(tempArray[i]);
                     }
@@ -1305,7 +1323,7 @@ namespace DoozyUI
             {
                 for (int i = 0; i < tempList.Count; i++)
                 {
-                    tempList[i].onClickSoundReference.onClickSound = DEFAULT_SOUND_NAME;
+                    tempList[i].onClickSound = DEFAULT_SOUND_NAME;
                 }
             }
             SaveDoozyUIData();
@@ -1561,7 +1579,7 @@ namespace DoozyUI
             }
             else //FALLBACK option if we are in AutoRotate or if we are in Unknown
             {
-                ChangeOrientation(Orientation.Portrait);
+                ChangeOrientation(Orientation.Landscape);
             }
 #endif
         }
@@ -1650,7 +1668,7 @@ namespace DoozyUI
             else
             {
                 //Debug.Log("[DoozyUI] No UIElement with the the elementName [" + elementName + "] was found. GetUiElements returned null.");
-                return null;
+                return new List<UIElement>();
             }
         }
 
@@ -1844,7 +1862,6 @@ namespace DoozyUI
         public static void HideUiElement(string elementName, bool instantAction, bool shouldDisable = true)
         {
             //Debug.Log("[DoozyUI] HideUiElement: " + elementName);
-
             hideElementsList = GetUiElements(elementName);
             if (hideElementsList != null && hideElementsList != null && hideElementsList.Count > 0)
             {
@@ -2144,38 +2161,38 @@ namespace DoozyUI
         /// <summary>
         /// Sets up a Notification.
         /// </summary>
-        private static void SetupNotification(UINotification.NotificationData nData)
+        private static UINotification SetupNotification(UINotification.NotificationData nData)
         {
-            if (string.IsNullOrEmpty(nData.prefabName))
+            if (string.IsNullOrEmpty(nData.prefabName) && nData.prefab == null)
             {
-                Debug.Log("[DoozyUI] [SetupNotification]: The nPrefabName cannot be null or empty");
-                return;
+                Debug.Log("[DoozyUI] [SetupNotification]: The nPrefabName is null or empty and the nPrefab is null as well. Something went wrong.");
+                return null;
             }
 
             if (nData.addToNotificationQueue)
             {
                 RegisterToNotificationQueue(nData);   //We register the notification to the Notification Queue and let it handle it.
-                return;
+                return null;
             }
 
-            LoadNotification(nData);  //Because we didn't add this notification to the Notification Queue, we show it without adding it to the queue
+            return LoadNotification(nData);  //Because we didn't add this notification to the Notification Queue, we show it without adding it to the queue
         }
 
         /// <summary>
         /// Loads the notification by instatiating the prefab and doing the initial setup to it
         /// </summary>
         /// <param name="nData"></param>
-        private static void LoadNotification(UINotification.NotificationData nData)
+        private static UINotification LoadNotification(UINotification.NotificationData nData)
         {
             GameObject notification = null;
 
             if (nData.prefab != null) //we have a prefab reference
             {
-                notification = nData.prefab;
+                notification = (GameObject)Instantiate(nData.prefab);
             }
             else if (string.IsNullOrEmpty(nData.prefabName) == false)//we don't have a prefab reference and we check if we have a prefabName we should be looking for in Resources
             {
-                UnityEngine.Object notificationPrefab = null;
+                Object notificationPrefab = null;
                 try
                 {
                     notificationPrefab = Resources.Load(nData.prefabName); //we look for the notification prefab; we do this in a 'try catch' just in case the name was mispelled or the prefab does not exist
@@ -2188,7 +2205,7 @@ namespace DoozyUI
                 if (notificationPrefab == null)
                 {
                     Debug.Log("[DoozyUI] [SetupNotification]: The notification named [" + nData.prefabName + "] prefab does not exist or is not located under a Resources folder");
-                    return;
+                    return null;
                 }
 
                 notification = (GameObject)Instantiate(Resources.Load(nData.prefabName, typeof(GameObject)), GetUiContainer.transform.position, Quaternion.identity);
@@ -2196,21 +2213,28 @@ namespace DoozyUI
             else //the developer didn't link a prefab, nor did he set a prefabName; this is a fail safe option
             {
                 Debug.Log("[DoozyUI] [SetupNotification] [Error]: You are trying to show a notification, but you didn't set neither a prefab reference, nor a prefabName. This is a fail safe debug log. Check your ShowNotification method call and fix this.");
-                return;
+                return null;
             }
 
             if (notification.GetComponent<UINotification>() == null) //we make sure the notification gameobject has an UINotification component attached (this is a fail safe in case the developer links the wrong prefab)
             {
                 Debug.Log("[DoozyUI] [SetupNotification] [Error]: The notification prefab named " + notification.name + " does not have an UINotification component attached. Check if this prefab is really a notification or not.");
-                return;
+                return null;
             }
 
-            notification.transform.SetParent(uiContainer, false);
+            notification.transform.SetParent(GetUiContainer, false);
             notification.gameObject.layer = notification.transform.parent.gameObject.layer; //we set the physics layer (just in case)
             UpdateCanvases(notification.gameObject, GetUiContainer.GetComponent<Canvas>().sortingLayerName); //we update the sorting layers for all the canvases (just in case)
             UpdateRenderers(notification.gameObject, GetUiContainer.GetComponent<Canvas>().sortingLayerName); //we update the sorting layers for all the rendereres (just in case)
-            notification.GetComponent<RectTransform>().anchoredPosition = GetUiContainer.GetComponent<RectTransform>().anchoredPosition;
+            RectTransform rt = notification.GetComponent<RectTransform>();
+            rt.anchoredPosition = GetUiContainer.GetComponent<RectTransform>().anchoredPosition;
+            if (GetUiContainer.GetComponent<Canvas>().renderMode == RenderMode.ScreenSpaceOverlay)
+            {
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+            }
             notification.GetComponent<UINotification>().ShowNotification(nData);
+            return notification.GetComponent<UINotification>();
         }
 
         #region ShowNotification methods
@@ -2226,7 +2250,7 @@ namespace DoozyUI
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
         /// <param name="_buttonTexts">The text on the buttons (example: 'OK', 'Cancel', 'Yes', 'No' and so on)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames, string[] _buttonTexts)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames, string[] _buttonTexts, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
             if (debugNotifications)
             {
@@ -2250,10 +2274,12 @@ namespace DoozyUI
                     message = _message,
                     icon = _icon,
                     buttonNames = _buttonNames,
-                    buttonTexts = _buttonTexts
+                    buttonTexts = _buttonTexts,
+                    buttonCallback = _buttonCallback,
+                    hideCallback = _hideCallback
                 };
 
-            SetupNotification(nData);
+            return SetupNotification(nData);
         }
 
         /// <summary>
@@ -2267,7 +2293,7 @@ namespace DoozyUI
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
         /// <param name="_buttonTexts">The text on the buttons (example: 'OK', 'Cancel', 'Yes', 'No' and so on)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames, string[] _buttonTexts)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames, string[] _buttonTexts, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
             if (debugNotifications)
             {
@@ -2291,10 +2317,12 @@ namespace DoozyUI
                     message = _message,
                     icon = _icon,
                     buttonNames = _buttonNames,
-                    buttonTexts = _buttonTexts
+                    buttonTexts = _buttonTexts,
+                    buttonCallback = _buttonCallback,
+                    hideCallback = _hideCallback
                 };
 
-            SetupNotification(nData);
+            return SetupNotification(nData);
         }
 
         /// <summary>
@@ -2303,9 +2331,10 @@ namespace DoozyUI
         /// <param name="_prefabName">The prefab name</param>
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
-            ShowNotification(
+            return
+                ShowNotification(
                 _prefabName,
                 _lifetime,
                 _addToNotificationQueue,
@@ -2313,7 +2342,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2323,9 +2354,10 @@ namespace DoozyUI
         /// <param name="_prefab">The prefab GameObject reference</param>
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, UnityAction _hideCallback = null)
         {
-            ShowNotification(
+            return
+                ShowNotification(
                 _prefab,
                 _lifetime,
                 _addToNotificationQueue,
@@ -2333,7 +2365,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2344,8 +2378,9 @@ namespace DoozyUI
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2354,7 +2389,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2365,8 +2402,9 @@ namespace DoozyUI
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2375,7 +2413,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2387,8 +2427,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_message">The message you want to show in the message area (if linked)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2397,7 +2438,9 @@ namespace DoozyUI
                 _message,
                 UINotification.defaultIcon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2409,8 +2452,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_message">The message you want to show in the message area (if linked)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2419,7 +2463,9 @@ namespace DoozyUI
                 _message,
                 UINotification.defaultIcon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2432,8 +2478,9 @@ namespace DoozyUI
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_message">The message you want to show in the message area (if linked)</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2442,7 +2489,9 @@ namespace DoozyUI
                 _message,
                 _icon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2455,8 +2504,9 @@ namespace DoozyUI
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_message">The message you want to show in the message area (if linked)</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2465,7 +2515,9 @@ namespace DoozyUI
                 _message,
                 _icon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2479,8 +2531,9 @@ namespace DoozyUI
         /// <param name="_message">The message you want to show in the message area (if linked)</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2489,7 +2542,9 @@ namespace DoozyUI
                 _message,
                 _icon,
                 _buttonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2503,8 +2558,9 @@ namespace DoozyUI
         /// <param name="_message">The message you want to show in the message area (if linked)</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string _message, Sprite _icon, string[] _buttonNames, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2513,7 +2569,9 @@ namespace DoozyUI
                 _message,
                 _icon,
                 _buttonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2524,8 +2582,9 @@ namespace DoozyUI
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, Sprite _icon)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, Sprite _icon, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2534,7 +2593,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 _icon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2545,8 +2606,9 @@ namespace DoozyUI
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, Sprite _icon)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, Sprite _icon, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2555,7 +2617,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 _icon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2567,8 +2631,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, Sprite _icon)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, Sprite _icon, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2577,7 +2642,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 _icon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2589,8 +2656,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_icon">The sprite you want the notification icon to have (if linked)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, Sprite _icon)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, Sprite _icon, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2599,7 +2667,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 _icon,
                 UINotification.defaultButtonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                null,
+                _hideCallback
                 );
         }
 
@@ -2610,8 +2680,9 @@ namespace DoozyUI
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2620,7 +2691,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2631,8 +2704,9 @@ namespace DoozyUI
         /// <param name="_lifetime">How long will the notification be on the screen. Infinite lifetime is -1</param>
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2641,7 +2715,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2653,8 +2729,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
         /// <param name="_buttonTexts">The text on the buttons (example: 'OK', 'Cancel', 'Yes', 'No' and so on)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames, string[] _buttonTexts)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames, string[] _buttonTexts, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2663,7 +2740,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                _buttonTexts
+                _buttonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2675,8 +2754,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
         /// <param name="_buttonTexts">The text on the buttons (example: 'OK', 'Cancel', 'Yes', 'No' and so on)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames, string[] _buttonTexts)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string[] _buttonNames, string[] _buttonTexts, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2685,7 +2765,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                _buttonTexts
+                _buttonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2697,8 +2779,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2707,7 +2790,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2719,8 +2804,9 @@ namespace DoozyUI
         /// <param name="_addToNotificationQueue">Should this notification be added to the NotificationQueue or shown rightaway</param>
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2729,7 +2815,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                UINotification.defaultButtonTexts
+                UINotification.defaultButtonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2742,8 +2830,9 @@ namespace DoozyUI
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
         /// <param name="_buttonTexts">The text on the buttons (example: 'OK', 'Cancel', 'Yes', 'No' and so on)</param>
-        public static void ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames, string[] _buttonTexts)
+        public static UINotification ShowNotification(string _prefabName, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames, string[] _buttonTexts, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefabName,
                 _lifetime,
@@ -2752,7 +2841,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                _buttonTexts
+                _buttonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2765,8 +2856,9 @@ namespace DoozyUI
         /// <param name="_title">The text you want to show in the title area (if linked)</param>
         /// <param name="_buttonNames">The button names you want the notification to have (from left to right). These values are the ones that we listen to as button click</param>
         /// <param name="_buttonTexts">The text on the buttons (example: 'OK', 'Cancel', 'Yes', 'No' and so on)</param>
-        public static void ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames, string[] _buttonTexts)
+        public static UINotification ShowNotification(GameObject _prefab, float _lifetime, bool _addToNotificationQueue, string _title, string[] _buttonNames, string[] _buttonTexts, UnityAction[] _buttonCallback = null, UnityAction _hideCallback = null)
         {
+            return
             ShowNotification(
                 _prefab,
                 _lifetime,
@@ -2775,7 +2867,9 @@ namespace DoozyUI
                 UINotification.defaultMessage,
                 UINotification.defaultIcon,
                 _buttonNames,
-                _buttonTexts
+                _buttonTexts,
+                _buttonCallback,
+                _hideCallback
                 );
         }
 
@@ -2841,6 +2935,7 @@ namespace DoozyUI
         /// </summary>
         public static void SoundCheck()
         {
+            /*
             int soundState = PlayerPrefs.GetInt("soundState", 1); //We check if the sound is ON (1) or OFF (0). By default we assume it's 1.
 
             if (soundState == 1)
@@ -2857,7 +2952,7 @@ namespace DoozyUI
                 ShowUiElement("SoundOFF");   //We show the SoundOFF UIElement
                 HideUiElement("SoundON", true);    //We hide the SoundON UIElement
             }
-            SendGameEvent("UpdateSoundSettings");
+            SendGameEvent("UpdateSoundSettings");*/
         }
 
         /// <summary>
@@ -2889,6 +2984,7 @@ namespace DoozyUI
         /// </summary>
         public static void ToggleSound()
         {
+            /*
             isSoundOn = !isSoundOn;
 
             int soundState = -1;
@@ -2910,7 +3006,7 @@ namespace DoozyUI
             PlayerPrefs.SetInt("soundState", soundState); //We set the new value in the PlayerPrefs
             PlayerPrefs.Save(); //We save the value
 
-            SendGameEvent("UpdateSoundSettings");
+            SendGameEvent("UpdateSoundSettings");*/
         }
 
         /// <summary>
@@ -2966,36 +3062,34 @@ namespace DoozyUI
         {
             visibleHideElementsList = new List<string>();
             hideElements = hideElements.Where(s => s.Equals(DEFAULT_ELEMENT_NAME) == false).ToList(); //we remove any default element name values (just in case) | FIXED
-            try
+            visibleHideElementsList = hideElements.Where(s => GetUiElements(s).Any(element => element.isVisible)).ToList(); //v2.6 fix generously provided by [bomberest] Andrew AnF Shut
+
+            if (showElements != null && showElements.Count > 0)
             {
-                visibleHideElementsList = hideElements.Where(s => GetUiElements(s).Any(element => element.isVisible)).ToList(); //v2.6 fix generously provided by [bomberest] Andrew AnF Shut
-
-                if (showElements != null && showElements.Count > 0)
+                for (int i = 0; i < showElements.Count; i++)
                 {
-                    for (int i = 0; i < showElements.Count; i++)
-                    {
-                        ShowUiElement(showElements[i]);
-                    }
+                    ShowUiElement(showElements[i]);
                 }
+            }
 
-                if (hideElements != null && hideElements.Count > 0)
+            if (hideElements != null && hideElements.Count > 0)
+            {
+                for (int i = 0; i < hideElements.Count; i++)
                 {
-                    for (int i = 0; i < hideElements.Count; i++)
-                    {
-                        HideUiElement(hideElements[i]);
-                    }
+                    HideUiElement(hideElements[i]);
                 }
+            }
 
-                if (addToNavigationHistory)
-                {
-                    Navigation navItem = new Navigation();
-                    navItem.showElements = new List<string>();
+            if (addToNavigationHistory)
+            {
+                Navigation navItem = new Navigation();
+                navItem.showElements = new List<string>();
+                if (visibleHideElementsList != null && visibleHideElementsList.Count > 0)
                     navItem.showElements = visibleHideElementsList;
-                    navItem.hideElements = new List<string>();
-                    navItem.hideElements = showElements;
-                    navStack.Push(navItem);
-                }
-            } catch (Exception ex) { Debug.Log(ex.Message); }
+                navItem.hideElements = new List<string>();
+                navItem.hideElements = showElements;
+                navStack.Push(navItem);
+            }
         }
 
         /// <summary>
@@ -3078,7 +3172,7 @@ namespace DoozyUI
 
         #endregion
 
-        #region Methods Game Management - TogglePause, ApplicationQuit, BackButtonEvent, DisableBackButton, EnableBackButton, EnableBackButtonByForce
+        #region Methods Game Management - TogglePause, ApplicationQuit, BackButtonEvent, DisableBackButton, EnableBackButton, EnableBackButtonByForce, DisableButtonClicks, EnableButtonClicks, EnableButtonClicksByForce
 
         /// <summary>
         /// Pauses or Unpauses the application
@@ -3170,22 +3264,43 @@ namespace DoozyUI
         public static void EnableBackButton()
         {
             backButtonDisableLevel--; //if == 0 --> false (back button is not disabled) if > 0 --> true (back button is disabled)
-
-            //Check so that the backButtonDisableLevel does not go below zero
-            if (backButtonDisableLevel < 0)
-            {
-                backButtonDisableLevel = 0;
-                //If requested, we might have to add a debug log here to let the developer know that he enabled the back button without disabling it first.
-                //Debug.Log("[DoozyUI] You enabled the back button functionality without disabling it first. DoozyUI handled that, but you are calling this method without any good reason.");
-            }
+            if (backButtonDisableLevel < 0) { backButtonDisableLevel = 0; } //Check so that the backButtonDisableLevel does not go below zero
         }
 
         /// <summary>
-        /// Enables the 'Back' button functionality by resetting the additive bool to zero. backButtonDisableLevel = 0. Use this ONLY in special cases if something wrong happened and the back button is stuck in disabled mode.
+        /// Enables the 'Back' button functionality by resetting the additive bool to zero. backButtonDisableLevel = 0. Use this ONLY for special cases when something wrong happens and the back button is stuck in disabled mode.
         /// </summary>
         public static void EnableBackButtonByForce()
         {
             backButtonDisableLevel = 0;
+        }
+
+        /// <summary>
+        /// Disables all the button clicks. This is triggered by the system when an UIElement started a transition (IN/OUT animations).
+        /// </summary>
+        public static void DisableButtonClicks()
+        {
+            buttonClicksDisableLevel++; //if == 0 --> false (button clicks are not disabled) if > 0 --> true (button clicks are disabled)
+            //Debug.Log("DisableButtonClicks | buttonClicksDisableLevel: " + buttonClicksDisableLevel);
+        }
+
+        /// <summary>
+        /// Enables all the button clicks. This is triggered by the system when an UIElement finished a transition (IN/OUT animations).
+        /// </summary>
+        public static void EnableButtonClicks()
+        {
+            buttonClicksDisableLevel--; //if == 0 --> false (button clicks are not disabled) if > 0 --> true (button clicks are disabled)
+            if (buttonClicksDisableLevel < 0) { buttonClicksDisableLevel = 0; } //Check so that the buttonClicksDisableLevel does not go below zero
+            //Debug.Log("EnableButtonClicks | buttonClicksDisableLevel: " + buttonClicksDisableLevel);
+        }
+
+        /// <summary>
+        /// Enables the button clicks by resetting the additive bool to zero. buttonClicksDisableLevel = 0. Use this ONLY for special cases when something unexpected happens and the button clicks are stuck in disabled mode.
+        /// </summary>
+        public static void EnableButtonClicksByForce()
+        {
+            buttonClicksDisableLevel = 0;
+            //Debug.Log("EnableButtonClicksByForce | buttonClicksDisableLevel: " + buttonClicksDisableLevel);
         }
 
         #endregion
@@ -3265,6 +3380,7 @@ namespace DoozyUI
         /// </summary>
         public void UpdateSettings()
         {
+            autoDisableButtonClicks = _autoDisableButtonClicks;
             usesMA_FireCustomEvent = useMasterAudio_FireCustomEvent;
             usesMA_PlaySoundAndForget = useMasterAudio_PlaySoundAndForget;
             usesTMPro = useTextMeshPro;
@@ -3443,7 +3559,7 @@ namespace DoozyUI
                 if (currentOrientation != Orientation.Unknown)
                     break;
 
-                yield return new WaitForEndOfFrame();
+                yield return null;
 
                 infiniteLoopBreak++;
                 if (infiniteLoopBreak > 1000)

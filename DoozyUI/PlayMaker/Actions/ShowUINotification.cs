@@ -62,7 +62,7 @@ namespace HutongGames.PlayMaker.Actions
         public override void OnEnter()
         {
             Sprite _icon = icon.Value as Sprite;
-            DoozyUI.UIManager.ShowNotification(prefabName.Value, lifetime.Value, addToNotificationQueue.Value, title.Value, message.Value, _icon, buttonNames, buttonTexts);
+            UIManager.ShowNotification(prefabName.Value, lifetime.Value, addToNotificationQueue.Value, title.Value, message.Value, _icon, buttonNames, buttonTexts);
             Finish();
         }
     }

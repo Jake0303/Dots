@@ -78,7 +78,7 @@ public class GameStart : PunBehaviour
             //Hide temporary lines
             lineHor.GetComponentInChildren<Renderer>().enabled = false;
             lineVert.GetComponentInChildren<Renderer>().enabled = false;
-            centerSquare.GetComponent<Renderer>().enabled = false;
+            //centerSquare.GetComponent<Renderer>().enabled = false;
             startGame = false;
         }
     }

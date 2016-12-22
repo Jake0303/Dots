@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEditor;
 using DoozyUI;
 
-[CustomEditor(typeof(SceneLoader), true)]
+[CustomEditor(typeof(DoozyUI.SceneLoader), true)]
 public class SceneLoaderInspector : Editor
 {
     #region SerializedProperties
@@ -44,7 +44,7 @@ public class SceneLoaderInspector : Editor
     #endregion
 
     #region Variables
-    SceneLoader sceneLoader;
+    DoozyUI.SceneLoader sceneLoader;
     string unityVersion;
 
 #if dUI_EnergyBarToolkit
@@ -89,7 +89,7 @@ public class SceneLoaderInspector : Editor
 
     void OnEnable()
     {
-        sceneLoader = (SceneLoader)target;
+        sceneLoader = (DoozyUI.SceneLoader)target;
         unityVersion = Application.unityVersion;
 
 #if dUI_EnergyBarToolkit
@@ -106,7 +106,7 @@ public class SceneLoaderInspector : Editor
         //base.DrawDefaultInspector();
 
         if (sceneLoader == null)
-            sceneLoader = (SceneLoader)target;
+            sceneLoader = (DoozyUI.SceneLoader)target;
 
         UpdateSerializedProperties();
 

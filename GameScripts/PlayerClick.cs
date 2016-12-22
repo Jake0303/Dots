@@ -137,6 +137,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
     }
 
@@ -147,6 +148,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find("GameManager").GetComponent<TurnTimer>().ResetTimer();
         GetComponent<PlayerID>().isPlayersTurn = true;
@@ -184,6 +186,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume);
         GameObject.Find(squareID).GetComponent<AudioSource>().Play();
         //Play Effect
@@ -248,6 +251,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find(obj).GetComponents<AudioSource>()[0].volume = (GLOBALS.Volume / 175);
         GameObject.Find(obj).GetComponents<AudioSource>()[0].Play();
@@ -432,6 +436,7 @@ public class PlayerClick : PunBehaviour
             line = squareLines[i].gameObject;
             squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_MKTexColor", GetComponent<PlayerColor>().playerColor);
+            squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
             if (squareFound == null)
             {
                 foreach (var aSquare in squares)
@@ -471,6 +476,7 @@ public class PlayerClick : PunBehaviour
             square.GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+            square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
             //Determine if double square
             if (pointScored)
             {
@@ -490,6 +496,8 @@ public class PlayerClick : PunBehaviour
         }
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
+
     }
 
     // Update is called once per frame
@@ -511,8 +519,8 @@ public class PlayerClick : PunBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
-                    //&& hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    //&& !playingAnim
+                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    && !playingAnim
                     && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
                     && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid
                     && !GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().isVisible)
@@ -550,6 +558,7 @@ public class PlayerClick : PunBehaviour
             newLineHorizontal.GetComponentInChildren<Renderer>().material = lineMat;
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
             newLineHorizontal.GetComponent<Light>().enabled = true;
             newLineHorizontal.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineHorizontal);
@@ -564,6 +573,7 @@ public class PlayerClick : PunBehaviour
             newLineVertical.GetComponentInChildren<Renderer>().material = lineMat;
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
+            newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
             newLineVertical.GetComponent<Light>().enabled = true;
             newLineVertical.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineVertical);
@@ -662,6 +672,7 @@ public class PlayerClick : PunBehaviour
         newSquare.GetComponentInChildren<Renderer>().material = lineMat;
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
+        newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", squareColor);
         newSquare.GetComponent<Light>().enabled = true;
         newSquare.GetComponent<Light>().color = objectColor;
 

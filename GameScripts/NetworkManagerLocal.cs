@@ -119,15 +119,27 @@ public class NetworkManagerLocal : PunBehaviour
             GameObject.Find("OptionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnVolumeSliderChanged);
+            GameObject.Find("SoundOFF").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOnSound()));
+            GameObject.Find("SoundON").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOffSound()));
             /*
             if (GameObject.Find("ExitButton"))
             {
                 GameObject.Find("ExitButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().ExitGame()));
             }*/
+            if (GLOBALS.Volume > 0)
+            {
+                GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(false);
+                GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
+            }
+            else
+            {
+                GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
+                GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Hide(false);
+            }
         }
         //Game
         else
-        { 
+        {
             GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
             SpawnPlayer();
         }
@@ -176,6 +188,6 @@ public class NetworkManagerLocal : PunBehaviour
 
     void SpawnOnNetwork(Vector3 pos, Quaternion rot)
     {
-     newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", pos, rot, 0);
+        newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", pos, rot, 0);
     }
 }

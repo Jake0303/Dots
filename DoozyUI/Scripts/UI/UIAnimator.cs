@@ -97,7 +97,7 @@ namespace DoozyUI
             //[Tooltip("This is used when the Move From LocalPosition is selected")]
             public Vector3 positionFrom = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.OutBack;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.OutBack;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -117,7 +117,7 @@ namespace DoozyUI
             public bool enabled = false;
             public Vector3 rotateFrom = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.OutBack;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.OutBack;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -138,7 +138,7 @@ namespace DoozyUI
             //[Tooltip("From what scale factor does the animation begin? (default: 0)")]
             public Vector3 scaleBegin = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.OutBack;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.OutBack;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -157,7 +157,7 @@ namespace DoozyUI
             //[Tooltip("Is the animation enabled?")]
             public bool enabled = false;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.Linear;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.Linear;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -183,7 +183,7 @@ namespace DoozyUI
             //[Tooltip("This movement is calculated startAnchoredPosition-movement for min and startAnchoredPosition+movment for max")]
             public Vector3 movement = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.InOutSine;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.InOutSine;
             //[Tooltip("Number of loops (-1 = infinite loops)")]
             public int loops = -1;
             //[Tooltip("Types of loop")]
@@ -210,7 +210,7 @@ namespace DoozyUI
             //[Tooltip("This rotation is calculated startRotation-rotation for min and startRotation+rotation for max")]
             public Vector3 rotation = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.InOutSine;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.InOutSine;
             //[Tooltip("Number of loops (-1 = infinite loops)")]
             public int loops = -1;
             //[Tooltip("Types of loop")]
@@ -239,7 +239,7 @@ namespace DoozyUI
             //[Tooltip("The maximum values for the scale factor of the scale loop animation (default: 1.05)")]
             public Vector3 max = new Vector3(1.05f, 1.05f, 1.05f);
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.Linear;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.Linear;
             //[Tooltip("Number of loops (-1 = infinite loops)")]
             public int loops = -1;
             //[Tooltip("Types of loop")]
@@ -268,7 +268,7 @@ namespace DoozyUI
             //[Tooltip("The maximum alpha value for the fade animation loop")]
             public float max = 1;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.Linear;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.Linear;
             //[Tooltip("Number of loops (-1 = infinite loops)")]
             public int loops = -1;
             //[Tooltip("Types of loop")]
@@ -299,7 +299,7 @@ namespace DoozyUI
             //[Tooltip("This is used when the Move From LocalPosition is selected")]
             public Vector3 positionTo = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.InBack;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.InBack;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -319,7 +319,7 @@ namespace DoozyUI
             public bool enabled = false;
             public Vector3 rotateTo = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.InBack;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.InBack;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -340,7 +340,7 @@ namespace DoozyUI
             //[Tooltip("This is the scale factor at which the animation ends at")]
             public Vector3 scaleEnd = Vector3.zero;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.InBack;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.InBack;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -360,7 +360,7 @@ namespace DoozyUI
             //[Tooltip("Is the animation enabled?")]
             public bool enabled = false;
             //[Tooltip("Easing is the rate of change of animation over time")]
-            public Ease easeType = Ease.Linear;
+            public DG.Tweening.Ease easeType = DG.Tweening.Ease.Linear;
             //[Tooltip("Time is amount (seconds) that the animation will take to complete")]
             public float time = 0.5f;
             //[Tooltip("Delay is amount (seconds) that the animation will wait before beginning")]
@@ -388,7 +388,7 @@ namespace DoozyUI
             var aSource = tempGO.AddComponent<AudioSource>(); ; // add an audio source
             aSource.clip = clip; // define the clip
                                  // set other aSource properties here, if desired - custom volume, custom pitch, etc...
-            aSource.volume = GLOBALS.Volume / 50;
+            aSource.volume = GLOBALS.Volume;
             aSource.Play(); // start the sound
             Destroy(tempGO, clip.length); // destroy object after clip duration
             return aSource; // return the AudioSource reference
@@ -449,7 +449,7 @@ namespace DoozyUI
 
                 case SoundOutput.MasterAudioFireCustomEvent:
 #if dUI_MasterAudio
-                    MasterAudio.FireCustomEvent(soundName, Vector3.zero);
+                    MasterAudio.FireCustomEvent(soundName, UIManager.GetUiContainer);
 #else
                     Debug.Log("[DoozyUI] You are trying to use MasterAudio by calling the FireCustomEvent method, but you don't have it enabled. Please check if the 'dUI_MasterAudio' symbol is defined in 'Scripting Define Symbol'. You can find it by going to [Edit] -> [Project Settings] -> [Player] -> look at the inspector -> [Other Settings] -> look for [Scripting Define Symbols] => if you do not see 'dUI_MasterAudio' there, please add it.");
 #endif
@@ -692,9 +692,9 @@ namespace DoozyUI
                 rectTransform.anchoredPosition = initialData.startAnchoredPosition3D;
             }
         }
-#endregion
+        #endregion
 
-#region RotateIN
+        #region RotateIN
         /// <summary>
         /// Plays the Rotate In animation for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -748,9 +748,9 @@ namespace DoozyUI
                 rectTransform.localRotation = Quaternion.Euler(rotationIn.rotateFrom);
             }
         }
-#endregion
+        #endregion
 
-#region ScaleIN
+        #region ScaleIN
         /// <summary>
         /// Plays the Scale In animation for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -803,9 +803,9 @@ namespace DoozyUI
                 rectTransform.localScale = scaleIn.scaleBegin; //because this is an instant action, we scale it manually without creating a tween (saves CPU and GC)
             }
         }
-#endregion
+        #endregion
 
-#region FadeIN
+        #region FadeIN
         /// <summary>
         /// Plays the Fade In animation for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -824,8 +824,6 @@ namespace DoozyUI
                 time = 0;
                 delay = 0;
             }
-
-            //UIAnimator.StopLoopAnimations(rectTransform, initialData); //changed this in 2.3; now it's called once on Show in the UIElement
 
             CanvasGroup canvasGroup = rectTransform.GetComponent<CanvasGroup>();
 
@@ -868,9 +866,9 @@ namespace DoozyUI
                 canvasGroup.alpha = 1f; //because this is an instant action, we fade it manually without creating a tween (saves CPU and GC)
             }
         }
-#endregion
+        #endregion
 
-#region IN ANIMATIONS - Stop method
+        #region IN ANIMATIONS - Stop method
         /// <summary>
         /// Stops the IN animations on a rectTransform. This is used before any OUT animations to avoid calling a hide method while a show method is still playing (without this, unexpected behaviour can occur)
         /// </summary>
@@ -890,13 +888,13 @@ namespace DoozyUI
 
             DOTween.Kill(id + "_DoFadeIn");
         }
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region LOOP ANIMATIONS
+        #region LOOP ANIMATIONS
 
-#region MoveLOOP
+        #region MoveLOOP
         /// <summary>
         /// This initialises and plays (if set to autoStart) the idle animation Move Loop for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -975,9 +973,9 @@ namespace DoozyUI
             if (moveLoop.autoStart)
                 DOTween.Play(tweenID);
         }
-#endregion
+        #endregion
 
-#region RotateLOOP
+        #region RotateLOOP
         /// <summary>
         /// This initialises and plays (if set to autoStart) the idle animation Rotation Loop for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -1053,9 +1051,9 @@ namespace DoozyUI
             if (rotationLoop.autoStart)
                 DOTween.Play(tweenID);
         }
-#endregion
+        #endregion
 
-#region ScaleLOOP
+        #region ScaleLOOP
         /// <summary>
         /// This initialises and plays (if set to autoStart) the idle animation Scale Loop for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -1093,9 +1091,9 @@ namespace DoozyUI
             if (scaleLoop.autoStart)
                 DOTween.Play(tweenID);
         }
-#endregion
+        #endregion
 
-#region FadeLOOP
+        #region FadeLOOP
         /// <summary>
         /// This initialises and plays (if set to autoStart) the idle animation Fade Loop for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -1150,9 +1148,9 @@ namespace DoozyUI
             if (fadeLoop.autoStart)
                 DOTween.Play(tweenID);
         }
-#endregion
+        #endregion
 
-#region LOOP ANIMATIONS - Start and Stop methods
+        #region LOOP ANIMATIONS - Start and Stop methods
         /// <summary>
         /// Starts the idle animations set up on a rectTransform.
         /// </summary>
@@ -1212,13 +1210,13 @@ namespace DoozyUI
             DOTween.Kill(id + "_DoScaleLoop");
             DOTween.Kill(id + "_DoFadeLoop");
         }
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region OUT ANIMATIONS
+        #region OUT ANIMATIONS
 
-#region MoveOUT
+        #region MoveOUT
         /// <summary>
         /// Plays the Move Out of view animation for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -1394,9 +1392,9 @@ namespace DoozyUI
                 rectTransform.anchoredPosition = position;
             }
         }
-#endregion
+        #endregion
 
-#region RotateOUT
+        #region RotateOUT
         /// <summary>
         /// Plays the Rotate Out animation for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -1445,9 +1443,9 @@ namespace DoozyUI
                 rectTransform.localRotation = Quaternion.Euler(rotationOut.rotateTo);
             }
         }
-#endregion
+        #endregion
 
-#region ScaleOUT
+        #region ScaleOUT
         /// <summary>
         /// Plays the Scale Out animation for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -1499,9 +1497,9 @@ namespace DoozyUI
                 rectTransform.localScale = scaleOut.scaleEnd; //because this is an instant action, we scale it manually without creating a tween (saves CPU and GC)
             }
         }
-#endregion
+        #endregion
 
-#region FadeOUT
+        #region FadeOUT
         /// <summary>
         /// Plays the Fade Out animation for a RectTransform with a PanelController component added to it.
         /// </summary>
@@ -1560,9 +1558,9 @@ namespace DoozyUI
                 canvasGroup.alpha = 0f; //because this is an instant action, we fade it manually without creating a tween (saves CPU and GC)
             }
         }
-#endregion
+        #endregion
 
-#region OUT ANIMATIONS - Stop method
+        #region OUT ANIMATIONS - Stop method
         /// <summary>
         /// Stops the OUT animations on a rectTransform. This is used before any IN animations to avoid calling a show method while a hide method is still playing (without this, unexpected behaviour can occur)
         /// </summary>
@@ -1582,13 +1580,13 @@ namespace DoozyUI
 
             DOTween.Kill(id + "_DoFadeOut");
         }
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
-#region BUTTON ANIMATIONS
+        #region BUTTON ANIMATIONS
 
-#region OnClick Animations
+        #region OnClick Animations
         public static void StartOnClickAnimations(RectTransform rectTransform, InitialData initialData, UIAnimationManager.OnClickAnimations onClickAnimSettings)
         {
             if (onClickAnimSettings.punchPositionEnabled)
@@ -1598,7 +1596,9 @@ namespace DoozyUI
                     .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                     .OnComplete(() =>
                     {
-                        rectTransform.DOAnchorPos3D(initialData.startAnchoredPosition3D, 0.1f).Play();
+                        rectTransform.DOAnchorPos3D(initialData.startAnchoredPosition3D, 0.1f)
+                            .SetUpdate(UpdateType.Normal, true)
+                            .Play();
                     })
                     .Play();
             }
@@ -1607,10 +1607,12 @@ namespace DoozyUI
             {
                 rectTransform.DOPunchRotation(onClickAnimSettings.punchRotationPunch, onClickAnimSettings.punchRotationDuration, onClickAnimSettings.punchRotationVibrato, onClickAnimSettings.punchPositionElasticity)
                         .SetDelay(onClickAnimSettings.punchRotationDelay)
-                        .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
+                        .SetUpdate(UpdateType.Normal, true)
                         .OnComplete(() =>
                         {
-                            rectTransform.DORotate(initialData.startRotation, 0.1f).Play();
+                            rectTransform.DORotate(initialData.startRotation, 0.1f)
+                                .SetUpdate(UpdateType.Normal, true)
+                                .Play();
                         })
                         .Play();
             }
@@ -1622,14 +1624,16 @@ namespace DoozyUI
                         .SetUpdate(UpdateType.Normal, UIManager.isTimeScaleIndependent)
                         .OnComplete(() =>
                         {
-                            rectTransform.DOScale(initialData.startScale, 0.1f).Play();
+                            rectTransform.DOScale(initialData.startScale, 0.1f)
+                                .SetUpdate(UpdateType.Normal, true)
+                                .Play();
                         })
                         .Play();
             }
         }
-#endregion
+        #endregion
 
-#region Normal and Highlighted Animations
+        #region Normal and Highlighted Animations
         /// <summary>
         /// Starts button loop animations for an UIButton
         /// </summary>
@@ -1690,8 +1694,8 @@ namespace DoozyUI
             DOTween.Kill(id + "_DoScaleLoop");
             DOTween.Kill(id + "_DoFadeLoop");
         }
-#endregion
+        #endregion
 
-#endregion
+        #endregion
     }
 }
