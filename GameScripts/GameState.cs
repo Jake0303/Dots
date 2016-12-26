@@ -82,10 +82,10 @@ public class GameState : PunBehaviour
         switch (gameState)
         {
             case State.Waiting:
-                DisplayServerMessage("Waiting for players", false);
+                DisplayServerMessage("Waiting for an opponent", false);
                 foreach (var player in players)
                 {
-                    player.GetComponent<UIManager>().DisplayPopupText("Waiting for players", false);
+                    player.GetComponent<UIManager>().DisplayPopupText("Waiting for an opponent", false);
                 }
                 break;
         }

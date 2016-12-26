@@ -40,6 +40,8 @@ public class PlayerClick : PunBehaviour
     [SerializeField]
     private GameObject linePlaceEffect, squarePlaceEffect;
     private GameObject leftLineEffect, rightLineEffect, squareEffectLeftTop, squareEffectRightTop, squareEffectLeftBot, squareEffectRightBot;
+    private GameObject escapeMenu, eventPanel, gameManager;
+    private Ray ray;
     /*
      * Sync Line position
      */
@@ -57,6 +59,10 @@ public class PlayerClick : PunBehaviour
     private new PhotonView photonView;
     void Start()
     {
+        scores = GameObject.FindGameObjectsWithTag("ScoreText");
+        escapeMenu = GameObject.Find("EscapeMenu");
+        gameManager = GameObject.Find("GameManager");
+        eventPanel = GameObject.Find("EventPanel");
         photonView = this.GetComponent<PhotonView>();
 
         leftLineEffect = Instantiate(linePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
@@ -79,7 +85,6 @@ public class PlayerClick : PunBehaviour
     public override void OnConnectedToMaster()
     {
         base.OnConnectedToMaster();
-        scores = GameObject.FindGameObjectsWithTag("ScoreText");
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -192,22 +197,26 @@ public class PlayerClick : PunBehaviour
         //Play Effect
         squareEffectLeftTop.GetComponent<Renderer>().enabled = true;
         squareEffectLeftTop.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2));
-        squareEffectLeftTop.GetComponent<ParticleSystem>().startColor = squareColor;
+        var main = squareEffectLeftTop.GetComponent<ParticleSystem>().main;
+        main.startColor = squareColor;
         squareEffectLeftTop.GetComponent<ParticleSystem>().Play();
 
         squareEffectLeftBot.GetComponent<Renderer>().enabled = true;
         squareEffectLeftBot.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x - (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2));
-        squareEffectLeftBot.GetComponent<ParticleSystem>().startColor = squareColor;
+        main = squareEffectLeftBot.GetComponent<ParticleSystem>().main;
+        main.startColor = squareColor;
         squareEffectLeftBot.GetComponent<ParticleSystem>().Play();
 
         squareEffectRightTop.GetComponent<Renderer>().enabled = true;
         squareEffectRightTop.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z + (GLOBALS.DOTDISTANCE / 2));
-        squareEffectRightTop.GetComponent<ParticleSystem>().startColor = squareColor;
+        main = squareEffectRightTop.GetComponent<ParticleSystem>().main;
+        main.startColor = squareColor;
         squareEffectRightTop.GetComponent<ParticleSystem>().Play();
 
         squareEffectRightBot.GetComponent<Renderer>().enabled = true;
         squareEffectRightBot.transform.position = new Vector3(GameObject.Find(squareID).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(squareID).transform.position.y * 5f), GameObject.Find(squareID).transform.position.z - (GLOBALS.DOTDISTANCE / 2));
-        squareEffectRightBot.GetComponent<ParticleSystem>().startColor = squareColor;
+        main = squareEffectRightBot.GetComponent<ParticleSystem>().main;
+        main.startColor = squareColor;
         squareEffectRightBot.GetComponent<ParticleSystem>().Play();
 
         GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(GameObject.Find(tempSquare));
@@ -246,7 +255,7 @@ public class PlayerClick : PunBehaviour
     void CmdPlaceLine(string obj, string col)
     {
         GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
-        GameObject.Find(obj).GetComponentInParent<Light>().enabled = true;
+        //GameObject.Find(obj).GetComponentInParent<Light>().enabled = true;
         GameObject.Find(obj).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
@@ -262,11 +271,13 @@ public class PlayerClick : PunBehaviour
 
             //Play Effect
             leftLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x + (GLOBALS.DOTDISTANCE / 2), (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z);
-            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            var main = leftLineEffect.GetComponent<ParticleSystem>().main;
+            main.startColor = objectColor;
             leftLineEffect.GetComponent<ParticleSystem>().Play();
 
             rightLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x - (GLOBALS.DOTDISTANCE / 2), GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z);
-            rightLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            main = rightLineEffect.GetComponent<ParticleSystem>().main;
+            main.startColor = objectColor;
             rightLineEffect.GetComponent<ParticleSystem>().Play();
         }
         else
@@ -274,11 +285,13 @@ public class PlayerClick : PunBehaviour
 
             //Play Effect
             leftLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x, (GameObject.Find(obj).transform.position.y * 2.5f), GameObject.Find(obj).transform.position.z + (GLOBALS.DOTDISTANCE / 2));
-            leftLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            var main = leftLineEffect.GetComponent<ParticleSystem>().main;
+            main.startColor = objectColor;
             leftLineEffect.GetComponent<ParticleSystem>().Play();
 
             rightLineEffect.transform.position = new Vector3(GameObject.Find(obj).transform.position.x, GameObject.Find(obj).transform.position.y * 2.5f, GameObject.Find(obj).transform.position.z - (GLOBALS.DOTDISTANCE / 2));
-            rightLineEffect.GetComponent<ParticleSystem>().startColor = objectColor;
+            main = rightLineEffect.GetComponent<ParticleSystem>().main;
+            main.startColor = objectColor;
             rightLineEffect.GetComponent<ParticleSystem>().Play();
         }
     }
@@ -293,12 +306,12 @@ public class PlayerClick : PunBehaviour
         {
             if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
             {
-                foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                foreach (var scoreTxt in scores)
                 {
-                    if (scores.name.Contains((i + 1).ToString()))
+                    if (scoreTxt.name.Contains((i + 1).ToString()))
                     {
                         //Update UI with score
-                        scores.GetComponent<Text>().text = score.ToString();
+                        scoreTxt.GetComponent<Text>().text = score.ToString();
                         return;
                     }
                 }
@@ -472,7 +485,7 @@ public class PlayerClick : PunBehaviour
             squareID = GameObject.Find(aSquare).name;
             squareColor = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material = lineMat;
-            square.GetComponent<Light>().enabled = true;
+            //square.GetComponent<Light>().enabled = true;
             square.GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
@@ -491,7 +504,7 @@ public class PlayerClick : PunBehaviour
     {
         if (GameObject.Find(line).GetComponentInParent<Light>() != null)
         {
-            GameObject.Find(line).GetComponentInParent<Light>().enabled = true;
+            //GameObject.Find(line).GetComponentInParent<Light>().enabled = true;
             GameObject.Find(line).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
         }
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
@@ -506,29 +519,28 @@ public class PlayerClick : PunBehaviour
         //Must be the players turn to place a line
         if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn
             && Input.GetMouseButtonDown(0)
-            && GameObject.Find("EscapeMenu") != null
+            && escapeMenu != null
             //Escape Menu not open
-            && GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0))
+            && escapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0))
         {
             //empty RaycastHit object which raycast puts the hit details into
             hit = new RaycastHit();
             //ray shooting out of the camera from where the mouse is
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             //Raycast from the mouse to the level, if hit place a line
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
-                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    && !playingAnim
-                    && !GameObject.Find("GameManager").GetComponent<GameOver>().gameOver
-                    && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid
-                    && !GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().isVisible)
+                    //&& hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    //&& !playingAnim
+                    && !gameManager.GetComponent<GameOver>().gameOver
+                    && !gameManager.GetComponent<GameStart>().buildGrid
+                    && !eventPanel.GetComponent<DoozyUI.UIElement>().isVisible)
                 {
                     objectID = hit.collider.name;// this gets the object that is hit
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
                     objectColor = GetComponent<PlayerColor>().playerColor;
-                    GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
                     GameObject.Find(objectID).GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 125;
                     GameObject.Find(objectID).GetComponents<AudioSource>()[1].Play();
                     photonView.RPC("CmdSelectObject", PhotonTargets.AllBuffered, hit.collider.name);
@@ -559,7 +571,7 @@ public class PlayerClick : PunBehaviour
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
-            newLineHorizontal.GetComponent<Light>().enabled = true;
+            //newLineHorizontal.GetComponent<Light>().enabled = true;
             newLineHorizontal.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineHorizontal);
         }
@@ -574,7 +586,7 @@ public class PlayerClick : PunBehaviour
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
-            newLineVertical.GetComponent<Light>().enabled = true;
+            //newLineVertical.GetComponent<Light>().enabled = true;
             newLineVertical.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineVertical);
         }
@@ -673,7 +685,7 @@ public class PlayerClick : PunBehaviour
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", squareColor);
-        newSquare.GetComponent<Light>().enabled = true;
+        //newSquare.GetComponent<Light>().enabled = true;
         newSquare.GetComponent<Light>().color = objectColor;
 
         return newSquare;

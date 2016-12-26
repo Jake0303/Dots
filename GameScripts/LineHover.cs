@@ -16,7 +16,7 @@ public class LineHover : PunBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (photonView.isMine)
+            if (photonView.isMine && Application.platform == RuntimePlatform.WebGLPlayer)
         {
             //Check if a player is hovering
             //ray shooting out of the camera from where the mouse is

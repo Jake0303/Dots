@@ -16,7 +16,6 @@ public class PlayerID : PunBehaviour
     public int playersWins;
     public int playerLosses;
     private Transform myTransform;
-    private GameObject[] names;
     public bool nameSet = false;
     public GameObject prefabButton, userinputField, panel, infoText, errorText;
     public string playersPanel = "";
@@ -47,7 +46,7 @@ public class PlayerID : PunBehaviour
             if (!fbInfoFound)
             {
                 goPanel = (GameObject)Instantiate(panel);
-                goPanel.transform.localScale = new Vector3(0.25f, 1f, 1f);
+                goPanel.transform.localScale = new Vector3(0.6f, 2.5f, 1f);
                 goPanel.name = "EnterNamePanel";
 
                 GameObject goText = (GameObject)Instantiate(infoText);
@@ -84,7 +83,6 @@ public class PlayerID : PunBehaviour
             }
         }
         myTransform = transform;
-        names = GameObject.FindGameObjectsWithTag("NameText");
     }
     private void OnEvent(byte eventcode, object content, int senderid)
     {
@@ -146,7 +144,6 @@ public class PlayerID : PunBehaviour
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        names = GameObject.FindGameObjectsWithTag("NameText");
         SetIdentity();
     }
     [PunRPC]

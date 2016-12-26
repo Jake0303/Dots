@@ -10,7 +10,7 @@ public class LeaderbordController : MonoBehaviour
     private static string secretKey = "89oN04ydon854CBm9XTG4Tt6YcAKEAqA"; // Edit this value and make sure it's the same as the one stored on the server
     public static string addScoreURL = "https://squarz.io/Scripts/AddToLeaderboard.php?"; //be sure to add a ? to your url
     public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php";
-    private float defaultScrollPos = 3.2f;
+    private float defaultScrollPos = 1.75f;
     private float howFarCanWeScroll; // default
 
 
@@ -113,8 +113,8 @@ public class LeaderbordController : MonoBehaviour
                     {
                         GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".  \n";
                         GetComponent<Text>().text += aData["Username"].str + "\n";
-                        GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + "W \n";
-                        GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "L \n";
+                        GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + " \n";
+                        GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + " \n";
                         position++;
                         howFarCanWeScroll += 0.3f;
                     }

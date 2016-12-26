@@ -14,7 +14,6 @@ public class MenuManager : MonoBehaviour
     #endregion
 
     #region Private Variables
-    private AudioSource menuMusicAudioSource; //the audiosource that plays the music
     private WaitForSeconds checkMusicInterval = new WaitForSeconds(0.5f); //listener update time
     private int randomIconIndex = 0;
     #endregion
@@ -211,13 +210,6 @@ public class MenuManager : MonoBehaviour
 
     private void UpdateMusicState()
     {
-        if (menuMusicAudioSource == null)
-            return;
-
-        if (DoozyUI.UIManager.isMusicOn == menuMusicAudioSource.mute)
-        {
-            // menuMusicAudioSource.mute = !DoozyUI.UIManager.isMusicOn;
-        }
     }
 
     void Start()

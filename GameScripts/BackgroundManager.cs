@@ -74,13 +74,10 @@ public class BackgroundManager : MonoBehaviour
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
-                newSquare.GetComponent<Light>().intensity--;
-                //newSquare.GetComponent<Light>().range--;
             }
             //kill when faded
             if (power < 0)
             {
-                newSquare.GetComponent<Light>().enabled = false;
                 Destroy(newSquare);
                 break;
             }
@@ -99,8 +96,8 @@ public class BackgroundManager : MonoBehaviour
         }
         else
         {
-            //StopAllCoroutines();
-            StartCoroutine(ShowSquare());
+            StopAllCoroutines();
+            //StartCoroutine(ShowSquare());
         }
         foreach (GameObject square in GameObject.FindGameObjectsWithTag("FadedSquare"))
         {

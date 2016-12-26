@@ -161,6 +161,41 @@ public class UIManager : PunBehaviour
             PhotonNetwork.player.name = tempField.GetComponent<InputField>().text;
             GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().Hide(false);
             GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
+            GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
+        }
+    }
+
+    public void closeEscapeMenu()
+    {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        GameObject.Find("EscapeMenu").transform.localScale = new Vector3(0, 0, 0);
+    }
+
+    public void openEscapeMenu()
+    {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        EscapeMenu = GameObject.Find("EscapeMenu");
+        GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
+        GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
+        EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+        if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0)
+            && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
+        {
+            EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+            GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(1.75f, 1.75f, 1);
+            if (NetworkServer.connections.Count < 2)
+            {
+                if (GLOBALS.ISNETWORKLOCAL)
+                {
+                    EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() =>
+                        PhotonNetwork.Disconnect());
+                }
+
+            }
+        }
+        else
+        {
+            closeEscapeMenu();
         }
     }
 
@@ -182,31 +217,7 @@ public class UIManager : PunBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-                EscapeMenu = GameObject.Find("EscapeMenu");
-                GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-                GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-                EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
-                if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0)
-                    && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
-                {
-                    EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-                    GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-                    if (NetworkServer.connections.Count < 2)
-                    {
-                        if (GLOBALS.ISNETWORKLOCAL)
-                        {
-                            EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() =>
-                                PhotonNetwork.Disconnect());
-                        }
-
-                    }
-                }
-                else
-                {
-                    EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
-                    GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
-                }
+                openEscapeMenu();
             }
         }
     }
@@ -335,7 +346,7 @@ public class UIManager : PunBehaviour
         {
             if (name.name.Contains((indexToRemove + 1).ToString()))
             {
-                name.GetComponent<Text>().text = "Waiting for player";
+                name.GetComponent<Text>().text = "Waiting for an opponent";
                 break;
             }
         }

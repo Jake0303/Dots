@@ -71,6 +71,7 @@ public class GameStart : PunBehaviour
         //if (startGame && PhotonNetwork.isMasterClient)
         if (startGame)
         {
+            GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
             photonView.RPC("BuildGridText", PhotonTargets.AllBuffered);
             GetComponent<GameState>().gameState = GameState.State.BuildingGrid;
             StartCoroutine(StartGame());
@@ -81,6 +82,11 @@ public class GameStart : PunBehaviour
             //centerSquare.GetComponent<Renderer>().enabled = false;
             startGame = false;
         }
+    }
+
+    public void NamePanelAnimFinish()
+    {
+        Screen.orientation = ScreenOrientation.LandscapeLeft;//or right for right landscape
     }
 
     void AssignTurnsAndColors()

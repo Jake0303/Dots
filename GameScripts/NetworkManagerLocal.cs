@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class NetworkManagerLocal : PunBehaviour
 {
     public bool AutoConnect = true;
-    private GameObject newPlayer;
+    public GameObject newPlayer;
     private bool ConnectInUpdate = false;
 
     void Start()
@@ -105,7 +105,7 @@ public class NetworkManagerLocal : PunBehaviour
         //Mainmenu
         if (scene.buildIndex == 0)
         {
-
+            Screen.orientation = ScreenOrientation.AutoRotation;
             GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
             GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
             GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
@@ -140,7 +140,7 @@ public class NetworkManagerLocal : PunBehaviour
         //Game
         else
         {
-            GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for players";
+            GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for an opponent";
             SpawnPlayer();
         }
     }
