@@ -12,10 +12,13 @@ public class TurnTimer : PunBehaviour
     private bool isGameOver;
     private GameObject[] timerTexts;
     private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
+    private GameObject tapGif;
+
 
     // Use this for initialization
     void Start()
     {
+        tapGif = GameObject.Find("TapGif");
         timerTexts = GameObject.FindGameObjectsWithTag("TimerText");
         timerTexts[0].GetComponent<AudioSource>().volume = GLOBALS.Volume / 50;
     }
@@ -158,13 +161,13 @@ public class TurnTimer : PunBehaviour
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("It's your turn, place a line!", true);
+        GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("It's your turn, tap to place a line!", true);
         GameObject.Find(nextPlayer).GetComponent<PlayerClick>().playingAnim = false;
-
-
         GameObject.Find(GameObject.Find(lastPlayer).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
         GameObject.Find(lastPlayer).GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
         GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
+        GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
+        GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
     }
     //Reset the turn timer
     public void ResetTimer()

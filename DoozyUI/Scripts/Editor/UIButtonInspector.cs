@@ -2273,14 +2273,14 @@ public class UIButtonInspector : Editor
                     DoozyUIHelper.VerticalSpace(2);
                     EditorGUILayout.BeginHorizontal();
                     hideElementsIndex[i] = EditorGUILayout.Popup(hideElementsIndex[i], elementNames, GUILayout.Width(200));
-                    GetUIButton.hideElements[i] = elementNames[hideElementsIndex[i]];
-                    if (GUILayout.Button("x", GUILayout.Height(12)))
-                    {
-                        GetUIButton.hideElements.RemoveAt(i);
-                        hideElementsIndex.RemoveAt(i);
-                    }
-                    GUILayout.FlexibleSpace();
-                    EditorGUILayout.EndHorizontal();
+                        GetUIButton.hideElements[i] = elementNames[hideElementsIndex[i]];
+                        if (GUILayout.Button("x", GUILayout.Height(12)))
+                        {
+                            GetUIButton.hideElements.RemoveAt(i);
+                            hideElementsIndex.RemoveAt(i);
+                        }
+                        GUILayout.FlexibleSpace();
+                        EditorGUILayout.EndHorizontal();
                 }
             }
 

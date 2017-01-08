@@ -214,13 +214,17 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        //DontDestroyOnLoad(this.transform);
         GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
         backButton = GameObject.Find("BackToMenuButton");
         // Initialize volume slider
         if (GameObject.Find("VolumeSlider") != null)
             GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-        //TurnOnSound();
+        if(Application.platform != RuntimePlatform.Android
+            && Application.platform != RuntimePlatform.IPhonePlayer)
+        {
+            GameObject.Find("ContentText").GetComponent<Text>().text = "Place lines by clicking your mouse \n and placing your cursor between \n 2 dots. \n \n \n \n \n \n \n " +
+                " Earn points by completing squares \n" + " on the grid of dots. \n \n Win by having the most points \n in a given game. ";
+        }
     }
 
     //Update the volume when the slider has changed

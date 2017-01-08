@@ -135,9 +135,19 @@ public class GameOver : PunBehaviour
     //Reset the game
     void ResetGame()
     {
+        GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().Show(false);
+    }
+    //Hide the menu if play again is pressed
+    [PunRPC]
+    public void HideMenu()
+    {
+        GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().moveOut.delay = 0;
+        GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
         GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("Restarting game...", true);
         if (GameObject.Find(loser) != null)
+        {
             GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText("Restarting game...", true);
+        }
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
         {
             if (tempObj.GetComponent<Light>() != null)
@@ -197,6 +207,11 @@ public class GameOver : PunBehaviour
         StopAllCoroutines();
         gameOver = false;
         gameDone = false;
+    }
+    //Play another game with the same player
+    public void PlayAgain()
+    {
+        photonView.RPC("HideMenu", PhotonTargets.AllBuffered);
     }
 
 }

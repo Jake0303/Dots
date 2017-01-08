@@ -198,7 +198,7 @@ public class GameManagerExample : MonoBehaviour
 
         if (menuMusicAudioSource != null)
         {
-            menuMusicAudioSource.volume = musicVolume; //we set the volume to the value set in the inspector
+            menuMusicAudioSource.volume = GLOBALS.Volume; //we set the volume to the value set in the inspector
             menuMusicAudioSource.mute = DoozyUI.UIManager.isMusicOn;  //we check if the music is on or off
             menuMusicAudioSource.Play(); //we start the music (even if the volume is 0)
             StartCoroutine(CheckMusicState()); //we activate a listerer for the music on/off toggle; it will check the music state every 0.5 seconds (more efficeint than in the Update method)

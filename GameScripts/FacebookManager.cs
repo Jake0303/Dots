@@ -104,7 +104,7 @@ public class FacebookManager : MonoBehaviour
     private void FBAuthCallback(ILoginResult result)
     {
         accessToken = AccessToken.CurrentAccessToken.UserId;
-        GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
+        GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame();
         GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
         GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         FBUpdateLoginStatus(FB.IsLoggedIn);
@@ -115,7 +115,7 @@ public class FacebookManager : MonoBehaviour
         if (isLoggedIn)
         {
             /*
-            GameObject.Find("NetworkManager").GetComponent<NetworkManagerLocal>().JoinGame();
+            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame();
             GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
             GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);*/
         }

@@ -40,12 +40,12 @@ public class PlayerClick : PunBehaviour
     [SerializeField]
     private GameObject linePlaceEffect, squarePlaceEffect;
     private GameObject leftLineEffect, rightLineEffect, squareEffectLeftTop, squareEffectRightTop, squareEffectLeftBot, squareEffectRightBot;
-    private GameObject escapeMenu, eventPanel, gameManager;
+    private GameObject escapeMenu, eventPanel, playAgainMenu, gameManager;
     private Ray ray;
+
     /*
      * Sync Line position
      */
-
     public bool animFinished = false;
     public bool squareAnimFinished = false;
     public bool playingAnim = false;
@@ -63,6 +63,7 @@ public class PlayerClick : PunBehaviour
         escapeMenu = GameObject.Find("EscapeMenu");
         gameManager = GameObject.Find("GameManager");
         eventPanel = GameObject.Find("EventPanel");
+        playAgainMenu = GameObject.Find("PlayAgainMenu");
         photonView = this.GetComponent<PhotonView>();
 
         leftLineEffect = Instantiate(linePlaceEffect, new Vector3(999, 999, 999), Quaternion.identity) as GameObject;
@@ -192,7 +193,7 @@ public class PlayerClick : PunBehaviour
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
-        GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume);
+        GameObject.Find(squareID).GetComponent<AudioSource>().volume = (GLOBALS.Volume * 1.5f);
         GameObject.Find(squareID).GetComponent<AudioSource>().Play();
         //Play Effect
         squareEffectLeftTop.GetComponent<Renderer>().enabled = true;
@@ -536,12 +537,13 @@ public class PlayerClick : PunBehaviour
                     //&& !playingAnim
                     && !gameManager.GetComponent<GameOver>().gameOver
                     && !gameManager.GetComponent<GameStart>().buildGrid
-                    && !eventPanel.GetComponent<DoozyUI.UIElement>().isVisible)
+                    && !eventPanel.GetComponent<DoozyUI.UIElement>().isVisible
+                    && !playAgainMenu.GetComponent<DoozyUI.UIElement>().isVisible)
                 {
                     objectID = hit.collider.name;// this gets the object that is hit
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
                     objectColor = GetComponent<PlayerColor>().playerColor;
-                    GameObject.Find(objectID).GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 125;
+                    GameObject.Find(objectID).GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 100;
                     GameObject.Find(objectID).GetComponents<AudioSource>()[1].Play();
                     photonView.RPC("CmdSelectObject", PhotonTargets.AllBuffered, hit.collider.name);
                     photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, hit.collider.name);
@@ -616,18 +618,17 @@ public class PlayerClick : PunBehaviour
                     newLineHorizontal.transform.position += velocity * Time.deltaTime;
                 }
 
-                if (newLineHorizontal.transform.position.y < 0.0001 && !animFinished)
+                if (newLineHorizontal.transform.position.y < 0.00001f && !animFinished)
                 {
                     if (photonView.isMine)
                     {
                         photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                         CheckIfSquareIsMade(hit);
-                        // photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                         if (!pointScored)
                             CmdNextTurn();
                     }
-                        animFinished = true;
-                    
+                    animFinished = true;
+
                 }
             }
             //Lerp vertical line 
@@ -641,18 +642,17 @@ public class PlayerClick : PunBehaviour
                     {
                         newLineVertical.transform.position += velocity * Time.deltaTime;
                     }
-                    if (newLineVertical.transform.position.y < 0.0001 && !animFinished)
+                    if (newLineVertical.transform.position.y < 0.00001f && !animFinished)
                     {
                         if (photonView.isMine)
                         {
                             photonView.RPC("CmdPlaceLine", PhotonTargets.AllBuffered, objectID, objectColor.ToString());
                             CheckIfSquareIsMade(hit);
-                            //   photonView.RPC("CmdStopAnim", PhotonTargets.AllBuffered);
                             if (!pointScored)
                                 CmdNextTurn();
                         }
-                            animFinished = true;
-                        
+                        animFinished = true;
+
                     }
 
                 }
@@ -663,13 +663,13 @@ public class PlayerClick : PunBehaviour
         {
             if (newLineHorizontal != null)
             {
-               newLineHorizontal.GetComponent<Light>().enabled = false;
-               newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
+                newLineHorizontal.GetComponent<Light>().enabled = false;
+                newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
             }
             if (newLineVertical != null)
             {
-               newLineVertical.GetComponent<Light>().enabled = false;
-               newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
+                newLineVertical.GetComponent<Light>().enabled = false;
+                newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
             }
         }
     }
@@ -709,27 +709,24 @@ public class PlayerClick : PunBehaviour
             }
             if (newSquare.transform.position.y < 0.0001 && !squareAnimFinished && photonView.isMine)
             {
-                if (photonView.isMine)
+                newSquare.transform.rotation = Quaternion.identity;
+                newSquare.GetComponent<Light>().enabled = false;
+                CmdNextTurn();
+                photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
+                if (!GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
                 {
-                    newSquare.transform.rotation = Quaternion.identity;
-                    newSquare.GetComponent<Light>().enabled = false;
-                    CmdNextTurn();
-                    photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
-                    if (!GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
+                    if (doubleSquare)
                     {
-                        if (doubleSquare)
-                        {
-                            GameObject.Find("EventText").GetComponent<Text>().text = "Double square! Place another line.";
-                            GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
-                        }
-                        else
-                        {
-                            GameObject.Find("EventText").GetComponent<Text>().text = "Well done! Place another line.";
-                            GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
-                        }
+                        GameObject.Find("EventText").GetComponent<Text>().text = "Double square! Place another line.";
+                        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
                     }
-                    squareAnimFinished = true;
+                    else
+                    {
+                        GameObject.Find("EventText").GetComponent<Text>().text = "Well done! Place another line.";
+                        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
+                    }
                 }
+                squareAnimFinished = true;
             }
             yield return new WaitForSeconds(0.0001f);
         }

@@ -14,7 +14,6 @@ public class UIManager : PunBehaviour
     void Start()
     {
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
-        StartCoroutine(DynamicPeriods());
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
     }
     //When the client has connected, populate the names of each panel for previous players
@@ -103,7 +102,7 @@ public class UIManager : PunBehaviour
             //Set the panels for each player
             for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
             {
-            Start:
+                Start:
                 foreach (var Apanel in panels)
                 {
                     if (Apanel.name.Contains((i + 1).ToString()))
@@ -128,6 +127,10 @@ public class UIManager : PunBehaviour
                 }
             }
             GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
+            GameObject.Find("UI").transform.localScale = new Vector3(1, 1, 1);
+            GameObject.Find("EventPanel").transform.localPosition = new Vector3(-2500f, 0f, 0f);
+            GameObject.Find("PlayAgainMenu").transform.localPosition = new Vector3(0f, -2500f, 0f);
+            GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
         }
     }
 
@@ -177,21 +180,11 @@ public class UIManager : PunBehaviour
         EscapeMenu = GameObject.Find("EscapeMenu");
         GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
         if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0)
             && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
         {
             EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(1.75f, 1.75f, 1);
-            if (NetworkServer.connections.Count < 2)
-            {
-                if (GLOBALS.ISNETWORKLOCAL)
-                {
-                    EscapeMenu.GetComponentInChildren<Button>().onClick.AddListener(() =>
-                        PhotonNetwork.Disconnect());
-                }
-
-            }
         }
         else
         {
@@ -201,7 +194,9 @@ public class UIManager : PunBehaviour
 
     public void fbAuthenticated(string name)
     {
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
         GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
+        GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
         photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, name);
     }
     //Update the name text
@@ -229,62 +224,6 @@ public class UIManager : PunBehaviour
         GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 50);
         GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
     }
-    //Dynamic period animation
-    IEnumerator DynamicPeriods()
-    {
-        var names = GameObject.FindGameObjectsWithTag("NameText");
-        string[] origTexts = new string[4];
-        for (int i = 0; i < names.Length; i++)
-        {
-            if (photonView.isMine)
-                StartCoroutine(FadeTextToFullAlpha(1f, names[i].GetComponent<Text>(), false));
-            origTexts[i] = names[i].GetComponent<Text>().text;
-        }
-        for (;;)
-        {
-            if (NetworkServer.connections.Count > 3)
-                StopAllCoroutines();
-
-            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
-                names[0].GetComponent<Text>().text = origTexts[0];
-            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
-                names[1].GetComponent<Text>().text = origTexts[1];
-            /*
-            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
-                names[2].GetComponent<Text>().text = origTexts[2];
-            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
-                names[3].GetComponent<Text>().text = origTexts[3];
-            yield return new WaitForSeconds(0.25f);
-            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
-                names[0].GetComponent<Text>().text = origTexts[0] + period;
-            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
-                names[1].GetComponent<Text>().text = origTexts[1] + period;
-            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
-                names[2].GetComponent<Text>().text = origTexts[2] + period;
-            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
-                names[3].GetComponent<Text>().text = origTexts[3] + period;
-            yield return new WaitForSeconds(0.25f);
-            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
-                names[0].GetComponent<Text>().text = origTexts[0] + period + period;
-            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
-                names[1].GetComponent<Text>().text = origTexts[1] + period + period;
-            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
-                names[2].GetComponent<Text>().text = origTexts[2] + period + period;
-            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
-                names[3].GetComponent<Text>().text = origTexts[3] + period + period;
-            yield return new WaitForSeconds(0.25f);
-            if (names[0] != null && names[0].GetComponent<Text>().text.Contains("Waiting"))
-                names[0].GetComponent<Text>().text = origTexts[0] + period + period + period;
-            if (names[1] != null && names[1].GetComponent<Text>().text.Contains("Waiting"))
-                names[1].GetComponent<Text>().text = origTexts[1] + period + period + period;
-            if (names[2] != null && names[2].GetComponent<Text>().text.Contains("Waiting"))
-                names[2].GetComponent<Text>().text = origTexts[2] + period + period + period;
-            if (names[3] != null && names[3].GetComponent<Text>().text.Contains("Waiting"))
-                names[3].GetComponent<Text>().text = origTexts[3] + period + period + period;
-             */
-            yield return new WaitForSeconds(0.25f);
-        }
-    }
 
     //Fade in text animation
     public IEnumerator FadeTextToFullAlpha(float t, Text i, bool fadeOut)
@@ -298,11 +237,6 @@ public class UIManager : PunBehaviour
             }
             yield return null;
         }
-        if (fadeOut)
-        {
-            //StartCoroutine(FadeOutText(1f, i));
-        }
-
     }
     //Fade out text animation
     IEnumerator FadeOutText(float t, Text i)
@@ -319,22 +253,21 @@ public class UIManager : PunBehaviour
         }
     }
 
-    void DisconnectPlayer()
+    public void DisconnectPlayer()
     {
-        if (photonView.isMine)
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        //Remove player from player list
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
-            GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-            //Remove player from player list
-            for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
             {
-                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
-                {
-                    photonView.RPC("CmdRemovePlayerFromList", PhotonTargets.AllBuffered, i);
-                    break;
-                }
+                photonView.RPC("CmdRemovePlayerFromList", PhotonTargets.AllBuffered, i);
+                break;
             }
-            SceneManager.LoadScene(0);
         }
+        PhotonNetwork.DestroyAll();
+        PhotonNetwork.Disconnect();
+        SceneManager.LoadScene(0);
     }
 
     [PunRPC]
@@ -371,6 +304,12 @@ public class UIManager : PunBehaviour
             GameObject.Find("EventText").GetComponent<Text>().text = text;
             GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
         }
+    }
+    //When the in game event panel is finished its anim hide the tapGif
+    public void OnEventPanelFinish()
+    {
+        GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
+        GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
     }
 
 }

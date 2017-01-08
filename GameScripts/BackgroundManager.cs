@@ -28,12 +28,11 @@ public class BackgroundManager : MonoBehaviour
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);
-            yield return new WaitForSeconds(Random.Range(0.9f, 1.1f));
+            yield return new WaitForSeconds(Random.Range(1f, 1f));
         }
     }
     void Start()
     {
-        DontDestroyOnLoad(this.transform);
         StartCoroutine(ShowSquare());
         SceneManager.sceneLoaded += SceneLoaded;
     }
@@ -48,11 +47,6 @@ public class BackgroundManager : MonoBehaviour
             {
                 alpha += 2f;
                 power += 0.1f;
-
-                //newSquare.GetComponent<Light>().intensity += 3;
-                //newSquare.GetComponent<Light>().range += 3;
-                //newSquare.GetComponent<Light>().enabled = true;
-                //newSquare.GetComponent<Light>().color = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
                 fade.a += 0.2f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
@@ -92,12 +86,18 @@ public class BackgroundManager : MonoBehaviour
 
         if (scene.buildIndex == 1)
         {
-            StopAllCoroutines();
+            if (this != null)
+            {
+                StopAllCoroutines();
+            }
         }
         else
         {
-            StopAllCoroutines();
-            //StartCoroutine(ShowSquare());
+            if (this != null)
+            {
+                StopAllCoroutines();
+                StartCoroutine(ShowSquare());
+            }
         }
         foreach (GameObject square in GameObject.FindGameObjectsWithTag("FadedSquare"))
         {

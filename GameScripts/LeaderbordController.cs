@@ -87,6 +87,7 @@ public class LeaderbordController : MonoBehaviour
             gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         }
         //gameObject.GetComponent<Text>().text = "Loading Scores...";
+        //GameObject.Find("Content").transform.position = new Vector3(-250, howFarCanWeScroll, 1);
         WWW hs_get = new WWW(highscoreURL);
         yield return hs_get;
 
@@ -116,7 +117,7 @@ public class LeaderbordController : MonoBehaviour
                         GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + " \n";
                         GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + " \n";
                         position++;
-                        howFarCanWeScroll += 0.3f;
+                        howFarCanWeScroll += 0.5f;
                     }
                 }
                 leaderBoardError = false;
@@ -129,11 +130,11 @@ public class LeaderbordController : MonoBehaviour
         if (GameObject.Find("Content").transform.position.y >= howFarCanWeScroll)
         {
             //The -4.5 Centers it in the middle
-            GameObject.Find("Content").transform.position = new Vector3(GameObject.Find("Content").transform.position.x, howFarCanWeScroll, 1);
+           GameObject.Find("Content").transform.position = new Vector3(GameObject.Find("Content").transform.position.x, howFarCanWeScroll, GameObject.Find("Content").transform.position.z);
         }
-        else if (GameObject.Find("Content").transform.position.y <= defaultScrollPos)
+        else if (GameObject.Find("Content").transform.position.y < defaultScrollPos)
         {
-            GameObject.Find("Content").transform.position = new Vector3(GameObject.Find("Content").transform.position.x, defaultScrollPos, 1);
+          GameObject.Find("Content").transform.position = new Vector3(GameObject.Find("Content").transform.position.x, defaultScrollPos, GameObject.Find("Content").transform.position.z);
         }
     }
 }

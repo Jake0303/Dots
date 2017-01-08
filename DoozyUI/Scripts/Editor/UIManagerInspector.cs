@@ -89,25 +89,25 @@ public class UIManagerInspector : Editor
 
         #region Show Help
         DoozyUIHelper.ResetColors();
-        UIManager.showHelp = EditorGUILayout.ToggleLeft("Show Help", UIManager.showHelp, GUILayout.Width(80));
+        //UIManager.showHelp = EditorGUILayout.ToggleLeft("Show Help", UIManager.showHelp, GUILayout.Width(80));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 
         #region Debug Events
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightOranage);
-        UIManager._debugEvents = EditorGUILayout.ToggleLeft("Debug Events", UIManager._debugEvents, GUILayout.Width(90));
+        //UIManager._debugEvents = EditorGUILayout.ToggleLeft("Debug Events", UIManager._debugEvents, GUILayout.Width(90));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 
         #region Debug Buttons
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightOranage);
-        UIManager._debugButtons = EditorGUILayout.ToggleLeft("Debug Buttons", UIManager._debugButtons, GUILayout.Width(100));
+        //UIManager._debugButtons = EditorGUILayout.ToggleLeft("Debug Buttons", UIManager._debugButtons, GUILayout.Width(100));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 
         #region Debug Notifications
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.LightOranage);
-        UIManager._debugNotifications = EditorGUILayout.ToggleLeft("Debug Notifications", UIManager._debugNotifications, GUILayout.Width(130));
+        //UIManager._debugNotifications = EditorGUILayout.ToggleLeft("Debug Notifications", UIManager._debugNotifications, GUILayout.Width(130));
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
         #endregion
 

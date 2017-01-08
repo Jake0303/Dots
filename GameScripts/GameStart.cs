@@ -32,10 +32,12 @@ public class GameStart : PunBehaviour
     private new PhotonView photonView;
     private int viewID;
     private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
+    private GameObject tapGif;
 
     void Start()
     {
         photonView = this.GetComponent<PhotonView>();
+        tapGif = GameObject.Find("TapGif");
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -83,10 +85,10 @@ public class GameStart : PunBehaviour
             startGame = false;
         }
     }
-
+    //When the name panel anim finishes put landscape orientation for game
     public void NamePanelAnimFinish()
     {
-        Screen.orientation = ScreenOrientation.LandscapeLeft;//or right for right landscape
+        Screen.orientation = ScreenOrientation.LandscapeLeft;
     }
 
     void AssignTurnsAndColors()
@@ -218,7 +220,6 @@ public class GameStart : PunBehaviour
                     }
                 }
             }
-
             GameObject.Find("Camera").transform.position = new Vector3(
                 (listOfDots[listOfDots.Length - 1].transform.position.x) / 2,
         GameObject.Find("Camera").transform.position.y,
@@ -262,8 +263,10 @@ public class GameStart : PunBehaviour
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("It's your turn, place a line!", true);
-        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupBox("It's your turn first, place a line!");
+        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupBox("It's your turn first, tap to place a line!");
+        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("It's your turn , tap to place a line!", false);
+        tapGif.GetComponent<Image>().enabled = true;
+        tapGif.GetComponent<LoadingGif>().enabled = true;
     }
     [PunRPC]
     //Tell the server the timer has started

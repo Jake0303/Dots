@@ -89,7 +89,7 @@ public class PlayerID : PunBehaviour
         //Building grid
         if (eventcode == 1 && this != null)
         {
-            this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
+            //this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
         }
         //Game over
         else if (eventcode == 2 && this != null)

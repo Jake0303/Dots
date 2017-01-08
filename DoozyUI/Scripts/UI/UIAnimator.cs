@@ -388,7 +388,7 @@ namespace DoozyUI
             var aSource = tempGO.AddComponent<AudioSource>(); ; // add an audio source
             aSource.clip = clip; // define the clip
                                  // set other aSource properties here, if desired - custom volume, custom pitch, etc...
-            aSource.volume = GLOBALS.Volume;
+            aSource.volume = GLOBALS.Volume / 50;
             aSource.Play(); // start the sound
             Destroy(tempGO, clip.length); // destroy object after clip duration
             return aSource; // return the AudioSource reference
