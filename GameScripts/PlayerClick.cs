@@ -533,8 +533,8 @@ public class PlayerClick : PunBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.name.Contains("line")
-                    //&& hit.collider.GetComponent<LinePlaced>().linePlaced == false
-                    //&& !playingAnim
+                    && hit.collider.GetComponent<LinePlaced>().linePlaced == false
+                    && !playingAnim
                     && !gameManager.GetComponent<GameOver>().gameOver
                     && !gameManager.GetComponent<GameStart>().buildGrid
                     && !eventPanel.GetComponent<DoozyUI.UIElement>().isVisible

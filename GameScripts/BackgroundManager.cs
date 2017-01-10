@@ -16,7 +16,6 @@ public class BackgroundManager : MonoBehaviour
         while (true)
         {
             GameObject newSquare = Instantiate(square, new Vector3(Random.Range(-20, 20), Random.Range(-20, 20), Random.Range(45, 45)), square.transform.rotation) as GameObject;
-            StartCoroutine(fadeIn(newSquare));
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
             newSquare.GetComponentInChildren<Renderer>().enabled = true;
@@ -28,7 +27,8 @@ public class BackgroundManager : MonoBehaviour
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);
-            yield return new WaitForSeconds(Random.Range(1f, 1f));
+            StartCoroutine(fadeIn(newSquare));
+            yield return new WaitForSeconds(Random.Range(0.4f, 0.8f));
         }
     }
     void Start()
@@ -40,48 +40,52 @@ public class BackgroundManager : MonoBehaviour
     IEnumerator fadeIn(GameObject newSquare)
     {
         float power = 0;
-        while (power <= 1)
+        while (power <= 2)
         {
             //Transparency.
             if (newSquare != null)
             {
-                alpha += 2f;
-                power += 0.1f;
+                power += 0.2f;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
-                fade.a += 0.2f;
+                fade.a += 0.1f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
             yield return new WaitForSeconds(0.1f);
         }
-        while (true)
+        StartCoroutine(fadeOut(newSquare));
+    }
+
+    IEnumerator fadeOut(GameObject newSquare)
+    {
+        float power = 2;
+        while (power >= 0)
         {
             //Transparency.
             if (newSquare != null)
             {
-                alpha -= 1f;
-                power -= 0.04f;
-
+                power -= 0.1f;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
                 fade.a -= 0.1f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
-            }
-            //kill when faded
-            if (power < 0)
-            {
-                Destroy(newSquare);
-                break;
             }
             yield return new WaitForSeconds(0.1f);
         }
-        StopCoroutine(fadeIn(newSquare));
-
+        //kill when faded
+        if (power <= 0)
+        {
+            Destroy(newSquare);
+        }
     }
 
-    void SceneLoaded(Scene scene, LoadSceneMode mode)
+        void SceneLoaded(Scene scene, LoadSceneMode mode)
     {
 
         if (scene.buildIndex == 1)
