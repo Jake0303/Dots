@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon;
+using Facebook.Unity;
 
 
 public class GameOver : PunBehaviour
@@ -13,7 +14,10 @@ public class GameOver : PunBehaviour
     public bool gameOver = false, gameDone = false;
     public string winner = "", loser = "";
     private Color greyedPanel = new Color(0.5f, 0.5f, 0.5f, 0.6f);
-
+    void Start()
+    {
+        GameObject.Find("NetworkManager").GetComponent<NetworkManager>().findAnotherMatch = false;
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.isWriting)
@@ -131,6 +135,21 @@ public class GameOver : PunBehaviour
         yield return new WaitForSeconds(5);
         StopAllCoroutines();
         ResetGame();
+    }
+    //Find another match button click
+    public void FindAnotherMatch()
+    {
+        PhotonNetwork.Disconnect();
+        StartCoroutine(DoSwitchLevel());
+    }
+    //need this or else level changes before we disconnect
+
+    IEnumerator DoSwitchLevel()
+    {
+        while (PhotonNetwork.connected)
+            yield return null;
+        GameObject.Find("NetworkManager").GetComponent<NetworkManager>().findAnotherMatch = true;
+        SceneManager.LoadScene(0);
     }
     //Reset the game
     void ResetGame()

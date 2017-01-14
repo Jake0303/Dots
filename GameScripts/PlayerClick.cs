@@ -522,7 +522,7 @@ public class PlayerClick : PunBehaviour
             && Input.GetMouseButtonDown(0)
             && escapeMenu != null
             //Escape Menu not open
-            && escapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0))
+            && !escapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
         {
             //empty RaycastHit object which raycast puts the hit details into
             hit = new RaycastHit();

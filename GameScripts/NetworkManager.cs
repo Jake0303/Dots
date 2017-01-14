@@ -10,10 +10,13 @@ public class NetworkManager : PunBehaviour
 {
     public bool AutoConnect = true;
     public GameObject newPlayer;
-    private bool ConnectInUpdate = false;
+    public bool ConnectInUpdate = false;
+    public bool findAnotherMatch = false;
 
     void Start()
     {
+        AutoConnect = true;
+        ConnectInUpdate = false;
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
         PhotonNetwork.automaticallySyncScene = true;
         SceneManager.sceneLoaded += SceneLoaded;
@@ -26,12 +29,12 @@ public class NetworkManager : PunBehaviour
             GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
             PhotonNetwork.ConnectUsingSettings(GLOBALS.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex);
             ConnectInUpdate = false;
-
         }
     }
     //Join lobby
     public void JoinGame()
     {
+        AutoConnect = true;
         ConnectInUpdate = true;
     }
     public override void OnConnectedToMaster()
@@ -63,6 +66,7 @@ public class NetworkManager : PunBehaviour
             GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
             GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
+            GameObject.Find("ConnectingGif").transform.localScale = new Vector3(0, 0, 0);
         }
     }
 
@@ -82,6 +86,7 @@ public class NetworkManager : PunBehaviour
             GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
             GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
+            GameObject.Find("ConnectingGif").transform.localScale = new Vector3(0, 0, 0);
         }
     }
 
@@ -105,32 +110,6 @@ public class NetworkManager : PunBehaviour
         //Mainmenu
         if (scene.buildIndex == 0)
         {
-            Screen.orientation = ScreenOrientation.AutoRotation;
-            GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => JoinGame()));
-            GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<FacebookManager>().FBButtonClick()));
-            GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("LeaderboardsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("LBackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("LoginBackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("OptionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("InstructionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("OptionsOKButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
-            GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnVolumeSliderChanged);
-            GameObject.Find("SoundOFF").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOnSound()));
-            GameObject.Find("SoundON").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOffSound()));
-            if (GLOBALS.Volume > 0)
-            {
-                GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(false);
-                GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
-            }
-            else
-            {
-                GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
-                GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Hide(false);
-            }
             SceneManager.sceneLoaded -= SceneLoaded;
         }
         //Game
@@ -156,6 +135,7 @@ public class NetworkManager : PunBehaviour
         GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         GameObject.Find("transitionText").GetComponent<Text>().fontSize = 56;
         GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
+        GameObject.Find("ConnectingGif").transform.localScale = new Vector3(1, 1, 1);
 
     }
     //Let the player know if the opponent disconnected
@@ -164,10 +144,11 @@ public class NetworkManager : PunBehaviour
         base.OnDisconnectedFromPhoton();
         if (GameObject.Find("EscapeMenu") != null)
         {
-            GameObject.Find("EscapeMenu").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left!";
             GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
+            GameObject.Find("FindAnotherMatchButton").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+            GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         }
     }
 

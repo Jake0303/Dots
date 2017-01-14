@@ -170,8 +170,12 @@ public class UIManager : PunBehaviour
 
     public void closeEscapeMenu()
     {
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        GameObject.Find("EscapeMenu").transform.localScale = new Vector3(0, 0, 0);
+        if (GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text != "Your opponent has left!")
+        {
+            EscapeMenu = GameObject.Find("EscapeMenu");
+            GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+            EscapeMenu.GetComponent<DoozyUI.UIElement>().Hide(false);
+        }
     }
 
     public void openEscapeMenu()
@@ -180,15 +184,14 @@ public class UIManager : PunBehaviour
         EscapeMenu = GameObject.Find("EscapeMenu");
         GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        if (EscapeMenu.GetComponent<RectTransform>().localScale == new Vector3(0, 0, 0)
-            && !GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid)
-        {
-            EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-            GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(1.75f, 1.75f, 1);
-        }
+        EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+        GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(1.75f, 1.75f, 1);
+        if (!EscapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
+            EscapeMenu.GetComponent<DoozyUI.UIElement>().Show(false);
         else
         {
-            closeEscapeMenu();
+            if (GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text != "Your opponent has left!")
+                closeEscapeMenu();
         }
     }
 
@@ -255,20 +258,15 @@ public class UIManager : PunBehaviour
 
     public void DisconnectPlayer()
     {
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        //Remove player from player list
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-        {
-            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GetComponent<PlayerID>().playerID)
-            {
-                photonView.RPC("CmdRemovePlayerFromList", PhotonTargets.AllBuffered, i);
-                break;
-            }
-        }
-        PhotonNetwork.DestroyAll();
         PhotonNetwork.Disconnect();
+    }
+
+    public override void OnDisconnectedFromPhoton()
+    {
+        base.OnDisconnectedFromPhoton();
         SceneManager.LoadScene(0);
     }
+
 
     [PunRPC]
     public void CmdRemovePlayerFromList(int indexToRemove)

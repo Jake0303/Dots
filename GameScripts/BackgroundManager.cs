@@ -9,7 +9,6 @@ public class BackgroundManager : MonoBehaviour
     private Color randomColor;
     public GameObject square;
     Color fade;
-    float alpha = 0;
 
     public IEnumerator ShowSquare()
     {

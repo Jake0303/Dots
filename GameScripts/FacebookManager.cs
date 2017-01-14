@@ -6,7 +6,6 @@ using System;
 public class FacebookManager : MonoBehaviour
 {
     public string accessToken = "";
-    #region Notes
     // Singleton is nice here 
     // you can then simply use FacebookManager.instance.WhatEverMethodYouWant()
     private static FacebookManager _instance;
@@ -120,5 +119,4 @@ public class FacebookManager : MonoBehaviour
             GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);*/
         }
     }
-    #endregion
 }
