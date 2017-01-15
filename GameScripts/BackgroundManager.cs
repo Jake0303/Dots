@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class BackgroundManager : MonoBehaviour
 {
-    //Good looking colors for menu background
-    private Color[] sexyColors = { Color.magenta, Color.cyan, Color.green, Color.yellow, new Color(0.4f, 0.2f, 0.6f), Color.red, new Color(0.2F, 0.3F, 0.4F) };
+    //Good looking colors for menu background, purple and orange are the calculated colors
+    private Color[] sexyColors = { Color.magenta, Color.cyan, Color.green, Color.yellow, new Color(0.4f, 0.2f, 0.6f), Color.red, new Color(1f, 0.55f, 0f)};
     private Color randomColor;
     public GameObject square;
     Color fade;

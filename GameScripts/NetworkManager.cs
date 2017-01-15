@@ -138,6 +138,12 @@ public class NetworkManager : PunBehaviour
         GameObject.Find("ConnectingGif").transform.localScale = new Vector3(1, 1, 1);
 
     }
+
+    public void ShowConnectingMenu()
+    {
+        GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
+        GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(true);
+    }
     //Let the player know if the opponent disconnected
     public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {

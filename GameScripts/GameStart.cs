@@ -281,6 +281,7 @@ public class GameStart : PunBehaviour
     //Tell the server the grid is of dots is being built
     void BuildGridText()
     {
+        GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
         PhotonNetwork.RaiseEvent(1, null, true, null);
         buildGrid = true;
     }

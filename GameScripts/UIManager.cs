@@ -180,17 +180,16 @@ public class UIManager : PunBehaviour
 
     public void openEscapeMenu()
     {
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        EscapeMenu = GameObject.Find("EscapeMenu");
-        GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-        GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        EscapeMenu.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-        GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(1.75f, 1.75f, 1);
-        if (!EscapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
-            EscapeMenu.GetComponent<DoozyUI.UIElement>().Show(false);
-        else
+        if (GameObject.Find("EnterNamePanel") == null
+            || !GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().isVisible)
         {
-            if (GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text != "Your opponent has left!")
+            GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+            EscapeMenu = GameObject.Find("EscapeMenu");
+            GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
+            GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
+            if (!EscapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
+                EscapeMenu.GetComponent<DoozyUI.UIElement>().Show(false);
+            else
                 closeEscapeMenu();
         }
     }

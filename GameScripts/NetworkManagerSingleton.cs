@@ -55,8 +55,9 @@ public class NetworkManagerSingleton : MonoBehaviour
         }
         if (GameObject.Find("NetworkManager").GetComponent<NetworkManager>().findAnotherMatch)
         {
-            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame();
+            GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
             GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
+            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame();
         }
         Button[] buttons = GameObject.Find("UI").GetComponentsInChildren<Button>();
 

@@ -27,10 +27,11 @@ public class PlayerID : PunBehaviour
 
     private bool showPopup;
     public bool showWinner = true;
+    public bool fbInfoFound;
     void Start()
     {
         PhotonNetwork.OnEventCall += this.OnEvent;
-        bool fbInfoFound = false;
+        fbInfoFound = false;
         //Setup the enter username panel UI locally
         if (photonView.isMine)
         {
@@ -89,7 +90,8 @@ public class PlayerID : PunBehaviour
         //Building grid
         if (eventcode == 1 && this != null)
         {
-            //this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
+            GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
+            this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
         }
         //Game over
         else if (eventcode == 2 && this != null)
