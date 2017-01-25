@@ -27,7 +27,7 @@ public class BackgroundManager : MonoBehaviour
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);
             StartCoroutine(fadeIn(newSquare));
-            yield return new WaitForSeconds(Random.Range(0.4f, 0.8f));
+            yield return new WaitForSeconds(Random.Range(0.7f, 0.9f));
         }
     }
     void Start()
@@ -44,13 +44,13 @@ public class BackgroundManager : MonoBehaviour
             //Transparency.
             if (newSquare != null)
             {
-                power += 0.2f;
+                power += 0.1f;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
                 fade.a += 0.1f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a*1.2f);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a*1.2f);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
             yield return new WaitForSeconds(0.1f);
@@ -71,11 +71,11 @@ public class BackgroundManager : MonoBehaviour
                 fade.a -= 0.1f;
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a*1.1f);
+                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a*1.1f);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.2f);
         }
         //kill when faded
         if (power <= 0)
