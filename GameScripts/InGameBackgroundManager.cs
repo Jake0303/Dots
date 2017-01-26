@@ -15,7 +15,7 @@ public class InGameBackgroundManager : MonoBehaviour
     private float[] freqBand = new float[8];
     private float[] bandBuffer = new float[8];
     private float[] bufferDecrease = new float[8];
-
+    public bool left, top;
 
 
 
@@ -29,8 +29,26 @@ public class InGameBackgroundManager : MonoBehaviour
         GetSpectrumData();
         MakeFrequencyBands();
         BandBuffer();
-        GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[0] * 1f) + 0.1f);
-        GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[0] * 1f) + 1f);
+        if (left && !top)
+        {
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[0] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[0] * 1f) + 1f);
+        }
+        else if (top && left)
+        {
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[2] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[2] * 1f) + 1f);
+        }
+        else if (!left && !top)
+        {
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[4] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[4] * 1f) + 1f);
+        }
+        else
+        {
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[6] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[6] * 1f) + 1f);
+        }
 
     }
 
