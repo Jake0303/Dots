@@ -33,21 +33,25 @@ public class InGameBackgroundManager : MonoBehaviour
         {
             GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[0] * 1f) + 0.5f);
             GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[0] * 1f) + 1f);
+            transform.localScale= new Vector3((bandBuffer[0] * 1f) + 44f, 1f, (bandBuffer[0] * 1f) + 27f);
         }
         else if (top && left)
         {
-            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[2] * 1f) + 0.5f);
-            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[2] * 1f) + 1f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[6] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[6] * 1f) + 1f);
+            transform.localScale = new Vector3((bandBuffer[2] * 1f) + 44f, 1f, (bandBuffer[6] * 1f) + 27f);
         }
         else if (!left && !top)
         {
-            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[4] * 1f) + 0.5f);
-            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[4] * 1f) + 1f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[3] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[3] * 1f) + 1f);
+            transform.localScale = new Vector3((bandBuffer[4] * 1f) + 44f, 1f, (bandBuffer[3] * 1f) + 27f);
         }
         else
         {
-            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[6] * 1f) + 0.5f);
-            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[6] * 1f) + 1f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[7] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[7] * 1f) + 1f);
+            transform.localScale = new Vector3((bandBuffer[6] * 1f) + 44f, 1f, (bandBuffer[7] * 1f) + 27f);
         }
 
     }
