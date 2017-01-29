@@ -129,12 +129,11 @@ public class LeaderbordController : MonoBehaviour
     {
         if (GameObject.Find("Content").transform.position.y >= howFarCanWeScroll)
         {
-            //The -4.5 Centers it in the middle
-           GameObject.Find("Content").transform.position = new Vector3(GameObject.Find("Content").transform.position.x, howFarCanWeScroll, GameObject.Find("Content").transform.position.z);
+           //GameObject.Find("Content").transform.position = new Vector3(-240f, howFarCanWeScroll, GameObject.Find("Content").transform.position.z);
         }
         else if (GameObject.Find("Content").transform.position.y < defaultScrollPos)
         {
-          GameObject.Find("Content").transform.position = new Vector3(GameObject.Find("Content").transform.position.x, defaultScrollPos, GameObject.Find("Content").transform.position.z);
+          //GameObject.Find("Content").transform.position = new Vector3(-240f, defaultScrollPos, GameObject.Find("Content").transform.position.z);
         }
     }
 }

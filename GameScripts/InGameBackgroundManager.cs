@@ -7,21 +7,20 @@ public class InGameBackgroundManager : MonoBehaviour
     /**
      * Change in game background color
      */
-    //Good looking colors for menu background, purple and orange are the calculated colors
-    private Color[] sexyColors = { Color.magenta, Color.cyan, Color.green, Color.yellow, new Color(0.4f, 0.2f, 0.6f), Color.red, new Color(1f, 0.55f, 0f) };
-    private Color randomColor;
     private AudioSource bgMusic;
     private float[] spectrum = new float[512];
     private float[] freqBand = new float[8];
     private float[] bandBuffer = new float[8];
     private float[] bufferDecrease = new float[8];
     public bool left, top;
-
-
+    private float bassPower = 0.3f;
+    private float snarePower = 0.6f;
+    private Vector3 initialSquareScale;
 
     void Start()
     {
         bgMusic = GameObject.Find("AudioManager").GetComponent<AudioSource>();
+        initialSquareScale = transform.localScale;
     }
 
     void Update()
@@ -31,27 +30,27 @@ public class InGameBackgroundManager : MonoBehaviour
         BandBuffer();
         if (left && !top)
         {
-            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[0] * 1f) + 0.5f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[0] * 1f) + 1f);
             GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[0] * 1f) + 1f);
-            transform.localScale= new Vector3((bandBuffer[0] * 1f) + 44f, 1f, (bandBuffer[0] * 1f) + 27f);
+            transform.localScale= new Vector3((bandBuffer[0] * bassPower) +initialSquareScale.x, 1f, (bandBuffer[0] * bassPower) + initialSquareScale.z);
         }
         else if (top && left)
         {
-            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[6] * 1f) + 0.5f);
-            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[6] * 1f) + 1f);
-            transform.localScale = new Vector3((bandBuffer[2] * 1f) + 44f, 1f, (bandBuffer[6] * 1f) + 27f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[0] * 1f) + 1f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[0] * 1f) + 1f);
+            transform.localScale = new Vector3((bandBuffer[0] * bassPower) + initialSquareScale.x, 1f, (bandBuffer[0] * bassPower) +initialSquareScale.z);
         }
         else if (!left && !top)
         {
-            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[3] * 1f) + 0.5f);
-            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[3] * 1f) + 1f);
-            transform.localScale = new Vector3((bandBuffer[4] * 1f) + 44f, 1f, (bandBuffer[3] * 1f) + 27f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[4] * 2f) + 1f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[4] * 2f) + 1f);
+            transform.localScale = new Vector3((bandBuffer[4] * snarePower) + initialSquareScale.x, 1f, (bandBuffer[4] * snarePower) +initialSquareScale.z);
         }
         else
         {
-            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[7] * 1f) + 0.5f);
-            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[7] * 1f) + 1f);
-            transform.localScale = new Vector3((bandBuffer[6] * 1f) + 44f, 1f, (bandBuffer[7] * 1f) + 27f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", (bandBuffer[4] * 2f) + 1f);
+            GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", (bandBuffer[4] * 2f) + 1f);
+            transform.localScale = new Vector3((bandBuffer[4] * snarePower) + initialSquareScale.x, 1f, (bandBuffer[4] * snarePower) + initialSquareScale.z);
         }
 
     }
@@ -68,14 +67,6 @@ public class InGameBackgroundManager : MonoBehaviour
             {
                 bandBuffer[g] = freqBand[g];
                 bufferDecrease[g] = 0.005f;
-                /*
-                if (randomColor == sexyColors[Mathf.CeilToInt(Random.Range(0, 7))])
-                    randomColor = sexyColors[Mathf.CeilToInt(Random.Range(0, 7))];
-                else
-                    randomColor = sexyColors[Mathf.CeilToInt(Random.Range(0, 7))];
-                GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", randomColor);
-                GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
-                GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);*/
             }
 
             if (freqBand[g] < bandBuffer[g])
