@@ -9,29 +9,35 @@ public class BackgroundManager : MonoBehaviour
     private Color randomColor;
     public GameObject square;
     Color fade;
+    int colorIndex = 0;
 
     public IEnumerator ShowSquare()
     {
         while (true)
         {
-            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(-20, 20), Random.Range(-20, 20), Random.Range(45, 45)), square.transform.rotation) as GameObject;
+            GameObject newSquare = Instantiate(square, new Vector3(Random.Range(-30, 30), Random.Range(-20, 20), Random.Range(45, 45)), square.transform.rotation) as GameObject;
             newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             newSquare.layer = 5;//UI layer
             newSquare.GetComponentInChildren<Renderer>().enabled = true;
-            if (randomColor == sexyColors[Mathf.CeilToInt(Random.Range(0, 7))])
-                randomColor = sexyColors[Mathf.CeilToInt(Random.Range(0, 7))];
+            if (colorIndex <= 6)
+                randomColor = sexyColors[colorIndex];
             else
-                randomColor = sexyColors[Mathf.CeilToInt(Random.Range(0, 7))];
+                randomColor = sexyColors[0];
             randomColor.a = 0;
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);
             StartCoroutine(fadeIn(newSquare));
-            yield return new WaitForSeconds(Random.Range(0.7f, 0.9f));
+            if (colorIndex <= 6)
+                colorIndex++;
+            else
+                colorIndex = 0;
+            yield return new WaitForSeconds(Random.Range(0.1f, 0.1f));
         }
     }
     void Start()
     {
+        colorIndex = 0;
         StartCoroutine(ShowSquare());
         SceneManager.sceneLoaded += SceneLoaded;
     }
