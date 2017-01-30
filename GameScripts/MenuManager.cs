@@ -310,7 +310,11 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-
+    void Update()
+    {
+        if (Input.deviceOrientation == DeviceOrientation.Portrait) {
+        }
+    }
     //Quit the game
     public void ExitGame()
     {

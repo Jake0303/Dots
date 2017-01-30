@@ -256,8 +256,6 @@ public class PlayerClick : PunBehaviour
     void CmdPlaceLine(string obj, string col)
     {
         GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
-        //GameObject.Find(obj).GetComponentInParent<Light>().enabled = true;
-        GameObject.Find(obj).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
@@ -514,8 +512,16 @@ public class PlayerClick : PunBehaviour
 
     }
 
+
     // Update is called once per frame
     void Update()
+    {
+        CheckIfPlayerClicked();
+    }
+
+
+    //Check if the player has clicked to place a line
+    void CheckIfPlayerClicked()
     {
         //Must be the players turn to place a line
         if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn
@@ -532,13 +538,14 @@ public class PlayerClick : PunBehaviour
             //Raycast from the mouse to the level, if hit place a line
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.name.Contains("line")
+                if (GLOBALS.NUMOFPLAYERSTOSTARTGAME <= 1 
+                    || (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == false
                     && !playingAnim
                     && !gameManager.GetComponent<GameOver>().gameOver
                     && !gameManager.GetComponent<GameStart>().buildGrid
                     && !eventPanel.GetComponent<DoozyUI.UIElement>().isVisible
-                    && !playAgainMenu.GetComponent<DoozyUI.UIElement>().isVisible)
+                    && !playAgainMenu.GetComponent<DoozyUI.UIElement>().isVisible))
                 {
                     objectID = hit.collider.name;// this gets the object that is hit
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
@@ -549,9 +556,12 @@ public class PlayerClick : PunBehaviour
                     photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, hit.collider.name);
                 }
             }
-            GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
+            eventPanel.GetComponent<DoozyUI.UIElement>().Hide(false);
         }
     }
+
+
+    //Sync the placed line across the network
     [PunRPC]
     void CmdSelectObject(string name)
     {
@@ -559,6 +569,8 @@ public class PlayerClick : PunBehaviour
         objectColor = GetComponent<PlayerColor>().playerColor;
         GameObject.Find(objectID).GetComponent<LinePlaced>().linePlaced = true;
     }
+
+
     //Spawn a temporary line for an animation
     void SpawnLineForAnim(string line)
     {
