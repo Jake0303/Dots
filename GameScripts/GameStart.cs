@@ -88,7 +88,8 @@ public class GameStart : PunBehaviour
     //When the name panel anim finishes put landscape orientation for game
     public void NamePanelAnimFinish()
     {
-        Screen.orientation = ScreenOrientation.LandscapeLeft;
+        if (Screen.orientation == ScreenOrientation.Portrait)
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
     }
 
     void AssignTurnsAndColors()

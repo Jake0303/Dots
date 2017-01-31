@@ -26,6 +26,19 @@ public class InGameBackgroundManager : MonoBehaviour
     {
         bgMusic = GameObject.Find("AudioManager").GetComponent<AudioSource>();
         initialSquareScale = transform.localScale;
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            GetComponentInChildren<Renderer>().enabled = false;
+        }
+        else
+        {
+            GameObject.Find("Camera").GetComponent<MKGlowSystem.MKGlow>().BlurSpread = 0.2f;
+            GameObject.Find("Camera").GetComponent<MKGlowSystem.MKGlow>().BlurIterations = 0;
+            GameObject.Find("Camera").GetComponent<MKGlowSystem.MKGlow>().BlurOffset = 0f;
+            GameObject.Find("Camera").GetComponent<MKGlowSystem.MKGlow>().Samples = 2;
+            GameObject.Find("Camera").GetComponent<MKGlowSystem.MKGlow>().GlowIntensity= 1f;
+
+        }
     }
 
     /**
@@ -33,11 +46,13 @@ public class InGameBackgroundManager : MonoBehaviour
      */
     void Update()
     {
-        //Allow WebGL to GetSpectrumData
-        GetSpectrumData();
-        MakeFrequencyBands();
-        BandBuffer();
-        SyncSquaresWithMusic();
+        if (Application.platform != RuntimePlatform.WebGLPlayer)
+        {
+            GetSpectrumData();
+            MakeFrequencyBands();
+            BandBuffer();
+            SyncSquaresWithMusic();
+        }
     }
 
 
