@@ -20,7 +20,7 @@ public class BackgroundManager : MonoBehaviour
             GameObject newSquare = null;
             if (SceneManager.GetActiveScene().buildIndex != 1)
             {
-                newSquare = Instantiate(square, new Vector3(Random.Range(-30, 30), Random.Range(-20, 20), Random.Range(44, 44)), square.transform.rotation) as GameObject;
+                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 50), Random.Range(-30, 30), Random.Range(44, 44)), square.transform.rotation) as GameObject;
                 newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             }
             else
@@ -124,10 +124,10 @@ public class BackgroundManager : MonoBehaviour
         {
             if (this != null)
             {
-                if (Application.platform != RuntimePlatform.WebGLPlayer)
-                {
-                    StopAllCoroutines();
-                }
+                //if (Application.platform != RuntimePlatform.WebGLPlayer)
+                //{
+                  //  StopAllCoroutines();
+                //}
             }
         }
         else

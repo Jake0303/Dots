@@ -62,7 +62,7 @@ public class PlayerID : PunBehaviour
 
                 errorMsg = errorTxt.GetComponent<Text>();
                 errorMsg.transform.SetParent(goPanel.transform, false);
-                errorMsg.transform.position = new Vector3(errorMsg.transform.position.x, 40, errorMsg.transform.position.z);
+                errorMsg.transform.position = new Vector3(errorMsg.transform.position.x, 70, errorMsg.transform.position.z);
 
                 GameObject goInputField = (GameObject)Instantiate(userinputField);
                 goInputField.transform.localScale = new Vector3(4, 1, 1);

@@ -133,7 +133,6 @@ public class GameStart : PunBehaviour
             case "dot":
                 newObj = PhotonNetwork.Instantiate("Prefabs/Dots", pos, rot, 0);
                 newObj.GetComponent<DotID>().CmdSetName(name);
-                photonView.RPC("EnableDotLight", PhotonTargets.AllBuffered, newObj.name);
                 break;
             case "lineHor":
                 newObj = PhotonNetwork.Instantiate("Prefabs/LineHor", pos, rot, 0);

@@ -17,6 +17,7 @@ public class NetworkManager : PunBehaviour
     {
         AutoConnect = true;
         ConnectInUpdate = false;
+        newPlayer = null;
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
         PhotonNetwork.automaticallySyncScene = true;
         SceneManager.sceneLoaded += SceneLoaded;
@@ -40,7 +41,6 @@ public class NetworkManager : PunBehaviour
     public override void OnConnectedToMaster()
     {
         base.OnConnectedToMaster();
-
         string conn = "Joining match";
         GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
         //Tries to join any random game:
@@ -98,6 +98,7 @@ public class NetworkManager : PunBehaviour
             LoadLevel();
         }
     }
+
     //If joining a match failed, create one
     void OnPhotonRandomJoinFailed()
     {
@@ -111,10 +112,13 @@ public class NetworkManager : PunBehaviour
         if (scene.buildIndex == 0)
         {
             SceneManager.sceneLoaded -= SceneLoaded;
+            newPlayer = null;
+            ConnectInUpdate = false;
         }
         //Game
         else if (scene.buildIndex == 1)
         {
+            ConnectInUpdate = false;
             GameObject.Find("PopupText").GetComponent<Text>().text = "Waiting for an opponent";
             SpawnPlayer();
         }
@@ -139,11 +143,15 @@ public class NetworkManager : PunBehaviour
 
     }
 
-    public void ShowConnectingMenu()
+    //Spawn the player on the network
+    void SpawnPlayer()
     {
-        GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
-        GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(true);
+        if (newPlayer == null)
+            newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), 0);
+        ConnectInUpdate = false;
     }
+
+
     //Let the player know if the opponent disconnected
     public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
@@ -152,20 +160,8 @@ public class NetworkManager : PunBehaviour
         {
             GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left!";
             GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
-            GameObject.Find("EscapeMenu").GetComponentInChildren<Button>().onClick.AddListener(() => DisconnectPlayer());
             GameObject.Find("FindAnotherMatchButton").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         }
-    }
-
-    void DisconnectPlayer()
-    {
-        PhotonNetwork.Disconnect();
-        SceneManager.LoadScene(0);
-    }
-    //Spawn the player on the network
-    void SpawnPlayer()
-    {
-        newPlayer = (GameObject)PhotonNetwork.Instantiate("Prefabs/Player", new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0), 0);
     }
 }

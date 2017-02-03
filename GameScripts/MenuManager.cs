@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
     string transitionText;
-    public GameObject backButton;
+    public GameObject backButton, mainCamera;
     #region Public Variables
     [Space(20)]
     public Sprite[] icons;
@@ -208,24 +208,60 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+
+
+    void MyOrientationChangeCode(DeviceOrientation orientation)
+    {
+    }
+
+
     private void UpdateMusicState()
     {
     }
 
     void Start()
     {
+        DoozyUI.UIManager.DisableBackButton();
+        DeviceChange.OnOrientationChange += MyOrientationChange;
         GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
+        mainCamera = GameObject.Find("Main Camera");
         backButton = GameObject.Find("BackToMenuButton");
         // Initialize volume slider
         if (GameObject.Find("VolumeSlider") != null)
             GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-        if(Application.platform != RuntimePlatform.Android
+        if (Application.platform != RuntimePlatform.Android
             && Application.platform != RuntimePlatform.IPhonePlayer)
         {
             GameObject.Find("ContentText").GetComponent<Text>().text = "Place lines by clicking your mouse \n and placing your cursor between \n 2 dots. \n \n \n \n \n \n \n " +
                 " Earn points by completing squares \n" + " on the grid of dots. \n \n Win by having the most points \n in a given game. ";
         }
+        else if ((Screen.orientation == ScreenOrientation.Portrait
+            || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
+            && (SceneManager.GetActiveScene().buildIndex == 0))
+        {
+            GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 55;
+        }
+        else if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 30;
+        }
     }
+
+
+    void MyOrientationChange(DeviceOrientation orientation)
+    {
+        if ((orientation == DeviceOrientation.Portrait
+            || orientation == DeviceOrientation.PortraitUpsideDown)
+            && (SceneManager.GetActiveScene().buildIndex == 0))
+        {
+            GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 55;
+        }
+        else if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 30;
+        }
+    }
+
 
     //Update the volume when the slider has changed
     public void OnVolumeSliderChanged(float value)
@@ -310,11 +346,6 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        if (Input.deviceOrientation == DeviceOrientation.Portrait) {
-        }
-    }
     //Quit the game
     public void ExitGame()
     {

@@ -32,7 +32,7 @@ public class UIManager : PunBehaviour
                 }
             }
         }
-
+        DoozyUI.UIManager.EnableBackButton();
     }
 
     //Add the player to the player list and update their name
@@ -263,6 +263,7 @@ public class UIManager : PunBehaviour
     public override void OnDisconnectedFromPhoton()
     {
         base.OnDisconnectedFromPhoton();
+        PhotonNetwork.Destroy(photonView);
         SceneManager.LoadScene(0);
     }
 

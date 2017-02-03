@@ -112,7 +112,7 @@ public class LeaderbordController : MonoBehaviour
                 {
                     if (GameObject.Find("wins"))
                     {
-                        GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".  \n";
+                        GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".  \n ";
                         GetComponent<Text>().text += aData["Username"].str + "\n";
                         GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + " \n";
                         GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + " \n";
@@ -127,6 +127,7 @@ public class LeaderbordController : MonoBehaviour
     //Restrict the scroll to the min and max
     public void OnScrollChanged(Vector2 value)
     {
+        /*
         if (GameObject.Find("Content").transform.position.y >= howFarCanWeScroll)
         {
            //GameObject.Find("Content").transform.position = new Vector3(-240f, howFarCanWeScroll, GameObject.Find("Content").transform.position.z);
@@ -134,6 +135,6 @@ public class LeaderbordController : MonoBehaviour
         else if (GameObject.Find("Content").transform.position.y < defaultScrollPos)
         {
           //GameObject.Find("Content").transform.position = new Vector3(-240f, defaultScrollPos, GameObject.Find("Content").transform.position.z);
-        }
+        }*/
     }
 }
