@@ -112,10 +112,10 @@ public class LeaderbordController : MonoBehaviour
                 {
                     if (GameObject.Find("wins"))
                     {
-                        GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".  \n ";
-                        GetComponent<Text>().text += aData["Username"].str + "\n";
-                        GameObject.Find("wins").GetComponent<Text>().text += aData["Wins"].str + " \n";
-                        GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + " \n";
+                        GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".\n ";
+                        GameObject.Find("username").GetComponent<Text>().text += " " + aData["Username"].str + "\n";
+                        GameObject.Find("wins").GetComponent<Text>().text += " "+aData["Wins"].str + "\n";
+                        GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "\n";
                         position++;
                         howFarCanWeScroll += 0.5f;
                     }
