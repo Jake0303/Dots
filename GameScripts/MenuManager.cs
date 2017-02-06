@@ -32,123 +32,6 @@ public class MenuManager : MonoBehaviour
             case "UpdateSoundSettings":
                 UpdateMusicState();
                 break;
-
-
-            #region EXAMPLE 1 - notifications
-
-            case "Example_1_Notification_1":
-                DoozyUI.UIManager.ShowNotification("Example_1_Notification_1", 5f, false, "This is a 5 seconds notification! \n - click on it to close -");
-                break;
-
-            case "Example_1_Notification_2":
-                DoozyUI.UIManager.ShowNotification("Example_1_Notification_2", -1f, false, "About", "DoozyUI is a sure way to create blazing fast user interfaces with all kinds of animations that you can imagine.", null, new string[1] { "CloseNotificationButton" }, new string[1] { "Got it!" });
-                break;
-
-            case "Example_1_Notification_3":
-                DoozyUI.UIManager.ShowNotification("Example_1_Notification_3", -1f, false, new string[2] { "OkButton", "CancelButton" }, new string[2] { "Ok", "Cancel" });
-                break;
-
-            case "Example_1_Notification_4":
-                randomIconIndex = Random.Range(0, icons.Length); //we get a random icon index so that we can show/simulate a different notification each time
-                DoozyUI.UIManager.ShowNotification("Example_1_Notification_4", 3f, true, iconNames[randomIconIndex], icons[randomIconIndex]);
-                break;
-
-            case "Example_1_Notification_5":
-                DoozyUI.UIManager.ShowNotification("Example_1_Notification_5", 4f, true, icons[Random.Range(0, icons.Length)]); //we select a random sprite to show as the main icon
-                break;
-
-            case "Example_1_Notification_6":
-                DoozyUI.UIManager.ShowNotification("Example_1_Notification_6", -1f, true, "Click anywhere to close this notification!");
-                break;
-
-            #endregion
-
-            #region EXAMPLE 2 - notifications
-
-            case "Example_2_Notification_1":
-                DoozyUI.UIManager.ShowNotification("Example_2_Notification_1", 5f, false, "This is a 5 seconds notification! \n - click on it to close -");
-                break;
-
-            case "Example_2_Notification_2":
-                DoozyUI.UIManager.ShowNotification("Example_2_Notification_2", -1f, false, "One Button Notification", "Press the OK button to close this notification!", null, new string[1] { "CloseNotificationButton" }, new string[1] { "OK" });
-                break;
-
-            case "Example_2_Notification_3":
-                DoozyUI.UIManager.ShowNotification("Example_2_Notification_3", -1f, false, "Level Completed", new string[2] { "NextLevelButton", "ReplayButton" }, new string[2] { "Next Level", "Replay" });
-                break;
-
-            case "Example_2_Notification_4":
-                DoozyUI.UIManager.ShowNotification("Example_2_Notification_4", 3f, true, icons[Random.Range(0, icons.Length)]);
-                break;
-
-            case "Example_2_Notification_5":
-                randomIconIndex = Random.Range(0, icons.Length); //we get a random icon index so that we can show/simulate a different notification each time
-                DoozyUI.UIManager.ShowNotification("Example_2_Notification_5", 4f, true, iconNames[randomIconIndex], icons[randomIconIndex]);
-                break;
-
-            case "Example_2_Notification_6":
-                DoozyUI.UIManager.ShowNotification("Example_2_Notification_6", -1f, true, "About", "DoozyUI is a sure way to create blazing fast user interfaces with all kinds of animations that you can imagine.", null, new string[1] { "CloseNotificationButton" }, new string[1] { "OK" });
-                break;
-
-            #endregion
-
-            #region EXAMPLE 3 - notifications
-
-            case "Example_3_Notification_1":
-                DoozyUI.UIManager.ShowNotification("Example_3_Notification_1", 5f, false, "Quick notification! \n - click to close -");
-                break;
-
-            case "Example_3_Notification_2":
-                DoozyUI.UIManager.ShowNotification("Example_3_Notification_2", -1f, false, "Three Button Notification", "This notification has three buttons \n click any of them to close", null, new string[3] { "Button1", "Button2", "Button3" }, new string[3] { "one", "two", "three" });
-                break;
-
-            case "Example_3_Notification_3":
-                DoozyUI.UIManager.ShowNotification("Example_3_Notification_3", -1f, false, new string[2] { "OkButton", "CancelButton" }, new string[2] { "Ok", "Cancel" });
-                break;
-
-            case "Example_3_Notification_4":
-                randomIconIndex = Random.Range(0, icons.Length); //we get a random icon index so that we can show/simulate a different notification each time
-                DoozyUI.UIManager.ShowNotification("Example_3_Notification_4", 3f, true, iconNames[randomIconIndex], icons[randomIconIndex]);
-                break;
-
-            case "Example_3_Notification_5":
-                randomIconIndex = Random.Range(0, icons.Length); //we get a random icon index so that we can show/simulate a different notification each time
-                DoozyUI.UIManager.ShowNotification("Example_3_Notification_5", 3f, true, icons[randomIconIndex]);
-                break;
-
-            case "Example_3_Notification_6":
-                DoozyUI.UIManager.ShowNotification("Example_3_Notification_6", -1f, true, "About", "DoozyUI is a sure way to create blazing fast user interfaces with all kinds of animations that you can imagine.", null, new string[1] { "CloseNotificationButton" }, new string[1] { "OK" });
-                break;
-
-            #endregion
-
-            #region EXAMPLE 4 - notifications
-
-            case "Example_4_Notification_1":
-                DoozyUI.UIManager.ShowNotification("Example_4_Notification_1", 5f, false, "", "Quick notification \n 5 seconds lifetime");
-                break;
-
-            case "Example_4_Notification_2":
-                DoozyUI.UIManager.ShowNotification("Example_4_Notification_2", 4f, false, "", "Your message here! \n click to hide");
-                break;
-
-            case "Example_4_Notification_3":
-                DoozyUI.UIManager.ShowNotification("Example_4_Notification_3", -1, false, "Modal window", "To close this window, click any button. \n This notification has 3 buttons available, but we chose to use only 2.", null, new string[2] { "button 1", "button 2" }, new string[2] { "1", "2" });
-                break;
-
-            case "Example_4_Notification_4":
-                DoozyUI.UIManager.ShowNotification("Example_4_Notification_4", 2f, true);
-                break;
-
-            case "Example_4_Notification_5":
-                DoozyUI.UIManager.ShowNotification("Example_4_Notification_5", 3f, true);
-                break;
-
-            case "Example_4_Notification_6":
-                DoozyUI.UIManager.ShowNotification("Example_4_Notification_6", 5f, true, "Doozy UI", "COMPLETE UI MANAGEMENT SYSTEM");
-                break;
-
-                #endregion
         }
     }
 
@@ -337,6 +220,19 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
         GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
     }
+
+
+    public void TopLeaderboardHandleClick()
+    {
+        GameObject.Find("LeaderboardPanel").transform.localPosition -= new Vector3(0, 30, 0);
+
+    }
+
+    public void BotLeaderboardHandleClick()
+    {
+        GameObject.Find("LeaderboardPanel").transform.localPosition += new Vector3(0, 30, 0);
+    }
+
 
     public void ReloadLeaderBoard()
     {
