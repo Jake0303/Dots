@@ -10,7 +10,7 @@ public class LeaderbordController : MonoBehaviour
     private static string secretKey = "89oN04ydon854CBm9XTG4Tt6YcAKEAqA"; // Edit this value and make sure it's the same as the one stored on the server
     public static string addScoreURL = "https://squarz.io/Scripts/AddToLeaderboard.php?"; //be sure to add a ? to your url
     public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php";
-    private float defaultScrollPos = 1.75f;
+    private float defaultScrollPos = 0.2f;
     private float howFarCanWeScroll; // default
 
 
@@ -87,7 +87,7 @@ public class LeaderbordController : MonoBehaviour
             gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         }
         //gameObject.GetComponent<Text>().text = "Loading Scores...";
-        //GameObject.Find("Content").transform.position = new Vector3(-250, howFarCanWeScroll, 1);
+        //GameObject.Find("LeaderboardPanel).transform.position = new Vector3(-250, howFarCanWeScroll, 1);
         WWW hs_get = new WWW(highscoreURL);
         yield return hs_get;
 
@@ -117,7 +117,7 @@ public class LeaderbordController : MonoBehaviour
                         GameObject.Find("wins").GetComponent<Text>().text += " "+aData["Wins"].str + "\n";
                         GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "\n";
                         position++;
-                        howFarCanWeScroll += 0.5f;
+                        howFarCanWeScroll += 0.3f;
                     }
                 }
                 leaderBoardError = false;
@@ -127,14 +127,14 @@ public class LeaderbordController : MonoBehaviour
     //Restrict the scroll to the min and max
     public void OnScrollChanged(Vector2 value)
     {
-        /*
-        if (GameObject.Find("Content").transform.position.y >= howFarCanWeScroll)
+        
+        if (GameObject.Find("LeaderboardPanel").transform.position.y >= howFarCanWeScroll)
         {
-           //GameObject.Find("Content").transform.position = new Vector3(-240f, howFarCanWeScroll, GameObject.Find("Content").transform.position.z);
+           GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, howFarCanWeScroll, GameObject.Find("LeaderboardPanel").transform.position.z);
         }
-        else if (GameObject.Find("Content").transform.position.y < defaultScrollPos)
+        else if (GameObject.Find("LeaderboardPanel").transform.position.y < defaultScrollPos)
         {
-          //GameObject.Find("Content").transform.position = new Vector3(-240f, defaultScrollPos, GameObject.Find("Content").transform.position.z);
-        }*/
+          GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, defaultScrollPos, GameObject.Find("LeaderboardPanel").transform.position.z);
+        }
     }
 }

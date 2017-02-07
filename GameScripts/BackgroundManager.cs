@@ -29,7 +29,7 @@ public class BackgroundManager : MonoBehaviour
             }
             newSquare.layer = 5;//UI layer
             newSquare.GetComponentInChildren<Renderer>().enabled = true;
-            if (colorIndex <= 6)
+            if (colorIndex < sexyColors.Length)
                 randomColor = sexyColors[colorIndex];
             else
                 randomColor = sexyColors[0];
@@ -38,7 +38,7 @@ public class BackgroundManager : MonoBehaviour
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);
             StartCoroutine(fadeIn(newSquare));
-            if (colorIndex <= 6)
+            if (colorIndex < sexyColors.Length)
                 colorIndex++;
             else
                 colorIndex = 0;
