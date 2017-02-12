@@ -11,7 +11,7 @@ public class GLOBALS : MonoBehaviour
     public const float GAMESTARTDELAY = 1.0f;
     //Global variable to determine the number of players required to start a game
     public const int NUMOFPLAYERSTOSTARTGAME = 2;
-    //Global variable to determine the height of a line before being place
+    //Global variable to determine the height of a line before being placed
     public const int LINEHEIGHT = 37;
     //Global variable to determine the timer duration
     public const float MAXTURNTIME = 20.0f;

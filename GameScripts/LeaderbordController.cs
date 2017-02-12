@@ -12,6 +12,7 @@ public class LeaderbordController : MonoBehaviour
     public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php";
     private float defaultScrollPos = 0.2f;
     private float howFarCanWeScroll; // default
+    private const float scrollBarVerticalOffset = 2.5f, scrollBarVerticalLimit = 4.5f;
 
 
     void Start()
@@ -127,7 +128,6 @@ public class LeaderbordController : MonoBehaviour
     //Restrict the scroll to the min and max
     public void OnScrollChanged(Vector2 value)
     {
-        
         if (GameObject.Find("LeaderboardPanel").transform.position.y >= howFarCanWeScroll)
         {
            GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, howFarCanWeScroll, GameObject.Find("LeaderboardPanel").transform.position.z);
@@ -136,5 +136,6 @@ public class LeaderbordController : MonoBehaviour
         {
           GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, defaultScrollPos, GameObject.Find("LeaderboardPanel").transform.position.z);
         }
+        GameObject.Find("ScrollImg").transform.position = new Vector3(GameObject.Find("ScrollImg").transform.position.x, (-GameObject.Find("LeaderboardPanel").transform.position.y/(howFarCanWeScroll/scrollBarVerticalLimit))+scrollBarVerticalOffset, GameObject.Find("ScrollImg").transform.position.z);
     }
 }

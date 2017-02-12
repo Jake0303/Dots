@@ -224,12 +224,14 @@ public class MenuManager : MonoBehaviour
 
     public void TopLeaderboardHandleClick()
     {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         GameObject.Find("LeaderboardPanel").transform.localPosition -= new Vector3(0, 30, 0);
 
     }
 
     public void BotLeaderboardHandleClick()
     {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         GameObject.Find("LeaderboardPanel").transform.localPosition += new Vector3(0, 30, 0);
     }
 
