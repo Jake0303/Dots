@@ -51,10 +51,4 @@ public class DeviceChange : MonoBehaviour
             yield return new WaitForSeconds(CheckDelay);
         }
     }
-
-    void OnDestroy()
-    {
-        isAlive = false;
-    }
-
 }

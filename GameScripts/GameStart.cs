@@ -81,7 +81,6 @@ public class GameStart : PunBehaviour
             //Hide temporary lines
             lineHor.GetComponentInChildren<Renderer>().enabled = false;
             lineVert.GetComponentInChildren<Renderer>().enabled = false;
-            //centerSquare.GetComponent<Renderer>().enabled = false;
             startGame = false;
         }
     }
@@ -89,7 +88,10 @@ public class GameStart : PunBehaviour
     public void NamePanelAnimFinish()
     {
         if (Screen.orientation == ScreenOrientation.Portrait)
+        {
             Screen.orientation = ScreenOrientation.LandscapeLeft;
+            GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
+        }
     }
 
     void AssignTurnsAndColors()

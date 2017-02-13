@@ -15,6 +15,15 @@ public class UIManager : PunBehaviour
     {
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
+        if ((Screen.orientation == ScreenOrientation.Portrait
+            || Screen.orientation == ScreenOrientation.PortraitUpsideDown))
+            {
+            GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 90;
+        }
+        else if (SceneManager.GetActiveScene().buildIndex == 0)
+        {
+            GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
+        }
     }
     //When the client has connected, populate the names of each panel for previous players
     public override void OnJoinedRoom()

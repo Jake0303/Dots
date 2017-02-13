@@ -139,7 +139,9 @@ public class MenuManager : MonoBehaviour
         {
             GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 55;
         }
-        else if (SceneManager.GetActiveScene().buildIndex == 0)
+        else if ((orientation != DeviceOrientation.Portrait
+            && orientation != DeviceOrientation.PortraitUpsideDown)
+            && SceneManager.GetActiveScene().buildIndex == 0)
         {
             GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 30;
         }

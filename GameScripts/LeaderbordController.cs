@@ -12,7 +12,7 @@ public class LeaderbordController : MonoBehaviour
     public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php";
     private float defaultScrollPos = 0.2f;
     private float howFarCanWeScroll; // default
-    private const float scrollBarVerticalOffset = 2.5f, scrollBarVerticalLimit = 4.5f;
+    private const float scrollBarVerticalOffset = 2.5f, scrollBarVerticalLimit = 4.5f,  mobileScrollBarVerticalLimit = 3.5f, mobileScrollBarVerticalOffset = 2f;
 
 
     void Start()
@@ -46,7 +46,7 @@ public class LeaderbordController : MonoBehaviour
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
         string hash = Md5Sum(name + wins.ToString() + losses.ToString() + secretKey);
-        string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&fbID="+ fbID + "&hash=" + hash;
+        string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&fbID=" + fbID + "&hash=" + hash;
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);
         yield return hs_post; // Wait until the download is done
@@ -66,7 +66,7 @@ public class LeaderbordController : MonoBehaviour
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
         string hash = Md5Sum(name + wins.ToString() + losses.ToString() + secretKey);
-        string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses  + "&hash=" + hash;
+        string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&hash=" + hash;
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);
         yield return hs_post; // Wait until the download is done
@@ -115,7 +115,7 @@ public class LeaderbordController : MonoBehaviour
                     {
                         GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".\n ";
                         GameObject.Find("username").GetComponent<Text>().text += " " + aData["Username"].str + "\n";
-                        GameObject.Find("wins").GetComponent<Text>().text += " "+aData["Wins"].str + "\n";
+                        GameObject.Find("wins").GetComponent<Text>().text += " " + aData["Wins"].str + "\n";
                         GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "\n";
                         position++;
                         howFarCanWeScroll += 0.3f;
@@ -130,12 +130,15 @@ public class LeaderbordController : MonoBehaviour
     {
         if (GameObject.Find("LeaderboardPanel").transform.position.y >= howFarCanWeScroll)
         {
-           GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, howFarCanWeScroll, GameObject.Find("LeaderboardPanel").transform.position.z);
+            GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, howFarCanWeScroll, GameObject.Find("LeaderboardPanel").transform.position.z);
         }
         else if (GameObject.Find("LeaderboardPanel").transform.position.y < defaultScrollPos)
         {
-          GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, defaultScrollPos, GameObject.Find("LeaderboardPanel").transform.position.z);
+            GameObject.Find("LeaderboardPanel").transform.position = new Vector3(GameObject.Find("LeaderboardPanel").transform.position.x, defaultScrollPos, GameObject.Find("LeaderboardPanel").transform.position.z);
         }
-        GameObject.Find("ScrollImg").transform.position = new Vector3(GameObject.Find("ScrollImg").transform.position.x, (-GameObject.Find("LeaderboardPanel").transform.position.y/(howFarCanWeScroll/scrollBarVerticalLimit))+scrollBarVerticalOffset, GameObject.Find("ScrollImg").transform.position.z);
+        if (Screen.orientation == ScreenOrientation.Landscape)
+            GameObject.Find("ScrollImg").transform.position = new Vector3(GameObject.Find("ScrollImg").transform.position.x, (-GameObject.Find("LeaderboardPanel").transform.position.y / (howFarCanWeScroll / scrollBarVerticalLimit)) + scrollBarVerticalOffset, GameObject.Find("ScrollImg").transform.position.z);
+        else
+            GameObject.Find("ScrollImg").transform.position = new Vector3(GameObject.Find("ScrollImg").transform.position.x, (-GameObject.Find("LeaderboardPanel").transform.position.y / (howFarCanWeScroll / mobileScrollBarVerticalLimit)) + mobileScrollBarVerticalOffset, GameObject.Find("ScrollImg").transform.position.z);
     }
 }
