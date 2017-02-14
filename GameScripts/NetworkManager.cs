@@ -160,6 +160,7 @@ public class NetworkManager : PunBehaviour
         {
             GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left!";
             GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
+            GameObject.Find("Toggle").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("FindAnotherMatchButton").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         }

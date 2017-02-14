@@ -10,7 +10,7 @@ public class GLOBALS : MonoBehaviour
     //Global variable to determine the delay before a game has started
     public const float GAMESTARTDELAY = 1.0f;
     //Global variable to determine the number of players required to start a game
-    public const int NUMOFPLAYERSTOSTARTGAME = 2;
+    public const int NUMOFPLAYERSTOSTARTGAME = 1;
     //Global variable to determine the height of a line before being placed
     public const int LINEHEIGHT = 37;
     //Global variable to determine the timer duration
@@ -30,5 +30,7 @@ public class GLOBALS : MonoBehaviour
     public const float DOTDISTANCE = 11.0f;
     //Version of the game
     public const byte Version = 1;
+    //Is Colorblind Assist Enabled?
+    public static bool ColorBlindAssist = false;
 
 }

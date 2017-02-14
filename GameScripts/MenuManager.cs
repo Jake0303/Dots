@@ -91,16 +91,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-
-
-    void MyOrientationChangeCode(DeviceOrientation orientation)
-    {
-    }
-
-
-    private void UpdateMusicState()
-    {
-    }
+    private void UpdateMusicState(){}
 
     void Start()
     {
@@ -128,6 +119,7 @@ public class MenuManager : MonoBehaviour
         {
             GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 30;
         }
+        GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
     }
 
 
@@ -152,6 +144,7 @@ public class MenuManager : MonoBehaviour
     public void OnVolumeSliderChanged(float value)
     {
         GLOBALS.Volume = value;
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
         GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
         if (GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic != null)
@@ -205,39 +198,17 @@ public class MenuManager : MonoBehaviour
             StartCoroutine(FadeTextToFullAlpha(2f, GameObject.Find("transitionText").GetComponent<Text>()));
         }
     }
-    public void TransitionToEnterNameScreen()
-    {
-        GameObject.Find("PlayButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("PlayButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("PlayButton").GetComponentInChildren<Text>().color = Color.clear;
-        GameObject.Find("OptionsButton").GetComponent<Button>().enabled = false;
-        GameObject.Find("OptionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("OptionsButton").GetComponentInChildren<Text>().color = Color.clear;
-        if (GameObject.Find("ExitButton"))
-        {
-            GameObject.Find("ExitButton").GetComponent<Button>().enabled = false;
-            GameObject.Find("ExitButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-            GameObject.Find("ExitButton").GetComponentInChildren<Text>().color = Color.clear;
-        }
-        GameObject.Find("InstructionsButton").GetComponentInChildren<CanvasRenderer>().SetAlpha(0);
-        GameObject.Find("InstructionsButton").GetComponentInChildren<Text>().color = Color.clear;
-    }
 
 
-    public void TopLeaderboardHandleClick()
+    //OnColorBlindAssistCheckbox Changed
+    public void OnColorBlindCheckboxChanged(bool val)
     {
+        GLOBALS.ColorBlindAssist = val;
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        GameObject.Find("LeaderboardPanel").transform.localPosition -= new Vector3(0, 30, 0);
-
-    }
-
-    public void BotLeaderboardHandleClick()
-    {
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        GameObject.Find("LeaderboardPanel").transform.localPosition += new Vector3(0, 30, 0);
     }
 
 
+    //Try to reload the leaderboard if there is an error
     public void ReloadLeaderBoard()
     {
         if (LeaderbordController.leaderBoardError)

@@ -155,11 +155,8 @@ public class GameStart : PunBehaviour
             objectsToDelete.Add(newObj);
         }
     }
-    [PunRPC]
-    void EnableDotLight(string dot)
-    {
-        //GameObject.Find(dot).GetComponent<Light>().enabled = true;
-    }
+
+
     //Build the grid
     IEnumerator CreateGrid()
     {

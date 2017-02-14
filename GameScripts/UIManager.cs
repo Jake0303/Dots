@@ -14,10 +14,11 @@ public class UIManager : PunBehaviour
     void Start()
     {
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
+        GameObject.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(OnColorBlindCheckboxChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
         if ((Screen.orientation == ScreenOrientation.Portrait
             || Screen.orientation == ScreenOrientation.PortraitUpsideDown))
-            {
+        {
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 90;
         }
         else if (SceneManager.GetActiveScene().buildIndex == 0)
@@ -174,6 +175,7 @@ public class UIManager : PunBehaviour
             GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().Hide(false);
             GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
+            GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
         }
     }
 
@@ -317,6 +319,119 @@ public class UIManager : PunBehaviour
     {
         GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
         GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
+    }
+
+    //OnColorBlindAssistCheckbox Changed
+    public void OnColorBlindCheckboxChanged(bool val)
+    {
+        GLOBALS.ColorBlindAssist = val;
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        if (val)
+        {
+            GetComponent<PlayerColor>().colors[1] = Color.blue;
+            GetComponent<PlayerColor>().colors[2] = Color.yellow;
+            foreach (var square in GameObject.FindGameObjectsWithTag("CenterSquare"))
+            {
+                if (square.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
+                {
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.green)
+                    {
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.blue);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.blue);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.blue);
+                    }
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.red)
+                    {
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.yellow);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.yellow);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.yellow);
+                    }
+                }
+            }
+            foreach (var line in GameObject.FindGameObjectsWithTag("Line"))
+            {
+                if (line.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
+                {
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.green)
+                    {
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.blue);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.blue);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.blue);
+                    }
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.red)
+                    {
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.yellow);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.yellow);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.yellow);
+                    }
+                }
+            }
+            foreach (var player in players)
+            {
+                if (player.GetComponent<PlayerColor>().playerColor == Color.green)
+                {
+                    player.GetComponent<PlayerColor>().playerColor = Color.blue;
+                }
+                if (player.GetComponent<PlayerColor>().playerColor == Color.red)
+                {
+                    player.GetComponent<PlayerColor>().playerColor = Color.yellow;
+                }
+            }
+        }
+        else
+        {
+            GetComponent<PlayerColor>().colors[1] = Color.green;
+            GetComponent<PlayerColor>().colors[2] = Color.red;
+            foreach (var square in GameObject.FindGameObjectsWithTag("CenterSquare"))
+            {
+                if (square.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
+                {
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.blue)
+                    {
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.green);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.green);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.green);
+                    }
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.yellow)
+                    {
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.red);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.red);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.red);
+                    }
+                }
+            }
+            foreach (var line in GameObject.FindGameObjectsWithTag("Line"))
+            {
+                if (line.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
+                {
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.blue)
+                    {
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.green);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.green);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.green);
+                    }
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.yellow)
+                    {
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.red);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.red);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.red);
+                    }
+                }
+            }
+            foreach (var player in players)
+            {
+                if (player.GetComponent<PlayerColor>().playerColor == Color.blue)
+                {
+                    player.GetComponent<PlayerColor>().playerColor = Color.green;
+                }
+                if (player.GetComponent<PlayerColor>().playerColor == Color.yellow)
+                {
+                    player.GetComponent<PlayerColor>().playerColor = Color.red;
+                }
+            }
+        }
+
     }
 
 }
