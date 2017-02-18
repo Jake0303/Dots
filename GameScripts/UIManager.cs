@@ -17,11 +17,13 @@ public class UIManager : PunBehaviour
         GameObject.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(OnColorBlindCheckboxChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
         if ((Screen.orientation == ScreenOrientation.Portrait
-            || Screen.orientation == ScreenOrientation.PortraitUpsideDown))
+            || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
+            && (Application.platform == RuntimePlatform.Android
+            || Application.platform == RuntimePlatform.IPhonePlayer))
         {
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 90;
         }
-        else if (SceneManager.GetActiveScene().buildIndex == 0)
+        else if (SceneManager.GetActiveScene().buildIndex == 1)
         {
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
         }
@@ -324,7 +326,8 @@ public class UIManager : PunBehaviour
     {
         GLOBALS.ColorBlindAssist = val;
         var players = GameObject.FindGameObjectsWithTag("Player");
-        //GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+
         if (val)
         {
             GetComponent<PlayerColor>().colors[1] = Color.blue;
