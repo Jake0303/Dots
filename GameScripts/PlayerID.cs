@@ -35,13 +35,16 @@ public class PlayerID : PunBehaviour
         //Setup the enter username panel UI locally
         if (photonView.isMine)
         {
-            foreach (var aData in LeaderbordController.data.list)
+            if (LeaderbordController.data.list != null)
             {
-                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
+                foreach (var aData in LeaderbordController.data.list)
                 {
-                    fbInfoFound = true;
-                    this.GetComponent<UIManager>().fbAuthenticated(aData["Username"].str);
-                    break;
+                    if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
+                    {
+                        fbInfoFound = true;
+                        this.GetComponent<UIManager>().fbAuthenticated(aData["Username"].str);
+                        break;
+                    }
                 }
             }
             if (!fbInfoFound)

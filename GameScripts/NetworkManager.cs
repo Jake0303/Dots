@@ -37,6 +37,12 @@ public class NetworkManager : PunBehaviour
     {
         AutoConnect = true;
         ConnectInUpdate = true;
+        if (GameObject.Find("BackToMenuButton"))
+        {
+            GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
+        }
     }
     public override void OnConnectedToMaster()
     {
@@ -46,12 +52,6 @@ public class NetworkManager : PunBehaviour
         //Tries to join any random game:
         PhotonNetwork.JoinRandomRoom();
         //Fails if there are no matching games: OnPhotonRandomJoinFailed
-        if (GameObject.Find("BackToMenuButton"))
-        {
-            GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
-            GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
-            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
-        }
     }
     public override void OnFailedToConnectToPhoton(DisconnectCause cause)
     {

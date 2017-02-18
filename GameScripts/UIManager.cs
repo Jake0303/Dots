@@ -191,18 +191,16 @@ public class UIManager : PunBehaviour
 
     public void openEscapeMenu()
     {
-        if (GameObject.Find("EnterNamePanel") == null
-            || !GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().isVisible)
-        {
-            GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-            EscapeMenu = GameObject.Find("EscapeMenu");
-            GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-            GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-            if (!EscapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
-                EscapeMenu.GetComponent<DoozyUI.UIElement>().Show(false);
-            else
-                closeEscapeMenu();
-        }
+        GameObject.Find("EscapeMenu").GetComponent<Canvas>().overrideSorting = true;
+        GameObject.Find("EscapeMenu").GetComponent<Canvas>().sortingOrder = 1;
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        EscapeMenu = GameObject.Find("EscapeMenu");
+        GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
+        GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
+        if (!EscapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
+            EscapeMenu.GetComponent<DoozyUI.UIElement>().Show(false);
+        else
+            closeEscapeMenu();
     }
 
     public void fbAuthenticated(string name)
@@ -326,7 +324,7 @@ public class UIManager : PunBehaviour
     {
         GLOBALS.ColorBlindAssist = val;
         var players = GameObject.FindGameObjectsWithTag("Player");
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        //GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         if (val)
         {
             GetComponent<PlayerColor>().colors[1] = Color.blue;
