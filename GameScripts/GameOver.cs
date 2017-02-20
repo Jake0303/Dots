@@ -70,6 +70,7 @@ public class GameOver : PunBehaviour
             {
                 winner = player.name;
                 player.GetComponent<PlayerID>().winner = true;
+                player.GetComponent<PlayerID>().playersWins += 1;
             }
             else
             {
@@ -78,28 +79,7 @@ public class GameOver : PunBehaviour
             }
         }
         GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
-        GameObject.Find(winner).GetComponent<PlayerID>().playersWins += 1;
-        if (GameObject.Find(loser) != null)
-        {
-            GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
-            GameObject.Find(loser).GetComponent<PlayerID>().playerLosses += 1;
-            if (PhotonNetwork.isMasterClient)
-            {
-                if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != null)
-                    StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
-                else
-                    StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses));
-            }
-        }
-        if (PhotonNetwork.isMasterClient)
-        {
-            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != null)
-            {
-                StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
-            }
-            else
-                StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses));
-        }
+        if (GameObject.Find(loser) != null) GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
         //Update player win loss UI
         for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
@@ -112,6 +92,13 @@ public class GameOver : PunBehaviour
                         //Update UI with Wins and Losses
                         stats.GetComponent<Text>().text = GameObject.Find(winner).GetComponent<PlayerID>().playersWins + " W "
                             + GameObject.Find(winner).GetComponent<PlayerID>().playerLosses + " L ";
+                        if (PhotonNetwork.isMasterClient)
+                        {
+                            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != null)
+                                StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
+                            else
+                                StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses));
+                        }
                         break;
                     }
                 }
@@ -123,8 +110,16 @@ public class GameOver : PunBehaviour
                     if (stats.name.Contains((i + 1).ToString()))
                     {
                         //Update UI with Wins and Losses
+                        GameObject.Find(loser).GetComponent<PlayerID>().playerLosses += 1;
                         stats.GetComponent<Text>().text = GameObject.Find(loser).GetComponent<PlayerID>().playersWins + " W "
                             + GameObject.Find(loser).GetComponent<PlayerID>().playerLosses + " L ";
+                        if (PhotonNetwork.isMasterClient)
+                        {
+                            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != null)
+                                StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
+                            else
+                                StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses));
+                        }
                         break;
                     }
                 }
