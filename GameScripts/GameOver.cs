@@ -47,10 +47,6 @@ public class GameOver : PunBehaviour
             gameDone = true;
         }
     }
-    void OnWinnerChanged(string theWinner)
-    {
-        winner = theWinner;
-    }
     //Display the winner of the game
     void DisplayWinner()
     {
@@ -70,7 +66,6 @@ public class GameOver : PunBehaviour
             {
                 winner = player.name;
                 player.GetComponent<PlayerID>().winner = true;
-                player.GetComponent<PlayerID>().playersWins += 1;
             }
             else
             {
@@ -90,6 +85,7 @@ public class GameOver : PunBehaviour
                     if (stats.name.Contains((i + 1).ToString()))
                     {
                         //Update UI with Wins and Losses
+                        GameObject.Find(winner).GetComponent<PlayerID>().playersWins += 1;
                         stats.GetComponent<Text>().text = GameObject.Find(winner).GetComponent<PlayerID>().playersWins + " W "
                             + GameObject.Find(winner).GetComponent<PlayerID>().playerLosses + " L ";
                         if (PhotonNetwork.isMasterClient)
@@ -129,7 +125,9 @@ public class GameOver : PunBehaviour
     IEnumerator DelayBeforeRestart()
     {
         //Wait 5 seconds before resetting
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
+        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
+        yield return new WaitForSeconds(2);
         StopAllCoroutines();
         ResetGame();
     }

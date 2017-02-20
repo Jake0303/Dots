@@ -556,6 +556,7 @@ public class PlayerClick : PunBehaviour
                     photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, hit.collider.name);
                 }
             }
+            eventPanel.GetComponent<DoozyUI.UIElement>().moveOut.delay = 0.25f;
             eventPanel.GetComponent<DoozyUI.UIElement>().Hide(false);
         }
     }
@@ -730,12 +731,12 @@ public class PlayerClick : PunBehaviour
                     if (doubleSquare)
                     {
                         GameObject.Find("EventText").GetComponent<Text>().text = "Double square! Place another line.";
-                        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
+                        eventPanel.GetComponent<DoozyUI.UIElement>().Show(false);
                     }
                     else
                     {
                         GameObject.Find("EventText").GetComponent<Text>().text = "Well done! Place another line.";
-                        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
+                        eventPanel.GetComponent<DoozyUI.UIElement>().Show(false);
                     }
                 }
                 squareAnimFinished = true;

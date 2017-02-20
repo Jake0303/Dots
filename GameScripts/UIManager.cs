@@ -314,6 +314,7 @@ public class UIManager : PunBehaviour
     {
         if (photonView.isMine)
         {
+            GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().moveOut.delay = 1.5f;
             GameObject.Find("EventText").GetComponent<Text>().text = text;
             GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
         }

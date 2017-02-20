@@ -56,7 +56,9 @@ public class TurnTimer : PunBehaviour
         {
             if (player.GetComponent<PlayerID>().isPlayersTurn)
             {
-                if (!player.GetComponent<PlayerClick>().playingAnim && !player.GetComponent<PlayerClick>().playingSquareAnim)
+                if (!player.GetComponent<PlayerClick>().playingAnim 
+                    && !player.GetComponent<PlayerClick>().playingSquareAnim
+                    && !player.GetComponent<PlayerID>().winner)
                 {
                     timer -= Time.deltaTime;
                     if (timer < 18)
