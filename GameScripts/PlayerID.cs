@@ -47,7 +47,7 @@ public class PlayerID : PunBehaviour
                     }
                 }
             }
-            if (!fbInfoFound)
+            if (!fbInfoFound && GLOBALS.PlayerName == "")
             {
                 goPanel = (GameObject)Instantiate(panel);
                 goPanel.transform.localScale = new Vector3(0.6f, 2.5f, 1f);
@@ -84,6 +84,12 @@ public class PlayerID : PunBehaviour
                 tempButton = goButton.GetComponent<Button>();
                 tempButton.transform.SetParent(goPanel.transform, false);
                 tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg));
+            } else if (!fbInfoFound) {
+                GetComponent<UIManager>().photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, GLOBALS.PlayerName);
+                PhotonNetwork.player.name = GLOBALS.PlayerName;
+                GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
+                GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
+                GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
             }
         }
         myTransform = transform;

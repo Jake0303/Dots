@@ -25,7 +25,7 @@ public class BackgroundManager : MonoBehaviour
             }
             else
             {
-                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 50), Random.Range(-11, -9), Random.Range(-25, 50)), square.transform.rotation) as GameObject;
+                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 50), Random.Range(-13, -11), Random.Range(-25, 50)), square.transform.rotation) as GameObject;
             }
             newSquare.layer = 5;//UI layer
             newSquare.GetComponentInChildren<Renderer>().enabled = true;

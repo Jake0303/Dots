@@ -53,8 +53,12 @@ public class UIManager : PunBehaviour
     {
         GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
         GetComponent<PlayerID>().nameSet = true;
-        name = val;
-        GetComponent<PlayerID>().playerID = val;
+        if (photonView.isMine)
+        {
+            name = val;
+            GLOBALS.PlayerName = val;
+            GetComponent<PlayerID>().playerID = val;
+        }
         //Get Player Wins & Losses
         foreach (var aData in LeaderbordController.data.list)
         {

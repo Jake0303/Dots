@@ -112,6 +112,7 @@ public class GameOver : PunBehaviour
                         //Update UI with Wins and Losses
                         stats.GetComponent<Text>().text = GameObject.Find(winner).GetComponent<PlayerID>().playersWins + " W "
                             + GameObject.Find(winner).GetComponent<PlayerID>().playerLosses + " L ";
+                        break;
                     }
                 }
             }
@@ -124,6 +125,7 @@ public class GameOver : PunBehaviour
                         //Update UI with Wins and Losses
                         stats.GetComponent<Text>().text = GameObject.Find(loser).GetComponent<PlayerID>().playersWins + " W "
                             + GameObject.Find(loser).GetComponent<PlayerID>().playerLosses + " L ";
+                        break;
                     }
                 }
             }
