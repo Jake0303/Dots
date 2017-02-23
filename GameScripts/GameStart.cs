@@ -259,6 +259,26 @@ public class GameStart : PunBehaviour
     [PunRPC]
     void RpcSetFirstTurn(string playerID)
     {
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        //Update player win loss UI
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+        {
+            foreach (var player in players)
+            {
+                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                {
+                    foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+                    {
+                        if (stats.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with Wins and Losses
+                            stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
+                                + player.GetComponent<PlayerID>().playerLosses + " L ";
+                        }
+                    }
+                }
+            }
+        }
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;

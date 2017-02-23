@@ -32,6 +32,7 @@ public class UIManager : PunBehaviour
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
+        var players = GameObject.FindGameObjectsWithTag("Player");
         var names = GameObject.FindGameObjectsWithTag("NameText");
         for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
@@ -41,6 +42,15 @@ public class UIManager : PunBehaviour
                 {
                     UpdateUI(name.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
                     break;
+                }
+            }
+            foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+            {
+                if (stats.name.Contains((i + 1).ToString()))
+                {
+                    //Update UI with Wins and Losses
+                    stats.GetComponent<Text>().text = GetComponent<PlayerID>().playersWins + " W "
+                        + GetComponent<PlayerID>().playerLosses + " L ";
                 }
             }
         }
@@ -53,12 +63,8 @@ public class UIManager : PunBehaviour
     {
         GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
         GetComponent<PlayerID>().nameSet = true;
-        if (photonView.isMine)
-        {
-            name = val;
-            GLOBALS.PlayerName = val;
-            GetComponent<PlayerID>().playerID = val;
-        }
+        name = val;
+        GetComponent<PlayerID>().playerID = val;
         //Get Player Wins & Losses
         foreach (var aData in LeaderbordController.data.list)
         {
@@ -176,6 +182,7 @@ public class UIManager : PunBehaviour
         //If there is no error add the player name and update UI
         if (photonView.isMine && !aError)
         {
+            PlayerPrefs.SetString("Username", tempField.GetComponent<InputField>().text);
             photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, tempField.GetComponent<InputField>().text);
             PhotonNetwork.player.name = tempField.GetComponent<InputField>().text;
             GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().Hide(false);

@@ -21,7 +21,7 @@ public class GLOBALS : MonoBehaviour
     public static string GameName = "Squarz";
     //Points to win game
     //(((GRIDWIDTH - 1) * (GRIDHEIGHT - 1) / 2) + 1)
-    public const int POINTSTOWIN = 2;
+    public const int POINTSTOWIN = 1;
     //GridWidth
     public const int GRIDWIDTH = 4;
     //GridHeight
@@ -32,7 +32,4 @@ public class GLOBALS : MonoBehaviour
     public const byte Version = 1;
     //Is Colorblind Assist Enabled?
     public static bool ColorBlindAssist = false;
-    //PlayerName
-    public static string PlayerName = "";
-
 }

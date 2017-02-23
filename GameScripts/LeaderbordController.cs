@@ -61,12 +61,12 @@ public class LeaderbordController : MonoBehaviour
 
 
     // remember to use StartCoroutine when calling this function!
-    public static IEnumerator PostScores(string name, int wins, int losses)
+    public static IEnumerator PostScores(string guestID, string name, int wins, int losses)
     {
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
         string hash = Md5Sum(name + wins.ToString() + losses.ToString() + secretKey);
-        string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&hash=" + hash;
+        string post_url = addScoreURL + "GuestID=" + guestID + "&Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&hash=" + hash;
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);
         yield return hs_post; // Wait until the download is done

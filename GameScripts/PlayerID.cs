@@ -7,7 +7,7 @@ using System;
 
 public class PlayerID : PunBehaviour
 {
-    public string playerID, fbToken;
+    public string playerID, fbToken, guestToken;
     public bool isPlayersTurn = false;
     public bool winner = false;
 
@@ -47,7 +47,7 @@ public class PlayerID : PunBehaviour
                     }
                 }
             }
-            if (!fbInfoFound && GLOBALS.PlayerName == "")
+            if (!fbInfoFound && PlayerPrefs.GetString("Username") == "")
             {
                 goPanel = (GameObject)Instantiate(panel);
                 goPanel.transform.localScale = new Vector3(0.6f, 2.5f, 1f);
@@ -84,9 +84,15 @@ public class PlayerID : PunBehaviour
                 tempButton = goButton.GetComponent<Button>();
                 tempButton.transform.SetParent(goPanel.transform, false);
                 tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg));
+                System.Guid myGUID = System.Guid.NewGuid();
+                PlayerPrefs.SetString("GuestID", myGUID.ToString());
+                guestToken = myGUID.ToString();
             } else if (!fbInfoFound) {
-                GetComponent<UIManager>().photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, GLOBALS.PlayerName);
-                PhotonNetwork.player.name = GLOBALS.PlayerName;
+                playersWins = PlayerPrefs.GetInt("Wins");
+                playerLosses = PlayerPrefs.GetInt("Losses");
+                guestToken = PlayerPrefs.GetString("GuestID");
+                GetComponent<UIManager>().photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, PlayerPrefs.GetString("Username"));
+                PhotonNetwork.player.name = PlayerPrefs.GetString("Username");
                 GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
@@ -108,16 +114,18 @@ public class PlayerID : PunBehaviour
             //Play victory sound
             if (photonView.isMine && winner && !GetComponents<AudioSource>()[0].isPlaying)
             {
-                GetComponents<AudioSource>()[0].volume = GLOBALS.Volume / 100;
+                GetComponents<AudioSource>()[0].volume = GLOBALS.Volume;
                 GetComponents<AudioSource>()[0].Play();
             }
             else if (photonView.isMine && !winner && !GetComponents<AudioSource>()[0].isPlaying)
             {
                 //Play defeat sound
-                GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 100;
+                GetComponents<AudioSource>()[1].volume = GLOBALS.Volume;
                 GetComponents<AudioSource>()[1].Play();
             }
         }
+        PlayerPrefs.SetInt("Wins", playersWins);
+        PlayerPrefs.SetInt("Losses", playerLosses);
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
