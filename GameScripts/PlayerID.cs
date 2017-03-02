@@ -88,6 +88,7 @@ public class PlayerID : PunBehaviour
                 PlayerPrefs.SetString("GuestID", myGUID.ToString());
                 guestToken = myGUID.ToString();
             } else if (!fbInfoFound) {
+                Screen.orientation = ScreenOrientation.LandscapeLeft;
                 playersWins = PlayerPrefs.GetInt("Wins");
                 playerLosses = PlayerPrefs.GetInt("Losses");
                 guestToken = PlayerPrefs.GetString("GuestID");

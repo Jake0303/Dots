@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class BackgroundManager : MonoBehaviour
 {
     //Good looking colors for menu background, purple and orange are the calculated colors
-    private Color[] sexyColors = { Color.magenta, Color.cyan, Color.green, Color.yellow, new Color(0.4f, 0.2f, 0.6f), Color.red, new Color(1f, 0.55f, 0f) };
+    private Color[] sexyColors = { Color.magenta, Color.cyan, Color.green, Color.yellow, new Color(0.4f, 0.2f, 0.6f), Color.red, new Color(1f, 0.55f, 0f), Color.blue };
     private Color randomColor;
     public GameObject square;
     Color fade;
@@ -20,7 +20,7 @@ public class BackgroundManager : MonoBehaviour
             GameObject newSquare = null;
             if (SceneManager.GetActiveScene().buildIndex != 1)
             {
-                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 50), Random.Range(-30, 30), Random.Range(44, 44)), square.transform.rotation) as GameObject;
+                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), Random.Range(44, 44)), square.transform.rotation) as GameObject;
                 newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
             }
             else
@@ -44,7 +44,7 @@ public class BackgroundManager : MonoBehaviour
                 colorIndex = 0;
             if (SceneManager.GetActiveScene().buildIndex != 1)
             {
-                yield return new WaitForSeconds(Random.Range(0.1f, 0.3f));
+                yield return new WaitForSeconds(Random.Range(0.2f, 0.4f));
             }
             else
             {

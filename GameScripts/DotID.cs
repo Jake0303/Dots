@@ -14,7 +14,7 @@ public class DotID : PunBehaviour {
     }
     void Update()
     {
-        transform.Rotate(new Vector3(0, 60*Time.deltaTime, 0));
+        GetComponentInChildren<Transform>().transform.Rotate(new Vector3(0, 60*Time.deltaTime, 0));
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {

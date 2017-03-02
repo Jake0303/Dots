@@ -15,6 +15,7 @@ public class NetworkManager : PunBehaviour
 
     void Start()
     {
+        PhotonHandler.BestRegionCodeInPreferences = CloudRegionCode.none;
         AutoConnect = true;
         ConnectInUpdate = false;
         newPlayer = null;

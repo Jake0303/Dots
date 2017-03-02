@@ -92,6 +92,8 @@ public class GameStart : PunBehaviour
             Screen.orientation = ScreenOrientation.LandscapeLeft;
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
         }
+        GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
+        GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
     }
 
     void AssignTurnsAndColors()

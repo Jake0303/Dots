@@ -186,8 +186,6 @@ public class UIManager : PunBehaviour
             photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, tempField.GetComponent<InputField>().text);
             PhotonNetwork.player.name = tempField.GetComponent<InputField>().text;
             GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().Hide(false);
-            GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
-            GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
         }
     }
@@ -338,7 +336,8 @@ public class UIManager : PunBehaviour
     {
         GLOBALS.ColorBlindAssist = val;
         var players = GameObject.FindGameObjectsWithTag("Player");
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        if (GameObject.Find("AudioManager") != null)
+            GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
 
         if (val)
         {
