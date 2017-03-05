@@ -47,47 +47,10 @@ public class PlayerID : PunBehaviour
                     }
                 }
             }
-            if (!fbInfoFound && PlayerPrefs.GetString("Username") == "")
+            //Facebook Info not found so player must be logging in as guest and using local account
+            if (!fbInfoFound)
             {
-                goPanel = (GameObject)Instantiate(panel);
-                goPanel.transform.localScale = new Vector3(0.6f, 2.5f, 1f);
-                goPanel.name = "EnterNamePanel";
-
-                GameObject goText = (GameObject)Instantiate(infoText);
-                goText.transform.localScale = new Vector3(4, 1, 1);
-                goText.GetComponent<Text>().fontSize = 18;
-
-                GameObject errorTxt = (GameObject)Instantiate(errorText);
-                errorTxt.transform.localScale = new Vector3(4, 1, 1);
-
-                Text tempText = goText.GetComponent<Text>();
-                tempText.transform.SetParent(goPanel.transform, false);
-
-                errorMsg = errorTxt.GetComponent<Text>();
-                errorMsg.transform.SetParent(goPanel.transform, false);
-                errorMsg.transform.position = new Vector3(errorMsg.transform.position.x, 70, errorMsg.transform.position.z);
-
-                GameObject goInputField = (GameObject)Instantiate(userinputField);
-                goInputField.transform.localScale = new Vector3(4, 1, 1);
-
-                GameObject goButton = (GameObject)Instantiate(prefabButton);
-                goButton.transform.localScale = new Vector3(3, 1, 1);
-
-                goPanel.transform.SetParent(GameObject.Find("Canvas").transform, false);
-
-                tempField = goInputField.GetComponent<InputField>();
-                tempField.transform.SetParent(goPanel.transform, false);
-                tempField.characterLimit = 12;
-                tempField.characterValidation = InputField.CharacterValidation.Alphanumeric;
-                tempField.ActivateInputField();
-
-                tempButton = goButton.GetComponent<Button>();
-                tempButton.transform.SetParent(goPanel.transform, false);
-                tempButton.onClick.AddListener(() => this.GetComponent<UIManager>().SetPlayerName(tempField, goPanel, errorMsg));
-                System.Guid myGUID = System.Guid.NewGuid();
-                PlayerPrefs.SetString("GuestID", myGUID.ToString());
-                guestToken = myGUID.ToString();
-            } else if (!fbInfoFound) {
+                guestToken = PlayerPrefs.GetString("GuestID");
                 Screen.orientation = ScreenOrientation.LandscapeLeft;
                 playersWins = PlayerPrefs.GetInt("Wins");
                 playerLosses = PlayerPrefs.GetInt("Losses");

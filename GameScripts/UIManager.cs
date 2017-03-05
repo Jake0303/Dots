@@ -157,39 +157,6 @@ public class UIManager : PunBehaviour
     }
 
 
-    //Set the playername over the server 
-    public void SetPlayerName(InputField tempField, GameObject panel, Text errorMsg)
-    {
-        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        bool aError = false;
-        //If there is an error display a error message
-        if (tempField.GetComponent<InputField>().text == "")
-        {
-            errorMsg.text = "Username cannot be blank";
-            aError = true;
-            return;
-        }
-        var names = GameObject.FindGameObjectsWithTag("NameText");
-        foreach (var name in names)
-        {
-            if (name.GetComponent<Text>().text == tempField.GetComponent<InputField>().text)
-            {
-                errorMsg.text = "That name is taken!";
-                aError = true;
-                return;
-            }
-        }
-        //If there is no error add the player name and update UI
-        if (photonView.isMine && !aError)
-        {
-            PlayerPrefs.SetString("Username", tempField.GetComponent<InputField>().text);
-            photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, tempField.GetComponent<InputField>().text);
-            PhotonNetwork.player.name = tempField.GetComponent<InputField>().text;
-            GameObject.Find("EnterNamePanel").GetComponent<DoozyUI.UIElement>().Hide(false);
-            GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
-        }
-    }
-
     public void closeEscapeMenu()
     {
         if (GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text != "Your opponent has left!")

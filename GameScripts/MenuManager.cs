@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using DoozyUI;
 
 public class MenuManager : MonoBehaviour
 {
@@ -175,6 +176,41 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
         GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Hide(false);
     }
+
+
+    public void PlayButtonClicked()
+    {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+        bool aError = false;
+        //If there is an error display a error message
+        if (GameObject.Find("EnterNameInputField").GetComponent<InputField>().text == "")
+        {
+            GameObject.Find("errorText").GetComponent<Text>().text = "Username cannot be blank";
+            aError = true;
+        }
+        var names = GameObject.FindGameObjectsWithTag("NameText");
+        foreach (var name in names)
+        {
+            if (name.GetComponent<Text>().text == GameObject.Find("EnterNameInputField").GetComponent<InputField>().text)
+            {
+                GameObject.Find("errorText").GetComponent<Text>().text = "That name is taken!";
+                aError = true;
+            }
+        }
+        if (!aError)
+        {
+            System.Guid myGUID = System.Guid.NewGuid();
+            PlayerPrefs.SetString("GuestID", myGUID.ToString());
+            PlayerPrefs.SetString("Username", GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+            //Hide and show menus
+            GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Hide(false);
+            GameObject.Find("ConnectingMenu").GetComponent<UIElement>().Show(false);
+            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().AutoConnect = true;
+            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().ConnectInUpdate = true;
+        }
+    }
+
+
     //Fade text animation for the connecting text
     IEnumerator FadeTextToFullAlpha(float t, Text i)
     {
