@@ -151,8 +151,6 @@ public class NetworkManager : PunBehaviour
         ConnectInUpdate = false;
         PhotonNetwork.Disconnect();
         //Make transition text fit the screen
-        GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Hide(true);
-        GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         GameObject.Find("transitionText").GetComponent<Text>().fontSize = 56;
         GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         GameObject.Find("ConnectingGif").transform.localScale = new Vector3(1, 1, 1);
