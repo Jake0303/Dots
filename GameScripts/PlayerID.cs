@@ -163,21 +163,6 @@ public class PlayerID : PunBehaviour
         {
             SetIdentity();
         }
-        //If the use presses enter set the player name and join the game
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if (tempButton != null && goPanel.activeSelf)
-            {
-                GameObject.Find("LetsPlayButton(Clone)").GetComponent<Button>().onClick.Invoke();
-            }
-        }
-        if (tempField != null && photonView.isMine)
-        {
-            if (tempField.isFocused)
-            {
-                errorMsg.text = "";
-            }
-        }
     }
 
 

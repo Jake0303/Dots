@@ -92,7 +92,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    private void UpdateMusicState(){}
+    private void UpdateMusicState() { }
 
     void Start()
     {
@@ -123,6 +123,20 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
     }
 
+
+    void Update()
+    {
+        //If the use presses enter set the player name and join the game
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.Invoke();
+        }
+    }
+
+    public void OnInputNameChanged(string name)
+    {
+        GameObject.Find("errorText").GetComponent<Text>().text = "";
+    }
 
     void MyOrientationChange(DeviceOrientation orientation)
     {

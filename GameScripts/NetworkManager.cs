@@ -6,6 +6,7 @@ using UnityEngine.Networking.NetworkSystem;
 using Photon;
 using UnityEngine.SceneManagement;
 using DoozyUI;
+using UnityEngine.EventSystems;
 
 public class NetworkManager : PunBehaviour
 {
@@ -37,7 +38,6 @@ public class NetworkManager : PunBehaviour
     //Join lobby
     public void JoinGame()
     {
-        
         if (GameObject.Find("BackToMenuButton"))
         {
             GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
@@ -46,8 +46,18 @@ public class NetworkManager : PunBehaviour
         }
         GameObject.Find("PlayAsGuestButton").GetComponent<UIButton>().useOnClickAnimations = true;
         GameObject.Find("PlayAsGuestButton").GetComponent<UIButton>().StartOnClickAnimations();
-        if (PlayerPrefs.GetString("Username") == "") GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Show(false);
-        else GameObject.Find("ConnectingMenu").GetComponent<UIElement>().Show(false);
+        if (PlayerPrefs.GetString("Username") == "")
+        {
+            GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Show(false);
+            GameObject.Find("EnterNameInputField").GetComponent<InputField>().Select();
+            GameObject.Find("EnterNameInputField").GetComponent<InputField>().ActivateInputField();
+        }
+        else
+        {
+            GameObject.Find("ConnectingMenu").GetComponent<UIElement>().Show(false);
+            AutoConnect = true;
+            ConnectInUpdate = true;
+        }
         GameObject.Find("LoginMenu").GetComponent<UIElement>().Hide(false);
     }
     public override void OnConnectedToMaster()
