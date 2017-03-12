@@ -150,11 +150,14 @@ public class NetworkManager : PunBehaviour
     {
         ConnectInUpdate = false;
         PhotonNetwork.Disconnect();
+    }
+
+    public void OnConnectingMenuAnimFinish()
+    {
         //Make transition text fit the screen
         GameObject.Find("transitionText").GetComponent<Text>().fontSize = 56;
         GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         GameObject.Find("ConnectingGif").transform.localScale = new Vector3(1, 1, 1);
-
     }
 
     //Spawn the player on the network
@@ -174,7 +177,7 @@ public class NetworkManager : PunBehaviour
         {
             GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left!";
             GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
-            GameObject.Find("Toggle").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
+            GameObject.Find("ColorBlindAssistCheckbox").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("FindAnotherMatchButton").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         }

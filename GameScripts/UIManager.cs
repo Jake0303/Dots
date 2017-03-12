@@ -14,7 +14,7 @@ public class UIManager : PunBehaviour
     void Start()
     {
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
-        GameObject.Find("Toggle").GetComponent<Toggle>().onValueChanged.AddListener(OnColorBlindCheckboxChanged);
+        GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().onValueChanged.AddListener(OnColorBlindCheckboxChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
         if ((Screen.orientation == ScreenOrientation.Portrait
             || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
@@ -80,21 +80,19 @@ public class UIManager : PunBehaviour
         var names = GameObject.FindGameObjectsWithTag("NameText");
         var players = GameObject.FindGameObjectsWithTag("Player");
         var panels = GameObject.FindGameObjectsWithTag("Panel");
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-        {
-            foreach (var aName in names)
-            {
-                if (aName.name.Contains((i + 1).ToString()))
-                {
-                    UpdateUI(aName.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
-                    break;
-                }
-            }
-        }
         foreach (var player in players)
         {
             for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
             {
+                Start:
+                foreach (var aName in names)
+                {
+                    if (aName.name.Contains((i + 1).ToString()))
+                    {
+                        UpdateUI(aName.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
+                        break;
+                    }
+                }
                 if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
                 {
                     foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
@@ -114,6 +112,19 @@ public class UIManager : PunBehaviour
                                 + player.GetComponent<PlayerID>().playerLosses + " L ";
                         }
                     }
+                    for (int j = 0; j < panels.Length; j++)
+                    {
+                        if (panels[j].name.Contains((i + 1).ToString())
+                            && panels[j].GetComponent<PlayerPanel>().owner == ""
+                            && player.GetComponent<PlayerID>().playersPanel == "")
+                        {
+                            panels[j].GetComponent<PlayerPanel>().owner = player.GetComponent<PlayerID>().playerID;
+                            player.GetComponent<PlayerID>().playersPanel = panels[j].name;
+                            player.GetComponent<PlayerID>().playerScore = 0;
+                            panels[j].transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+                            goto Start;
+                        }
+                    }
                 }
             }
         }
@@ -121,33 +132,6 @@ public class UIManager : PunBehaviour
         if (!GameObject.Find("GameManager").GetComponent<GameStart>().startGame
           && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
         {
-            //Set the panels for each player
-            for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-            {
-                Start:
-                foreach (var Apanel in panels)
-                {
-                    if (Apanel.name.Contains((i + 1).ToString()))
-                    {
-                        foreach (var player in players)
-                        {
-                            if (player.GetComponent<PlayerID>().playersPanel == "")
-                            {
-                                player.GetComponent<PlayerID>().playersPanel = Apanel.name;
-                                player.GetComponent<PlayerID>().playerScore = 0;
-                                Apanel.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-                                if (photonView.isMine)
-                                {
-                                    GetComponent<PlayerID>().playersPanel = Apanel.name;
-                                }
-                                i++;
-                                goto Start;
-                            }
-                        }
-
-                    }
-                }
-            }
             GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
             GameObject.Find("UI").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("EventPanel").transform.localPosition = new Vector3(-2500f, 0f, 0f);

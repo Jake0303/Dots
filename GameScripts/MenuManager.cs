@@ -96,6 +96,7 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
+        PlayerPrefs.DeleteAll(); 
         DoozyUI.UIManager.DisableBackButton();
         DeviceChange.OnOrientationChange += MyOrientationChange;
         GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
@@ -120,7 +121,7 @@ public class MenuManager : MonoBehaviour
         {
             GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 30;
         }
-        GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
+        GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
     }
 
 

@@ -74,7 +74,8 @@ public class TurnTimer : PunBehaviour
                     {
                         foreach (var timerText in timerTexts)
                         {
-                            if (timerText.name.Contains((i + 1).ToString()))
+                            if (timerText.name.Contains((i + 1).ToString())
+                                && player.GetComponent<PlayerID>().isPlayersTurn)
                             {
                                 //Update UI with the time left
                                 timerText.GetComponent<Text>().text = "Time left: " + Mathf.Round(timer);

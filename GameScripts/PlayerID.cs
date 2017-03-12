@@ -50,6 +50,7 @@ public class PlayerID : PunBehaviour
             //Facebook Info not found so player must be logging in as guest and using local account
             if (!fbInfoFound)
             {
+                playerID = PlayerPrefs.GetString("Username");
                 guestToken = PlayerPrefs.GetString("GuestID");
                 Screen.orientation = ScreenOrientation.LandscapeLeft;
                 playersWins = PlayerPrefs.GetInt("Wins");
@@ -59,7 +60,7 @@ public class PlayerID : PunBehaviour
                 PhotonNetwork.player.name = PlayerPrefs.GetString("Username");
                 GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
-                GameObject.Find("Toggle").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
+                GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
             }
         }
         myTransform = transform;
@@ -105,7 +106,6 @@ public class PlayerID : PunBehaviour
                 transform.name = playerID;
             }
             //Syncing players UI panel
-            stream.SendNext(playersPanel);
             stream.SendNext(playerScore);
             stream.SendNext(winner);
             stream.SendNext(playersWins);
@@ -116,7 +116,6 @@ public class PlayerID : PunBehaviour
             // Network player, receive data
             this.isPlayersTurn = (bool)stream.ReceiveNext();
             this.nameSet = (bool)stream.ReceiveNext();
-            this.playersPanel = (string)stream.ReceiveNext();
             this.playerScore = (int)stream.ReceiveNext();
             this.winner = (bool)stream.ReceiveNext();
             this.playersWins = (int)stream.ReceiveNext();

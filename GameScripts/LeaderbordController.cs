@@ -12,7 +12,7 @@ public class LeaderbordController : MonoBehaviour
     public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php";
     private float defaultScrollPos = 0.2f;
     private float howFarCanWeScroll; // default
-    private const float scrollBarVerticalOffset = 2.5f, scrollBarVerticalLimit = 4.5f,  mobileScrollBarVerticalLimit = 3.5f, mobileScrollBarVerticalOffset = 2f;
+    private const float scrollBarVerticalOffset = 2.5f, scrollBarVerticalLimit = 4.5f, mobileScrollBarVerticalLimit = 3f, mobileScrollBarVerticalOffset = 1.5f;
 
 
     void Start()

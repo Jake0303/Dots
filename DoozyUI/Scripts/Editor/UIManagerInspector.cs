@@ -118,7 +118,7 @@ public class UIManagerInspector : Editor
 
         DoozyUIHelper.SetZoneColor(DoozyUIHelper.DoozyColor.Doozy);
 
-        sp_autoDisableButtonClicks.boolValue = EditorGUILayout.ToggleLeft("Auto disable Button Clicks when an UIElement is in trasition", sp_autoDisableButtonClicks.boolValue);
+
 
         DoozyUIHelper.VerticalSpace(8);
 

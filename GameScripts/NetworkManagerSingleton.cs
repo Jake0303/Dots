@@ -43,6 +43,8 @@ public class NetworkManagerSingleton : MonoBehaviour
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnVolumeSliderChanged);
         GameObject.Find("SoundOFF").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOnSound()));
         GameObject.Find("SoundON").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOffSound()));
+        GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnColorBlindCheckboxChanged);
+
         if (GLOBALS.Volume > 0)
         {
             GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(false);
