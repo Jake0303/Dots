@@ -46,7 +46,21 @@ public class NetworkManager : PunBehaviour
         }
         GameObject.Find("PlayAsGuestButton").GetComponent<UIButton>().useOnClickAnimations = true;
         GameObject.Find("PlayAsGuestButton").GetComponent<UIButton>().StartOnClickAnimations();
-        if (PlayerPrefs.GetString("Username") == "")
+        bool fbInfoFound = false;
+        if (LeaderbordController.data.list != null)
+        {
+            foreach (var aData in LeaderbordController.data.list)
+            {
+                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
+                {
+                    if (aData["Username"].str != "")
+                        fbInfoFound = true;
+                    break;
+                }
+            }
+        }
+        if (PlayerPrefs.GetString("Username") == ""
+            && !fbInfoFound)
         {
             GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Show(false);
             GameObject.Find("EnterNameInputField").GetComponent<InputField>().Select();

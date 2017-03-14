@@ -32,7 +32,6 @@ public class PlayerID : PunBehaviour
     {
         PhotonNetwork.OnEventCall += this.OnEvent;
         fbInfoFound = false;
-        //Setup the enter username panel UI locally
         if (photonView.isMine)
         {
             if (LeaderbordController.data.list != null)
