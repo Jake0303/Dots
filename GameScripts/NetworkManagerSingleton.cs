@@ -44,6 +44,8 @@ public class NetworkManagerSingleton : MonoBehaviour
         GameObject.Find("SoundOFF").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOnSound()));
         GameObject.Find("SoundON").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().TurnOffSound()));
         GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnColorBlindCheckboxChanged);
+        if (GameObject.Find("FullscreenCheckbox") != null)
+            GameObject.Find("FullscreenCheckbox").GetComponent<Toggle>().onValueChanged.AddListener(GameObject.Find("MenuManager").GetComponent<MenuManager>().OnFullscreenCheckboxChanged);
 
         if (GLOBALS.Volume > 0)
         {

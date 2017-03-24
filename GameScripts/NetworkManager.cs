@@ -100,6 +100,24 @@ public class NetworkManager : PunBehaviour
         }
     }
 
+    public override void OnCustomAuthenticationFailed(string debugMessage)
+    {
+        base.OnCustomAuthenticationFailed(debugMessage);
+        string conn = "There is a Network Issue, please check your Internet connection.";
+        //Make transition text fit the screen
+        GameObject.Find("transitionText").GetComponent<Text>().fontSize = 35;
+        GameObject.Find("transitionText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
+        GameObject.Find("MenuManager").GetComponent<MenuManager>().DisplayLoadingText(conn);
+        if (GameObject.Find("BackToMenuButton"))
+        {
+            GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().enabled = true;
+            GameObject.Find("BackToMenuButton").GetComponent<Button>().onClick.AddListener(() => ShowMainMenu());
+            GameObject.Find("ConnectingGif").transform.localScale = new Vector3(0, 0, 0);
+        }
+    }
+
+
     public override void OnConnectionFail(DisconnectCause cause)
     {
         base.OnConnectionFail(cause);
@@ -163,6 +181,8 @@ public class NetworkManager : PunBehaviour
     public void ShowMainMenu()
     {
         ConnectInUpdate = false;
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LeaveLobby();
         PhotonNetwork.Disconnect();
     }
 

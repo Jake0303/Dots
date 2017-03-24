@@ -17,6 +17,7 @@ public class MenuManager : MonoBehaviour
     #region Private Variables
     private WaitForSeconds checkMusicInterval = new WaitForSeconds(0.5f); //listener update time
     private int randomIconIndex = 0;
+    private float tempVolume = GLOBALS.Volume;
     #endregion
 
 
@@ -96,7 +97,6 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        PlayerPrefs.DeleteAll(); 
         DoozyUI.UIManager.DisableBackButton();
         DeviceChange.OnOrientationChange += MyOrientationChange;
         GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
@@ -116,10 +116,12 @@ public class MenuManager : MonoBehaviour
             && (SceneManager.GetActiveScene().buildIndex == 0))
         {
             GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 55;
+            GameObject.Find("FullscreenCheckbox").transform.localScale = new Vector3(0, 0, 0);
         }
         else if (SceneManager.GetActiveScene().buildIndex == 0)
         {
             GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 30;
+            GameObject.Find("FullscreenCheckbox").transform.localScale = new Vector3(0, 0, 0);
         }
         GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
     }
@@ -179,7 +181,7 @@ public class MenuManager : MonoBehaviour
 
     public void TurnOnSound()
     {
-        OnVolumeSliderChanged(25);
+        OnVolumeSliderChanged(tempVolume);
         GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
         GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Hide(true);
         GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Show(false);
@@ -187,6 +189,8 @@ public class MenuManager : MonoBehaviour
 
     public void TurnOffSound()
     {
+        if (GLOBALS.Volume!= 0)
+            tempVolume = GLOBALS.Volume;
         OnVolumeSliderChanged(0);
         GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
         GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Hide(false);
@@ -200,16 +204,18 @@ public class MenuManager : MonoBehaviour
         //If there is an error display a error message
         if (GameObject.Find("EnterNameInputField").GetComponent<InputField>().text == "")
         {
-            GameObject.Find("errorText").GetComponent<Text>().text = "Username cannot be blank";
+            GameObject.Find("errorText").GetComponent<Text>().text = "Username cannot be blank!";
             aError = true;
         }
-        var names = GameObject.FindGameObjectsWithTag("NameText");
-        foreach (var name in names)
+        if (LeaderbordController.data.list != null)
         {
-            if (name.GetComponent<Text>().text == GameObject.Find("EnterNameInputField").GetComponent<InputField>().text)
+            foreach (var aData in LeaderbordController.data.list)
             {
-                GameObject.Find("errorText").GetComponent<Text>().text = "That name is taken!";
-                aError = true;
+                if (aData["Username"].str == GameObject.Find("EnterNameInputField").GetComponent<InputField>().text)
+                {
+                    GameObject.Find("errorText").GetComponent<Text>().text = "That username is already taken!";
+                    aError = true;
+                }
             }
         }
         if (!aError)
@@ -255,6 +261,13 @@ public class MenuManager : MonoBehaviour
     public void OnColorBlindCheckboxChanged(bool val)
     {
         GLOBALS.ColorBlindAssist = val;
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+    }
+
+    //OnColorBlindAssistCheckbox Changed
+    public void OnFullscreenCheckboxChanged(bool val)
+    {
+        Screen.fullScreen = !Screen.fullScreen;
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
 

@@ -56,7 +56,7 @@ public class UIManager : PunBehaviour
         }
         DoozyUI.UIManager.EnableBackButton();
     }
-
+    //TODO: Insert player in Leaderboard to avoid duplicate player names
     //Add the player to the player list and update their name
     [PunRPC]
     public void CmdAddPlayer(string val)
@@ -66,13 +66,16 @@ public class UIManager : PunBehaviour
         name = val;
         GetComponent<PlayerID>().playerID = val;
         //Get Player Wins & Losses
-        foreach (var aData in LeaderbordController.data.list)
+        if (LeaderbordController.data != null)
         {
-            if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken
-                && aData["Username"].str == GetComponent<PlayerID>().playerID)
+            foreach (var aData in LeaderbordController.data.list)
             {
-                GetComponent<PlayerID>().playersWins = Int32.Parse(aData["Wins"].str);
-                GetComponent<PlayerID>().playerLosses = Int32.Parse(aData["Losses"].str);
+                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken
+                    && aData["Username"].str == GetComponent<PlayerID>().playerID)
+                {
+                    GetComponent<PlayerID>().playersWins = Int32.Parse(aData["Wins"].str);
+                    GetComponent<PlayerID>().playerLosses = Int32.Parse(aData["Losses"].str);
+                }
             }
         }
         GetComponent<PlayerID>().playerScore = 0;

@@ -78,8 +78,11 @@ public class FacebookManager : MonoBehaviour
         else
         {
             Init();
-            FB.ActivateApp();
-            FBGetPerms();
+            if (FB.IsInitialized)
+            {
+                FB.ActivateApp();
+                FBGetPerms();
+            }
         }
     }
     void FBGetPerms()

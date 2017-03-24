@@ -10,8 +10,8 @@ public class BackgroundManager : MonoBehaviour
     public GameObject square;
     Color fade;
     int colorIndex = 0;
-    private float glowRate = 1.2f;
-    private float decreaseGlowRate = 1.1f;
+    private float glowRate = 0.7f;
+    private float decreaseGlowRate = 0.8f;
 
     public IEnumerator ShowSquare()
     {
@@ -25,7 +25,7 @@ public class BackgroundManager : MonoBehaviour
             }
             else
             {
-                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 50), Random.Range(-13, -11), Random.Range(-25, 50)), square.transform.rotation) as GameObject;
+                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 50), Random.Range(-13, -13), Random.Range(-25, 50)), square.transform.rotation) as GameObject;
             }
             newSquare.layer = 5;//UI layer
             newSquare.GetComponentInChildren<Renderer>().enabled = true;
@@ -54,16 +54,6 @@ public class BackgroundManager : MonoBehaviour
     }
     void Start()
     {
-        if (SceneManager.GetActiveScene().buildIndex == 1)
-        {
-            glowRate = 2f;
-            decreaseGlowRate = 1f;
-        }
-        else
-        {
-            glowRate = 1.2f;
-            decreaseGlowRate = 1.1f;
-        }
         colorIndex = 0;
         StartCoroutine(ShowSquare());
         SceneManager.sceneLoaded += SceneLoaded;

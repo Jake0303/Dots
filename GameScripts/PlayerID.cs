@@ -42,6 +42,7 @@ public class PlayerID : PunBehaviour
                     {
                         fbInfoFound = true;
                         this.GetComponent<UIManager>().fbAuthenticated(aData["Username"].str);
+                        StartCoroutine(LeaderbordController.PostScores(this.playerID, playersWins, playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
                         break;
                     }
                 }
@@ -60,6 +61,7 @@ public class PlayerID : PunBehaviour
                 GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
+                StartCoroutine(LeaderbordController.PostScores(guestToken, playerID, playersWins, playerLosses));
             }
         }
         myTransform = transform;
