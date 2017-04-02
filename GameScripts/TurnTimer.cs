@@ -62,7 +62,7 @@ public class TurnTimer : PunBehaviour
                 {
                     timer -= Time.deltaTime;
                     if (timer < 18)
-                        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
+                      GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
                 }
                 else
                 {

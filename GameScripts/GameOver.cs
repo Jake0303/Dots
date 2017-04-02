@@ -212,7 +212,7 @@ public class GameOver : PunBehaviour
                         if (scores.name.Contains((i + 1).ToString()))
                         {
                             //Update UI with score
-                            scores.GetComponent<Text>().text = player.GetComponent<PlayerID>().playerScore.ToString();
+                            scores.GetComponent<Text>().text = "Score: " + player.GetComponent<PlayerID>().playerScore.ToString();
                         }
                     }
                     foreach (var timerText in timerTexts)
@@ -223,6 +223,8 @@ public class GameOver : PunBehaviour
             }
 
         }
+        ParticleSystem.MainModule settings = GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().main;
+        settings.startColor = new ParticleSystem.MinMaxGradient(Color.blue);
         gameObject.GetComponent<TurnTimer>().timer = GLOBALS.MAXTURNTIME;
         gameObject.GetComponent<TurnTimer>().enabled = false;
         StopAllCoroutines();

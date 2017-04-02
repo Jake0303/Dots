@@ -38,6 +38,8 @@ public class GameStart : PunBehaviour
     {
         photonView = this.GetComponent<PhotonView>();
         tapGif = GameObject.Find("TapGif");
+        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(true);
+
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)

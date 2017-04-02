@@ -231,6 +231,9 @@ public class PlayerClick : PunBehaviour
                 if (photonView.isMine)
                 {
                     GameObject.Find("EventText").GetComponent<Text>().text = "Congrats, You won the game!";
+
+                    ParticleSystem.MainModule settings = GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().main;
+                    settings.startColor = new ParticleSystem.MinMaxGradient(Random.ColorHSV(), Random.ColorHSV());
                 }
                 else
                 {
@@ -255,11 +258,34 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdPlaceLine(string obj, string col)
     {
+        Color lineColor = ColorExtensions.ParseColor(col);
         GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
-        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
-        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
-        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", ColorExtensions.ParseColor(col));
+        if (GLOBALS.ColorBlindAssist)
+        {
+            if (lineColor == GLOBALS.DarkGreen)
+            {
+                lineColor = GLOBALS.DarkBlue;
+            }
+            if (lineColor == GLOBALS.DarkRed)
+            {
+                lineColor = GLOBALS.DarkYellow;
+            }
+        }
+        else
+        {
+            if (lineColor == GLOBALS.DarkBlue)
+            {
+                lineColor = GLOBALS.DarkGreen;
+            }
+            if (lineColor == GLOBALS.DarkYellow)
+            {
+                lineColor = GLOBALS.DarkRed;
+            }
+        }
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", lineColor);
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", lineColor);
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", lineColor);
         GameObject.Find(obj).GetComponent<LinePlaced>().linePlaced = true;
         GameObject.Find(obj).GetComponents<AudioSource>()[0].volume = (GLOBALS.Volume / 175);
         GameObject.Find(obj).GetComponents<AudioSource>()[0].Play();
@@ -310,7 +336,7 @@ public class PlayerClick : PunBehaviour
                     if (scoreTxt.name.Contains((i + 1).ToString()))
                     {
                         //Update UI with score
-                        scoreTxt.GetComponent<Text>().text = score.ToString();
+                        scoreTxt.GetComponent<Text>().text = "Score: " + score.ToString();
                         return;
                     }
                 }
@@ -538,7 +564,7 @@ public class PlayerClick : PunBehaviour
             //Raycast from the mouse to the level, if hit place a line
             if (Physics.Raycast(ray, out hit))
             {
-                if (GLOBALS.NUMOFPLAYERSTOSTARTGAME <= 1 
+                if (GLOBALS.NUMOFPLAYERSTOSTARTGAME <= 1
                     || (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == false
                     && !playingAnim

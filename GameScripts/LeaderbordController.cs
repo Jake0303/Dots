@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 public class LeaderbordController : MonoBehaviour
 {
@@ -19,7 +21,7 @@ public class LeaderbordController : MonoBehaviour
     {
         StartCoroutine(GetScores());
     }
-
+    /*
     public static string Md5Sum(string strToEncrypt)
     {
         System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
@@ -38,14 +40,14 @@ public class LeaderbordController : MonoBehaviour
         }
 
         return hashString.PadLeft(32, '0');
-    }
+    }*/
 
     // remember to use StartCoroutine when calling this function!
     public static IEnumerator PostScores(string name, int wins, int losses, string fbID)
     {
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
-        string hash = Md5Sum(name + wins.ToString() + losses.ToString() + secretKey);
+        string hash = sha256(name + wins.ToString() + losses.ToString() + secretKey);
         string post_url = addScoreURL + "Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&fbID=" + fbID + "&hash=" + hash;
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);
@@ -59,13 +61,25 @@ public class LeaderbordController : MonoBehaviour
 
     }
 
+    static string sha256(string password)
+    {
+        System.Security.Cryptography.SHA256Managed crypt = new System.Security.Cryptography.SHA256Managed();
+        System.Text.StringBuilder hash = new System.Text.StringBuilder();
+        byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(password), 0, Encoding.UTF8.GetByteCount(password));
+        foreach (byte theByte in crypto)
+        {
+            hash.Append(theByte.ToString("x2"));
+        }
+        return hash.ToString();
+    }
+
 
     // remember to use StartCoroutine when calling this function!
     public static IEnumerator PostScores(string guestID, string name, int wins, int losses)
     {
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
-        string hash = Md5Sum(name + wins.ToString() + losses.ToString() + secretKey);
+        string hash = sha256(name + wins.ToString() + losses.ToString() + secretKey);
         string post_url = addScoreURL + "GuestID=" + guestID + "&Username=" + WWW.EscapeURL(name) + "&Wins=" + wins + "&Losses=" + losses + "&hash=" + hash;
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);

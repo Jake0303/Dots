@@ -10,11 +10,15 @@ public class UIManager : PunBehaviour
 {
     private GameObject EscapeMenu;
     public Coroutine routine;
+    private GameObject[] panels, players, names;
     // On Start show the Waiting for Player text
     void Start()
     {
+        players = GameObject.FindGameObjectsWithTag("Player");
+        names = GameObject.FindGameObjectsWithTag("NameText");
+        panels = GameObject.FindGameObjectsWithTag("Panel");
+
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
-        GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().onValueChanged.AddListener(OnColorBlindCheckboxChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
         if ((Screen.orientation == ScreenOrientation.Portrait
             || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
@@ -32,8 +36,9 @@ public class UIManager : PunBehaviour
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        var names = GameObject.FindGameObjectsWithTag("NameText");
+        players = GameObject.FindGameObjectsWithTag("Player");
+        names = GameObject.FindGameObjectsWithTag("NameText");
+        panels = GameObject.FindGameObjectsWithTag("Panel");
         for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
         {
             foreach (var name in names)
@@ -56,11 +61,11 @@ public class UIManager : PunBehaviour
         }
         DoozyUI.UIManager.EnableBackButton();
     }
-    //TODO: Insert player in Leaderboard to avoid duplicate player names
     //Add the player to the player list and update their name
     [PunRPC]
     public void CmdAddPlayer(string val)
     {
+        GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().Stop();
         GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
         GetComponent<PlayerID>().nameSet = true;
         name = val;
@@ -80,52 +85,55 @@ public class UIManager : PunBehaviour
         }
         GetComponent<PlayerID>().playerScore = 0;
         GetComponent<PlayerID>().CmdTellServerMyName(val);
-        var names = GameObject.FindGameObjectsWithTag("NameText");
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        var panels = GameObject.FindGameObjectsWithTag("Panel");
+        players = GameObject.FindGameObjectsWithTag("Player");
+        names = GameObject.FindGameObjectsWithTag("NameText");
+        panels = GameObject.FindGameObjectsWithTag("Panel");
         foreach (var player in players)
         {
             for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
             {
-                Start:
-                foreach (var aName in names)
+                if (player.name == GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i])
                 {
-                    if (aName.name.Contains((i + 1).ToString()))
+                    Start:
+                    foreach (var aName in names)
                     {
-                        UpdateUI(aName.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
-                        break;
-                    }
-                }
-                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
-                {
-                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
-                    {
-                        if (scores.name.Contains((i + 1).ToString()))
+                        if (aName.name.Contains((i + 1).ToString()))
                         {
-                            //Update UI with score
-                            scores.GetComponent<Text>().text = player.GetComponent<PlayerID>().playerScore.ToString();
+                            UpdateUI(aName.GetComponent<Text>(), GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i], gameObject);
+                            break;
                         }
                     }
-                    foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+                    if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
                     {
-                        if (stats.name.Contains((i + 1).ToString()))
+                        foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
                         {
-                            //Update UI with Wins and Losses
-                            stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
-                                + player.GetComponent<PlayerID>().playerLosses + " L ";
+                            if (scores.name.Contains((i + 1).ToString()))
+                            {
+                                //Update UI with score
+                                scores.GetComponent<Text>().text = "Score: " + player.GetComponent<PlayerID>().playerScore.ToString();
+                            }
                         }
-                    }
-                    for (int j = 0; j < panels.Length; j++)
-                    {
-                        if (panels[j].name.Contains((i + 1).ToString())
-                            && panels[j].GetComponent<PlayerPanel>().owner == ""
-                            && player.GetComponent<PlayerID>().playersPanel == "")
+                        foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
                         {
-                            panels[j].GetComponent<PlayerPanel>().owner = player.GetComponent<PlayerID>().playerID;
-                            player.GetComponent<PlayerID>().playersPanel = panels[j].name;
-                            player.GetComponent<PlayerID>().playerScore = 0;
-                            panels[j].transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
-                            goto Start;
+                            if (stats.name.Contains((i + 1).ToString()))
+                            {
+                                //Update UI with Wins and Losses
+                                stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
+                                    + player.GetComponent<PlayerID>().playerLosses + " L ";
+                            }
+                        }
+                        for (int j = 0; j < panels.Length; j++)
+                        {
+                            if (panels[j].name.Contains((i + 1).ToString())
+                                && panels[j].GetComponent<PlayerPanel>().owner == ""
+                                && player.GetComponent<PlayerID>().playersPanel == "")
+                            {
+                                panels[j].GetComponent<PlayerPanel>().owner = player.GetComponent<PlayerID>().playerID;
+                                player.GetComponent<PlayerID>().playersPanel = panels[j].name;
+                                player.GetComponent<PlayerID>().playerScore = 0;
+                                panels[j].GetComponent<DoozyUI.UIElement>().Show(false);
+                                goto Start;
+                            }
                         }
                     }
                 }
@@ -271,6 +279,10 @@ public class UIManager : PunBehaviour
     //Display popup box for the player
     public void DisplayPopupBox(string text)
     {
+        GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().Emit(128);
+        GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().Simulate(1.0f);
+        GameObject.Find("EventPanelEffect").GetComponent<DoozyUI.UIEffect>().playOnAwake = true;
+        GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().Play();
         if (photonView.isMine)
         {
             GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().moveOut.delay = 1.5f;
@@ -288,6 +300,7 @@ public class UIManager : PunBehaviour
     //OnColorBlindAssistCheckbox Changed
     public void OnColorBlindCheckboxChanged(bool val)
     {
+        panels = GameObject.FindGameObjectsWithTag("Panel");
         GLOBALS.ColorBlindAssist = val;
         var players = GameObject.FindGameObjectsWithTag("Player");
         if (GameObject.Find("AudioManager") != null)
@@ -295,23 +308,23 @@ public class UIManager : PunBehaviour
 
         if (val)
         {
-            GetComponent<PlayerColor>().colors[1] = Color.blue;
-            GetComponent<PlayerColor>().colors[2] = Color.yellow;
+            GetComponent<PlayerColor>().colors[1] = GLOBALS.DarkBlue;
+            GetComponent<PlayerColor>().colors[2] = GLOBALS.DarkYellow;
             foreach (var square in GameObject.FindGameObjectsWithTag("CenterSquare"))
             {
                 if (square.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
                 {
-                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.green)
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkGreen)
                     {
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.blue);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.blue);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.blue);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkBlue);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkBlue);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkBlue);
                     }
-                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.red)
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkRed)
                     {
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.yellow);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.yellow);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.yellow);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkYellow);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkYellow);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkYellow);
                     }
                 }
             }
@@ -319,51 +332,62 @@ public class UIManager : PunBehaviour
             {
                 if (line.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
                 {
-                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.green)
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkGreen)
                     {
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.blue);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.blue);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.blue);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkBlue);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkBlue);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkBlue);
                     }
-                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.red)
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkRed)
                     {
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.yellow);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.yellow);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.yellow);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkYellow);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkYellow);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkYellow);
                     }
                 }
             }
             foreach (var player in players)
             {
-                if (player.GetComponent<PlayerColor>().playerColor == Color.green)
+                if (player.GetComponent<PlayerColor>().playerColor == GLOBALS.DarkGreen)
                 {
-                    player.GetComponent<PlayerColor>().playerColor = Color.blue;
+                    player.GetComponent<PlayerColor>().playerColor = GLOBALS.DarkBlue;
                 }
-                if (player.GetComponent<PlayerColor>().playerColor == Color.red)
+                if (player.GetComponent<PlayerColor>().playerColor == GLOBALS.DarkRed)
                 {
-                    player.GetComponent<PlayerColor>().playerColor = Color.yellow;
+                    player.GetComponent<PlayerColor>().playerColor = GLOBALS.DarkYellow;
+                }
+            }
+            foreach(GameObject panel in panels)
+            {
+                if (panel.GetComponent<Image>().color == GLOBALS.DarkGreen)
+                {
+                    panel.GetComponent<Image>().color = GLOBALS.DarkBlue;
+                }
+                if (panel.GetComponent<Image>().color == GLOBALS.DarkRed)
+                {
+                    panel.GetComponent<Image>().color = GLOBALS.DarkYellow;
                 }
             }
         }
         else
         {
             GetComponent<PlayerColor>().colors[1] = Color.green;
-            GetComponent<PlayerColor>().colors[2] = Color.red;
+            GetComponent<PlayerColor>().colors[2] = GLOBALS.DarkRed;
             foreach (var square in GameObject.FindGameObjectsWithTag("CenterSquare"))
             {
                 if (square.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
                 {
-                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.blue)
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkBlue)
                     {
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.green);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.green);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.green);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkGreen);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkGreen);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkGreen);
                     }
-                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.yellow)
+                    if (square.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkYellow)
                     {
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.red);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.red);
-                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.red);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkRed);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkRed);
+                        square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkRed);
                     }
                 }
             }
@@ -371,29 +395,40 @@ public class UIManager : PunBehaviour
             {
                 if (line.GetComponentInChildren<Renderer>().material.HasProperty("_MKGlowColor"))
                 {
-                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.blue)
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkBlue)
                     {
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.green);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.green);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.green);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkGreen);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkGreen);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkGreen);
                     }
-                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == Color.yellow)
+                    if (line.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowColor") == GLOBALS.DarkYellow)
                     {
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", Color.red);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", Color.red);
-                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", Color.red);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GLOBALS.DarkRed);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GLOBALS.DarkRed);
+                        line.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GLOBALS.DarkRed);
                     }
                 }
             }
             foreach (var player in players)
             {
-                if (player.GetComponent<PlayerColor>().playerColor == Color.blue)
+                if (player.GetComponent<PlayerColor>().playerColor == GLOBALS.DarkBlue)
                 {
-                    player.GetComponent<PlayerColor>().playerColor = Color.green;
+                    player.GetComponent<PlayerColor>().playerColor = GLOBALS.DarkGreen;
                 }
-                if (player.GetComponent<PlayerColor>().playerColor == Color.yellow)
+                if (player.GetComponent<PlayerColor>().playerColor == GLOBALS.DarkYellow)
                 {
-                    player.GetComponent<PlayerColor>().playerColor = Color.red;
+                    player.GetComponent<PlayerColor>().playerColor = GLOBALS.DarkRed;
+                }
+            }
+            foreach (GameObject panel in panels)
+            {
+                if (panel.GetComponent<Image>().color == GLOBALS.DarkBlue)
+                {
+                    panel.GetComponent<Image>().color = GLOBALS.DarkGreen;
+                }
+                if (panel.GetComponent<Image>().color == GLOBALS.DarkYellow)
+                {
+                    panel.GetComponent<Image>().color = GLOBALS.DarkRed;
                 }
             }
         }

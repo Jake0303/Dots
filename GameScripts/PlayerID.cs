@@ -142,7 +142,7 @@ public class PlayerID : PunBehaviour
                     if (scores.name.Contains((i + 1).ToString()))
                     {
                         //Update UI with score
-                        scores.GetComponent<Text>().text = score.ToString();
+                        scores.GetComponent<Text>().text = "Score: " + score.ToString();
                         return;
                     }
                 }
