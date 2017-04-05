@@ -11,7 +11,7 @@ public class LeaderbordController : MonoBehaviour
     public static JSONObject data = new JSONObject();
     private static string secretKey = "89oN04ydon854CBm9XTG4Tt6YcAKEAqA"; // Edit this value and make sure it's the same as the one stored on the server
     public static string addScoreURL = "https://squarz.io/Scripts/AddToLeaderboard.php?"; //be sure to add a ? to your url
-    public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php";
+    public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php?";
     private float defaultScrollPos = 0.2f;
     private float howFarCanWeScroll; // default
     private const float scrollBarVerticalOffset = 2.5f, scrollBarVerticalLimit = 4.5f, mobileScrollBarVerticalLimit = 3f, mobileScrollBarVerticalOffset = 1.5f;
@@ -101,9 +101,10 @@ public class LeaderbordController : MonoBehaviour
         {
             gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         }
-        //gameObject.GetComponent<Text>().text = "Loading Scores...";
-        //GameObject.Find("LeaderboardPanel).transform.position = new Vector3(-250, howFarCanWeScroll, 1);
-        WWW hs_get = new WWW(highscoreURL);
+        string hash = sha256(secretKey);
+        string post_url = highscoreURL + "?hash=" + hash;
+        Debug.Log(post_url);
+        WWW hs_get = new WWW(post_url);
         yield return hs_get;
 
         if (hs_get.error != null)
