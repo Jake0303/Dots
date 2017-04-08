@@ -103,7 +103,6 @@ public class LeaderbordController : MonoBehaviour
         }
         string hash = sha256(secretKey);
         string post_url = highscoreURL + "?hash=" + hash;
-        Debug.Log(post_url);
         WWW hs_get = new WWW(post_url);
         yield return hs_get;
 

@@ -281,6 +281,11 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+    public void OnNickNameMenuAnimFinish()
+    {
+        GameObject.Find("Overlay").GetComponent<DoozyUI.UIElement>().Hide(false);
+    }
+
     //Quit the game
     public void ExitGame()
     {

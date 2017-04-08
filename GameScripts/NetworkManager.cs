@@ -17,6 +17,7 @@ public class NetworkManager : PunBehaviour
 
     void Start()
     {
+        PlayerPrefs.DeleteAll();
         PhotonHandler.BestRegionCodeInPreferences = CloudRegionCode.none;
         AutoConnect = true;
         ConnectInUpdate = false;
@@ -65,6 +66,7 @@ public class NetworkManager : PunBehaviour
             GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Show(false);
             GameObject.Find("EnterNameInputField").GetComponent<InputField>().Select();
             GameObject.Find("EnterNameInputField").GetComponent<InputField>().ActivateInputField();
+            GameObject.Find("Overlay").GetComponent<UIElement>().Show(false);
         }
         else
         {

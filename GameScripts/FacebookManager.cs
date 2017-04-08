@@ -88,8 +88,11 @@ public class FacebookManager : MonoBehaviour
     void FBGetPerms()
     {
         List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
-        //Application.ExternalCall("loginWithFB");
-        FB.LogInWithReadPermissions(perms, FBAuthCallback);
+        //TODO: Not working, Javascript function is not being called.
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+            Application.ExternalEval("loginWithFB()");
+        else
+            FB.LogInWithReadPermissions(perms, FBAuthCallback);
     }
 
     private void FBOnHideUnity(bool isGameShown)
