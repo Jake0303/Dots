@@ -102,6 +102,7 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
         mainCamera = GameObject.Find("Main Camera");
         backButton = GameObject.Find("BackToMenuButton");
+
         // Initialize volume slider
         if (GameObject.Find("VolumeSlider") != null)
             GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
@@ -139,6 +140,12 @@ public class MenuManager : MonoBehaviour
     public void OnInputNameChanged(string name)
     {
         GameObject.Find("errorText").GetComponent<Text>().text = "";
+    }
+
+    public void OnInputNameEditEnd(string name)
+    {
+        GameObject.Find("errorText").GetComponent<Text>().text = "";
+        GameObject.Find("EnterNickMenu").transform.localPosition = new Vector3(0, 0f, 0);
     }
 
     void MyOrientationChange(DeviceOrientation orientation)
@@ -189,7 +196,7 @@ public class MenuManager : MonoBehaviour
 
     public void TurnOffSound()
     {
-        if (GLOBALS.Volume!= 0)
+        if (GLOBALS.Volume != 0)
             tempVolume = GLOBALS.Volume;
         OnVolumeSliderChanged(0);
         GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
@@ -283,7 +290,7 @@ public class MenuManager : MonoBehaviour
 
     public void OnNickNameMenuAnimFinish()
     {
-        GameObject.Find("Overlay").GetComponent<DoozyUI.UIElement>().Hide(false);
+        GameObject.Find("NotificationMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
     }
 
     //Quit the game

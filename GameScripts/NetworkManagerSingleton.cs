@@ -31,7 +31,14 @@ public class NetworkManagerSingleton : MonoBehaviour
         Screen.orientation = ScreenOrientation.AutoRotation;
         GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
         GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+        //Remove all ;isteneres prevents duplicate event calls
+        GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.RemoveAllListeners();
+        GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+        GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().PlayButtonClicked()));
+
+        GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.RemoveAllListeners();
         GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<FacebookManager>().FBButtonClick()));
+
         GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
         GameObject.Find("LeaderboardsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
         GameObject.Find("LBackToMenuButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
@@ -61,7 +68,7 @@ public class NetworkManagerSingleton : MonoBehaviour
         {
             GameObject.Find("MainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
             GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
-            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame();
+            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame(false);
         }
         Button[] buttons = GameObject.Find("UI").GetComponentsInChildren<Button>();
 
@@ -69,7 +76,7 @@ public class NetworkManagerSingleton : MonoBehaviour
         {
             if (but.gameObject.name == "PlayAsGuestButton")
             {
-                but.onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame());
+                but.onClick.AddListener(() => GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame(false));
             }
         }
     }

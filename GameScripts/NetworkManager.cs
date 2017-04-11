@@ -37,7 +37,7 @@ public class NetworkManager : PunBehaviour
         }
     }
     //Join lobby
-    public void JoinGame()
+    public void JoinGame(bool fbButtonClicked)
     {
         if (GameObject.Find("BackToMenuButton"))
         {
@@ -64,9 +64,13 @@ public class NetworkManager : PunBehaviour
             && !fbInfoFound)
         {
             GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Show(false);
-            GameObject.Find("EnterNameInputField").GetComponent<InputField>().Select();
-            GameObject.Find("EnterNameInputField").GetComponent<InputField>().ActivateInputField();
-            GameObject.Find("Overlay").GetComponent<UIElement>().Show(false);
+            if (Application.isMobilePlatform
+                && Screen.orientation == ScreenOrientation.Portrait)
+            {
+                GameObject.Find("Notification").transform.localPosition = new Vector3(0, -550f, 0);
+            }
+            if (!fbButtonClicked)
+                GameObject.Find("NotificationMenu").GetComponent<UIElement>().Show(false);
         }
         else
         {

@@ -71,6 +71,7 @@ public class FacebookManager : MonoBehaviour
     }
     public void FBButtonClick()
     {
+
         if (_instance == null)
         {
             instance.Init();
@@ -87,12 +88,9 @@ public class FacebookManager : MonoBehaviour
     }
     void FBGetPerms()
     {
+        //TODO: Try ExternalEval with <a href> to bypass popup blocker
         List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
-        //TODO: Not working, Javascript function is not being called.
-        if (Application.platform == RuntimePlatform.WebGLPlayer)
-            Application.ExternalEval("loginWithFB()");
-        else
-            FB.LogInWithReadPermissions(perms, FBAuthCallback);
+        FB.LogInWithReadPermissions(perms, FBAuthCallback);
     }
 
     private void FBOnHideUnity(bool isGameShown)
@@ -113,7 +111,7 @@ public class FacebookManager : MonoBehaviour
         {
             accessToken = AccessToken.CurrentAccessToken.UserId;
             GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
-            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame();
+            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame(true);
             FBUpdateLoginStatus(FB.IsLoggedIn);
         }
     }
