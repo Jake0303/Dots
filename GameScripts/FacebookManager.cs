@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using Facebook.Unity;
 using System.Collections.Generic;
-using System;
 
 public class FacebookManager : MonoBehaviour
 {
@@ -27,16 +26,21 @@ public class FacebookManager : MonoBehaviour
         }
     }
 
+
     void Start()
     {
         // Initialized the singleton if no other component has accessed the singleton yet
-
+        if (_instance == null)
+        {
+            instance.Init();
+        }
     }
 
     void Init()
     {
         FB.Init(FBInit, FBOnHideUnity);
     }
+
 
     void FBInit()
     {
@@ -46,6 +50,11 @@ public class FacebookManager : MonoBehaviour
     public void FBLogin()
     {
         FBUpdateLoginStatus(FB.IsLoggedIn);
+        if (FB.IsLoggedIn)
+        {
+            return;
+        }
+
         if (!FB.IsInitialized)
         {
             FB.Init(FBInitCallback, FBOnHideUnity);
@@ -53,8 +62,8 @@ public class FacebookManager : MonoBehaviour
         else
         {
             FB.ActivateApp();
-            FBGetPerms();
         }
+
     }
 
     private void FBInitCallback()
@@ -62,7 +71,6 @@ public class FacebookManager : MonoBehaviour
         if (FB.IsInitialized)
         {
             FB.ActivateApp();
-            FBGetPerms();
         }
         else
         {
@@ -71,24 +79,15 @@ public class FacebookManager : MonoBehaviour
     }
     public void FBButtonClick()
     {
-
-        if (_instance == null)
+        if (FB.IsInitialized)
         {
-            instance.Init();
-        }
-        else
-        {
-            Init();
-            if (FB.IsInitialized)
-            {
-                FB.ActivateApp();
-                FBGetPerms();
-            }
+            FB.ActivateApp();
+            FBGetPerms();
         }
     }
+
     void FBGetPerms()
     {
-        //TODO: Try ExternalEval with <a href> to bypass popup blocker
         List<string> perms = new List<string>() { "public_profile", "email", "user_friends" };
         FB.LogInWithReadPermissions(perms, FBAuthCallback);
     }
