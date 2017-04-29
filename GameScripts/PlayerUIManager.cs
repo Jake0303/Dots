@@ -6,7 +6,7 @@ using Photon;
 using UnityEngine.SceneManagement;
 using System;
 
-public class UIManager : PunBehaviour
+public class PlayerUIManager : PunBehaviour
 {
     private GameObject EscapeMenu;
     public Coroutine routine;
@@ -70,19 +70,6 @@ public class UIManager : PunBehaviour
         GetComponent<PlayerID>().nameSet = true;
         name = val;
         GetComponent<PlayerID>().playerID = val;
-        //Get Player Wins & Losses
-        if (LeaderbordController.data != null)
-        {
-            foreach (var aData in LeaderbordController.data.list)
-            {
-                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken
-                    && aData["Username"].str == GetComponent<PlayerID>().playerID)
-                {
-                    GetComponent<PlayerID>().playersWins = Int32.Parse(aData["Wins"].str);
-                    GetComponent<PlayerID>().playerLosses = Int32.Parse(aData["Losses"].str);
-                }
-            }
-        }
         GetComponent<PlayerID>().playerScore = 0;
         GetComponent<PlayerID>().CmdTellServerMyName(val);
         players = GameObject.FindGameObjectsWithTag("Player");
@@ -94,6 +81,15 @@ public class UIManager : PunBehaviour
             {
                 if (player.name == GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i])
                 {
+                    foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+                    {
+                        if (stats.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with Wins and Losses
+                            stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
+                                + player.GetComponent<PlayerID>().playerLosses + " L ";
+                        }
+                    }
                     Start:
                     foreach (var aName in names)
                     {
@@ -111,15 +107,6 @@ public class UIManager : PunBehaviour
                             {
                                 //Update UI with score
                                 scores.GetComponent<Text>().text = "Score: " + player.GetComponent<PlayerID>().playerScore.ToString();
-                            }
-                        }
-                        foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
-                        {
-                            if (stats.name.Contains((i + 1).ToString()))
-                            {
-                                //Update UI with Wins and Losses
-                                stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
-                                    + player.GetComponent<PlayerID>().playerLosses + " L ";
                             }
                         }
                         for (int j = 0; j < panels.Length; j++)
@@ -143,6 +130,7 @@ public class UIManager : PunBehaviour
         if (!GameObject.Find("GameManager").GetComponent<GameStart>().startGame
           && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count >= GLOBALS.NUMOFPLAYERSTOSTARTGAME)
         {
+            GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.InProgress;
             GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
             GameObject.Find("UI").transform.localScale = new Vector3(1, 1, 1);
             GameObject.Find("EventPanel").transform.localPosition = new Vector3(-2500f, 0f, 0f);
@@ -154,7 +142,7 @@ public class UIManager : PunBehaviour
 
     public void closeEscapeMenu()
     {
-        if (GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text != "Your opponent has left!")
+        if (PhotonNetwork.playerList.Length < 1)
         {
             EscapeMenu = GameObject.Find("EscapeMenu");
             GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
@@ -237,6 +225,31 @@ public class UIManager : PunBehaviour
         }
     }
 
+
+    public void OnLeaveButtonClick()
+    {
+        /*if (GameObject.Find("GameManager").GetComponent<GameStart>().startGame
+            || PhotonNetwork.playerList.Length < 1)
+            //DisconnectPlayer();
+        else*/
+        GameObject.Find("LeaveConfirmation").GetComponent<DoozyUI.UIElement>().Show(false);
+    }
+    //TODO: Somehow player is getting set to inactive and thus coroutine can't run :(
+    public void ForfeitPlayer()
+    {
+        if (photonView.isMine)
+        {
+            Debug.Log("Before : " + GetComponent<PlayerID>().playerLosses);
+            GetComponent<PlayerID>().playerLosses += 1;
+            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
+                routine = StartCoroutine(LeaderbordController.PostScores(name, GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, true));
+            else
+                routine = StartCoroutine(LeaderbordController.PostScores(GetComponent<PlayerID>().guestToken, name, GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, true));
+            Debug.Log("After : " + GetComponent<PlayerID>().playerLosses);
+        }
+        //DisconnectPlayer();
+    }
+
     public void DisconnectPlayer()
     {
         PhotonNetwork.Disconnect();
@@ -245,8 +258,8 @@ public class UIManager : PunBehaviour
     public override void OnDisconnectedFromPhoton()
     {
         base.OnDisconnectedFromPhoton();
-        PhotonNetwork.Destroy(photonView);
-        SceneManager.LoadScene(0);
+        //PhotonNetwork.Destroy(photonView);
+        //SceneManager.LoadScene(0);
     }
 
 
@@ -357,7 +370,7 @@ public class UIManager : PunBehaviour
                     player.GetComponent<PlayerColor>().playerColor = GLOBALS.DarkYellow;
                 }
             }
-            foreach(GameObject panel in panels)
+            foreach (GameObject panel in panels)
             {
                 if (panel.GetComponent<Image>().color == GLOBALS.DarkGreen)
                 {

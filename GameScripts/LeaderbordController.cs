@@ -43,7 +43,7 @@ public class LeaderbordController : MonoBehaviour
     }*/
 
     // remember to use StartCoroutine when calling this function!
-    public static IEnumerator PostScores(string name, int wins, int losses, string fbID)
+    public static IEnumerator PostScores(string name, int wins, int losses, string fbID, bool forfeit)
     {
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
@@ -52,7 +52,8 @@ public class LeaderbordController : MonoBehaviour
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);
         yield return hs_post; // Wait until the download is done
-
+        if (forfeit && hs_post.isDone) { }
+            //PhotonNetwork.Disconnect();
         if (hs_post.error != null)
         {
             print("There was an error posting the high score: " + hs_post.error);
@@ -75,7 +76,7 @@ public class LeaderbordController : MonoBehaviour
 
 
     // remember to use StartCoroutine when calling this function!
-    public static IEnumerator PostScores(string guestID, string name, int wins, int losses)
+    public static IEnumerator PostScores(string guestID, string name, int wins, int losses, bool forfeit)
     {
         //This connects to a server side php script that will add the name and score to a MySQL DB.
         // Supply it with a string representing the players name and the players score.
@@ -84,7 +85,8 @@ public class LeaderbordController : MonoBehaviour
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);
         yield return hs_post; // Wait until the download is done
-
+        if (forfeit && hs_post.isDone)
+            //PhotonNetwork.Disconnect();
         if (hs_post.error != null)
         {
             print("There was an error posting the high score: " + hs_post.error);

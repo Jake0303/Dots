@@ -85,7 +85,7 @@ public class GameState : PunBehaviour
                 DisplayServerMessage("Waiting for an opponent", false);
                 foreach (var player in players)
                 {
-                    player.GetComponent<UIManager>().DisplayPopupText("Waiting for an opponent", false);
+                    player.GetComponent<PlayerUIManager>().DisplayPopupText("Waiting for an opponent", false);
                 }
                 break;
         }

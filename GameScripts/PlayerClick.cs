@@ -114,7 +114,7 @@ public class PlayerClick : PunBehaviour
         {
             if (photonView.isMine && GetComponent<PlayerID>().playerScore != GLOBALS.POINTSTOWIN)
             {
-                this.GetComponent<UIManager>().DisplayPopupText("Good job! Please place another line.", true);
+                this.GetComponent<PlayerUIManager>().DisplayPopupText("Good job! Please place another line.", true);
 
             }
             photonView.RPC("RpcSameTurn", PhotonTargets.AllBuffered);

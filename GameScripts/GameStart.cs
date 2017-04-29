@@ -256,38 +256,18 @@ public class GameStart : PunBehaviour
     {
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = false;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
-        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
+        GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
     }
 
     //Tell all clients who turn it is
     [PunRPC]
     void RpcSetFirstTurn(string playerID)
     {
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        //Update player win loss UI
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-        {
-            foreach (var player in players)
-            {
-                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
-                {
-                    foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
-                    {
-                        if (stats.name.Contains((i + 1).ToString()))
-                        {
-                            //Update UI with Wins and Losses
-                            stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
-                                + player.GetComponent<PlayerID>().playerLosses + " L ";
-                        }
-                    }
-                }
-            }
-        }
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupBox("It's your turn first, tap to place a line!");
-        GameObject.Find(playerID).GetComponent<UIManager>().DisplayPopupText("It's your turn , tap to place a line!", false);
+        GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupBox("It's your turn first, tap to place a line!");
+        GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn , tap to place a line!", false);
         tapGif.GetComponent<Image>().enabled = true;
         tapGif.GetComponent<LoadingGif>().enabled = true;
     }
@@ -307,6 +287,26 @@ public class GameStart : PunBehaviour
         GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
         PhotonNetwork.RaiseEvent(1, null, true, null);
         buildGrid = true;
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        //Update player win loss UI
+        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+        {
+            foreach (var player in players)
+            {
+                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                {
+                    foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+                    {
+                        if (stats.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with Wins and Losses
+                            stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
+                             + player.GetComponent<PlayerID>().playerLosses + " L ";
+                        }
+                    }
+                }
+            }
+        }
     }
     [PunRPC]
     //Tell the server the grid is done

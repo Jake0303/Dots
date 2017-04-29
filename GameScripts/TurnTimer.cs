@@ -164,10 +164,10 @@ public class TurnTimer : PunBehaviour
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(nextPlayer).GetComponent<UIManager>().DisplayPopupText("It's your turn, tap to place a line!", true);
+        GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn, tap to place a line!", true);
         GameObject.Find(nextPlayer).GetComponent<PlayerClick>().playingAnim = false;
         GameObject.Find(GameObject.Find(lastPlayer).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
-        GameObject.Find(lastPlayer).GetComponent<UIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
+        GameObject.Find(lastPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
         GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
         GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
         GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;

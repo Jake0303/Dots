@@ -37,14 +37,11 @@ public class GameOver : PunBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameOver && !gameDone)
+        if (gameOver && !gameDone && GetComponent<GameState>().gameState != GameState.State.GameOver)
         {
-            DisplayWinner();
             GetComponent<GameState>().gameState = GameState.State.GameOver;
+            DisplayWinner();
             StartCoroutine("DelayBeforeRestart");
-            RaiseEventOptions options = new RaiseEventOptions();
-            options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
-            PhotonNetwork.RaiseEvent(2, null, true, options);
             gameOver = false;
             gameDone = true;
         }
@@ -68,65 +65,46 @@ public class GameOver : PunBehaviour
             {
                 winner = player.name;
                 player.GetComponent<PlayerID>().winner = true;
+                player.GetComponent<PlayerID>().playersWins += 1;
             }
             else
             {
                 loser = player.name;
                 player.GetComponent<PlayerID>().winner = false;
+                player.GetComponent<PlayerID>().playerLosses += 1;
             }
         }
-        GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("You have won the game!", true);
-        if (GameObject.Find(loser)) GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText(winner + " has won the game!", true);
+        GameObject.Find(winner).GetComponent<PlayerUIManager>().DisplayPopupText("You have won the game!", true);
+        if (GameObject.Find(loser)) GameObject.Find(loser).GetComponent<PlayerUIManager>().DisplayPopupText(winner + " has won the game!", true);
         //Update player win loss UI
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+        //Update UI with Wins and Losses
+        //TODO: Sometimes going up by 2!
+        GameObject.Find(GameObject.Find(winner).GetComponent<PlayerID>().playersPanel).GetComponentsInChildren<Text>()[3].text = GameObject.Find(winner).GetComponent<PlayerID>().playersWins + " W "
+            + GameObject.Find(winner).GetComponent<PlayerID>().playerLosses + " L ";
+        if (PhotonNetwork.isMasterClient)
         {
-            if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GameObject.Find(winner).GetComponent<PlayerID>().playerID)
+            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
             {
-                foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
-                {
-                    if (stats.name.Contains((i + 1).ToString()))
-                    {
-                        //Update UI with Wins and Losses
-                        GameObject.Find(winner).GetComponent<PlayerID>().playersWins += 1;
-                        stats.GetComponent<Text>().text = GameObject.Find(winner).GetComponent<PlayerID>().playersWins + " W "
-                            + GameObject.Find(winner).GetComponent<PlayerID>().playerLosses + " L ";
-                        if (PhotonNetwork.isMasterClient)
-                        {
-                            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
-                            {
-                                StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
-                            }
-                            else
-                            {
-                                StartCoroutine(LeaderbordController.PostScores(GameObject.Find(winner).GetComponent<PlayerID>().guestToken, winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses));
-                            }
-                        }
-                        break;
-                    }
-                }
+                StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
             }
-            if (GameObject.Find(loser) && GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == GameObject.Find(loser).GetComponent<PlayerID>().playerID)
+            else
             {
-                foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
-                {
-                    if (stats.name.Contains((i + 1).ToString()))
-                    {
-                        //Update UI with Wins and Losses
-                        GameObject.Find(loser).GetComponent<PlayerID>().playerLosses += 1;
-                        stats.GetComponent<Text>().text = GameObject.Find(loser).GetComponent<PlayerID>().playersWins + " W "
-                            + GameObject.Find(loser).GetComponent<PlayerID>().playerLosses + " L ";
-                        if (PhotonNetwork.isMasterClient)
-                        {
-                            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
-                                StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
-                            else
-                                StartCoroutine(LeaderbordController.PostScores(GameObject.Find(loser).GetComponent<PlayerID>().guestToken, loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses));
-                        }
-                        break;
-                    }
-                }
+                StartCoroutine(LeaderbordController.PostScores(GameObject.Find(winner).GetComponent<PlayerID>().guestToken, winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses, false));
             }
         }
+        //Update UI with Wins and Losses
+        GameObject.Find(GameObject.Find(loser).GetComponent<PlayerID>().playersPanel).GetComponentsInChildren<Text>()[3].text = GameObject.Find(loser).GetComponent<PlayerID>().playersWins + " W "
+            + GameObject.Find(loser).GetComponent<PlayerID>().playerLosses + " L ";
+        if (PhotonNetwork.isMasterClient)
+        {
+            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
+                StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
+            else
+                StartCoroutine(LeaderbordController.PostScores(GameObject.Find(loser).GetComponent<PlayerID>().guestToken, loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses, false));
+        }
+        RaiseEventOptions options = new RaiseEventOptions();
+        options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
+        PhotonNetwork.RaiseEvent(2, null, true, options);
     }
     IEnumerator DelayBeforeRestart()
     {
@@ -163,10 +141,10 @@ public class GameOver : PunBehaviour
     {
         GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().moveOut.delay = 0;
         GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
-        GameObject.Find(winner).GetComponent<UIManager>().DisplayPopupText("Restarting game...", true);
+        GameObject.Find(winner).GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
         if (GameObject.Find(loser) != null)
         {
-            GameObject.Find(loser).GetComponent<UIManager>().DisplayPopupText("Restarting game...", true);
+            GameObject.Find(loser).GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
         }
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
         {

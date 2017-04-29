@@ -30,7 +30,9 @@ public class NetworkManagerSingleton : MonoBehaviour
     {
         Screen.orientation = ScreenOrientation.AutoRotation;
         GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+        //GameObject.Find("PlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().PlayClicked()));
         GameObject.Find("PlayAsGuestButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
+
         //Remove all ;isteneres prevents duplicate event calls
         GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.RemoveAllListeners();
         GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));

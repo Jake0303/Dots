@@ -237,6 +237,18 @@ public class MenuManager : MonoBehaviour
             GameObject.Find("NetworkManager").GetComponent<NetworkManager>().ConnectInUpdate = true;
         }
     }
+    /*
+    public void PlayClicked()
+    {
+        if (PlayerPrefs.GetString("Username") != "")
+        {
+            GameObject.Find("NotificationMenu").GetComponent<UIElement>().Show(false);
+            GameObject.Find("NotificationText").GetComponent<Text>().text = PlayerPrefs.GetString("Username") + "\n\n W:  " + PlayerPrefs.GetInt("Wins") + "\t L:  " + PlayerPrefs.GetInt("Losses");
+            GameObject.Find("MainMenu").GetComponent<UIElement>().Hide(false);
+            GameObject.Find("LoginMenu").GetComponent<UIElement>().Show(false);
+            GameObject.Find("PlayAsGuestButtonText").GetComponent<Text>().text = "Play";
+        }
+    }*/
 
 
     //Fade text animation for the connecting text

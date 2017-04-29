@@ -27,11 +27,11 @@ public class PlayerID : PunBehaviour
 
     private bool showPopup;
     public bool showWinner = true;
-    public bool fbInfoFound;
+    public bool infoFound;
     void Start()
     {
         PhotonNetwork.OnEventCall += this.OnEvent;
-        fbInfoFound = false;
+        infoFound = false;
         if (photonView.isMine)
         {
             if (LeaderbordController.data.list != null)
@@ -40,15 +40,36 @@ public class PlayerID : PunBehaviour
                 {
                     if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
                     {
-                        fbInfoFound = true;
-                        this.GetComponent<UIManager>().fbAuthenticated(aData["Username"].str);
-                        StartCoroutine(LeaderbordController.PostScores(this.playerID, playersWins, playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
+                        infoFound = true;
+                        this.GetComponent<PlayerUIManager>().fbAuthenticated(aData["Username"].str);
+                        playerID = aData["Username"].str;
+                        playersWins = Int32.Parse(aData["Wins"].str);
+                        playerLosses = Int32.Parse(aData["Losses"].str);
+                        fbToken = aData["FBUserID"].str;
+                        StartCoroutine(LeaderbordController.PostScores(this.playerID, playersWins, playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
+                        break;
+                    } else if (aData["GuestID"].str == guestToken)
+                    {
+                        infoFound = true;
+                        playerID = aData["Username"].str;
+                        guestToken = PlayerPrefs.GetString("GuestID");
+                        Screen.orientation = ScreenOrientation.LandscapeLeft;
+                        playersWins = Int32.Parse(aData["Wins"].str);
+                        playerLosses = Int32.Parse(aData["Losses"].str);
+                        guestToken = aData["GuestID"].str;
+                        GetComponent<PlayerUIManager>().photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, PlayerPrefs.GetString("Username"));
+                        PhotonNetwork.player.name = PlayerPrefs.GetString("Username");
+                        GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
+                        GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
+                        GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
+                        StartCoroutine(LeaderbordController.PostScores(guestToken, playerID, playersWins, playerLosses, false));
                         break;
                     }
                 }
             }
             //Facebook Info not found so player must be logging in as guest and using local account
-            if (!fbInfoFound)
+            
+            if (!infoFound)
             {
                 playerID = PlayerPrefs.GetString("Username");
                 guestToken = PlayerPrefs.GetString("GuestID");
@@ -56,12 +77,12 @@ public class PlayerID : PunBehaviour
                 playersWins = PlayerPrefs.GetInt("Wins");
                 playerLosses = PlayerPrefs.GetInt("Losses");
                 guestToken = PlayerPrefs.GetString("GuestID");
-                GetComponent<UIManager>().photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, PlayerPrefs.GetString("Username"));
+                GetComponent<PlayerUIManager>().photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, PlayerPrefs.GetString("Username"));
                 PhotonNetwork.player.name = PlayerPrefs.GetString("Username");
                 GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("LoadingGif").transform.localScale = new Vector3(1, 1, 1);
                 GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
-                StartCoroutine(LeaderbordController.PostScores(guestToken, playerID, playersWins, playerLosses));
+                StartCoroutine(LeaderbordController.PostScores(guestToken, playerID, playersWins, playerLosses, false));
             }
         }
         myTransform = transform;
@@ -72,11 +93,16 @@ public class PlayerID : PunBehaviour
         if (eventcode == 1 && this != null)
         {
             GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
-            this.GetComponent<UIManager>().DisplayPopupText("Generating grid", false);
+            this.GetComponent<PlayerUIManager>().DisplayPopupText("Generating grid", false);
         }
         //Game over
         else if (eventcode == 2 && this != null)
         {
+            if (photonView.isMine)
+            {
+                PlayerPrefs.SetInt("Wins", playersWins);
+                PlayerPrefs.SetInt("Losses", playerLosses);
+            }
             //Play victory sound
             if (photonView.isMine && winner && !GetComponents<AudioSource>()[0].isPlaying)
             {
@@ -90,8 +116,6 @@ public class PlayerID : PunBehaviour
                 GetComponents<AudioSource>()[1].Play();
             }
         }
-        PlayerPrefs.SetInt("Wins", playersWins);
-        PlayerPrefs.SetInt("Losses", playerLosses);
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
@@ -107,6 +131,7 @@ public class PlayerID : PunBehaviour
                 transform.name = playerID;
             }
             //Syncing players UI panel
+            stream.SendNext(playerID);
             stream.SendNext(playerScore);
             stream.SendNext(winner);
             stream.SendNext(playersWins);
@@ -117,6 +142,7 @@ public class PlayerID : PunBehaviour
             // Network player, receive data
             this.isPlayersTurn = (bool)stream.ReceiveNext();
             this.nameSet = (bool)stream.ReceiveNext();
+            this.playerID = (string)stream.ReceiveNext();
             this.playerScore = (int)stream.ReceiveNext();
             this.winner = (bool)stream.ReceiveNext();
             this.playersWins = (int)stream.ReceiveNext();

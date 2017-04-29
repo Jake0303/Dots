@@ -30,7 +30,7 @@ public class GLOBALS : MonoBehaviour
     public const float DOTDISTANCE = 11.0f;
     //Version of the game
     public const byte Version = 1;
-    //Is Colorblind Assist Enabled?
+    //Is Colorblind Assist Enabled
     public static bool ColorBlindAssist = false;
     //DarkGreen
     public static Color DarkGreen = new Color(0, 0.7f, 0, 1);
