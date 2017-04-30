@@ -52,8 +52,13 @@ public class LeaderbordController : MonoBehaviour
         // Post the URL to the site and create a download object to get the result.
         WWW hs_post = new WWW(post_url);
         yield return hs_post; // Wait until the download is done
-        if (forfeit && hs_post.isDone) { }
-            //PhotonNetwork.Disconnect();
+        if (forfeit && hs_post.isDone)
+        {
+            RaiseEventOptions options = new RaiseEventOptions();
+            options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
+            PhotonNetwork.RaiseEvent(2, null, true, options);
+            PhotonNetwork.Disconnect();
+        }
         if (hs_post.error != null)
         {
             print("There was an error posting the high score: " + hs_post.error);
@@ -86,7 +91,12 @@ public class LeaderbordController : MonoBehaviour
         WWW hs_post = new WWW(post_url);
         yield return hs_post; // Wait until the download is done
         if (forfeit && hs_post.isDone)
-            //PhotonNetwork.Disconnect();
+        {
+            RaiseEventOptions options = new RaiseEventOptions();
+            options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
+            PhotonNetwork.RaiseEvent(2, null, true, options);
+            PhotonNetwork.Disconnect();
+        }
         if (hs_post.error != null)
         {
             print("There was an error posting the high score: " + hs_post.error);

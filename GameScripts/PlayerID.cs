@@ -48,7 +48,8 @@ public class PlayerID : PunBehaviour
                         fbToken = aData["FBUserID"].str;
                         StartCoroutine(LeaderbordController.PostScores(this.playerID, playersWins, playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
                         break;
-                    } else if (aData["GuestID"].str == guestToken)
+                    }
+                    else if (aData["GuestID"].str == PlayerPrefs.GetString("GuestID"))
                     {
                         infoFound = true;
                         playerID = aData["Username"].str;
@@ -68,7 +69,7 @@ public class PlayerID : PunBehaviour
                 }
             }
             //Facebook Info not found so player must be logging in as guest and using local account
-            
+
             if (!infoFound)
             {
                 playerID = PlayerPrefs.GetString("Username");

@@ -17,7 +17,8 @@ public class PlayerUIManager : PunBehaviour
         players = GameObject.FindGameObjectsWithTag("Player");
         names = GameObject.FindGameObjectsWithTag("NameText");
         panels = GameObject.FindGameObjectsWithTag("Panel");
-
+        GameObject.Find("Disconnect").GetComponent<Button>().onClick.AddListener(() => OnLeaveButtonClick());
+        GameObject.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => ForfeitPlayer());
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
         if ((Screen.orientation == ScreenOrientation.Portrait
@@ -31,6 +32,7 @@ public class PlayerUIManager : PunBehaviour
         {
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
         }
+        GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "";
     }
     //When the client has connected, populate the names of each panel for previous players
     public override void OnJoinedRoom()
@@ -68,7 +70,7 @@ public class PlayerUIManager : PunBehaviour
         GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().Stop();
         GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Add(val);
         GetComponent<PlayerID>().nameSet = true;
-        name = val;
+        gameObject.name = val;
         GetComponent<PlayerID>().playerID = val;
         GetComponent<PlayerID>().playerScore = 0;
         GetComponent<PlayerID>().CmdTellServerMyName(val);
@@ -142,7 +144,7 @@ public class PlayerUIManager : PunBehaviour
 
     public void closeEscapeMenu()
     {
-        if (PhotonNetwork.playerList.Length < 1)
+        if (GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text == "")
         {
             EscapeMenu = GameObject.Find("EscapeMenu");
             GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
@@ -228,26 +230,26 @@ public class PlayerUIManager : PunBehaviour
 
     public void OnLeaveButtonClick()
     {
-        /*if (GameObject.Find("GameManager").GetComponent<GameStart>().startGame
-            || PhotonNetwork.playerList.Length < 1)
-            //DisconnectPlayer();
-        else*/
-        GameObject.Find("LeaveConfirmation").GetComponent<DoozyUI.UIElement>().Show(false);
+        if (GameObject.Find("GameManager").GetComponent<GameStart>().startGame
+            || PhotonNetwork.playerList.Length <= 1
+            || GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text != "")
+            DisconnectPlayer();
+        else
+            GameObject.Find("LeaveConfirmation").GetComponent<DoozyUI.UIElement>().Show(false);
     }
     //TODO: Somehow player is getting set to inactive and thus coroutine can't run :(
     public void ForfeitPlayer()
     {
         if (photonView.isMine)
         {
-            Debug.Log("Before : " + GetComponent<PlayerID>().playerLosses);
             GetComponent<PlayerID>().playerLosses += 1;
+            PlayerPrefs.SetInt("Wins", GetComponent<PlayerID>().playersWins);
+            PlayerPrefs.SetInt("Losses", GetComponent<PlayerID>().playerLosses);
             if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
-                routine = StartCoroutine(LeaderbordController.PostScores(name, GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, true));
+                GameObject.Find("MenuManager").GetComponent<FacebookManager>().StartCoroutine(LeaderbordController.PostScores(GetComponent<PlayerID>().playerID, GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, true));
             else
-                routine = StartCoroutine(LeaderbordController.PostScores(GetComponent<PlayerID>().guestToken, name, GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, true));
-            Debug.Log("After : " + GetComponent<PlayerID>().playerLosses);
+                GameObject.Find("MenuManager").GetComponent<MenuManager>().StartCoroutine(LeaderbordController.PostScores(GetComponent<PlayerID>().guestToken, GetComponent<PlayerID>().playerID, GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, true));
         }
-        //DisconnectPlayer();
     }
 
     public void DisconnectPlayer()
@@ -258,8 +260,8 @@ public class PlayerUIManager : PunBehaviour
     public override void OnDisconnectedFromPhoton()
     {
         base.OnDisconnectedFromPhoton();
-        //PhotonNetwork.Destroy(photonView);
-        //SceneManager.LoadScene(0);
+        PhotonNetwork.Destroy(photonView);
+        SceneManager.LoadScene(0);
     }
 
 

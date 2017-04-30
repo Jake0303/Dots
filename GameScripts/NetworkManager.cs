@@ -51,7 +51,8 @@ public class NetworkManager : PunBehaviour
         {
             foreach (var aData in LeaderbordController.data.list)
             {
-                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
+                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken
+                    && fbButtonClicked)
                 {
                     if (aData["Username"].str != "")
                         fbInfoFound = true;
@@ -214,7 +215,23 @@ public class NetworkManager : PunBehaviour
         base.OnDisconnectedFromPhoton();
         if (GameObject.Find("EscapeMenu") != null)
         {
-            GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left!";
+            var players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (var aPlayer in players)
+            {
+                aPlayer.GetComponent<PlayerID>().playersWins += 1;
+                PlayerPrefs.SetInt("Wins", aPlayer.GetComponent<PlayerID>().playersWins);
+                PlayerPrefs.SetInt("Losses", aPlayer.GetComponent<PlayerID>().playerLosses);
+                if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
+                    GameObject.Find("MenuManager").GetComponent<FacebookManager>().StartCoroutine(LeaderbordController.PostScores(aPlayer.GetComponent<PlayerID>().playerID, aPlayer.GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
+                else
+                    GameObject.Find("MenuManager").GetComponent<MenuManager>().StartCoroutine(LeaderbordController.PostScores(aPlayer.GetComponent<PlayerID>().guestToken, aPlayer.GetComponent<PlayerID>().playerID, aPlayer.GetComponent<PlayerID>().playersWins, aPlayer.GetComponent<PlayerID>().playerLosses, false));
+                //Update UI with Wins and Losses
+                GameObject.Find(aPlayer.GetComponent<PlayerID>().playersPanel).GetComponentsInChildren<Text>()[3].text = aPlayer.GetComponent<PlayerID>().playersWins + " W "
+                    + aPlayer.GetComponent<PlayerID>().playerLosses + " L ";
+                break;
+            }
+
+            GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left! \nYou win!";
             GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("ColorBlindAssistCheckbox").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("FindAnotherMatchButton").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
