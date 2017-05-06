@@ -23,14 +23,16 @@ public class GameOver : PunBehaviour
         if (stream.isWriting)
         {
             // We own this player: send the others our data
-            //stream.SendNext(gameOver);
+            stream.SendNext(gameOver);
             stream.SendNext(winner);
+            stream.SendNext(loser);
         }
         else
         {
             // Network player, receive data
-            //this.gameOver = (bool)stream.ReceiveNext();
+            this.gameOver = (bool)stream.ReceiveNext();
             this.winner = (string)stream.ReceiveNext();
+            this.loser = (string)stream.ReceiveNext();
         }
     }
 
@@ -39,15 +41,15 @@ public class GameOver : PunBehaviour
     {
         if (gameOver && !gameDone && GetComponent<GameState>().gameState != GameState.State.GameOver)
         {
-            GetComponent<GameState>().gameState = GameState.State.GameOver;
+            photonView.RPC("GetWinner", PhotonTargets.AllBuffered);
             DisplayWinner();
-            StartCoroutine("DelayBeforeRestart");
+            GetComponent<GameState>().gameState = GameState.State.GameOver;
             gameOver = false;
             gameDone = true;
         }
     }
-    //Display the winner of the game
-    void DisplayWinner()
+    [PunRPC]
+    public void GetWinner()
     {
         var players = GameObject.FindGameObjectsWithTag("Player");
         List<int> scores = new List<int>();
@@ -63,50 +65,30 @@ public class GameOver : PunBehaviour
             //The winner
             if (player.GetComponent<PlayerID>().playerScore == highestScore)
             {
-                winner = player.name;
+                winner = player.GetComponent<PlayerID>().playerID;
                 player.GetComponent<PlayerID>().winner = true;
-                player.GetComponent<PlayerID>().playersWins += 1;
+
             }
             else
             {
-                loser = player.name;
+                loser = player.GetComponent<PlayerID>().playerID;
                 player.GetComponent<PlayerID>().winner = false;
-                player.GetComponent<PlayerID>().playerLosses += 1;
+
             }
         }
-        GameObject.Find(winner).GetComponent<PlayerUIManager>().DisplayPopupText("You have won the game!", true);
-        if (GameObject.Find(loser)) GameObject.Find(loser).GetComponent<PlayerUIManager>().DisplayPopupText(winner + " has won the game!", true);
-        //Update player win loss UI
-        //Update UI with Wins and Losses
-        GameObject.Find(GameObject.Find(winner).GetComponent<PlayerID>().playersPanel).GetComponentsInChildren<Text>()[3].text = GameObject.Find(winner).GetComponent<PlayerID>().playersWins + " W "
-            + GameObject.Find(winner).GetComponent<PlayerID>().playerLosses + " L ";
-        if (PhotonNetwork.isMasterClient)
+        gameOver = false;
+    }
+    //Display the winner of the game
+    public void DisplayWinner()
+    {
+        if (winner != "")
         {
-            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
-            {
-                StartCoroutine(LeaderbordController.PostScores(winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
-            }
-            else
-            {
-                StartCoroutine(LeaderbordController.PostScores(GameObject.Find(winner).GetComponent<PlayerID>().guestToken, winner, GameObject.Find(winner).GetComponent<PlayerID>().playersWins, GameObject.Find(winner).GetComponent<PlayerID>().playerLosses, false));
-            }
+            RaiseEventOptions options = new RaiseEventOptions();
+            options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
+            PhotonNetwork.RaiseEvent(2, null, true, options);
         }
-        //Update UI with Wins and Losses
-        if (GameObject.Find(loser) != null)
-        {
-            GameObject.Find(GameObject.Find(loser).GetComponent<PlayerID>().playersPanel).GetComponentsInChildren<Text>()[3].text = GameObject.Find(loser).GetComponent<PlayerID>().playersWins + " W "
-                + GameObject.Find(loser).GetComponent<PlayerID>().playerLosses + " L ";
-            if (PhotonNetwork.isMasterClient)
-            {
-                if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
-                    StartCoroutine(LeaderbordController.PostScores(loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
-                else
-                    StartCoroutine(LeaderbordController.PostScores(GameObject.Find(loser).GetComponent<PlayerID>().guestToken, loser, GameObject.Find(loser).GetComponent<PlayerID>().playersWins, GameObject.Find(loser).GetComponent<PlayerID>().playerLosses, false));
-            }
-        }
-        RaiseEventOptions options = new RaiseEventOptions();
-        options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
-        PhotonNetwork.RaiseEvent(2, null, true, options);
+        winner = "";
+        loser = "";
     }
     IEnumerator DelayBeforeRestart()
     {
@@ -143,11 +125,6 @@ public class GameOver : PunBehaviour
     {
         GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().moveOut.delay = 0;
         GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
-        GameObject.Find(winner).GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
-        if (GameObject.Find(loser) != null)
-        {
-            GameObject.Find(loser).GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
-        }
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
         {
             if (tempObj.GetComponent<Light>() != null)
@@ -173,6 +150,7 @@ public class GameOver : PunBehaviour
         //Update timer
         foreach (var player in players)
         {
+            player.GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
             player.GetComponent<PlayerID>().isPlayersTurn = false;
             player.GetComponent<PlayerID>().winner = false;
             player.GetComponent<PlayerClick>().playingAnim = false;

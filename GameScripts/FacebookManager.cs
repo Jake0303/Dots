@@ -15,6 +15,7 @@ public class FacebookManager : MonoBehaviour
             if (!_instance)
             {
                 _instance = FindObjectOfType(typeof(FacebookManager)) as FacebookManager;
+                _instance.accessToken = "";
 
                 if (!_instance)
                 {
@@ -29,6 +30,7 @@ public class FacebookManager : MonoBehaviour
 
     void Start()
     {
+        accessToken = "";
         // Initialized the singleton if no other component has accessed the singleton yet
         if (_instance == null)
         {

@@ -227,14 +227,21 @@ public class MenuManager : MonoBehaviour
         }
         if (!aError)
         {
-            System.Guid myGUID = System.Guid.NewGuid();
-            PlayerPrefs.SetString("GuestID", myGUID.ToString());
-            PlayerPrefs.SetString("Username", GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
-            //Hide and show menus
-            GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Hide(false);
-            GameObject.Find("ConnectingMenu").GetComponent<UIElement>().Show(false);
-            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().AutoConnect = true;
-            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().ConnectInUpdate = true;
+            if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken == "")
+            {
+                System.Guid myGUID = System.Guid.NewGuid();
+                PlayerPrefs.SetString("GuestID", myGUID.ToString());
+                PlayerPrefs.SetString("Username", GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+                //Hide and show menus
+                GameObject.Find("EnterNickMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
+                GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
+                GameObject.Find("NetworkManager").GetComponent<NetworkManager>().AutoConnect = true;
+                GameObject.Find("NetworkManager").GetComponent<NetworkManager>().ConnectInUpdate = true;
+            } else
+            {
+                StartCoroutine(LeaderbordController.PostScoresBeforeStart(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text, 0, 0, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
+                PlayerPrefs.SetString("Username", GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
+            }
         }
     }
     /*

@@ -38,18 +38,22 @@ public class PlayerID : PunBehaviour
             {
                 foreach (var aData in LeaderbordController.data.list)
                 {
-                    if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
+                    if (aData["FBUserID"].str != ""
+                        && aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken)
                     {
                         infoFound = true;
-                        this.GetComponent<PlayerUIManager>().fbAuthenticated(aData["Username"].str);
                         playerID = aData["Username"].str;
                         playersWins = Int32.Parse(aData["Wins"].str);
                         playerLosses = Int32.Parse(aData["Losses"].str);
                         fbToken = aData["FBUserID"].str;
+                        this.GetComponent<PlayerUIManager>().fbAuthenticated(aData["Username"].str);
+                        PhotonNetwork.player.name = playerID;
                         StartCoroutine(LeaderbordController.PostScores(this.playerID, playersWins, playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
                         break;
                     }
-                    else if (aData["GuestID"].str == PlayerPrefs.GetString("GuestID"))
+                    else if (aData["GuestID"].str != ""
+                        && aData["GuestID"].str == PlayerPrefs.GetString("GuestID")
+                        && GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken == "")
                     {
                         infoFound = true;
                         playerID = aData["Username"].str;
@@ -99,22 +103,38 @@ public class PlayerID : PunBehaviour
         //Game over
         else if (eventcode == 2 && this != null)
         {
-            if (photonView.isMine)
-            {
-                PlayerPrefs.SetInt("Wins", playersWins);
-                PlayerPrefs.SetInt("Losses", playerLosses);
-            }
             //Play victory sound
-            if (photonView.isMine && winner && !GetComponents<AudioSource>()[0].isPlaying)
+            if (photonView.isMine && winner)
             {
+                if (GameObject.Find("PopupText").GetComponent<Text>().text != "You have won the game!")
+                    playersWins++;
+                PlayerPrefs.SetInt("Wins", playersWins);
+                GetComponent<PlayerUIManager>().DisplayPopupText("You have won the game!", true);
+                GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].text = playersWins + " W " + playerLosses + " L ";
                 GetComponents<AudioSource>()[0].volume = GLOBALS.Volume;
                 GetComponents<AudioSource>()[0].Play();
+                if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
+                    StartCoroutine(LeaderbordController.PostScores(playerID, GetComponent<PlayerID>().playersWins, GetComponent<PlayerID>().playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
+                else
+                    StartCoroutine(LeaderbordController.PostScores(guestToken, playerID, playersWins, playerLosses, false));
+                GameObject.Find("GameManager").GetComponent<GameOver>().StartCoroutine("DelayBeforeRestart");
+
             }
-            else if (photonView.isMine && !winner && !GetComponents<AudioSource>()[0].isPlaying)
+            //Play defeat sound
+            else if (photonView.isMine && !winner)
             {
-                //Play defeat sound
+                if (GameObject.Find("PopupText").GetComponent<Text>().text != GameObject.Find("GameManager").GetComponent<GameOver>().winner + " has won the game!")
+                    playerLosses++;
+                PlayerPrefs.SetInt("Losses", playerLosses);
+                GetComponent<PlayerUIManager>().DisplayPopupText(GameObject.Find("GameManager").GetComponent<GameOver>().winner + " has won the game!", true);
+                GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].text = playersWins + " W " + playerLosses + " L ";
                 GetComponents<AudioSource>()[1].volume = GLOBALS.Volume;
                 GetComponents<AudioSource>()[1].Play();
+                if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
+                    StartCoroutine(LeaderbordController.PostScores(playerID, playersWins, playerLosses, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken, false));
+                else
+                    StartCoroutine(LeaderbordController.PostScores(guestToken, playerID, playersWins, playerLosses, false));
+                GameObject.Find("GameManager").GetComponent<GameOver>().StartCoroutine("DelayBeforeRestart");
             }
         }
     }

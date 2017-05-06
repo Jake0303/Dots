@@ -47,21 +47,34 @@ public class NetworkManager : PunBehaviour
         GameObject.Find("PlayAsGuestButton").GetComponent<UIButton>().useOnClickAnimations = true;
         GameObject.Find("PlayAsGuestButton").GetComponent<UIButton>().StartOnClickAnimations();
         bool fbInfoFound = false;
+        bool infoFound = false;
+        if (!fbButtonClicked)
+            GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken = "";
         if (LeaderbordController.data.list != null)
         {
             foreach (var aData in LeaderbordController.data.list)
             {
-                if (aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken
+                if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != ""
+                    && aData["FBUserID"].str == GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken
                     && fbButtonClicked)
                 {
                     if (aData["Username"].str != "")
+                    {
                         fbInfoFound = true;
+                        break;
+                    }
+                }
+                else if (PlayerPrefs.GetString("GuestID") != ""
+                    && aData["GuestID"].str == PlayerPrefs.GetString("GuestID")
+                    && !fbButtonClicked)
+                {
+                    infoFound = true;
                     break;
                 }
             }
         }
-        if (PlayerPrefs.GetString("Username") == ""
-            && !fbInfoFound)
+        if ((!fbInfoFound && fbButtonClicked)
+            || (!infoFound && !fbButtonClicked))
         {
             GameObject.Find("EnterNickMenu").GetComponent<UIElement>().Show(false);
             if (Application.isMobilePlatform
@@ -213,7 +226,7 @@ public class NetworkManager : PunBehaviour
     public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
         base.OnDisconnectedFromPhoton();
-        if (GameObject.Find("EscapeMenu") != null)
+        if (GameObject.Find("EscapeMenu") != null && !GameObject.Find("GameManager").GetComponent<GameOver>().gameDone)
         {
             var players = GameObject.FindGameObjectsWithTag("Player");
             foreach (var aPlayer in players)
