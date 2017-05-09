@@ -72,7 +72,6 @@ public class GameStart : PunBehaviour
     }
     void Update()
     {
-        //if (startGame && PhotonNetwork.isMasterClient)
         if (startGame)
         {
             GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
@@ -266,8 +265,16 @@ public class GameStart : PunBehaviour
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupBox("It's your turn first, tap to place a line!");
-        GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn , tap to place a line!", false);
+        if (Application.isMobilePlatform)
+        {
+            GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupBox("It's your turn first, tap to place a line!");
+            GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn , tap to place a line!", false);
+        }
+        else
+        {
+            GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupBox("It's your turn first, click to place a line!");
+            GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn , click to place a line!", false);
+        }
         tapGif.GetComponent<Image>().enabled = true;
         tapGif.GetComponent<LoadingGif>().enabled = true;
     }
@@ -289,11 +296,11 @@ public class GameStart : PunBehaviour
         buildGrid = true;
         var players = GameObject.FindGameObjectsWithTag("Player");
         //Update player win loss UI
-        for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
+        for (int i = 0; i < playerNames.Count; i++)
         {
             foreach (var player in players)
             {
-                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                if (playerNames[i] == player.GetComponent<PlayerID>().playerID)
                 {
                     foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
                     {

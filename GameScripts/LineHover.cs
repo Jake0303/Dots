@@ -42,8 +42,8 @@ public class LineHover : PunBehaviour
                     hit.collider.GetComponentInChildren<Renderer>().material = hoverMat;
                     hit.collider.GetComponentInParent<Light>().enabled = true;
                     hit.collider.GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
-                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_TintColor", GetComponent<PlayerColor>().playerColor);
-                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_Color", GetComponent<PlayerColor>().playerColor);
+  //                  hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
                 }
             }
         }

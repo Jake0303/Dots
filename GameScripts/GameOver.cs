@@ -87,6 +87,7 @@ public class GameOver : PunBehaviour
             options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
             PhotonNetwork.RaiseEvent(2, null, true, options);
         }
+
         winner = "";
         loser = "";
     }
@@ -94,6 +95,7 @@ public class GameOver : PunBehaviour
     {
         //Wait 5 seconds before resetting
         yield return new WaitForSeconds(3);
+        photonView.RPC("UpdatePlayerScores", PhotonTargets.AllBuffered);
         GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
         yield return new WaitForSeconds(2);
         StopAllCoroutines();
@@ -119,6 +121,30 @@ public class GameOver : PunBehaviour
     {
         GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().Show(false);
     }
+    [PunRPC]
+    public void UpdatePlayerScores()
+    {
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        //Update player win loss UI
+        for (int i = 0; i < GetComponent<GameStart>().playerNames.Count; i++)
+        {
+            foreach (var player in players)
+            {
+                if (GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                {
+                    foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
+                    {
+                        if (stats.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with Wins and Losses
+                            stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
+                             + player.GetComponent<PlayerID>().playerLosses + " L ";
+                        }
+                    }
+                }
+            }
+        }
+    }
     //Hide the menu if play again is pressed
     [PunRPC]
     public void HideMenu()
@@ -141,11 +167,9 @@ public class GameOver : PunBehaviour
                 tempObj.GetComponentInParent<Light>().enabled = false;
             tempObj.GetComponentInChildren<Renderer>().enabled = false;
         }
-        GameObject.Find("GameManager").GetComponent<GameStart>().DestroyGrid();
+        GetComponent<GameStart>().DestroyGrid();
         var players = GameObject.FindGameObjectsWithTag("Player");
         var timerTexts = GameObject.FindGameObjectsWithTag("TimerText");
-        GameObject.Find("GameManager").GetComponent<GameStart>().buildGrid = true;
-        GameObject.Find("GameManager").GetComponent<GameStart>().startGame = true;
         GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
         //Update timer
         foreach (var player in players)
@@ -159,34 +183,16 @@ public class GameOver : PunBehaviour
             player.GetComponent<PlayerID>().playerTurnOrder = 0;
             player.GetComponent<PlayerID>().showWinner = true;
             GameObject.Find(player.GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
-            for (int i = 0; i < GameObject.Find("GameManager").GetComponent<GameStart>().playerNames.Count; i++)
-            {
-                if (GameObject.Find("GameManager").GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
-                {
-                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
-                    {
-                        //Reset scores
-                        if (scores.name.Contains((i + 1).ToString()))
-                        {
-                            //Update UI with score
-                            scores.GetComponent<Text>().text = "Score: " + player.GetComponent<PlayerID>().playerScore.ToString();
-                        }
-                    }
-                    foreach (var timerText in timerTexts)
-                    {
-                        timerText.GetComponent<Text>().text = "";
-                    }
-                }
-            }
-
         }
         ParticleSystem.MainModule settings = GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().main;
-        settings.startColor = new ParticleSystem.MinMaxGradient(Color.blue);
-        gameObject.GetComponent<TurnTimer>().timer = GLOBALS.MAXTURNTIME;
-        gameObject.GetComponent<TurnTimer>().enabled = false;
+        settings.startColor = new ParticleSystem.MinMaxGradient(Color.cyan);
+        GetComponent<TurnTimer>().timer = GLOBALS.MAXTURNTIME;
+        GetComponent<TurnTimer>().enabled = false;
         StopAllCoroutines();
         gameOver = false;
         gameDone = false;
+        GetComponent<GameStart>().buildGrid = true;
+        GetComponent<GameStart>().startGame = true;
     }
     //Play another game with the same player
     public void PlayAgain()

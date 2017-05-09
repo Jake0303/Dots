@@ -98,7 +98,7 @@ public class BackgroundManager : MonoBehaviour
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * decreaseGlowRate);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(1f);
         }
         //kill when faded
         if (power <= 0)

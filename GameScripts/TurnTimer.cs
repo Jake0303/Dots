@@ -56,13 +56,13 @@ public class TurnTimer : PunBehaviour
         {
             if (player.GetComponent<PlayerID>().isPlayersTurn)
             {
-                if (!player.GetComponent<PlayerClick>().playingAnim 
+                if (!player.GetComponent<PlayerClick>().playingAnim
                     && !player.GetComponent<PlayerClick>().playingSquareAnim
                     && !player.GetComponent<PlayerID>().winner)
                 {
                     timer -= Time.deltaTime;
                     if (timer < 18)
-                      GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
+                        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
                 }
                 else
                 {
@@ -164,7 +164,10 @@ public class TurnTimer : PunBehaviour
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
-        GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn, tap to place a line!", true);
+        if (Application.isMobilePlatform)
+            GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn, tap to place a line!", true);
+        else
+            GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn, click to place a line!", true);
         GameObject.Find(nextPlayer).GetComponent<PlayerClick>().playingAnim = false;
         GameObject.Find(GameObject.Find(lastPlayer).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
         GameObject.Find(lastPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("Waiting for opponent to make a move", false);

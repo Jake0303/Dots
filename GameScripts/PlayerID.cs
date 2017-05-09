@@ -79,9 +79,8 @@ public class PlayerID : PunBehaviour
                 playerID = PlayerPrefs.GetString("Username");
                 guestToken = PlayerPrefs.GetString("GuestID");
                 Screen.orientation = ScreenOrientation.LandscapeLeft;
-                playersWins = PlayerPrefs.GetInt("Wins");
-                playerLosses = PlayerPrefs.GetInt("Losses");
-                guestToken = PlayerPrefs.GetString("GuestID");
+                playersWins = 0;
+                playerLosses = 0;
                 GetComponent<PlayerUIManager>().photonView.RPC("CmdAddPlayer", PhotonTargets.AllBuffered, PlayerPrefs.GetString("Username"));
                 PhotonNetwork.player.name = PlayerPrefs.GetString("Username");
                 GameObject.Find("PopupText").transform.localScale = new Vector3(1, 1, 1);
