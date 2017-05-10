@@ -15,9 +15,37 @@ public class BackgroundManager : MonoBehaviour
 
     public IEnumerator ShowSquare()
     {
+        GameObject newSquare = null;
+        foreach (Color col in sexyColors)
+        {
+            newSquare = Instantiate(square, new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), Random.Range(44, 44)), square.transform.rotation) as GameObject;
+            newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+            newSquare.layer = 5;//UI layer
+            newSquare.GetComponentInChildren<Renderer>().enabled = true;
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", col);
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", col);
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", col);
+            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 2.5f);
+            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 2.5f);
+            yield return null;
+        }
+        foreach (Color col in sexyColors)
+        {
+            newSquare = Instantiate(square, new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), Random.Range(44, 44)), square.transform.rotation) as GameObject;
+            newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
+            newSquare.layer = 5;//UI layer
+            newSquare.GetComponentInChildren<Renderer>().enabled = true;
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", col);
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", col);
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", col);
+            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 2);
+            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 2);
+            yield return null;
+        }
+        /*
         while (true)
         {
-            GameObject newSquare = null;
+            newSquare = null;
             if (SceneManager.GetActiveScene().buildIndex != 1)
             {
                 newSquare = Instantiate(square, new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), Random.Range(44, 44)), square.transform.rotation) as GameObject;
@@ -50,7 +78,7 @@ public class BackgroundManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(Random.Range(0.3f, 0.6f));
             }
-        }
+        }*/
     }
     void Start()
     {
@@ -76,7 +104,7 @@ public class BackgroundManager : MonoBehaviour
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * glowRate);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.01f);
         }
         StartCoroutine(fadeOut(newSquare));
     }
