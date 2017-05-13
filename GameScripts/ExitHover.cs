@@ -12,7 +12,7 @@ public class ExitHover : MonoBehaviour
         if (GetComponent<LinePlaced>().linePlaced == false && name.Contains("line"))
         {
             GetComponentInChildren<Renderer>().enabled = false;
-            GetComponentInParent<Light>().enabled = false;
+            //GetComponentInParent<Light>().enabled = false;
         }
     }
 #endif
@@ -24,7 +24,7 @@ public class ExitHover : MonoBehaviour
         if (GetComponent<LinePlaced>().linePlaced == false && name.Contains("line"))
         {
             GetComponentInChildren<Renderer>().enabled = false;
-            GetComponentInParent<Light>().enabled = false;
+            //GetComponentInParent<Light>().enabled = false;
         }
     }
 #endif

@@ -16,7 +16,7 @@ public class LineHover : PunBehaviour
     // Update is called once per frame
     void Update()
     {
-            if (photonView.isMine && Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer)
+            if (photonView.isMine && !Application.isMobilePlatform)
         {
             //Check if a player is hovering
             //ray shooting out of the camera from where the mouse is
@@ -26,10 +26,10 @@ public class LineHover : PunBehaviour
             {
                 if (hit.collider.GetComponent<LinePlaced>() != null
                     && hit.collider.GetComponent<LinePlaced>().linePlaced == true
-                    && hit.collider.GetComponentInChildren<Renderer>().material.name.Contains("glow"))
+                    && hit.collider.GetComponentInChildren<Renderer>().material.name.Contains("HoverMat"))
                 {
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
-                    hit.collider.GetComponentInParent<Light>().enabled = false;
+                    //hit.collider.GetComponentInParent<Light>().enabled = false;
                 }
                 else if (hit.collider.name.Contains("line")
                     && hit.collider.GetComponent<LinePlaced>() != null
@@ -40,10 +40,12 @@ public class LineHover : PunBehaviour
                 {
                     hit.collider.GetComponentInChildren<Renderer>().enabled = true;
                     hit.collider.GetComponentInChildren<Renderer>().material = hoverMat;
-                    hit.collider.GetComponentInParent<Light>().enabled = true;
-                    hit.collider.GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
-                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_Color", GetComponent<PlayerColor>().playerColor);
-  //                  hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_detailcolor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_Color", new Color(GetComponent<PlayerColor>().playerColor.r, GetComponent<PlayerColor>().playerColor.g, GetComponent<PlayerColor>().playerColor.b, 0.4f));
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 0.1f);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 0.1f);
                 }
             }
         }

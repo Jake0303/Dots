@@ -18,7 +18,7 @@ public class GLOBALS : MonoBehaviour
     //Volume of the game
     public static float Volume = 50;
     //Name of the game
-    public static string GameName = "S";
+    public static string GameName = "Squarz";
     //Points to win game
     //(((GRIDWIDTH - 1) * (GRIDHEIGHT - 1) / 2) + 1)
     public const int POINTSTOWIN = 1;

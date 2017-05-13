@@ -511,7 +511,7 @@ public class PlayerClick : PunBehaviour
             squareColor = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material = lineMat;
             //square.GetComponent<Light>().enabled = true;
-            square.GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
+            //square.GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
@@ -613,7 +613,7 @@ public class PlayerClick : PunBehaviour
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
             //newLineHorizontal.GetComponent<Light>().enabled = true;
-            newLineHorizontal.GetComponent<Light>().color = objectColor;
+            //newLineHorizontal.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineHorizontal);
         }
         else
@@ -628,7 +628,7 @@ public class PlayerClick : PunBehaviour
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
             //newLineVertical.GetComponent<Light>().enabled = true;
-            newLineVertical.GetComponent<Light>().color = objectColor;
+            //newLineVertical.GetComponent<Light>().color = objectColor;
             GameObject.Find("GameManager").GetComponent<GameStart>().objectsToDelete.Add(newLineVertical);
         }
     }
@@ -702,12 +702,12 @@ public class PlayerClick : PunBehaviour
         {
             if (newLineHorizontal != null)
             {
-                newLineHorizontal.GetComponent<Light>().enabled = false;
+                //newLineHorizontal.GetComponent<Light>().enabled = false;
                 newLineHorizontal.GetComponentInChildren<Renderer>().enabled = false;
             }
             if (newLineVertical != null)
             {
-                newLineVertical.GetComponent<Light>().enabled = false;
+                //newLineVertical.GetComponent<Light>().enabled = false;
                 newLineVertical.GetComponentInChildren<Renderer>().enabled = false;
             }
         }
@@ -725,7 +725,7 @@ public class PlayerClick : PunBehaviour
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", squareColor);
         //newSquare.GetComponent<Light>().enabled = true;
-        newSquare.GetComponent<Light>().color = objectColor;
+        //newSquare.GetComponent<Light>().color = objectColor;
 
         return newSquare;
     }
@@ -749,7 +749,7 @@ public class PlayerClick : PunBehaviour
             if (newSquare.transform.position.y < 0.0001 && !squareAnimFinished && photonView.isMine)
             {
                 newSquare.transform.rotation = Quaternion.identity;
-                newSquare.GetComponent<Light>().enabled = false;
+                //newSquare.GetComponent<Light>().enabled = false;
                 CmdNextTurn();
                 photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
                 if (!GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)

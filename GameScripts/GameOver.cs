@@ -153,18 +153,10 @@ public class GameOver : PunBehaviour
         GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("CenterSquare"))
         {
-            if (tempObj.GetComponent<Light>() != null)
-                tempObj.GetComponent<Light>().enabled = false;
-            else if (tempObj.GetComponentInParent<Light>() != null)
-                tempObj.GetComponentInParent<Light>().enabled = false;
             tempObj.GetComponentInChildren<Renderer>().enabled = false;
         }
         foreach (var tempObj in GameObject.FindGameObjectsWithTag("Line"))
         {
-            if (tempObj.GetComponent<Light>() != null)
-                tempObj.GetComponent<Light>().enabled = false;
-            else if (tempObj.GetComponentInParent<Light>() != null)
-                tempObj.GetComponentInParent<Light>().enabled = false;
             tempObj.GetComponentInChildren<Renderer>().enabled = false;
         }
         GetComponent<GameStart>().DestroyGrid();

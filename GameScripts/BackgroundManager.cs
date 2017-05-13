@@ -16,6 +16,7 @@ public class BackgroundManager : MonoBehaviour
     public IEnumerator ShowSquare()
     {
         GameObject newSquare = null;
+        /*
         foreach (Color col in sexyColors)
         {
             newSquare = Instantiate(square, new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), Random.Range(44, 44)), square.transform.rotation) as GameObject;
@@ -41,8 +42,8 @@ public class BackgroundManager : MonoBehaviour
             newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 2);
             newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 2);
             yield return null;
-        }
-        /*
+        }*/
+
         while (true)
         {
             newSquare = null;
@@ -78,7 +79,7 @@ public class BackgroundManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(Random.Range(0.3f, 0.6f));
             }
-        }*/
+        }
     }
     void Start()
     {
@@ -104,7 +105,7 @@ public class BackgroundManager : MonoBehaviour
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * glowRate);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.1f);
         }
         StartCoroutine(fadeOut(newSquare));
     }
@@ -126,7 +127,7 @@ public class BackgroundManager : MonoBehaviour
                 newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * decreaseGlowRate);
                 newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.2f);
         }
         //kill when faded
         if (power <= 0)
