@@ -140,6 +140,7 @@ public class LeaderbordController : MonoBehaviour
         {
             gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         }
+        GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "Getting leaderboard data...";
         string hash = sha256(secretKey);
         string post_url = highscoreURL + "?hash=" + hash;
         WWW hs_get = new WWW(post_url);
@@ -151,7 +152,7 @@ public class LeaderbordController : MonoBehaviour
             {
                 gameObject.GetComponent<Text>().fontSize = 35;
                 gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
-                gameObject.GetComponent<Text>().text = "There was an error getting leadboards, please try again later";
+                GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "There was an error getting leadboards, please try again later";
             }
             leaderBoardError = true;
         }
@@ -159,6 +160,7 @@ public class LeaderbordController : MonoBehaviour
         {
             if (hs_get.isDone)
             {
+                GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "";
                 data = new JSONObject(hs_get.text);
                 int position = 1;
                 howFarCanWeScroll = defaultScrollPos;

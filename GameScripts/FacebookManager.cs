@@ -51,7 +51,6 @@ public class FacebookManager : MonoBehaviour
 
     public void FBLogin()
     {
-        FBUpdateLoginStatus(FB.IsLoggedIn);
         if (FB.IsLoggedIn)
         {
             return;
@@ -113,18 +112,6 @@ public class FacebookManager : MonoBehaviour
             accessToken = AccessToken.CurrentAccessToken.UserId;
             GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
             GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame(true);
-            FBUpdateLoginStatus(FB.IsLoggedIn);
-        }
-    }
-
-    void FBUpdateLoginStatus(bool isLoggedIn)
-    {
-        if (isLoggedIn)
-        {
-            /*
-            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame();
-            GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
-            GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);*/
         }
     }
 }

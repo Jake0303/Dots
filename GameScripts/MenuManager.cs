@@ -121,7 +121,7 @@ public class MenuManager : MonoBehaviour
         }
         else if (SceneManager.GetActiveScene().buildIndex == 0)
         {
-            GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 30;
+            GameObject.Find("Main Camera").GetComponent<Camera>().fieldOfView = 40;
             GameObject.Find("FullscreenCheckbox").transform.localScale = new Vector3(0, 0, 0);
         }
         GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().isOn = GLOBALS.ColorBlindAssist;
@@ -312,6 +312,10 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("NotificationMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
     }
 
+    public void UpdateLeaderboardData()
+    {
+        StartCoroutine(GameObject.Find("LeaderboardContainer").GetComponent<LeaderbordController>().GetScores());
+    }
     //Quit the game
     public void ExitGame()
     {

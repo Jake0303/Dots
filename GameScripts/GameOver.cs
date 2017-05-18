@@ -132,6 +132,14 @@ public class GameOver : PunBehaviour
             {
                 if (GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
                 {
+                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                    {
+                        if (scores.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with score
+                            scores.GetComponent<Text>().text = "Score: " + 0;
+                        }
+                    }
                     foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
                     {
                         if (stats.name.Contains((i + 1).ToString()))

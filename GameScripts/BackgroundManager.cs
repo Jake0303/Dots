@@ -98,12 +98,25 @@ public class BackgroundManager : MonoBehaviour
             {
                 power += 0.1f;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
-                fade.a += 0.1f;
-                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
-                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a * glowRate);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * glowRate);
-                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
+                if (SceneManager.GetActiveScene().buildIndex != 1)
+                {
+                    fade.a += 0.1f;
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a * glowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * glowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
+                } else
+                {
+                    fade.a += 0.01f;
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
+                }
             }
             yield return new WaitForSeconds(0.1f);
         }
@@ -120,12 +133,29 @@ public class BackgroundManager : MonoBehaviour
             {
                 power -= 0.1f;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
-                fade.a -= 0.1f;
-                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
-                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a * decreaseGlowRate);
-                newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * decreaseGlowRate);
-                newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
+                if (SceneManager.GetActiveScene().buildIndex != 1)
+                {
+                    fade.a -= 0.1f;
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a * decreaseGlowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * decreaseGlowRate);
+
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
+                }
+                else
+                {
+                    fade.a -= 0.02f;
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
+                }
             }
             yield return new WaitForSeconds(0.2f);
         }
