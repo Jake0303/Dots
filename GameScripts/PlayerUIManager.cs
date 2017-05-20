@@ -21,38 +21,27 @@ public class PlayerUIManager : PunBehaviour
         GameObject.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => ForfeitPlayer());
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
-        if (IsTablet())
+
+        if ((Screen.orientation == ScreenOrientation.Portrait
+            || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
+            && Application.isMobilePlatform)
+        {
+            GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 90;
+        }
+        //Tablet
+        else if (Camera.main.aspect < 1.5
+            && SceneManager.GetActiveScene().buildIndex == 1
+            && Screen.orientation != ScreenOrientation.Landscape
+           && Application.isMobilePlatform)
         {
             GameObject.Find("PopupText").GetComponent<Text>().fontSize = 22;
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 71;
         }
-        else if ((Screen.orientation == ScreenOrientation.Portrait
-            || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
-            && (Application.platform == RuntimePlatform.Android
-            || Application.platform == RuntimePlatform.IPhonePlayer))
-        {
-            GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 90;
-        }
-        else if (SceneManager.GetActiveScene().buildIndex == 1)
+        else
         {
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
         }
         GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "";
-    }
-    public static float GetScreenSize()
-    {
-        float curDPI = Screen.dpi;
-        if (curDPI == 0f) // Win, OSX or WP8
-            curDPI = 96f;
-
-        return ((Mathf.Sqrt(Screen.width * Screen.width + Screen.height * Screen.height)) / curDPI);
-    }
-    //TODO not working for iPhone 5s
-    public static bool IsTablet()
-    {
-        return (GetScreenSize() > 6f);
-        /*return (GetScreenSize() >= 6f && (Application.platform == RuntimePlatform.Android
-            || Application.platform == RuntimePlatform.IPhonePlayer));*/
     }
     //When the client has connected, populate the names of each panel for previous players
     public override void OnJoinedRoom()

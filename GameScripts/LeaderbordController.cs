@@ -12,35 +12,11 @@ public class LeaderbordController : MonoBehaviour
     private static string secretKey = "89oN04ydon854CBm9XTG4Tt6YcAKEAqA"; // Edit this value and make sure it's the same as the one stored on the server
     public static string addScoreURL = "https://squarz.io/Scripts/AddToLeaderboard.php?"; //be sure to add a ? to your url
     public string highscoreURL = "https://squarz.io/Scripts/DisplayLeaderboard.php?";
-    private float defaultScrollPos = 0.2f;
+    private float defaultScrollPos = 0.1f;
     private float howFarCanWeScroll; // default
     private const float scrollBarVerticalOffset = 2.5f, scrollBarVerticalLimit = 4.5f, mobileScrollBarVerticalLimit = 3f, mobileScrollBarVerticalOffset = 1.5f;
 
 
-    void Start()
-    {
-        StartCoroutine(GetScores());
-    }
-    /*
-    public static string Md5Sum(string strToEncrypt)
-    {
-        System.Text.UTF8Encoding ue = new System.Text.UTF8Encoding();
-        byte[] bytes = ue.GetBytes(strToEncrypt);
-
-        // encrypt bytes
-        System.Security.Cryptography.MD5CryptoServiceProvider md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-        byte[] hashBytes = md5.ComputeHash(bytes);
-
-        // Convert the encrypted bytes back to a string (base 16)
-        string hashString = "";
-
-        for (int i = 0; i < hashBytes.Length; i++)
-        {
-            hashString += System.Convert.ToString(hashBytes[i], 16).PadLeft(2, '0');
-        }
-
-        return hashString.PadLeft(32, '0');
-    }*/
 
     // remember to use StartCoroutine when calling this function!
     public static IEnumerator PostScores(string name, int wins, int losses, string fbID, bool forfeit)
@@ -140,7 +116,8 @@ public class LeaderbordController : MonoBehaviour
         {
             gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Overflow;
         }
-        GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "Getting leaderboard data...";
+        if (GameObject.Find("GettingLeaderboardDataText"))
+            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "Getting leaderboard data...";
         string hash = sha256(secretKey);
         string post_url = highscoreURL + "?hash=" + hash;
         WWW hs_get = new WWW(post_url);
@@ -160,10 +137,15 @@ public class LeaderbordController : MonoBehaviour
         {
             if (hs_get.isDone)
             {
-                GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "";
+                if (GameObject.Find("GettingLeaderboardDataText"))
+                    GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "";
                 data = new JSONObject(hs_get.text);
                 int position = 1;
                 howFarCanWeScroll = defaultScrollPos;
+                GameObject.Find("position").GetComponent<Text>().text = "\n";
+                GameObject.Find("username").GetComponent<Text>().text = "\n";
+                GameObject.Find("wins").GetComponent<Text>().text = "\n";
+                GameObject.Find("losses").GetComponent<Text>().text = "\n";
                 foreach (var aData in data.list)
                 {
                     if (GameObject.Find("wins"))

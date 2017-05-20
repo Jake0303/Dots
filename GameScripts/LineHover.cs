@@ -44,8 +44,8 @@ public class LineHover : PunBehaviour
                     hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
                     hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
                     hit.collider.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
-                    hit.collider.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 0.1f);
-                    hit.collider.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 0.1f);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 0.15f);
+                    hit.collider.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 0.15f);
                 }
             }
         }

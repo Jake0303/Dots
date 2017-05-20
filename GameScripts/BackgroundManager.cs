@@ -10,7 +10,7 @@ public class BackgroundManager : MonoBehaviour
     public GameObject square;
     Color fade;
     int colorIndex = 0;
-    private float glowRate = 0.7f;
+    private float glowRate = 0.6f;
     private float decreaseGlowRate = 0.8f;
 
     public IEnumerator ShowSquare()

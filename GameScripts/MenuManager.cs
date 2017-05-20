@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DoozyUI;
+using System.Runtime.InteropServices;
 
 public class MenuManager : MonoBehaviour
 {
@@ -103,9 +104,6 @@ public class MenuManager : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera");
         backButton = GameObject.Find("BackToMenuButton");
 
-        // Initialize volume slider
-        if (GameObject.Find("VolumeSlider") != null)
-            GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
         if (Application.platform != RuntimePlatform.Android
             && Application.platform != RuntimePlatform.IPhonePlayer)
         {
@@ -237,7 +235,8 @@ public class MenuManager : MonoBehaviour
                 GameObject.Find("ConnectingMenu").GetComponent<DoozyUI.UIElement>().Show(false);
                 GameObject.Find("NetworkManager").GetComponent<NetworkManager>().AutoConnect = true;
                 GameObject.Find("NetworkManager").GetComponent<NetworkManager>().ConnectInUpdate = true;
-            } else
+            }
+            else
             {
                 StartCoroutine(LeaderbordController.PostScoresBeforeStart(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text, 0, 0, GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken));
                 PlayerPrefs.SetString("Username", GameObject.Find("EnterNameInputField").GetComponent<InputField>().text);
@@ -293,6 +292,8 @@ public class MenuManager : MonoBehaviour
     //OnColorBlindAssistCheckbox Changed
     public void OnFullscreenCheckboxChanged(bool val)
     {
+        if (Application.platform == RuntimePlatform.WebGLPlayer)
+            Input.GetMouseButtonDown(0);
         Screen.fullScreen = !Screen.fullScreen;
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
@@ -311,6 +312,8 @@ public class MenuManager : MonoBehaviour
     {
         GameObject.Find("NotificationMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
     }
+
+
 
     public void UpdateLeaderboardData()
     {
