@@ -125,12 +125,9 @@ public class LeaderbordController : MonoBehaviour
 
         if (hs_get.error != null)
         {
-            if (gameObject.GetComponent<Text>())
-            {
-                gameObject.GetComponent<Text>().fontSize = 35;
-                gameObject.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
-                GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "There was an error getting leadboards, please try again later";
-            }
+            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().fontSize = 35;
+            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
+            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "There was an error getting leadboards, please try again later";
             leaderBoardError = true;
         }
         else

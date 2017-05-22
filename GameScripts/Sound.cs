@@ -30,13 +30,13 @@ public class Sound : MonoBehaviour
         {
             bgMusic.Stop();
             bgMusic = GetComponents<AudioSource>()[0];
-            StartCoroutine(FadeIn(bgMusic, 3.5f));
+            StartCoroutine(FadeIn(bgMusic, 6f));
         }
         else
         {
             bgMusic.Stop();
             bgMusic = GetComponents<AudioSource>()[3];
-            StartCoroutine(FadeIn(bgMusic, 1.5f));
+            StartCoroutine(FadeIn(bgMusic, 2f));
         }
     }
 
@@ -60,7 +60,7 @@ public class Sound : MonoBehaviour
         float startVolume = 0.01f;
         audioSource.Play();
         audioSource.volume = startVolume;
-        while (audioSource.volume <= 1)
+        while (audioSource.volume < (GLOBALS.Volume/100.0f))
         {
             audioSource.volume += startVolume * Time.deltaTime * FadeTime;
 
