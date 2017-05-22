@@ -304,16 +304,6 @@ public class MenuManager : MonoBehaviour
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
     }
 
-
-    //Try to reload the leaderboard if there is an error
-    public void ReloadLeaderBoard()
-    {
-        if (LeaderbordController.leaderBoardError)
-        {
-            StartCoroutine(GameObject.Find("scores").GetComponent<LeaderbordController>().GetScores());
-        }
-    }
-
     public void OnNickNameMenuAnimFinish()
     {
         GameObject.Find("NotificationMenu").GetComponent<DoozyUI.UIElement>().Hide(false);

@@ -126,10 +126,9 @@ public class LeaderbordController : MonoBehaviour
         if (hs_get.error != null)
         {
             GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
-            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "There was an error getting leadboards, please try again later.";
+            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "There was an error getting leaderboards, please try again later.";
             leaderBoardError = true;
-            StopAllCoroutines();
-            StartCoroutine(GetScores());
+            yield break;
         }
         else
         {
@@ -155,6 +154,7 @@ public class LeaderbordController : MonoBehaviour
                 }
             }
             leaderBoardError = false;
+            yield break;
         }
     }
     //Restrict the scroll to the min and max
