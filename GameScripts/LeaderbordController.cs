@@ -125,38 +125,36 @@ public class LeaderbordController : MonoBehaviour
 
         if (hs_get.error != null)
         {
-            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().fontSize = 35;
             GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
-            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "There was an error getting leadboards, please try again later";
+            GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "There was an error getting leadboards, please try again later.";
             leaderBoardError = true;
+            StopAllCoroutines();
+            StartCoroutine(GetScores());
         }
         else
         {
-            if (hs_get.isDone)
+            if (GameObject.Find("GettingLeaderboardDataText"))
+                GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "";
+            data = new JSONObject(hs_get.text);
+            int position = 1;
+            howFarCanWeScroll = defaultScrollPos;
+            GameObject.Find("position").GetComponent<Text>().text = "\n";
+            GameObject.Find("username").GetComponent<Text>().text = "\n";
+            GameObject.Find("wins").GetComponent<Text>().text = "\n";
+            GameObject.Find("losses").GetComponent<Text>().text = "\n";
+            foreach (var aData in data.list)
             {
-                if (GameObject.Find("GettingLeaderboardDataText"))
-                    GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text = "";
-                data = new JSONObject(hs_get.text);
-                int position = 1;
-                howFarCanWeScroll = defaultScrollPos;
-                GameObject.Find("position").GetComponent<Text>().text = "\n";
-                GameObject.Find("username").GetComponent<Text>().text = "\n";
-                GameObject.Find("wins").GetComponent<Text>().text = "\n";
-                GameObject.Find("losses").GetComponent<Text>().text = "\n";
-                foreach (var aData in data.list)
+                if (GameObject.Find("wins"))
                 {
-                    if (GameObject.Find("wins"))
-                    {
-                        GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".\n ";
-                        GameObject.Find("username").GetComponent<Text>().text += " " + aData["Username"].str + "\n";
-                        GameObject.Find("wins").GetComponent<Text>().text += " " + aData["Wins"].str + "\n";
-                        GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "\n";
-                        position++;
-                        howFarCanWeScroll += 0.3f;
-                    }
+                    GameObject.Find("position").GetComponent<Text>().text += position.ToString() + ".\n ";
+                    GameObject.Find("username").GetComponent<Text>().text += " " + aData["Username"].str + "\n";
+                    GameObject.Find("wins").GetComponent<Text>().text += " " + aData["Wins"].str + "\n";
+                    GameObject.Find("losses").GetComponent<Text>().text += aData["Losses"].str + "\n";
+                    position++;
+                    howFarCanWeScroll += 0.3f;
                 }
-                leaderBoardError = false;
             }
+            leaderBoardError = false;
         }
     }
     //Restrict the scroll to the min and max

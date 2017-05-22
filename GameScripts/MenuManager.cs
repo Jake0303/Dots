@@ -312,12 +312,11 @@ public class MenuManager : MonoBehaviour
     {
         GameObject.Find("NotificationMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
     }
-
-
-
+    //Update Leaderboard Data
     public void UpdateLeaderboardData()
     {
-        StartCoroutine(GameObject.Find("LeaderboardContainer").GetComponent<LeaderbordController>().GetScores());
+        if (GameObject.Find("GettingLeaderboardDataText").GetComponent<Text>().text != "")
+            StartCoroutine(GameObject.Find("LeaderboardContainer").GetComponent<LeaderbordController>().GetScores());
     }
     //Quit the game
     public void ExitGame()

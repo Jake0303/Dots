@@ -81,15 +81,9 @@ public class GameOver : PunBehaviour
     //Display the winner of the game
     public void DisplayWinner()
     {
-        if (winner != "")
-        {
-            RaiseEventOptions options = new RaiseEventOptions();
-            options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
-            PhotonNetwork.RaiseEvent(2, null, true, options);
-        }
-
-        winner = "";
-        loser = "";
+        RaiseEventOptions options = new RaiseEventOptions();
+        options.Receivers = ExitGames.Client.Photon.ReceiverGroup.All;
+        PhotonNetwork.RaiseEvent(2, null, true, options);
     }
     IEnumerator DelayBeforeRestart()
     {
