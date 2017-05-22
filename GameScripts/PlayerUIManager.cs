@@ -21,8 +21,6 @@ public class PlayerUIManager : PunBehaviour
         GameObject.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => ForfeitPlayer());
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
-        // determine the game window's current aspect ratio
-        float aspectRatio = (float)Screen.width / (float)Screen.height;
         if ((Screen.orientation == ScreenOrientation.Portrait
             || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
             && Application.isMobilePlatform)
@@ -34,13 +32,6 @@ public class PlayerUIManager : PunBehaviour
         {
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
         }
-        //Tablet
-        /*
-        else if (aspectRatio < 1.5)
-        {
-            GameObject.Find("PopupText").GetComponent<Text>().fontSize = 22;
-            GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 71;
-        }*/
         GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "";
     }
     //When the client has connected, populate the names of each panel for previous players

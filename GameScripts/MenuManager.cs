@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DoozyUI;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 public class MenuManager : MonoBehaviour
 {
@@ -17,7 +18,6 @@ public class MenuManager : MonoBehaviour
 
     #region Private Variables
     private WaitForSeconds checkMusicInterval = new WaitForSeconds(0.5f); //listener update time
-    private int randomIconIndex = 0;
     private float tempVolume = GLOBALS.Volume;
     #endregion
 
@@ -222,6 +222,12 @@ public class MenuManager : MonoBehaviour
                     aError = true;
                 }
             }
+        }
+        Regex usernameRules= new Regex("^[a-zA-Z0-9_]*$");
+        if (!usernameRules.IsMatch(GameObject.Find("EnterNameInputField").GetComponent<InputField>().text))
+        {
+            GameObject.Find("errorText").GetComponent<Text>().text = "No special characters allowed.";
+            aError = true;
         }
         if (!aError)
         {
