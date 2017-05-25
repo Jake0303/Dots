@@ -10,8 +10,8 @@ public class BackgroundManager : MonoBehaviour
     public GameObject square;
     Color fade;
     int colorIndex = 0;
-    private float glowRate = 0.6f;
-    private float decreaseGlowRate = 0.8f;
+    private float glowRate = 0.04f;
+    private float decreaseGlowRate = 0.08f;
 
     public IEnumerator ShowSquare()
     {
@@ -91,25 +91,25 @@ public class BackgroundManager : MonoBehaviour
     IEnumerator fadeIn(GameObject newSquare)
     {
         float power = 0;
-        while (power <= 2)
+        while (power <= 1.2)
         {
             //Transparency.
             if (newSquare != null)
             {
-                power += 0.1f;
+                power += glowRate;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
                 if (SceneManager.GetActiveScene().buildIndex != 1)
                 {
-                    fade.a += 0.1f;
+                    fade.a += glowRate;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a * glowRate);
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * glowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
                 } else
                 {
-                    fade.a += 0.01f;
+                    fade.a += glowRate/5;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
@@ -121,6 +121,7 @@ public class BackgroundManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         StartCoroutine(fadeOut(newSquare));
+        yield break;
     }
 
     IEnumerator fadeOut(GameObject newSquare)
@@ -131,29 +132,29 @@ public class BackgroundManager : MonoBehaviour
             //Transparency.
             if (newSquare != null)
             {
-                power -= 0.1f;
+                power -= decreaseGlowRate;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
                 if (SceneManager.GetActiveScene().buildIndex != 1)
                 {
-                    fade.a -= 0.1f;
+                    fade.a -= decreaseGlowRate;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a * decreaseGlowRate);
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a * decreaseGlowRate);
-
                     newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
                     newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
+
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a-decreaseGlowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a-decreaseGlowRate);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
                 }
                 else
                 {
-                    fade.a -= 0.02f;
+                    fade.a -= decreaseGlowRate/10;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a - decreaseGlowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a - decreaseGlowRate);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
                 }
             }
@@ -163,6 +164,7 @@ public class BackgroundManager : MonoBehaviour
         if (power <= 0)
         {
             Destroy(newSquare);
+            yield break;
         }
     }
 
