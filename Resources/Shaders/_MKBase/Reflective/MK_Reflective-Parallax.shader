@@ -48,6 +48,7 @@ struct Input {
 };
 
 void surf (Input IN, inout SurfaceOutput o) {
+	/*
 	half h = tex2D (_ParallaxMap, IN.uv_BumpMap).w;
 	float2 offset = ParallaxOffset (h, _Parallax, IN.viewDir);
 	IN.uv_MainTex += offset;
@@ -65,7 +66,7 @@ void surf (Input IN, inout SurfaceOutput o) {
 	fixed4 reflcol = texCUBE (_Cube, worldRefl);
 	reflcol *= tex.a;
 	o.Emission = reflcol.rgb * _ReflectColor.rgb;
-	o.Alpha = reflcol.a * _ReflectColor.a;
+	o.Alpha = reflcol.a * _ReflectColor.a;*/
 }
 ENDCG
 }

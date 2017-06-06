@@ -100,6 +100,7 @@ public class MenuManager : MonoBehaviour
     {
         UpdateLeaderboardData();
         DoozyUI.UIManager.DisableBackButton();
+        DeviceChange.OnOrientationChange -= MyOrientationChange;
         DeviceChange.OnOrientationChange += MyOrientationChange;
         GameObject.Find("Title").GetComponent<Text>().text = GLOBALS.GameName;
         mainCamera = GameObject.Find("Main Camera");

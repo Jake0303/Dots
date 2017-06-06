@@ -5,9 +5,9 @@ var FacebookHelperPlugin = {
 	console.log("Logging Facebook with permissions " + permissions);
     var OpenFacebookLoginPopup = function() {
 		FBUnity.login(permissions, callbackId);
-		document.getElementById('canvas').removeEventListener('click', OpenFacebookLoginPopup);
+		document.getElementById('gameContainer').removeEventListener('click', OpenFacebookLoginPopup);
     };
-    document.getElementById('canvas').addEventListener('click', OpenFacebookLoginPopup, false);
+    document.getElementById('gameContainer').addEventListener('click', OpenFacebookLoginPopup, false);
   }
 };
 mergeInto(LibraryManager.library, FacebookHelperPlugin);

@@ -85,6 +85,36 @@ public class TurnTimer : PunBehaviour
                                 }
                                 else
                                     timerText.GetComponent<Text>().color = Color.white;
+
+                                //If the player has run out of time and not placed a line place a random one
+                                if (timer < 1
+                                    && !player.GetComponent<PlayerClick>().playingAnim
+                                    && !player.GetComponent<PlayerClick>().playingSquareAnim
+                                    && !player.GetComponent<PlayerID>().winner
+                                    && player.GetComponent<PlayerClick>().photonView.isMine)
+                                {
+                                    foreach (var randomLine in GameObject.FindGameObjectsWithTag("Line"))
+                                    {
+                                        if (randomLine.GetComponent<LinePlaced>() != null
+                                            && !randomLine.GetComponent<LinePlaced>().linePlaced
+                                            && randomLine.name.Contains("line"))
+                                        {
+                                            player.GetComponent<PlayerClick>().objectID = randomLine.name;
+                                            player.GetComponent<PlayerClick>().hit = new RaycastHit();
+                                            //ray shooting out of the camera from where the mouse is
+                                            Ray rayToCameraPos = new Ray(Camera.main.transform.position, Camera.main.transform.position - randomLine.transform.position);
+                                            player.GetComponent<PlayerClick>().ray = rayToCameraPos;
+                                            Physics.Raycast(Camera.main.transform.position, randomLine.transform.position - Camera.main.transform.position, out player.GetComponent<PlayerClick>().hit, 5000);
+                                            randomLine.GetComponentInChildren<Renderer>().enabled = false;
+                                            player.GetComponent<PlayerClick>().objectColor = player.GetComponent<PlayerColor>().playerColor;
+                                            randomLine.GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 100;
+                                            randomLine.GetComponents<AudioSource>()[1].Play();
+                                            player.GetComponent<PlayerClick>().photonView.RPC("CmdSelectObject", PhotonTargets.AllBuffered, randomLine.name);
+                                            player.GetComponent<PlayerClick>().photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, randomLine.name);
+                                            break;
+                                        }
+                                    }
+                                }
                             }
                             else
                             {

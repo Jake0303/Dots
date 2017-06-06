@@ -6,7 +6,7 @@ public class DeviceChange : MonoBehaviour
 {
     public static event Action<Vector2> OnResolutionChange;
     public static event Action<DeviceOrientation> OnOrientationChange;
-    public static float CheckDelay = 0.5f;        // How long to wait until we check again.
+    public static float CheckDelay = 1.5f;        // How long to wait until we check again.
 
     static Vector2 resolution;                    // Current Resolution
     static DeviceOrientation orientation;        // Current Device Orientation

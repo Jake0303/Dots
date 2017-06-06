@@ -110,6 +110,8 @@ public class PlayerID : PunBehaviour
                 PlayerPrefs.SetInt("Wins", playersWins);
                 GetComponent<PlayerUIManager>().DisplayPopupText("You have won the game!", true);
                 GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].text = playersWins + " W " + playerLosses + " L ";
+                GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].GetComponent<DoozyUI.UIElement>().Hide(true);
+                GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].GetComponent<DoozyUI.UIElement>().Show(false);
                 GetComponents<AudioSource>()[0].volume = GLOBALS.Volume;
                 GetComponents<AudioSource>()[0].Play();
                 if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")

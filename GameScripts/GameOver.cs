@@ -26,6 +26,7 @@ public class GameOver : PunBehaviour
             stream.SendNext(gameOver);
             stream.SendNext(winner);
             stream.SendNext(loser);
+            stream.SendNext(gameDone);
         }
         else
         {
@@ -33,6 +34,7 @@ public class GameOver : PunBehaviour
             this.gameOver = (bool)stream.ReceiveNext();
             this.winner = (string)stream.ReceiveNext();
             this.loser = (string)stream.ReceiveNext();
+            this.gameDone = (bool)stream.ReceiveNext();
         }
     }
 
@@ -126,14 +128,6 @@ public class GameOver : PunBehaviour
             {
                 if (GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
                 {
-                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
-                    {
-                        if (scores.name.Contains((i + 1).ToString()))
-                        {
-                            //Update UI with score
-                            scores.GetComponent<Text>().text = "Score: " + 0;
-                        }
-                    }
                     foreach (var stats in GameObject.FindGameObjectsWithTag("StatsText"))
                     {
                         if (stats.name.Contains((i + 1).ToString()))
@@ -141,6 +135,8 @@ public class GameOver : PunBehaviour
                             //Update UI with Wins and Losses
                             stats.GetComponent<Text>().text = player.GetComponent<PlayerID>().playersWins + " W "
                              + player.GetComponent<PlayerID>().playerLosses + " L ";
+                            stats.GetComponent<DoozyUI.UIElement>().Hide(true);
+                            stats.GetComponent<DoozyUI.UIElement>().Show(false);
                         }
                     }
                 }
@@ -164,18 +160,33 @@ public class GameOver : PunBehaviour
         GetComponent<GameStart>().DestroyGrid();
         var players = GameObject.FindGameObjectsWithTag("Player");
         GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
-        //Update timer
-        foreach (var player in players)
+        for (int i = 0; i < GetComponent<GameStart>().playerNames.Count; i++)
         {
-            player.GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
-            player.GetComponent<PlayerID>().isPlayersTurn = false;
-            player.GetComponent<PlayerID>().winner = false;
-            player.GetComponent<PlayerClick>().playingAnim = false;
-            player.GetComponent<PlayerClick>().playingSquareAnim = false;
-            player.GetComponent<PlayerID>().playerScore = 0;
-            player.GetComponent<PlayerID>().playerTurnOrder = 0;
-            player.GetComponent<PlayerID>().showWinner = true;
-            GameObject.Find(player.GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
+            foreach (var player in players)
+            {
+                player.GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
+                player.GetComponent<PlayerID>().isPlayersTurn = false;
+                player.GetComponent<PlayerID>().winner = false;
+                player.GetComponent<PlayerClick>().playingAnim = false;
+                player.GetComponent<PlayerClick>().playingSquareAnim = false;
+                player.GetComponent<PlayerID>().playerScore = 0;
+                player.GetComponent<PlayerID>().playerTurnOrder = 0;
+                player.GetComponent<PlayerID>().showWinner = true;
+                GameObject.Find(player.GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
+                if (GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
+                {
+                    foreach (var scores in GameObject.FindGameObjectsWithTag("ScoreText"))
+                    {
+                        if (scores.name.Contains((i + 1).ToString()))
+                        {
+                            //Update UI with score
+                            scores.GetComponent<Text>().text = "Score: " + 0;
+                            scores.GetComponent<DoozyUI.UIElement>().Hide(true);
+                            scores.GetComponent<DoozyUI.UIElement>().Show(false);
+                        }
+                    }
+                }
+            }
         }
         ParticleSystem.MainModule settings = GameObject.Find("EventPanelEffect").GetComponent<ParticleSystem>().main;
         settings.startColor = new ParticleSystem.MinMaxGradient(Color.cyan);

@@ -17,10 +17,10 @@ public class PlayerClick : PunBehaviour
 
     private float squareRadius = GLOBALS.DOTDISTANCE / 2;
 
-    private Color objectColor, squareColor;
+    public Color objectColor, squareColor;
     public string objectID;
     public string squareID;
-    private RaycastHit hit;
+    public RaycastHit hit;
     [SerializeField]
     private Collider[] hitCollidersRight;
     [SerializeField]
@@ -40,8 +40,8 @@ public class PlayerClick : PunBehaviour
     [SerializeField]
     private GameObject linePlaceEffect, squarePlaceEffect;
     private GameObject leftLineEffect, rightLineEffect, squareEffectLeftTop, squareEffectRightTop, squareEffectLeftBot, squareEffectRightBot;
-    private GameObject escapeMenu, eventPanel, playAgainMenu, gameManager;
-    private Ray ray;
+    private GameObject escapeMenu, eventPanel, playAgainMenu, gameManager, leaveConfMenu;
+    public Ray ray;
 
     /*
      * Sync Line position
@@ -61,6 +61,7 @@ public class PlayerClick : PunBehaviour
     {
         scores = GameObject.FindGameObjectsWithTag("ScoreText");
         escapeMenu = GameObject.Find("EscapeMenu");
+        leaveConfMenu = GameObject.Find("LeaveConfirmation");
         gameManager = GameObject.Find("GameManager");
         eventPanel = GameObject.Find("EventPanel");
         playAgainMenu = GameObject.Find("PlayAgainMenu");
@@ -337,6 +338,8 @@ public class PlayerClick : PunBehaviour
                     {
                         //Update UI with score
                         scoreTxt.GetComponent<Text>().text = "Score: " + score.ToString();
+                        scoreTxt.GetComponent<DoozyUI.UIElement>().Hide(true);
+                        scoreTxt.GetComponent<DoozyUI.UIElement>().Show(false);
                         return;
                     }
                 }
@@ -550,11 +553,13 @@ public class PlayerClick : PunBehaviour
     void CheckIfPlayerClicked()
     {
         //Must be the players turn to place a line
-        if (photonView.isMine && GetComponent<PlayerID>().isPlayersTurn
+        if (photonView.isMine 
+            && GetComponent<PlayerID>().isPlayersTurn
             && Input.GetMouseButtonDown(0)
             && escapeMenu != null
-            //Escape Menu not open
-            && !escapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
+            && !escapeMenu.GetComponent<DoozyUI.UIElement>().isVisible
+            && leaveConfMenu != null
+            && !leaveConfMenu.GetComponent<DoozyUI.UIElement>().isVisible)
         {
             //empty RaycastHit object which raycast puts the hit details into
             hit = new RaycastHit();
@@ -576,8 +581,8 @@ public class PlayerClick : PunBehaviour
                     objectID = hit.collider.name;// this gets the object that is hit
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
                     objectColor = GetComponent<PlayerColor>().playerColor;
-                    GameObject.Find(objectID).GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 100;
-                    GameObject.Find(objectID).GetComponents<AudioSource>()[1].Play();
+                    hit.collider.GetComponents<AudioSource>()[1].volume = GLOBALS.Volume / 100;
+                    hit.collider.GetComponents<AudioSource>()[1].Play();
                     photonView.RPC("CmdSelectObject", PhotonTargets.AllBuffered, hit.collider.name);
                     photonView.RPC("CmdPlayAnim", PhotonTargets.AllBuffered, hit.collider.name);
                 }

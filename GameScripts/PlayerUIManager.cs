@@ -155,7 +155,7 @@ public class PlayerUIManager : PunBehaviour
     public void openEscapeMenu()
     {
         GameObject.Find("EscapeMenu").GetComponent<Canvas>().overrideSorting = true;
-        GameObject.Find("EscapeMenu").GetComponent<Canvas>().sortingOrder = 1;
+        GameObject.Find("EscapeMenu").GetComponent<Canvas>().sortingOrder = 0;
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         EscapeMenu = GameObject.Find("EscapeMenu");
         GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
