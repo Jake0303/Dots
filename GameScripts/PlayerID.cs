@@ -10,6 +10,7 @@ public class PlayerID : PunBehaviour
     public string playerID, fbToken, guestToken;
     public bool isPlayersTurn = false;
     public bool winner = false;
+    public bool wantsToPlayAgain = false;
 
     public int playerTurnOrder = 0;
     public int playerScore = 0;
@@ -158,6 +159,7 @@ public class PlayerID : PunBehaviour
             stream.SendNext(winner);
             stream.SendNext(playersWins);
             stream.SendNext(playerLosses);
+            stream.SendNext(wantsToPlayAgain);
         }
         else
         {
@@ -169,6 +171,7 @@ public class PlayerID : PunBehaviour
             this.winner = (bool)stream.ReceiveNext();
             this.playersWins = (int)stream.ReceiveNext();
             this.playerLosses = (int)stream.ReceiveNext();
+            this.wantsToPlayAgain = (bool)stream.ReceiveNext();
         }
     }
 
@@ -245,4 +248,12 @@ public class PlayerID : PunBehaviour
         myTransform.name = playerID;
     }
 
+    public void WantsToPlayAgain()
+    {
+        if (photonView.isMine)
+        {
+            GameObject.Find("PlayAgainText").GetComponent<Text>().text = "Waiting for opponent...";
+            wantsToPlayAgain = true;
+        }
+    }
 }

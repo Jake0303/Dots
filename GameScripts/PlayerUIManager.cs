@@ -19,6 +19,8 @@ public class PlayerUIManager : PunBehaviour
         panels = GameObject.FindGameObjectsWithTag("Panel");
         GameObject.Find("Disconnect").GetComponent<Button>().onClick.AddListener(() => OnLeaveButtonClick());
         GameObject.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => ForfeitPlayer());
+        GameObject.Find("PlayAgainButton").GetComponent<Button>().onClick.AddListener(() => GetComponent<PlayerID>().WantsToPlayAgain());
+        GameObject.Find("PlayAgainButton").GetComponent<Button>().onClick.AddListener(() => GameObject.Find("GameManager").GetComponent<GameOver>().PlayAgain());
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
         if ((Screen.orientation == ScreenOrientation.Portrait

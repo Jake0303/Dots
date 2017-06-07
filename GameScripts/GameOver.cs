@@ -167,11 +167,12 @@ public class GameOver : PunBehaviour
                 player.GetComponent<PlayerUIManager>().DisplayPopupText("Restarting game...", true);
                 player.GetComponent<PlayerID>().isPlayersTurn = false;
                 player.GetComponent<PlayerID>().winner = false;
-                player.GetComponent<PlayerClick>().playingAnim = false;
-                player.GetComponent<PlayerClick>().playingSquareAnim = false;
                 player.GetComponent<PlayerID>().playerScore = 0;
                 player.GetComponent<PlayerID>().playerTurnOrder = 0;
                 player.GetComponent<PlayerID>().showWinner = true;
+                player.GetComponent<PlayerID>().wantsToPlayAgain = false;
+                player.GetComponent<PlayerClick>().playingAnim = false;
+                player.GetComponent<PlayerClick>().playingSquareAnim = false;
                 GameObject.Find(player.GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
                 if (GetComponent<GameStart>().playerNames[i] == player.GetComponent<PlayerID>().playerID)
                 {
@@ -197,11 +198,20 @@ public class GameOver : PunBehaviour
         gameDone = false;
         GetComponent<GameStart>().buildGrid = true;
         GetComponent<GameStart>().startGame = true;
+        GameObject.Find("PlayAgainText").GetComponent<Text>().text = "Play Again";
     }
     //Play another game with the same player
     public void PlayAgain()
     {
-        photonView.RPC("HideMenu", PhotonTargets.AllBuffered);
+        bool canWePlayAgain = true;
+        var players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (var player in players)
+        {
+            if (!player.GetComponent<PlayerID>().wantsToPlayAgain)
+                canWePlayAgain = false;
+        }
+        if (canWePlayAgain)
+            photonView.RPC("HideMenu", PhotonTargets.AllBuffered);
     }
 
 }
