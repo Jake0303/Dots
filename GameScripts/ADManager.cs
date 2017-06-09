@@ -50,4 +50,9 @@ public class ADManager : MonoBehaviour
         yield break;
     }
 }
+
+#else
+using UnityEngine;
+public class ADManager : MonoBehaviour
+{}
 #endif

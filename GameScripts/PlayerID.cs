@@ -110,9 +110,9 @@ public class PlayerID : PunBehaviour
                     playersWins++;
                 PlayerPrefs.SetInt("Wins", playersWins);
                 GetComponent<PlayerUIManager>().DisplayPopupText("You have won the game!", true);
-                GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].text = playersWins + " W " + playerLosses + " L ";
+                /*GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].text = playersWins + " W " + playerLosses + " L ";
                 GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].GetComponent<DoozyUI.UIElement>().Hide(true);
-                GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].GetComponent<DoozyUI.UIElement>().Show(false);
+                GameObject.Find(playersPanel).GetComponentsInChildren<Text>()[3].GetComponent<DoozyUI.UIElement>().Show(false);*/
                 GetComponents<AudioSource>()[0].volume = GLOBALS.Volume;
                 GetComponents<AudioSource>()[0].Play();
                 if (GameObject.Find("MenuManager").GetComponent<FacebookManager>().accessToken != "")
@@ -138,6 +138,8 @@ public class PlayerID : PunBehaviour
                     StartCoroutine(LeaderbordController.PostScores(guestToken, playerID, playersWins, playerLosses, false));
                 GameObject.Find("GameManager").GetComponent<GameOver>().StartCoroutine("DelayBeforeRestart");
             }
+        } else if (eventcode == 10 && this != null) {
+            GetComponent<PlayerUIManager>().OnColorBlindCheckboxChanged(GLOBALS.ColorBlindAssist);
         }
     }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -252,6 +254,7 @@ public class PlayerID : PunBehaviour
     {
         if (photonView.isMine)
         {
+            GameObject.Find("PlayAgainText").GetComponent<Text>().fontSize = 19;
             GameObject.Find("PlayAgainText").GetComponent<Text>().text = "Waiting for opponent...";
             wantsToPlayAgain = true;
         }

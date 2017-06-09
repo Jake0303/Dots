@@ -185,7 +185,7 @@ TextureImporter:
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
-    sRGBTexture: 0
+    sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
@@ -245,7 +245,7 @@ TextureImporter:
     overridden: 0
   - buildTarget: iPhone
     maxTextureSize: 2048
-    textureFormat: 1
+    textureFormat: 13
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
@@ -253,7 +253,7 @@ TextureImporter:
     overridden: 1
   - buildTarget: Android
     maxTextureSize: 2048
-    textureFormat: 1
+    textureFormat: 13
     textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
@@ -261,7 +261,7 @@ TextureImporter:
     overridden: 1
   - buildTarget: WebGL
     maxTextureSize: 2048
-    textureFormat: 1
+    textureFormat: 4
     textureCompression: 0
     compressionQuality: 100
     crunchedCompression: 1

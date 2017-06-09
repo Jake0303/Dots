@@ -10,12 +10,12 @@ public class PlayerColor : PunBehaviour {
 	private Transform myTransform;
     private Vector3 tempColor;
 
-    public Color[] colors = new Color[5];
+    public Color[] colors = new Color[3];
 
     void Start()
     {
-        //This is added just so we can have indexes 1-4 not 0-3
         colors[0] = Color.black;
+        //This is added just so we can have indexes 1-4 not 0-3
         if (!GLOBALS.ColorBlindAssist)
         {
             //colors[1] = Color.green;

@@ -24,6 +24,7 @@ public class NetworkManager : PunBehaviour
         PhotonNetwork.autoJoinLobby = false;    // we join randomly. always. no need to join a lobby to get the list of rooms.
         PhotonNetwork.automaticallySyncScene = true;
         SceneManager.sceneLoaded += SceneLoaded;
+        StopAllCoroutines();
     }
     void Update()
     {
@@ -226,7 +227,11 @@ public class NetworkManager : PunBehaviour
     public override void OnPhotonPlayerDisconnected(PhotonPlayer player)
     {
         base.OnDisconnectedFromPhoton();
-        if (!GameObject.Find("PlayAgainMenu").GetComponent<DoozyUI.UIElement>().isVisible)
+
+        if (GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().isVisible)
+            GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
+
+        if (GameObject.Find("GameManager").GetComponent<GameState>().gameState != GameState.State.GameOver)
         {
             var players = GameObject.FindGameObjectsWithTag("Player");
             foreach (var aPlayer in players)
@@ -243,12 +248,7 @@ public class NetworkManager : PunBehaviour
                     + aPlayer.GetComponent<PlayerID>().playerLosses + " L ";
                 break;
             }
-            if (GameObject.Find("GameManager").GetComponent<GameStart>().startGame
-            || PhotonNetwork.playerList.Length <= 1
-            || GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text != "")
-                GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left!";
-            else
-                GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left! \nYou win!";
+            GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "Your opponent has left! \nYou win!";
             GameObject.Find("VolumeSlider").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("ColorBlindAssistCheckbox").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("FindAnotherMatchButton").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
@@ -262,7 +262,26 @@ public class NetworkManager : PunBehaviour
             GameObject.Find("ColorBlindAssistCheckbox").GetComponent<RectTransform>().localScale = new Vector3(0, 0, 0);
             GameObject.Find("FindAnotherMatchButton").GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
             GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Show(false);
-
         }
+        StartCoroutine(startDisconnectTimer());
+    }
+
+    public IEnumerator startDisconnectTimer()
+    {
+        int startSeconds = 20;
+
+        while (startSeconds > 0)
+        {
+            if (GameObject.Find("PopupText") != null
+                && GameObject.Find("PopupText").GetComponent<Text>() != null)
+                GameObject.Find("PopupText").GetComponent<Text>().text = "Your opponent has left, \n disconnecting in " + startSeconds + "s";
+            else
+                break;
+            yield return new WaitForSeconds(1f);
+            startSeconds--;
+        }
+
+        if (startSeconds <= 0)
+            PhotonNetwork.Disconnect();
     }
 }

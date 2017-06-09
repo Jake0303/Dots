@@ -351,6 +351,11 @@ public class PlayerClick : PunBehaviour
     {
         //Check if square is made
         //Check horizontal line hitboxes
+        //Determine if double square
+        if (pointScored)
+        {
+            doubleSquare = true;
+        }
         if (hit.collider
             && hit.collider.GetComponentInChildren<Renderer>())
         {
@@ -518,11 +523,6 @@ public class PlayerClick : PunBehaviour
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
-            //Determine if double square
-            if (pointScored)
-            {
-                doubleSquare = true;
-            }
             pointScored = true;
         }
     }
@@ -755,8 +755,6 @@ public class PlayerClick : PunBehaviour
             {
                 newSquare.transform.rotation = Quaternion.identity;
                 //newSquare.GetComponent<Light>().enabled = false;
-                CmdNextTurn();
-                photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
                 if (!GameObject.Find("GameManager").GetComponent<GameOver>().gameOver)
                 {
                     if (doubleSquare)
@@ -770,6 +768,8 @@ public class PlayerClick : PunBehaviour
                         eventPanel.GetComponent<DoozyUI.UIElement>().Show(false);
                     }
                 }
+                CmdNextTurn();
+                photonView.RPC("CmdStopSquareAnim", PhotonTargets.AllBuffered, squareID, newSquare.name);
                 squareAnimFinished = true;
             }
             yield return new WaitForSeconds(0.0001f);

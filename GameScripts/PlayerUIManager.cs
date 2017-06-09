@@ -8,7 +8,7 @@ using System;
 
 public class PlayerUIManager : PunBehaviour
 {
-    private GameObject EscapeMenu;
+    public GameObject EscapeMenu;
     public Coroutine routine;
     private GameObject[] panels, players, names;
     // On Start show the Waiting for Player text
@@ -21,6 +21,7 @@ public class PlayerUIManager : PunBehaviour
         GameObject.Find("YesButton").GetComponent<Button>().onClick.AddListener(() => ForfeitPlayer());
         GameObject.Find("PlayAgainButton").GetComponent<Button>().onClick.AddListener(() => GetComponent<PlayerID>().WantsToPlayAgain());
         GameObject.Find("PlayAgainButton").GetComponent<Button>().onClick.AddListener(() => GameObject.Find("GameManager").GetComponent<GameOver>().PlayAgain());
+        GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().onValueChanged.AddListener(OnColorBlindCheckboxChanged);
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
         if ((Screen.orientation == ScreenOrientation.Portrait
@@ -35,6 +36,9 @@ public class PlayerUIManager : PunBehaviour
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
         }
         GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text = "";
+        EscapeMenu = GameObject.Find("EscapeMenu");
+        EscapeMenu.GetComponent<Canvas>().overrideSorting = true;
+        EscapeMenu.GetComponent<Canvas>().sortingOrder = 0;
     }
     //When the client has connected, populate the names of each panel for previous players
     public override void OnJoinedRoom()
@@ -148,22 +152,18 @@ public class PlayerUIManager : PunBehaviour
     {
         if (GameObject.Find("OpponentLeftMessage").GetComponent<Text>().text == "")
         {
-            EscapeMenu = GameObject.Find("EscapeMenu");
             GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-            EscapeMenu.GetComponent<DoozyUI.UIElement>().Hide(false);
+            GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
         }
     }
 
     public void openEscapeMenu()
     {
-        GameObject.Find("EscapeMenu").GetComponent<Canvas>().overrideSorting = true;
-        GameObject.Find("EscapeMenu").GetComponent<Canvas>().sortingOrder = 0;
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
-        EscapeMenu = GameObject.Find("EscapeMenu");
         GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
-        if (!EscapeMenu.GetComponent<DoozyUI.UIElement>().isVisible)
-            EscapeMenu.GetComponent<DoozyUI.UIElement>().Show(false);
+        if (!GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().isVisible)
+            GameObject.Find("EscapeMenu").GetComponent<DoozyUI.UIElement>().Show(false);
         else
             closeEscapeMenu();
     }
@@ -239,7 +239,6 @@ public class PlayerUIManager : PunBehaviour
         else
             GameObject.Find("LeaveConfirmation").GetComponent<DoozyUI.UIElement>().Show(false);
     }
-    //TODO: Somehow player is getting set to inactive and thus coroutine can't run :(
     public void ForfeitPlayer()
     {
         if (photonView.isMine)

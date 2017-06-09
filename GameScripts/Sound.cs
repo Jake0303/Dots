@@ -30,13 +30,15 @@ public class Sound : MonoBehaviour
         {
             bgMusic.Stop();
             bgMusic = GetComponents<AudioSource>()[0];
-            StartCoroutine(FadeIn(bgMusic, 6f));
+            if (GLOBALS.Volume > 0)
+                StartCoroutine(FadeIn(bgMusic, 6f));
         }
         else
         {
             bgMusic.Stop();
             bgMusic = GetComponents<AudioSource>()[3];
-            StartCoroutine(FadeIn(bgMusic, 2f));
+            if (GLOBALS.Volume > 0)
+                StartCoroutine(FadeIn(bgMusic, 2f));
         }
     }
 
@@ -60,13 +62,12 @@ public class Sound : MonoBehaviour
         float startVolume = 0.01f;
         audioSource.Play();
         audioSource.volume = startVolume;
-        while (audioSource.volume < (GLOBALS.Volume/100.0f))
+        while (audioSource.volume < (GLOBALS.Volume / 100.0f))
         {
             audioSource.volume += startVolume * Time.deltaTime * FadeTime;
 
             yield return null;
         }
-
     }
 
     //Play button click sound
@@ -75,7 +76,7 @@ public class Sound : MonoBehaviour
         // Initialize volume slider
         if (GameObject.Find("VolumeSlider") != null)
             GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
-            buttonClick.volume = (GLOBALS.Volume / 45.0f);
+        buttonClick.volume = (GLOBALS.Volume / 45.0f);
         buttonClick.Play();
     }
     //Play slider changed sound

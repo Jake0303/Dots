@@ -110,8 +110,11 @@ public class GameStart : PunBehaviour
             foreach (var player in players)
             {
                 player.GetComponent<PlayerID>().playerTurnOrder = GetComponent<PlayerTurn>().assortPlayerTurns[randomNumbers.ElementAt(i)];
-                player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
-                player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
+                if (player.GetComponent<PlayerColor>().playerColor == Color.clear)
+                {
+                    player.GetComponent<PlayerColor>().playerColor = player.GetComponent<PlayerColor>().colors[randomNumbers.ElementAt(i)];
+                    player.GetComponent<PlayerColor>().CmdTellServerMyColor(player.GetComponent<PlayerColor>().playerColor);
+                }
                 //Set the first players turn
                 if (player.GetComponent<PlayerID>().playerTurnOrder == 1)
                 {

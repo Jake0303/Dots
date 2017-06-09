@@ -45,7 +45,6 @@ public class GameOver : PunBehaviour
         {
             photonView.RPC("GetWinner", PhotonTargets.AllBuffered);
             DisplayWinner();
-            GetComponent<GameState>().gameState = GameState.State.GameOver;
             gameOver = false;
             gameDone = true;
         }
@@ -53,6 +52,7 @@ public class GameOver : PunBehaviour
     [PunRPC]
     public void GetWinner()
     {
+        GetComponent<GameState>().gameState = GameState.State.GameOver;
         var players = GameObject.FindGameObjectsWithTag("Player");
         List<int> scores = new List<int>();
         //Gather all the scores and see who is the highest
@@ -90,10 +90,10 @@ public class GameOver : PunBehaviour
     IEnumerator DelayBeforeRestart()
     {
         //Wait 5 seconds before resetting
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
         photonView.RPC("UpdatePlayerScores", PhotonTargets.AllBuffered);
         GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Hide(false);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
         StopAllCoroutines();
         ResetGame();
     }
@@ -198,6 +198,7 @@ public class GameOver : PunBehaviour
         gameDone = false;
         GetComponent<GameStart>().buildGrid = true;
         GetComponent<GameStart>().startGame = true;
+        GameObject.Find("PlayAgainText").GetComponent<Text>().fontSize = 24;
         GameObject.Find("PlayAgainText").GetComponent<Text>().text = "Play Again";
     }
     //Play another game with the same player
