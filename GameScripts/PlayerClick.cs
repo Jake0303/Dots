@@ -352,10 +352,6 @@ public class PlayerClick : PunBehaviour
         //Check if square is made
         //Check horizontal line hitboxes
         //Determine if double square
-        if (pointScored)
-        {
-            doubleSquare = true;
-        }
         if (hit.collider
             && hit.collider.GetComponentInChildren<Renderer>())
         {
@@ -518,11 +514,13 @@ public class PlayerClick : PunBehaviour
             squareID = GameObject.Find(aSquare).name;
             squareColor = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material = lineMat;
-            //square.GetComponent<Light>().enabled = true;
-            //square.GetComponent<Light>().color = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
+            if (pointScored)
+            {
+                doubleSquare = true;
+            }
             pointScored = true;
         }
     }
@@ -759,7 +757,7 @@ public class PlayerClick : PunBehaviour
                 {
                     if (doubleSquare)
                     {
-                        GameObject.Find("EventText").GetComponent<Text>().text = "Double square! Place another line.";
+                        GameObject.Find("EventText").GetComponent<Text>().text = "Fantastic double square! Place another line.";
                         eventPanel.GetComponent<DoozyUI.UIElement>().Show(false);
                     }
                     else
