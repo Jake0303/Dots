@@ -39,6 +39,7 @@ public class NetworkManager : PunBehaviour
     //Join lobby
     public void JoinGame(bool fbButtonClicked)
     {
+        StartCoroutine(GameObject.Find("ConnectingGif").GetComponent<LoadingGif>().playGif());
         if (GameObject.Find("BackToMenuButton"))
         {
             GameObject.Find("BackToMenuButton").transform.localScale = new Vector3(1, 1, 1);
@@ -269,7 +270,7 @@ public class NetworkManager : PunBehaviour
     public IEnumerator startDisconnectTimer()
     {
         int startSeconds = 20;
-
+        PhotonNetwork.room.maxPlayers = 1;
         while (startSeconds > 0)
         {
             if (GameObject.Find("PopupText") != null

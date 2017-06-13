@@ -42,7 +42,7 @@ public class Sound : MonoBehaviour
         }
     }
 
-    public static IEnumerator FadeOut(AudioSource audioSource, float FadeTime)
+    public IEnumerator FadeOut(AudioSource audioSource, float FadeTime)
     {
         float startVolume = audioSource.volume;
 
@@ -57,7 +57,7 @@ public class Sound : MonoBehaviour
         audioSource.volume = startVolume;
     }
 
-    public static IEnumerator FadeIn(AudioSource audioSource, float FadeTime)
+    public IEnumerator FadeIn(AudioSource audioSource, float FadeTime)
     {
         float startVolume = 0.01f;
         audioSource.Play();

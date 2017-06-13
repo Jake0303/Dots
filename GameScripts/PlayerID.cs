@@ -254,6 +254,7 @@ public class PlayerID : PunBehaviour
     {
         if (photonView.isMine)
         {
+            GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
             GameObject.Find("PlayAgainText").GetComponent<Text>().fontSize = 19;
             GameObject.Find("PlayAgainText").GetComponent<Text>().text = "Waiting for opponent...";
             wantsToPlayAgain = true;

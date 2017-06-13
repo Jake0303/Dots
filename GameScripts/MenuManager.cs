@@ -168,6 +168,9 @@ public class MenuManager : MonoBehaviour
     //Update the volume when the slider has changed
     public void OnVolumeSliderChanged(float value)
     {
+        bool fadeInMusic = false;
+        if (GLOBALS.Volume == 0 && value != 0)
+            fadeInMusic = true;
         GLOBALS.Volume = value;
         GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
         GameObject.Find("VolumeSlider").GetComponent<Slider>().value = GLOBALS.Volume;
@@ -184,6 +187,8 @@ public class MenuManager : MonoBehaviour
             GameObject.Find("SoundOFF").GetComponent<DoozyUI.UIElement>().Show(false);
             GameObject.Find("SoundON").GetComponent<DoozyUI.UIElement>().Hide(false);
         }
+        if (fadeInMusic)
+            StartCoroutine(GameObject.Find("AudioManager").GetComponent<Sound>().FadeIn(GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic, 3.5f));
     }
 
     public void TurnOnSound()
@@ -304,6 +309,12 @@ public class MenuManager : MonoBehaviour
             Input.GetMouseButtonDown(0);
         Screen.fullScreen = !Screen.fullScreen;
         GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
+    }
+
+    public void OnInstructionsButtonClicked()
+    {
+        GameObject.Find("TapGif").GetComponent<LoadingGif>().StopAllCoroutines();
+        StartCoroutine(GameObject.Find("TapGif").GetComponent<LoadingGif>().playGif());
     }
 
     public void OnNickNameMenuAnimFinish()

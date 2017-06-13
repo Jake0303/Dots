@@ -757,7 +757,7 @@ public class PlayerClick : PunBehaviour
                 {
                     if (doubleSquare)
                     {
-                        GameObject.Find("EventText").GetComponent<Text>().text = "Fantastic double square! Place another line.";
+                        GameObject.Find("EventText").GetComponent<Text>().text = "Double square! Place another line.";
                         eventPanel.GetComponent<DoozyUI.UIElement>().Show(false);
                     }
                     else

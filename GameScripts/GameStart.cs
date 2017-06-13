@@ -88,7 +88,8 @@ public class GameStart : PunBehaviour
     //When the name panel anim finishes put landscape orientation for game
     public void NamePanelAnimFinish()
     {
-        if (Screen.orientation == ScreenOrientation.Portrait)
+        if (Screen.orientation == ScreenOrientation.Portrait
+            || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
         {
             Screen.orientation = ScreenOrientation.LandscapeLeft;
             GameObject.Find("Camera").GetComponent<Camera>().fieldOfView = 60;
@@ -278,6 +279,8 @@ public class GameStart : PunBehaviour
             GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupBox("It's your turn first, click to place a line!");
             GameObject.Find(playerID).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn , click to place a line!", false);
         }
+        GameObject.Find("TapGif").GetComponent<LoadingGif>().StopAllCoroutines();
+        StartCoroutine(GameObject.Find("TapGif").GetComponent<LoadingGif>().playGif());
         tapGif.GetComponent<Image>().enabled = true;
         tapGif.GetComponent<LoadingGif>().enabled = true;
     }

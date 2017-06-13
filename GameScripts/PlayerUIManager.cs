@@ -39,6 +39,8 @@ public class PlayerUIManager : PunBehaviour
         EscapeMenu = GameObject.Find("EscapeMenu");
         EscapeMenu.GetComponent<Canvas>().overrideSorting = true;
         EscapeMenu.GetComponent<Canvas>().sortingOrder = 0;
+        StartCoroutine(GameObject.Find("LoadingGif").GetComponent<LoadingGif>().playGif());
+
     }
     //When the client has connected, populate the names of each panel for previous players
     public override void OnJoinedRoom()
@@ -144,6 +146,7 @@ public class PlayerUIManager : PunBehaviour
             GameObject.Find("EventPanel").transform.localPosition = new Vector3(-2500f, 0f, 0f);
             GameObject.Find("PlayAgainMenu").transform.localPosition = new Vector3(0f, -2500f, 0f);
             GameObject.Find("LoadingGif").transform.localScale = new Vector3(0, 0, 0);
+            GameObject.Find("LoadingGif").GetComponent<LoadingGif>().StopAllCoroutines();
         }
     }
 
@@ -195,9 +198,15 @@ public class PlayerUIManager : PunBehaviour
     //Update the volume when the slider has changed
     public void OnVolumeSliderChanged(float value)
     {
+        bool fadeInMusic = false;
+        if (GLOBALS.Volume == 0 && value != 0)
+            fadeInMusic = true;
+
         GLOBALS.Volume = value;
         GameObject.Find("VolumeLevel").GetComponent<Text>().text = GLOBALS.Volume.ToString();
         GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic.volume = (GLOBALS.Volume / 50);
+        if (fadeInMusic)
+            StartCoroutine(GameObject.Find("AudioManager").GetComponent<Sound>().FadeIn(GameObject.Find("AudioManager").GetComponent<Sound>().bgMusic, 3.5f));
         GameObject.Find("AudioManager").GetComponent<Sound>().PlaySliderSound();
     }
 
@@ -255,6 +264,7 @@ public class PlayerUIManager : PunBehaviour
 
     public void DisconnectPlayer()
     {
+        GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound();
         PhotonNetwork.Disconnect();
     }
 
