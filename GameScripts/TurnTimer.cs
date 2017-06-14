@@ -192,6 +192,26 @@ public class TurnTimer : PunBehaviour
     {
         PhotonNetwork.RaiseEvent(0, null, true, null);
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
+
+        if (GameObject.Find(nextPlayer).GetComponent<PlayerID>().firstTurn)
+        {
+            if (Application.isMobilePlatform)
+            {
+                GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupBox("It's your turn first, tap to place a line!");
+                GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn , tap to place a line!", false);
+            }
+            else
+            {
+                GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupBox("It's your turn first, click to place a line!");
+                GameObject.Find(nextPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("It's your turn , click to place a line!", false);
+            }
+            GameObject.Find("TapGif").GetComponent<LoadingGif>().StopAllCoroutines();
+            StartCoroutine(GameObject.Find("TapGif").GetComponent<LoadingGif>().playGif());
+            tapGif.GetComponent<Image>().enabled = true;
+            tapGif.GetComponent<LoadingGif>().enabled = true;
+            GameObject.Find(nextPlayer).GetComponent<PlayerID>().firstTurn = false;
+        }
+
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(nextPlayer).GetComponent<PlayerColor>().playerColor;
         if (Application.isMobilePlatform)

@@ -29,6 +29,7 @@ public class PlayerID : PunBehaviour
     private bool showPopup;
     public bool showWinner = true;
     public bool infoFound;
+    public bool firstTurn = true;
     void Start()
     {
         PhotonNetwork.OnEventCall += this.OnEvent;

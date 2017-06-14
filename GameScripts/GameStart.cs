@@ -267,6 +267,7 @@ public class GameStart : PunBehaviour
     void RpcSetFirstTurn(string playerID)
     {
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
+        GameObject.Find(playerID).GetComponent<PlayerID>().firstTurn = false;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
         if (Application.isMobilePlatform)
