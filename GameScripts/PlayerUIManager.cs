@@ -24,6 +24,7 @@ public class PlayerUIManager : PunBehaviour
         GameObject.Find("ColorBlindAssistCheckbox").GetComponent<Toggle>().onValueChanged.AddListener(OnColorBlindCheckboxChanged);
         GameObject.Find("VolumeSlider").GetComponent<Slider>().onValueChanged.AddListener(OnVolumeSliderChanged);
         GameObject.Find("GameManager").GetComponent<GameState>().gameState = GameState.State.Waiting;
+        GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().onOutAnimationsFinish.AddListener(() => OnEventPanelFinish());
         if ((Screen.orientation == ScreenOrientation.Portrait
             || Screen.orientation == ScreenOrientation.PortraitUpsideDown)
             && Application.isMobilePlatform)
@@ -316,12 +317,6 @@ public class PlayerUIManager : PunBehaviour
             GameObject.Find("EventPanel").GetComponent<DoozyUI.UIElement>().Show(false);
         }
     }
-    //When the in game event panel is finished its anim hide the tapGif
-    public void OnEventPanelFinish()
-    {
-        GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
-        GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
-    }
 
     //OnColorBlindAssistCheckbox Changed
     public void OnColorBlindCheckboxChanged(bool val)
@@ -461,4 +456,49 @@ public class PlayerUIManager : PunBehaviour
 
     }
 
+    public void OnEventPanelFinish()
+    {
+        if (GetComponent<PlayerID>().firstTurn)
+        {
+            StartCoroutine(GameObject.Find("HelpTapGif").GetComponent<LoadingGif>().playGif());
+            //Randomly place helper hand
+            int randomNum = UnityEngine.Random.Range(0, 5);
+            if (randomNum == 0)
+            {
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
+            }
+            else if (randomNum == 1)
+            {
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMin = new Vector2(0.65f, 0.5f);
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMax = new Vector2(0.65f, 0.5f);
+            }
+            else if (randomNum == 2)
+            {
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMin = new Vector2(0.65f, 0.75f);
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMax = new Vector2(0.65f, 0.75f);
+            }
+            else if (randomNum == 3)
+            {
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMin = new Vector2(0.45f, 0.5f);
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMax = new Vector2(0.45f, 0.5f);
+            }
+            else if (randomNum == 4)
+            {
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.25f);
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.25f);
+            }
+            else if (randomNum == 5)
+            {
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMin = new Vector2(0.45f, 0.75f);
+                GameObject.Find("HelpTapGif").GetComponent<RectTransform>().anchorMax = new Vector2(0.45f, 0.75f);
+            }
+            GameObject.Find("HelpTapGif").GetComponent<DoozyUI.UIElement>().Show(false);
+        }
+        else if (!GetComponent<PlayerID>().firstTurn)
+        {
+            GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
+            GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
+        }
+    }
 }

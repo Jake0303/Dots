@@ -192,7 +192,6 @@ public class TurnTimer : PunBehaviour
     {
         PhotonNetwork.RaiseEvent(0, null, true, null);
         GameObject.Find(nextPlayer).GetComponent<PlayerID>().isPlayersTurn = true;
-
         if (GameObject.Find(nextPlayer).GetComponent<PlayerID>().firstTurn)
         {
             if (Application.isMobilePlatform)
@@ -209,7 +208,6 @@ public class TurnTimer : PunBehaviour
             StartCoroutine(GameObject.Find("TapGif").GetComponent<LoadingGif>().playGif());
             tapGif.GetComponent<Image>().enabled = true;
             tapGif.GetComponent<LoadingGif>().enabled = true;
-            GameObject.Find(nextPlayer).GetComponent<PlayerID>().firstTurn = false;
         }
 
         GameObject.Find(GameObject.Find(nextPlayer).GetComponent<PlayerID>().playersPanel)
@@ -222,8 +220,7 @@ public class TurnTimer : PunBehaviour
         GameObject.Find(GameObject.Find(lastPlayer).GetComponent<PlayerID>().playersPanel).GetComponent<Image>().color = greyedPanel;
         GameObject.Find(lastPlayer).GetComponent<PlayerUIManager>().DisplayPopupText("Waiting for opponent to make a move", false);
         GameObject.Find(lastPlayer).GetComponent<PlayerID>().isPlayersTurn = false;
-        GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
-        GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
+        GameObject.Find(lastPlayer).GetComponent<PlayerID>().firstTurn = false;
     }
     //Reset the turn timer
     public void ResetTimer()

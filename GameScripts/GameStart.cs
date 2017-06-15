@@ -267,7 +267,6 @@ public class GameStart : PunBehaviour
     void RpcSetFirstTurn(string playerID)
     {
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
-        GameObject.Find(playerID).GetComponent<PlayerID>().firstTurn = false;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;
         if (Application.isMobilePlatform)
@@ -328,5 +327,10 @@ public class GameStart : PunBehaviour
     {
         PhotonNetwork.RaiseEvent(10, null, true, null);
         buildGrid = false;
+    }
+
+    public void OnHelpTapGifFinish()
+    {
+        GameObject.Find("HelpTapGif").GetComponent<DoozyUI.UIElement>().Hide(false);
     }
 }

@@ -576,6 +576,7 @@ public class PlayerClick : PunBehaviour
                     && !eventPanel.GetComponent<DoozyUI.UIElement>().isVisible
                     && !playAgainMenu.GetComponent<DoozyUI.UIElement>().isVisible))
                 {
+                    GameObject.Find("HelpTapGif").GetComponent<DoozyUI.UIElement>().Hide(false);
                     objectID = hit.collider.name;// this gets the object that is hit
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
                     objectColor = GetComponent<PlayerColor>().playerColor;
