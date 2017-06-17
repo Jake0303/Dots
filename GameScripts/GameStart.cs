@@ -266,6 +266,7 @@ public class GameStart : PunBehaviour
     [PunRPC]
     void RpcSetFirstTurn(string playerID)
     {
+        GameObject.Find("BackgroundManager").GetComponent<BackgroundManager>().gameHasStarted = true;
         GameObject.Find(playerID).GetComponent<PlayerID>().isPlayersTurn = true;
         GameObject.Find(GameObject.Find(playerID).GetComponent<PlayerID>().playersPanel)
             .GetComponent<Image>().color = GameObject.Find(playerID).GetComponent<PlayerColor>().playerColor;

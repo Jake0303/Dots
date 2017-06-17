@@ -142,6 +142,7 @@ public class PlayerClick : PunBehaviour
     {
         GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_Color", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", ColorExtensions.ParseColor(col));
@@ -153,6 +154,7 @@ public class PlayerClick : PunBehaviour
     {
         GameObject.Find(obj).GetComponentInChildren<Renderer>().enabled = true;
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material = lineMat;
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_Color", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", ColorExtensions.ParseColor(col));
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", ColorExtensions.ParseColor(col));
@@ -191,6 +193,7 @@ public class PlayerClick : PunBehaviour
 
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material = lineMat;
+        GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_Color", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(squareID).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
@@ -284,6 +287,7 @@ public class PlayerClick : PunBehaviour
                 lineColor = GLOBALS.DarkRed;
             }
         }
+        GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_Color", lineColor);
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", lineColor);
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", lineColor);
         GameObject.Find(obj).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", lineColor);
@@ -476,6 +480,7 @@ public class PlayerClick : PunBehaviour
         while (i < squareLines.Length)
         {
             line = squareLines[i].gameObject;
+            squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_Color", GetComponent<PlayerColor>().playerColor);
             squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_MKTexColor", GetComponent<PlayerColor>().playerColor);
             squareLines[i].GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
@@ -514,6 +519,7 @@ public class PlayerClick : PunBehaviour
             squareID = GameObject.Find(aSquare).name;
             squareColor = GetComponent<PlayerColor>().playerColor;
             square.GetComponentInChildren<Renderer>().material = lineMat;
+            square.GetComponentInChildren<Renderer>().material.SetColor("_Color", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
             square.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
@@ -528,11 +534,7 @@ public class PlayerClick : PunBehaviour
     [PunRPC]
     void CmdPaintLines(string line)
     {
-        if (GameObject.Find(line).GetComponentInParent<Light>() != null)
-        {
-            //GameObject.Find(line).GetComponentInParent<Light>().enabled = true;
-            GameObject.Find(line).GetComponentInParent<Light>().color = GetComponent<PlayerColor>().playerColor;
-        }
+        GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_Color", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", GetComponent<PlayerColor>().playerColor);
         GameObject.Find(line).GetComponentInChildren<Renderer>().material.SetColor("_RimColor", GetComponent<PlayerColor>().playerColor);
@@ -576,7 +578,7 @@ public class PlayerClick : PunBehaviour
                     && !eventPanel.GetComponent<DoozyUI.UIElement>().isVisible
                     && !playAgainMenu.GetComponent<DoozyUI.UIElement>().isVisible))
                 {
-                    GameObject.Find("HelpTapGif").GetComponent<DoozyUI.UIElement>().Hide(false);
+                    GameObject.Find("HelpTapGif").GetComponent<DoozyUI.UIElement>().Hide(true);
                     objectID = hit.collider.name;// this gets the object that is hit
                     hit.collider.GetComponentInChildren<Renderer>().enabled = false;
                     objectColor = GetComponent<PlayerColor>().playerColor;
@@ -613,6 +615,7 @@ public class PlayerClick : PunBehaviour
             newLineHorizontal.transform.rotation = GameObject.Find(line).transform.rotation;
             newLineHorizontal.GetComponentInChildren<Renderer>().enabled = true;
             newLineHorizontal.GetComponentInChildren<Renderer>().material = lineMat;
+            newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_Color", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             newLineHorizontal.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
@@ -628,6 +631,7 @@ public class PlayerClick : PunBehaviour
             newLineVertical.transform.rotation = GameObject.Find(line).transform.rotation;
             newLineVertical.GetComponentInChildren<Renderer>().enabled = true;
             newLineVertical.GetComponentInChildren<Renderer>().material = lineMat;
+            newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_Color", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", objectColor);
             newLineVertical.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", objectColor);
@@ -725,6 +729,7 @@ public class PlayerClick : PunBehaviour
         newSquare.transform.rotation = GameObject.Find(square).transform.rotation;
         newSquare.GetComponentInChildren<Renderer>().enabled = true;// get the object's network ID
         newSquare.GetComponentInChildren<Renderer>().material = lineMat;
+        newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", squareColor);
         newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", squareColor);
@@ -758,6 +763,8 @@ public class PlayerClick : PunBehaviour
                 {
                     if (doubleSquare)
                     {
+                        GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
+                        GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
                         GameObject.Find("EventText").GetComponent<Text>().text = "Double square! Place another line.";
                         eventPanel.GetComponent<DoozyUI.UIElement>().Show(false);
                     }

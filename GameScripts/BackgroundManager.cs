@@ -10,40 +10,13 @@ public class BackgroundManager : MonoBehaviour
     public GameObject square;
     Color fade;
     int colorIndex = 0;
-    private float glowRate = 0.03f;
+    private float glowRate = 0.05f;
     private float decreaseGlowRate = 0.04f;
+    public bool gameHasStarted = false;
 
     public IEnumerator ShowSquare()
     {
         GameObject newSquare = null;
-        /*
-        foreach (Color col in sexyColors)
-        {
-            newSquare = Instantiate(square, new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), Random.Range(44, 44)), square.transform.rotation) as GameObject;
-            newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-            newSquare.layer = 5;//UI layer
-            newSquare.GetComponentInChildren<Renderer>().enabled = true;
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", col);
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", col);
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", col);
-            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 2.5f);
-            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 2.5f);
-            yield return null;
-        }
-        foreach (Color col in sexyColors)
-        {
-            newSquare = Instantiate(square, new Vector3(Random.Range(-25, 25), Random.Range(-25, 25), Random.Range(44, 44)), square.transform.rotation) as GameObject;
-            newSquare.transform.rotation = Quaternion.Euler(new Vector3(90, 0, 0));
-            newSquare.layer = 5;//UI layer
-            newSquare.GetComponentInChildren<Renderer>().enabled = true;
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", col);
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", col);
-            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", col);
-            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", 2);
-            newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", 2);
-            yield return null;
-        }*/
-
         while (true)
         {
             newSquare = null;
@@ -54,7 +27,15 @@ public class BackgroundManager : MonoBehaviour
             }
             else
             {
-                newSquare = Instantiate(square, new Vector3(Random.Range(-25, 50), Random.Range(-13, -13), Random.Range(-25, 50)), square.transform.rotation) as GameObject;
+                if (gameHasStarted)
+                {
+                    if (Random.Range(0, 2) == 0)
+                        newSquare = Instantiate(square, new Vector3(Random.Range(-25, -10), Random.Range(-13, -13), Random.Range(-15, 35)), square.transform.rotation) as GameObject;
+                    else
+                        newSquare = Instantiate(square, new Vector3(Random.Range(47, 62), Random.Range(-13, -13), Random.Range(-15, 35)), square.transform.rotation) as GameObject;
+                }
+                else
+                    newSquare = Instantiate(square, new Vector3(Random.Range(-25, 62), Random.Range(-13, -13), Random.Range(-15, 35)), square.transform.rotation) as GameObject;
             }
             newSquare.layer = 5;//UI layer
             newSquare.GetComponentInChildren<Renderer>().enabled = true;
@@ -63,6 +44,7 @@ public class BackgroundManager : MonoBehaviour
             else
                 randomColor = sexyColors[0];
             randomColor.a = 0;
+            newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", randomColor);
             newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", randomColor);
@@ -77,7 +59,7 @@ public class BackgroundManager : MonoBehaviour
             }
             else
             {
-                yield return new WaitForSeconds(Random.Range(0.3f, 0.6f));
+                yield return new WaitForSeconds(Random.Range(0.7f, 1f));
             }
         }
     }
@@ -107,9 +89,10 @@ public class BackgroundManager : MonoBehaviour
                     newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
                     newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
-                } else
+                }
+                else
                 {
-                    fade.a += glowRate/5;
+                    fade.a += glowRate / 3;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
@@ -143,13 +126,13 @@ public class BackgroundManager : MonoBehaviour
                     newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a);
                     newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a);
 
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a-decreaseGlowRate);
-                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a-decreaseGlowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_MKGlowPower", fade.a - decreaseGlowRate);
+                    newSquare.GetComponentInChildren<Renderer>().material.SetFloat("_RimPower", fade.a - decreaseGlowRate);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_RimColor", fade);
                 }
                 else
                 {
-                    fade.a -= decreaseGlowRate/10;
+                    fade.a -= decreaseGlowRate / 10;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowColor", fade);
@@ -177,7 +160,7 @@ public class BackgroundManager : MonoBehaviour
             {
                 //if (Application.platform != RuntimePlatform.WebGLPlayer)
                 //{
-                  //  StopAllCoroutines();
+                //  StopAllCoroutines();
                 //}
             }
         }
