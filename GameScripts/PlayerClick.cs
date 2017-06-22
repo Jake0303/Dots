@@ -765,7 +765,7 @@ public class PlayerClick : PunBehaviour
                     {
                         GameObject.Find("TapGif").GetComponent<Image>().enabled = false;
                         GameObject.Find("TapGif").GetComponent<LoadingGif>().enabled = false;
-                        GameObject.Find("EventText").GetComponent<Text>().text = "Double square! Place another line.";
+                        GameObject.Find("EventText").GetComponent<Text>().text = "x2 square! Place another line.";
                         eventPanel.GetComponent<DoozyUI.UIElement>().Show(false);
                     }
                     else

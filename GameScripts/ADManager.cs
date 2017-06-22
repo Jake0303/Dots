@@ -1,58 +1,27 @@
-﻿#if UNITY_IOS
-using UnityEngine;
-using UnityEngine.Advertisements;
-using System.Collections;
+﻿#if !UNITY_WEBGL && !UNITY_STANDALONE_WIN
+    using UnityEngine;
+    using UnityEngine.Advertisements;
+    using System.Collections;
 
 
 
-public class ADManager : MonoBehaviour
-{
-    public void StartAd()
+    public class ADManager : MonoBehaviour
     {
-        int showAd = Random.Range(0, 2);
-        if (showAd == 1)
-            StartCoroutine("ShowAd");
-    }
-
-    IEnumerator ShowAd()
-    {
-        while (!Advertisement.IsReady())
+        public void StartAd()
         {
-            yield return null;
+            int showAd = Random.Range(0, 2);
+            if (showAd == 1)
+                StartCoroutine("ShowAd");
         }
-        Advertisement.Show();
-        yield break;
-    }
-}
-#elif UNITY_ANDROID
-using UnityEngine;
-using UnityEngine.Advertisements;
-using System.Collections;
 
-
-
-public class ADManager : MonoBehaviour
-{
-    public void StartAd()
-    {
-        int showAd = Random.Range(0, 2);
-        if (showAd == 1)
-            StartCoroutine("ShowAd");
-    }
-
-    IEnumerator ShowAd()
-    {
-        while (!Advertisement.IsReady())
+        IEnumerator ShowAd()
         {
-            yield return null;
+            while (!Advertisement.IsReady())
+            {
+                yield return null;
+            }
+            Advertisement.Show();
+            yield break;
         }
-        Advertisement.Show();
-        yield break;
     }
-}
-
-#else
-using UnityEngine;
-public class ADManager : MonoBehaviour
-{}
 #endif

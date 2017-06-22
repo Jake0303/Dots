@@ -37,9 +37,11 @@ public class NetworkManagerSingleton : MonoBehaviour
         GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.RemoveAllListeners();
         GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
         GameObject.Find("LetsPlayButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().PlayButtonClicked()));
-
-        GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.RemoveAllListeners();
-        GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<FacebookManager>().FBButtonClick()));
+        if (Application.platform != RuntimePlatform.WebGLPlayer)
+        {
+            GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.RemoveAllListeners();
+            GameObject.Find("facebookLoginButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<FacebookManager>().FBButtonClick()));
+        }
 
         GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("AudioManager").GetComponent<Sound>().PlayButtonSound()));
         GameObject.Find("InstructionsButton").GetComponent<Button>().onClick.AddListener((() => GameObject.Find("MenuManager").GetComponent<MenuManager>().OnInstructionsButtonClicked()));

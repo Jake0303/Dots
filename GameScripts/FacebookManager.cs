@@ -53,7 +53,9 @@ public class FacebookManager : MonoBehaviour
     {
         if (FB.IsLoggedIn)
         {
-            return;
+            accessToken = AccessToken.CurrentAccessToken.UserId;
+            GameObject.Find("LoginMenu").GetComponent<DoozyUI.UIElement>().Hide(false);
+            GameObject.Find("NetworkManager").GetComponent<NetworkManager>().JoinGame(true);
         }
 
         if (!FB.IsInitialized)

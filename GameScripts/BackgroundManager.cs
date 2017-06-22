@@ -30,9 +30,9 @@ public class BackgroundManager : MonoBehaviour
                 if (gameHasStarted)
                 {
                     if (Random.Range(0, 2) == 0)
-                        newSquare = Instantiate(square, new Vector3(Random.Range(-25, -10), Random.Range(-13, -13), Random.Range(-15, 35)), square.transform.rotation) as GameObject;
+                        newSquare = Instantiate(square, new Vector3(Random.Range(-25, -10), Random.Range(-13, -13), Random.Range(-15, 25)), square.transform.rotation) as GameObject;
                     else
-                        newSquare = Instantiate(square, new Vector3(Random.Range(47, 62), Random.Range(-13, -13), Random.Range(-15, 35)), square.transform.rotation) as GameObject;
+                        newSquare = Instantiate(square, new Vector3(Random.Range(47, 62), Random.Range(-13, -13), Random.Range(-15, 25)), square.transform.rotation) as GameObject;
                 }
                 else
                     newSquare = Instantiate(square, new Vector3(Random.Range(-25, 62), Random.Range(-13, -13), Random.Range(-15, 35)), square.transform.rotation) as GameObject;
@@ -59,7 +59,7 @@ public class BackgroundManager : MonoBehaviour
             }
             else
             {
-                yield return new WaitForSeconds(Random.Range(0.7f, 1f));
+                yield return new WaitForSeconds(Random.Range(1f, 1.3f));
             }
         }
     }
@@ -73,7 +73,7 @@ public class BackgroundManager : MonoBehaviour
     IEnumerator fadeIn(GameObject newSquare)
     {
         float power = 0;
-        while (power <= 1.2)
+        while (power <= 1.5)
         {
             //Transparency.
             if (newSquare != null)
@@ -115,10 +115,10 @@ public class BackgroundManager : MonoBehaviour
             //Transparency.
             if (newSquare != null)
             {
-                power -= decreaseGlowRate;
                 fade = newSquare.GetComponentInChildren<Renderer>().material.GetColor("_MKGlowTexColor");
                 if (SceneManager.GetActiveScene().buildIndex != 1)
                 {
+                    power -= decreaseGlowRate;
                     fade.a -= decreaseGlowRate;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
@@ -132,6 +132,7 @@ public class BackgroundManager : MonoBehaviour
                 }
                 else
                 {
+                    power -= (decreaseGlowRate / 10);
                     fade.a -= decreaseGlowRate / 10;
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_Color", fade);
                     newSquare.GetComponentInChildren<Renderer>().material.SetColor("_MKGlowTexColor", fade);
