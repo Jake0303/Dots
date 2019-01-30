@@ -1,4 +1,4 @@
-# Squarz
+# A multiplayer mobile puzzle game called Squarz
 This is my first released game Squarz.
 
 Android/Google Play : https://play.google.com/store/apps/details?id=com.DropKickEntertainment.Squarz
